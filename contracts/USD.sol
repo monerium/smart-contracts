@@ -6,5 +6,5 @@ import "./BlacklistValidator.sol";
 
 contract USD is TokenController {
 
-  function USD() TokenController(new BlacklistValidator(), "Smart USD", "USDS") { }
+    function USD() TokenController(new BlacklistValidator(), "Smart USD", "USDS") { }
 }

@@ -4,15 +4,15 @@ import "./Validator.sol";
 
 contract BlacklistValidator is Validator {
 
-  mapping (address => bool) blacklist;
+    mapping (address => bool) blacklist;
 
-  function validate(address _from, address _to, uint _value) returns (bool valid) { 
-    if (blacklist[_from]) {
-      valid = false;
-    } else {
-      valid = true;
+    function validate(address _from, address _to, uint _value) returns (bool valid) { 
+        if (blacklist[_from]) {
+            valid = false;
+        } else {
+            valid = true;
+        }
+        Decision(_from, _to, valid, _value);
     }
-    Decision(_from, _to, valid, _value);
-  }
 
 }

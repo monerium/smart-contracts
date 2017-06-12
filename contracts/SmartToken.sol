@@ -6,25 +6,25 @@ import "./Validator.sol";
 // import "./BlacklistValidator.sol";
 
 contract SmartToken is StandardToken {
-  using SmartTokenLib for SmartTokenLib.SmartTokenStorage;
+    using SmartTokenLib for SmartTokenLib.SmartTokenStorage;
 
-  SmartTokenLib.SmartTokenStorage smartToken;
+    SmartTokenLib.SmartTokenStorage smartToken;
 
-  // string public name = "SmartToken";
-  // string public symbol = "SMT";
-  uint public decimals = 18;
-  uint public INITIAL_SUPPLY = 10000000;
+    // string public name = "SmartToken";
+    // string public symbol = "SMT";
+    uint public decimals = 18;
+    uint public INITIAL_SUPPLY = 10000000;
 
-  function SmartToken(address _validator, string _name, string _symbol) {
-    smartToken.setValidator(_validator);
-    name = _name;
-    symbol = _symbol;
-  }
-
-  function transfer(address to, uint value) returns (bool ok) {
-    if (!smartToken.validate(msg.sender, to, value)) {
-      return false;
+    function SmartToken(address _validator, string _name, string _symbol) {
+        smartToken.setValidator(_validator);
+        name = _name;
+        symbol = _symbol;
     }
-    return StandardToken.transfer(to, value);
-  }
+
+    function transfer(address to, uint value) returns (bool ok) {
+        if (!smartToken.validate(msg.sender, to, value)) {
+            return false;
+        }
+        return StandardToken.transfer(to, value);
+    }
 }
