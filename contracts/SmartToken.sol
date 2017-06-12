@@ -12,13 +12,15 @@ contract SmartToken is StandardToken {
 
     // string public name = "SmartToken";
     // string public symbol = "SMT";
+    bytes4 public symbol;
     uint public decimals = 18;
     uint public INITIAL_SUPPLY = 10000000;
 
-    function SmartToken(address _validator, string _name, string _symbol) {
+    function SmartToken(address _validator, string _name, bytes4 _symbol) {
         smartToken.setValidator(_validator);
         name = _name;
         symbol = _symbol;
+        token.init(INITIAL_SUPPLY);
     }
 
     function transfer(address to, uint value) returns (bool ok) {
