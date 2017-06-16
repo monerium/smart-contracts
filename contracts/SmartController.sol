@@ -1,6 +1,5 @@
 pragma solidity ^0.4.10;
 
-// import "zeppelin-solidity/contracts/token/StandardToken.sol";
 import "./StandardController.sol";
 import "./SmartTokenLib.sol";
 import "./Validator.sol";

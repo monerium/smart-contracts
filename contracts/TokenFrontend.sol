@@ -1,8 +1,9 @@
 pragma solidity ^0.4.10;
 
 import "./SmartController.sol";
+import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
-contract TokenFrontend {
+contract TokenFrontend is Ownable {
     SmartController controller;
 
     string public name;
@@ -17,7 +18,7 @@ contract TokenFrontend {
     }
 
     // external
-    function setController(address _address) {
+    function setController(address _address) onlyOwner {
         controller = SmartController(_address);
         if (controller.ticker() != ticker) {
             throw;

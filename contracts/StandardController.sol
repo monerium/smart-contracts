@@ -3,6 +3,7 @@ pragma solidity ^0.4.6;
 
 import "./TokenFrontend.sol";
 import "zeppelin-solidity/contracts/token/ERC20Lib.sol";
+import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
 /**
  * Standard ERC20 token
@@ -12,7 +13,7 @@ import "zeppelin-solidity/contracts/token/ERC20Lib.sol";
  * https://github.com/Firstbloodio/token/blob/master/smart_contract/FirstBloodToken.sol
  */
 
-contract StandardController {
+contract StandardController is Ownable {
     using ERC20Lib for ERC20Lib.TokenStorage;
 
     ERC20Lib.TokenStorage token;
@@ -27,6 +28,7 @@ contract StandardController {
     function StandardController(address _frontend) {
         frontend = TokenFrontend(_frontend);
         token.init(msg.sender, INITIAL_SUPPLY);
+        transferOwnership(_frontend);
     }
 
     // external
@@ -34,8 +36,7 @@ contract StandardController {
         return address(frontend);
     }
 
-    // TODO: should only be callable from the frontend (owner)
-    function setFrontend(address _address) {
+    function setFrontend(address _address) onlyOwner {
         frontend = TokenFrontend(_address);
     }
 
@@ -43,7 +44,9 @@ contract StandardController {
         return token.transfer(_caller, to, value);
     }
 
-    function transferFrom(address _caller, address from, address to, uint value) returns (bool ok) {
+    function transferFrom(address _caller, address from, address to, uint value) 
+        returns (bool ok) 
+    {
         return token.transferFrom(_caller, from, to, value);
     }
 
