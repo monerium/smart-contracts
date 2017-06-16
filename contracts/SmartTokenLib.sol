@@ -10,6 +10,7 @@ library SmartTokenLib {
         address validator;
     }
 
+    // external
     function getValidator(SmartTokenStorage storage self) returns (address validator) {
         return self.validator;
     }
@@ -18,7 +19,9 @@ library SmartTokenLib {
         self.validator = _validator;
     }
 
-    function validate(SmartTokenStorage storage self, address _from, address _to, uint _value) returns (bool valid) { 
+    function validate(SmartTokenStorage storage self, address _from, address _to, uint _value) 
+        returns (bool valid) 
+    { 
         return Validator(self.validator).validate(_from, _to, _value);
     }
 }
