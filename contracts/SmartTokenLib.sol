@@ -1,10 +1,10 @@
 pragma solidity ^0.4.10;
 
-import "zeppelin-solidity/contracts/SafeMathLib.sol";
+// import "zeppelin-solidity/contracts/SafeMathLib.sol";
 import "./Validator.sol";
 
 library SmartTokenLib {
-    using SafeMathLib for uint;
+    // using SafeMathLib for uint;
 
     struct SmartTokenStorage {
         address validator;

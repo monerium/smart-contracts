@@ -3,6 +3,7 @@ pragma solidity ^0.4.6;
 
 import "./TokenFrontend.sol";
 import "zeppelin-solidity/contracts/token/ERC20Lib.sol";
+import "zeppelin-solidity/contracts/token/EternalTokenStorage.sol";
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
 /**
@@ -14,9 +15,9 @@ import "zeppelin-solidity/contracts/ownership/Ownable.sol";
  */
 
 contract StandardController is Ownable {
-    using ERC20Lib for ERC20Lib.TokenStorage;
+    using ERC20Lib for EternalTokenStorage.TokenStorage;
 
-    ERC20Lib.TokenStorage token;
+    EternalTokenStorage.TokenStorage token;
     TokenFrontend frontend;
 
     string public name;

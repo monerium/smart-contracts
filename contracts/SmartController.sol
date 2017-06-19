@@ -1,11 +1,12 @@
 pragma solidity ^0.4.10;
 
-import "./StandardController.sol";
 import "./SmartTokenLib.sol";
+import "./MintableController.sol";
 import "./Validator.sol";
 
-contract SmartController is StandardController {
+contract SmartController is MintableController {
     using SmartTokenLib for SmartTokenLib.SmartTokenStorage;
+    using MintableTokenLib for SmartTokenLib.SmartTokenStorage;
 
     SmartTokenLib.SmartTokenStorage smartToken;
 
@@ -14,8 +15,9 @@ contract SmartController is StandardController {
     uint public INITIAL_SUPPLY = 10000000;
 
     // constructor
-    function SmartController(address _frontend, address _validator, bytes3 _ticker)                 
+    function SmartController(address _frontend, address _validator, bytes3 _ticker)
         StandardController(_frontend) 
+        MintableController() 
     {
         smartToken.setValidator(_validator);
         ticker = _ticker;
