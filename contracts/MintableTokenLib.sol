@@ -16,6 +16,7 @@ library MintableTokenLib {
     using SafeMathLib for uint;
 
     event Mint(address indexed to, uint amount);
+    event Burn(address indexed from, uint amount);
     // event MintFinished();
 
     // bool public mintingFinished = false;
@@ -33,10 +34,25 @@ library MintableTokenLib {
      * @return A boolean that indicates if the operation was successful.
      */
     // function mint(address _to, uint _amount) onlyOwner canMint returns (bool) {
-    function mint(EternalTokenStorage.TokenStorage storage self, address _to, uint _amount) constant returns (bool) {
+    function mint(
+        EternalTokenStorage.TokenStorage storage self, 
+        address _to, 
+        uint _amount
+    ) constant returns (bool) {
         self.totalSupply = self.totalSupply.plus(_amount);
         self.balances[_to] = self.balances[_to].plus(_amount);
         Mint(_to, _amount);
+        return true;
+    }
+
+    function burn(
+        EternalTokenStorage.TokenStorage storage self, 
+        address _from, 
+        uint _amount
+    ) constant returns (bool) {
+        self.totalSupply = self.totalSupply.minus(_amount);
+        self.balances[_from] = self.balances[_from].minus(_amount);
+        Burn(_from, _amount);
         return true;
     }
 

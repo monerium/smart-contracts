@@ -16,8 +16,7 @@ contract SmartController is MintableController {
 
     // constructor
     function SmartController(address _frontend, address _validator, bytes3 _ticker)
-        StandardController(_frontend) 
-        MintableController() 
+        MintableController(_frontend) 
     {
         smartToken.setValidator(_validator);
         ticker = _ticker;

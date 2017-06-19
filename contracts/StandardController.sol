@@ -4,7 +4,7 @@ pragma solidity ^0.4.6;
 import "./TokenFrontend.sol";
 import "zeppelin-solidity/contracts/token/ERC20Lib.sol";
 import "zeppelin-solidity/contracts/token/EternalTokenStorage.sol";
-import "zeppelin-solidity/contracts/ownership/Ownable.sol";
+// import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
 /**
  * Standard ERC20 token
@@ -14,7 +14,7 @@ import "zeppelin-solidity/contracts/ownership/Ownable.sol";
  * https://github.com/Firstbloodio/token/blob/master/smart_contract/FirstBloodToken.sol
  */
 
-contract StandardController is Ownable {
+contract StandardController {
     using ERC20Lib for EternalTokenStorage.TokenStorage;
 
     EternalTokenStorage.TokenStorage token;
@@ -25,11 +25,16 @@ contract StandardController is Ownable {
     uint public decimals = 18;
     uint public INITIAL_SUPPLY = 10000;
 
+    modifier onlyFrontend() {
+        if (msg.sender == address(frontend))
+            _;
+    }
+
     // constructor
     function StandardController(address _frontend) {
         frontend = TokenFrontend(_frontend);
         token.init(msg.sender, INITIAL_SUPPLY);
-        transferOwnership(_frontend);
+        // transferOwnership(_frontend);
     }
 
     // external
@@ -37,7 +42,7 @@ contract StandardController is Ownable {
         return address(frontend);
     }
 
-    function setFrontend(address _address) onlyOwner {
+    function setFrontend(address _address) onlyFrontend {
         frontend = TokenFrontend(_address);
     }
 
