@@ -1,7 +1,7 @@
 pragma solidity ^0.4.4;
 
 import "zeppelin-solidity/contracts/SafeMathLib.sol";
-// import "TokenStorage.sol";
+import "./TokenStorage.sol";
 
 library ERC20Lib {
     using SafeMathLib for uint;
@@ -43,14 +43,16 @@ library ERC20Lib {
         Transfer(_from, _to, _value);
         return true;
     }
+    */
 
     function balanceOf(TokenStorage db, address _owner) 
         constant 
         returns (uint balance) 
     {
-        return db.balances[_owner];
+        return db.getBalance(_owner);
     }
 
+    /*
     function approve(TokenStorage db, address _caller, address _spender, uint _value) 
         constant
         returns (bool success) 

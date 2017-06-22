@@ -10,7 +10,7 @@ contract('StandardController', (accounts) => {
   });
   it("should put 10000 tokens in the first account", () => {
     return StandardController.deployed().then((instance) => {
-      return instance.balanceOf.call(accounts[0]);
+      return instance.balanceOf(accounts[0]);
     }).then((balance) => {
       assert.equal(balance.valueOf(), 1000, "10000 wasn't in the first account");
     });

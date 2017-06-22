@@ -1,6 +1,7 @@
 pragma solidity ^0.4.11;
 
 // import "zeppelin-solidity/contracts/SafeMathLib.sol";
+// TODO: Ownership
 import "TokenStorageLib.sol";
 
 contract TokenStorage {
@@ -12,8 +13,16 @@ contract TokenStorage {
         // tokenStorage.addBalance(to, amount);
     // }
 
-    function totalSupply() constant returns (uint) {
+    function getSupply() constant returns (uint) {
         return tokenStorage.getSupply();
+    }
+
+    function getBalance(address who) constant returns (uint) {
+        return tokenStorage.getBalance(who);
+    }
+
+    function addBalance(address to, uint amount) {
+        tokenStorage.addBalance(to, amount);
     }
 
     // function getTokenStorage() constant returns (TokenStorage) {

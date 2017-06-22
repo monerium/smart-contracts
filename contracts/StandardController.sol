@@ -16,7 +16,7 @@ import "./ERC20Lib.sol";
  */
 
 contract StandardController {
-    // using ERC20Lib for TokenStorage.TokenStorage;
+    // using ERC20Lib for TokenStorage;
 
     TokenStorage db;
     TokenFrontend frontend;
@@ -24,7 +24,6 @@ contract StandardController {
     string public name;
     string public symbol;
     uint public decimals = 18;
-    uint public INITIAL_SUPPLY = 10000;
 
     modifier onlyFrontend() {
         if (msg.sender == address(frontend))
@@ -35,6 +34,8 @@ contract StandardController {
     function StandardController(address _frontend, address _storage, uint initialSupply) {
         frontend = TokenFrontend(_frontend);
         db = TokenStorage(_storage);
+        // db.getBalance(0x0);
+        db.addBalance(msg.sender, initialSupply);
         // token.init(msg.sender, INITIAL_SUPPLY);
         // transferOwnership(_frontend);
     }
@@ -66,14 +67,15 @@ contract StandardController {
 
     // external constant
     function totalSupply() constant returns (uint) {
-        return db.totalSupply();
+        return db.getSupply();
+    }
+
+    function balanceOf(address who) constant returns (uint) {
+        // return db.balanceOf(who);
+        return 50;
     }
 
     /*
-    function balanceOf(address who) constant returns (uint) {
-        return token.balanceOf(who);
-    }
-
     function allowance(address owner, address spender) constant returns (uint) {
         return token.allowance(owner, spender);
     }
