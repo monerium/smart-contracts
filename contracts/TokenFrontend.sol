@@ -1,10 +1,11 @@
 pragma solidity ^0.4.10;
 
-import "./SmartController.sol";
+// import "./SmartController.sol";
+import "./StandardController.sol";
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
 contract TokenFrontend is Ownable {
-    SmartController controller;
+    StandardController controller;
 
     string public name;
     string public symbol;
@@ -19,13 +20,16 @@ contract TokenFrontend is Ownable {
 
     // external
     function setController(address _address) onlyOwner {
-        controller = SmartController(_address);
+        controller = StandardController(_address);
+        /*
         if (controller.ticker() != ticker) {
             throw;
         }
+        */
         controller.setFrontend(address(this));
     }
 
+    /*
     function transfer(address to, uint value) returns (bool ok) {
         return controller.transfer(msg.sender, to, value);
     }
@@ -37,6 +41,7 @@ contract TokenFrontend is Ownable {
     function approve(address spender, uint value) returns (bool ok) {
         return controller.approve(msg.sender, spender, value);
     }
+   */
 
     // external constant
     function getController() constant returns (address) {
@@ -47,6 +52,7 @@ contract TokenFrontend is Ownable {
         return controller.totalSupply();
     }
 
+    /*
     function balanceOf(address who) constant returns (uint) {
         return controller.balanceOf(who);
     }
@@ -58,6 +64,7 @@ contract TokenFrontend is Ownable {
     function decimals() constant returns (uint) {
         return controller.decimals();
     }
+    */
 
     event Transfer(address indexed from, address indexed to, uint value);
     event Approval(address indexed owner, address indexed spender, uint value);

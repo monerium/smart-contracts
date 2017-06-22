@@ -2,8 +2,9 @@ pragma solidity ^0.4.6;
 
 
 import "./TokenFrontend.sol";
-import "zeppelin-solidity/contracts/token/ERC20Lib.sol";
-import "zeppelin-solidity/contracts/token/EternalTokenStorage.sol";
+import "./TokenStorage.sol";
+import "./ERC20Lib.sol";
+// import "zeppelin-solidity/contracts/token/EternalTokenStorage.sol";
 // import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
 /**
@@ -15,9 +16,9 @@ import "zeppelin-solidity/contracts/token/EternalTokenStorage.sol";
  */
 
 contract StandardController {
-    using ERC20Lib for EternalTokenStorage.TokenStorage;
+    // using ERC20Lib for TokenStorage.TokenStorage;
 
-    EternalTokenStorage.TokenStorage token;
+    TokenStorage db;
     TokenFrontend frontend;
 
     string public name;
@@ -31,9 +32,10 @@ contract StandardController {
     }
 
     // constructor
-    function StandardController(address _frontend) {
+    function StandardController(address _frontend, address _storage, uint initialSupply) {
         frontend = TokenFrontend(_frontend);
-        token.init(msg.sender, INITIAL_SUPPLY);
+        db = TokenStorage(_storage);
+        // token.init(msg.sender, INITIAL_SUPPLY);
         // transferOwnership(_frontend);
     }
 
@@ -46,6 +48,7 @@ contract StandardController {
         frontend = TokenFrontend(_address);
     }
 
+    /*
     function transfer(address _caller, address to, uint value) returns (bool ok) {
         return token.transfer(_caller, to, value);
     }
@@ -59,12 +62,14 @@ contract StandardController {
     function approve(address _caller, address spender, uint value) returns (bool ok) {
         return token.approve(_caller, spender, value);
     }
+   */
 
     // external constant
     function totalSupply() constant returns (uint) {
-        return token.totalSupply;
+        return db.totalSupply();
     }
 
+    /*
     function balanceOf(address who) constant returns (uint) {
         return token.balanceOf(who);
     }
@@ -72,6 +77,7 @@ contract StandardController {
     function allowance(address owner, address spender) constant returns (uint) {
         return token.allowance(owner, spender);
     }
+   */
 
     event Transfer(address indexed from, address indexed to, uint value);
     event Approval(address indexed owner, address indexed spender, uint value);

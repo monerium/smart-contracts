@@ -5,11 +5,12 @@ import "./StandardController.sol";
 import "./MintableTokenLib.sol";
 
 contract MintableController is StandardController, Ownable {
-    using MintableTokenLib for EternalTokenStorage.TokenStorage;
+    // using MintableTokenLib for EternalTokenStorage.TokenStorage;
 
-    function MintableController(address _frontend) 
-        StandardController(_frontend) { }
+    function MintableController(address _frontend, address _storage, uint initialSupply) 
+        StandardController(_frontend, _storage, initialSupply) { }
 
+    /*
     function mint(uint amount) onlyOwner returns (bool) {
         return token.mint(msg.sender, amount);
     }
@@ -17,4 +18,5 @@ contract MintableController is StandardController, Ownable {
     function burn(uint amount) onlyOwner returns (bool) {
         return token.burn(msg.sender, amount);
     }
+   */
 }

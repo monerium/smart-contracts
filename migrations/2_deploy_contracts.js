@@ -4,15 +4,32 @@ var SafeMathLib = artifacts.require("./SafeMathLib.sol");
 var ERC20Lib = artifacts.require("./ERC20Lib.sol");
 var MintableTokenLib = artifacts.require("./MintableTokenLib.sol");
 var SmartTokenLib = artifacts.require("./SmartTokenLib.sol");
-var SmartController = artifacts.require("./SmartController.sol");
+// var EternalTokenStorage = artifacts.require("zeppelin-solidity/contracts/token/EternalTokenStorage.sol");
+// var SmartController = artifacts.require("./SmartController.sol");
 var BlacklistValidator = artifacts.require("./BlacklistValidator.sol");
 var USD = artifacts.require("./USD.sol");
 var EUR = artifacts.require("./EUR.sol");
+
+var TokenStorageLib = artifacts.require("./TokenStorageLib.sol");
+var TokenStorage = artifacts.require("./TokenStorage.sol");
+var StandardController = artifacts.require("./StandardController");
 
 
 // TODO: Registry?
 
 module.exports = function(deployer) {
+
+  deployer.deploy(SafeMathLib);
+  deployer.link(SafeMathLib, TokenStorageLib);
+  deployer.deploy(TokenStorageLib);
+  deployer.link(TokenStorageLib, TokenStorage);
+  deployer.deploy(TokenStorage);
+
+  // deployer.deploy(TokenStorage).then(() => {
+    deployer.deploy(StandardController, 0x0, 0x0, 10000);
+  // });
+
+  /*
   // MetaCoin
   // deployer.deploy(ConvertLib);
   // deployer.link(ConvertLib, MetaCoin);
@@ -21,7 +38,7 @@ module.exports = function(deployer) {
   // SafeMathLib, ERC2Lib & SmartTokenLib, BlacklistValidator
   deployer.deploy(SafeMathLib);
   deployer.link(SafeMathLib, [ERC20Lib, MintableTokenLib]);
-  deployer.deploy([ERC20Lib, MintableTokenLib, SmartTokenLib, BlacklistValidator]);
+  // deployer.deploy([ERC20Lib, MintableTokenLib, SmartTokenLib, BlacklistValidator, EternalTokenStorage]);
 
   // SmartToken
   deployer.link(ERC20Lib, SmartController);
@@ -40,4 +57,5 @@ module.exports = function(deployer) {
       EUR.at(EUR.address).setController(SmartController.address);
     });
   });
+  */
 };

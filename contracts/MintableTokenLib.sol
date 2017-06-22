@@ -1,8 +1,9 @@
 pragma solidity ^0.4.11;
 
 
-import "zeppelin-solidity/contracts/token/EternalTokenStorage.sol";
+// import "zeppelin-solidity/contracts/token/EternalTokenStorage.sol";
 import "zeppelin-solidity/contracts/SafeMathLib.sol";
+import "./TokenStorage.sol";
 
 
 /**
@@ -34,6 +35,7 @@ library MintableTokenLib {
      * @return A boolean that indicates if the operation was successful.
      */
     // function mint(address _to, uint _amount) onlyOwner canMint returns (bool) {
+    /*
     function mint(
         EternalTokenStorage.TokenStorage storage self, 
         address _to, 
@@ -55,6 +57,7 @@ library MintableTokenLib {
         Burn(_from, _amount);
         return true;
     }
+    */
 
     /**
      * @dev Function to stop minting new tokens.

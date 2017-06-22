@@ -12,21 +12,23 @@ contract SmartController is MintableController {
 
     bytes3 public ticker;
     uint public decimals = 18;
-    uint public INITIAL_SUPPLY = 10000000;
+    uint public INITIAL_SUPPLY = 0;
 
     // constructor
-    function SmartController(address _frontend, address _validator, bytes3 _ticker)
-        MintableController(_frontend) 
+    function SmartController(address _frontend, address _storage, address _validator, bytes3 _ticker)
+        MintableController(_frontend, _storage, INITIAL_SUPPLY) 
     {
         smartToken.setValidator(_validator);
         ticker = _ticker;
     }
 
     // external
+    /*
     function transfer(address _caller, address to, uint value) returns (bool ok) {
         if (!smartToken.validate(_caller, to, value)) {
             return false;
         }
         return StandardController.transfer(_caller, to, value);
     }
+    */
 }
