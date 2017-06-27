@@ -33,22 +33,22 @@ contract("USD", (accounts) => {
       assert.equal(balance.valueOf(), 7200, "did not transfer 7200 tokens"); 
     });
   });
-  it("should allow the third account to spend 9600 from the second account", () => {
+  it("should allow the third account to spend 9600 from the first account", () => {
     var token;
     return USD.deployed().then((_token) => {
       token = _token;
-      return token.approve(accounts[2], 9600, {from: accounts[1]});
+      return token.approve(accounts[2], 9600, {from: accounts[0]});
     }).then(
-      () => token.allowance(accounts[1], accounts[2])
+      () => token.allowance(accounts[0], accounts[2])
     ).then((allowance) => {
       assert.equal(allowance.valueOf(), 9600, "the allowance wasn't 9600");
     });
   });
-  it("should transfer 9300 from the second account to the fourth using the third account", () => {
+  it("should transfer 9300 from the first account to the fourth using the third account", () => {
     var token;
     return USD.deployed().then((_token) => {
       token = _token;
-      return token.transferFrom(accounts[1], accounts[3], 9300, {from: accounts[2]});
+      return token.transferFrom(accounts[0], accounts[3], 9300, {from: accounts[2]});
     }).then(
       () => token.balanceOf(accounts[3])
     ).then((balance) => {

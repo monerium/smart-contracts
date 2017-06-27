@@ -30,6 +30,18 @@ contract StandardController is Ownable {
             _;
     }
 
+    // either frontend or calling directly
+    modifier isFront(address _caller) {
+        if (msg.sender == address(frontend) || _caller == msg.sender)
+            _;
+    }
+
+    // TODO: better solution?
+    modifier ownerOrFrontend() {
+        if (msg.sender == address(frontend) || tx.origin == owner)
+            _;
+    }
+
     // constructor
     // function StandardController(address _frontend, address _storage, uint initialSupply) {
     function StandardController(address _storage, uint initialSupply) {
@@ -45,30 +57,56 @@ contract StandardController is Ownable {
     }
 
     // external
-    function getFrontend() returns (address) {
+    function getFrontend() constant returns (address) {
         return address(frontend);
     }
 
-    function setFrontend(address _address) onlyFrontend {
+    // external constant
+    function setFrontend(address _address) ownerOrFrontend { 
         frontend = TokenFrontend(_address);
         transferOwnership(_address);
     }
 
+    // external erc20
     function transfer(address to, uint value) returns (bool ok) {
-        return token.transfer(msg.sender, to, value);
+        return _transfer(msg.sender, to, value);
     }
 
     function transferFrom(address from, address to, uint value) 
         returns (bool ok) 
     {
-        return token.transferFrom(msg.sender, from, to, value);
+        return _transferFrom(msg.sender, from, to, value);
     }
 
-    function approve(address spender, uint value) returns (bool ok) {
-        return token.approve(msg.sender, spender, value);
+    function approve(address spender, uint value) 
+        returns (bool ok) 
+    {
+        return _approve(msg.sender, spender, value);
     }
 
-    // external constant
+    // external erc20 front
+    function _transfer(address _caller, address _to, uint _value) 
+        isFront(_caller)
+        returns (bool ok) 
+    {
+        return token.transfer(_caller, _to, _value);
+    }
+
+    function _transferFrom(address _caller, address _from, address _to, uint _value) 
+        isFront(_caller)
+        returns (bool ok) 
+    {
+        return token.transferFrom(_caller, _from, _to, _value);
+    }
+
+    function _approve(address _caller, address _spender, uint _value) 
+        isFront(_caller)
+        returns (bool ok) 
+    {
+        return token.approve(_caller, _spender, _value);
+    }
+
+    // external erc20 constant
     function totalSupply() constant returns (uint) {
         return token.getSupply();
     }

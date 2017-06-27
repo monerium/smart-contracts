@@ -26,19 +26,17 @@ contract TokenFrontend is Ownable {
         controller.setFrontend(address(this));
     }
 
-    /*
     function transfer(address to, uint value) returns (bool ok) {
-        return controller.transfer(msg.sender, to, value);
+        return controller._transfer(msg.sender, to, value);
     }
 
     function transferFrom(address from, address to, uint value) returns (bool ok) {
-        return controller.transferFrom(msg.sender, from, to, value);
+        return controller._transferFrom(msg.sender, from, to, value);
     }
 
     function approve(address spender, uint value) returns (bool ok) {
-        return controller.approve(msg.sender, spender, value);
+        return controller._approve(msg.sender, spender, value);
     }
-   */
 
     // external constant
     function getController() constant returns (address) {
@@ -49,7 +47,6 @@ contract TokenFrontend is Ownable {
         return controller.totalSupply();
     }
 
-    /*
     function balanceOf(address who) constant returns (uint) {
         return controller.balanceOf(who);
     }
@@ -58,6 +55,7 @@ contract TokenFrontend is Ownable {
         return controller.allowance(owner, spender);
     }
 
+    /*
     function decimals() constant returns (uint) {
         return controller.decimals();
     }
