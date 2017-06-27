@@ -35,29 +35,29 @@ library MintableTokenLib {
      * @return A boolean that indicates if the operation was successful.
      */
     // function mint(address _to, uint _amount) onlyOwner canMint returns (bool) {
-    /*
     function mint(
-        EternalTokenStorage.TokenStorage storage self, 
+        TokenStorage self, 
         address _to, 
         uint _amount
     ) constant returns (bool) {
-        self.totalSupply = self.totalSupply.plus(_amount);
-        self.balances[_to] = self.balances[_to].plus(_amount);
+        // self.totalSupply = self.totalSupply.plus(_amount);
+        // self.balances[_to] = self.balances[_to].plus(_amount);
+        self.addBalance(_to, _amount);
         Mint(_to, _amount);
         return true;
     }
-
+    
     function burn(
-        EternalTokenStorage.TokenStorage storage self, 
+        TokenStorage self, 
         address _from, 
         uint _amount
     ) constant returns (bool) {
-        self.totalSupply = self.totalSupply.minus(_amount);
-        self.balances[_from] = self.balances[_from].minus(_amount);
+        // self.totalSupply = self.totalSupply.minus(_amount);
+        // self.balances[_from] = self.balances[_from].minus(_amount);
+        self.subBalance(_from, _amount);
         Burn(_from, _amount);
         return true;
     }
-    */
 
     /**
      * @dev Function to stop minting new tokens.

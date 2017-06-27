@@ -12,7 +12,9 @@ var EUR = artifacts.require("./EUR.sol");
 
 var TokenStorageLib = artifacts.require("./TokenStorageLib.sol");
 var TokenStorage = artifacts.require("./TokenStorage.sol");
-var StandardController = artifacts.require("./StandardController");
+var StandardController = artifacts.require("./StandardController.sol");
+var MintableTokenLib = artifacts.require("./MintableTokenLib.sol");
+var MintableController = artifacts.require("./MintableController.sol");
 
 
 // TODO: Registry?
@@ -22,14 +24,15 @@ module.exports = function(deployer) {
   deployer.deploy(SafeMathLib);
   deployer.link(SafeMathLib, [TokenStorageLib, ERC20Lib]);
   deployer.deploy([TokenStorageLib, ERC20Lib]);
-  deployer.link(TokenStorageLib, [TokenStorage, StandardController]);
-  deployer.link(ERC20Lib, StandardController);
+  deployer.link(TokenStorageLib, [TokenStorage, StandardController, MintableController]);
+  deployer.link(ERC20Lib, [StandardController, MintableController]);
 
-  deployer.deploy(TokenStorage, 10000);
+  deployer.deploy([[TokenStorage, 10000]
+                 , [StandardController, 0x0, 0x0, 50000]
+                 , [MintableTokenLib]]);
 
-  // deployer.deploy(TokenStorage, 0).then(() => {
-  deployer.deploy(StandardController, 0x0, 0x0, 50000);
-  // });
+  deployer.link(MintableTokenLib, MintableController);
+  deployer.deploy(MintableController, 0x0, 0x0, 0);
 
   /*
   // MetaCoin
