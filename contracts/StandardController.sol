@@ -56,13 +56,11 @@ contract StandardController is Ownable {
         return token.transfer(msg.sender, to, value);
     }
 
-    /*
-    function transferFrom(address _caller, address from, address to, uint value) 
+    function transferFrom(address from, address to, uint value) 
         returns (bool ok) 
     {
-        return token.transferFrom(_caller, from, to, value);
+        return token.transferFrom(msg.sender, from, to, value);
     }
-   */
 
     function approve(address spender, uint value) returns (bool ok) {
         return token.approve(msg.sender, spender, value);

@@ -38,4 +38,15 @@ contract('StandardController', (accounts) => {
       assert.equal(allowance.valueOf(), 12000, "the allowance wasn't 12000");
     });
   });
+  it("should transfer 9300 from the second account to the fourth using the third account", () => {
+    var token;
+    return StandardController.deployed().then((_token) => {
+      token = _token;
+      return token.transferFrom(accounts[1], accounts[3], 9300, {from: accounts[2]});
+    }).then(
+      () => token.balanceOf(accounts[3])
+    ).then((balance) => {
+      assert.equal(balance.valueOf(), 9300, "The forth account does not have 9300");
+    });
+  });
 });

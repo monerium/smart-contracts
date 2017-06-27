@@ -31,7 +31,6 @@ library ERC20Lib {
         return true;
     }
 
-    /*
     function transferFrom(
         TokenStorage db, 
         address _caller, 
@@ -39,15 +38,14 @@ library ERC20Lib {
         address _to, 
         uint _value
     ) returns (bool success) {
-        var _allowance = db.allowed[_from][_caller];
+        var allowance = db.getAllowed(_from, _caller);
 
-        db.balances[_to] = db.balances[_to].plus(_value);
-        db.balances[_from] = db.balances[_from].minus(_value);
-        db.allowed[_from][_caller] = _allowance.minus(_value);
+        db.subBalance(_from, _value);
+        db.addBalance(_to, _value);
+        db.setAllowed(_from, _caller, allowance.minus(_value));
         Transfer(_from, _to, _value);
         return true;
     }
-    */
 
     function balanceOf(TokenStorage db, address _owner) 
         constant 
@@ -62,7 +60,6 @@ library ERC20Lib {
         constant
         returns (bool success) 
     {
-        // db.allowed[_caller][_spender] = _value;
         db.setAllowed(_caller, _spender, _value);
         Approval(_caller, _spender, _value);
         return true;
