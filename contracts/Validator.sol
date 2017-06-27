@@ -7,7 +7,7 @@ contract Validator {
     // _to
     // _value
     // returns: valid
-    function validate(address, address, uint) returns (bool) { }
+    function validate(address, address, uint) constant returns (bool) { }
 
-    event Decision(address indexed from, address indexed to, bool indexed valid, uint value);
+    event Decision(address indexed from, address indexed to, bool valid, uint value);
 }

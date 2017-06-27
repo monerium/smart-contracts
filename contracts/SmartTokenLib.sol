@@ -8,10 +8,11 @@ library SmartTokenLib {
 
     struct SmartTokenStorage {
         address validator;
+        // Validator validator;
     }
 
     // external
-    function getValidator(SmartTokenStorage storage self) returns (address validator) {
+    function getValidator(SmartTokenStorage storage self) constant returns (address) {
         return self.validator;
     }
 

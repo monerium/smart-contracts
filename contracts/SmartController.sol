@@ -18,15 +18,24 @@ contract SmartController is MintableController {
     function SmartController(address _frontend, address _storage, address _validator, bytes3 _ticker)
         MintableController(_frontend, _storage, INITIAL_SUPPLY) 
     {
+        assert(_validator != 0x0);
         smartToken.setValidator(_validator);
         ticker = _ticker;
     }
 
     // external
+    function getValidator() constant returns (address) {
+        return smartToken.getValidator();
+    }
+
+    function setValidator(address _validator) {
+        smartToken.setValidator(_validator);
+    }
+
     function transfer(address to, uint value) returns (bool ok) {
         if (!smartToken.validate(msg.sender, to, value)) {
-            return false;
+            throw;
         }
-        return StandardController.transfer(to, value);
+        return super.transfer(to, value);
     }
 }

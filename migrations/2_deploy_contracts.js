@@ -35,7 +35,9 @@ module.exports = function(deployer) {
   deployer.deploy(MintableController, 0x0, 0x0, 0);
 
   deployer.link(SmartTokenLib, SmartController);
-  deployer.deploy(SmartController, 0x0, 0x0, 0x0, "XXX");
+  deployer.deploy(BlacklistValidator).then(() => {
+    return deployer.deploy(SmartController, 0x0, 0x0, BlacklistValidator.address, "XXX");
+  });
 
   /*
   // MetaCoin
