@@ -56,12 +56,14 @@ library ERC20Lib {
         return db.getBalance(_owner);
     }
 
-    /*
+    // TODO: approveAndCall
+    // TODO: race condition
     function approve(TokenStorage db, address _caller, address _spender, uint _value) 
         constant
         returns (bool success) 
     {
-        db.allowed[_caller][_spender] = _value;
+        // db.allowed[_caller][_spender] = _value;
+        db.setAllowed(_caller, _spender, _value);
         Approval(_caller, _spender, _value);
         return true;
     }
@@ -70,9 +72,8 @@ library ERC20Lib {
         constant 
         returns (uint remaining) 
     {
-        return db.allowed[_owner][_spender];
+        return db.getAllowed(_owner, _spender);
     }
-    */
 
     event Transfer(address indexed from, address indexed to, uint value);
     event Approval(address indexed owner, address indexed spender, uint value);

@@ -18,7 +18,7 @@ import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 contract StandardController is Ownable {
     using ERC20Lib for TokenStorage;
 
-    TokenStorage db;
+    TokenStorage token;
     TokenFrontend frontend;
 
     string public name;
@@ -35,10 +35,10 @@ contract StandardController is Ownable {
         frontend = TokenFrontend(_frontend);
         assert(_storage == 0x0 || initialSupply == 0);
         if (_storage == 0x0) {
-            db = new TokenStorage();
-            db.addBalance(msg.sender, initialSupply);
+            token = new TokenStorage();
+            token.addBalance(msg.sender, initialSupply);
         } else {
-            db = TokenStorage(_storage);
+            token = TokenStorage(_storage);
         }
         transferOwnership(_frontend);
     }
@@ -53,7 +53,7 @@ contract StandardController is Ownable {
     }
 
     function transfer(address to, uint value) returns (bool ok) {
-        return db.transfer(msg.sender, to, value);
+        return token.transfer(msg.sender, to, value);
     }
 
     /*
@@ -62,26 +62,24 @@ contract StandardController is Ownable {
     {
         return token.transferFrom(_caller, from, to, value);
     }
-
-    function approve(address _caller, address spender, uint value) returns (bool ok) {
-        return token.approve(_caller, spender, value);
-    }
    */
+
+    function approve(address spender, uint value) returns (bool ok) {
+        return token.approve(msg.sender, spender, value);
+    }
 
     // external constant
     function totalSupply() constant returns (uint) {
-        return db.getSupply();
+        return token.getSupply();
     }
 
     function balanceOf(address who) constant returns (uint) {
-        return db.getBalance(who);
+        return token.getBalance(who);
     }
 
-    /*
     function allowance(address owner, address spender) constant returns (uint) {
         return token.allowance(owner, spender);
     }
-   */
 
     event Transfer(address indexed from, address indexed to, uint value);
     event Approval(address indexed owner, address indexed spender, uint value);

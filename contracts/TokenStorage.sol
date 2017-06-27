@@ -24,4 +24,15 @@ contract TokenStorage {
     function subBalance(address from, uint amount) {
         tokenStorage.subBalance(from, amount);
     }
+
+    function setAllowed(address owner, address spender, uint amount) {
+        tokenStorage.setAllowed(owner, spender, amount);
+    }
+
+    function getAllowed(address owner, address spender) 
+        constant 
+        returns (uint)
+    {
+        return tokenStorage.getAllowed(owner, spender);
+    }
 }

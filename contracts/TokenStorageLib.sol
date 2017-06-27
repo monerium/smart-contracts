@@ -29,5 +29,14 @@ library TokenStorageLib {
         self.balances[from] = self.balances[from].minus(amount);
     }
 
-    // function moveBalance(address from, address to, uint amount)
+    function setAllowed(TokenStorage storage self, address owner, address spender, uint amount) {
+        self.allowed[owner][spender] = amount;
+    }
+
+    function getAllowed(TokenStorage storage self, address owner, address spender) 
+        constant
+        returns (uint) 
+    {
+        return self.allowed[owner][spender];
+    }
 }

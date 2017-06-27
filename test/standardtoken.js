@@ -27,4 +27,15 @@ contract('StandardController', (accounts) => {
       assert.equal(balance.valueOf(), 25000, "25000 wasn't in the second account");
     });
   });
+  it("should allow the third account to spend 12000 from the second account", () => {
+    var token;
+    return StandardController.deployed().then((_token) => {
+      token = _token;
+      return token.approve(accounts[2], 12000, {from: accounts[1]});
+    }).then(
+      () => token.allowance(accounts[1], accounts[2])
+    ).then((allowance) => {
+      assert.equal(allowance.valueOf(), 12000, "the allowance wasn't 12000");
+    });
+  });
 });
