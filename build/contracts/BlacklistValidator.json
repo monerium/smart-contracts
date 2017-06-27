@@ -2,7 +2,33 @@
   "contract_name": "BlacklistValidator",
   "abi": [
     {
+      "constant": true,
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
       "constant": false,
+      "inputs": [
+        {
+          "name": "adversary",
+          "type": "address"
+        }
+      ],
+      "name": "ban",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
       "inputs": [
         {
           "name": "_from",
@@ -28,6 +54,32 @@
       "type": "function"
     },
     {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "goodguy",
+          "type": "address"
+        }
+      ],
+      "name": "unban",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
       "anonymous": false,
       "inputs": [
         {
@@ -41,7 +93,7 @@
           "type": "address"
         },
         {
-          "indexed": true,
+          "indexed": false,
           "name": "valid",
           "type": "bool"
         },
@@ -55,10 +107,9 @@
       "type": "event"
     }
   ],
-  "unlinked_binary": "0x6060604052341561000c57fe5b5b6101038061001c6000396000f300606060405263ffffffff60e060020a600035041663aa3ad4e481146020575bfe5b3415602757fe5b6042600160a060020a03600435811690602435166044356056565b604080519115158252519081900360200190f35b600160a060020a03831660009081526020819052604081205460ff1615607d575060006081565b5060015b80151583600160a060020a031685600160a060020a03167fda398dc2e18a5cfa0ead2c5c50d11ad8294e0f46df693ca2981b61b59e670f3b856040518082815260200191505060405180910390a45b93925050505600a165627a7a723058206fbeb0291c237967d2f5118638436c64f45846273cb34faeeff358701916c9b60029",
+  "unlinked_binary": "0x60606040525b60008054600160a060020a03191633600160a060020a03161790555b5b610291806100316000396000f300606060405263ffffffff60e060020a6000350416638da5cb5b811461004d57806397c3ccd814610079578063aa3ad4e414610097578063b9f14557146100d0578063f2fde38b146100ee575bfe5b341561005557fe5b61005d61010c565b60408051600160a060020a039092168252519081900360200190f35b341561008157fe5b610095600160a060020a036004351661011b565b005b341561009f57fe5b6100bc600160a060020a036004358116906024351660443561015e565b604080519115158252519081900360200190f35b34156100d857fe5b610095600160a060020a03600435166101e0565b005b34156100f657fe5b610095600160a060020a036004351661021d565b005b600054600160a060020a031681565b60005433600160a060020a039081169116141561015957600160a060020a0381166000908152600160208190526040909120805460ff191690911790555b5b5b50565b600160a060020a03831660009081526001602052604081205460ff16156101875750600061018b565b5060015b604080518215158152602081018490528151600160a060020a0380871693908816927fda398dc2e18a5cfa0ead2c5c50d11ad8294e0f46df693ca2981b61b59e670f3b929081900390910190a35b9392505050565b60005433600160a060020a039081169116141561015957600160a060020a0381166000908152600160205260409020805460ff191690555b5b5b50565b60005433600160a060020a039081169116141561015957600160a060020a038116156101595760008054600160a060020a031916600160a060020a0383161790555b5b5b5b505600a165627a7a72305820860064b430e9e526ec50360770be259268eae0f24a83044e173886e191b991b80029",
   "networks": {
-    "1498144521441": {
-      "links": {},
+    "1498596061993": {
       "events": {
         "0xda398dc2e18a5cfa0ead2c5c50d11ad8294e0f46df693ca2981b61b59e670f3b": {
           "anonymous": false,
@@ -74,7 +125,7 @@
               "type": "address"
             },
             {
-              "indexed": true,
+              "indexed": false,
               "name": "valid",
               "type": "bool"
             },
@@ -88,75 +139,11 @@
           "type": "event"
         }
       },
-      "updated_at": 1498150322135
-    },
-    "1498152915756": {
       "links": {},
-      "events": {
-        "0xda398dc2e18a5cfa0ead2c5c50d11ad8294e0f46df693ca2981b61b59e670f3b": {
-          "anonymous": false,
-          "inputs": [
-            {
-              "indexed": true,
-              "name": "from",
-              "type": "address"
-            },
-            {
-              "indexed": true,
-              "name": "to",
-              "type": "address"
-            },
-            {
-              "indexed": true,
-              "name": "valid",
-              "type": "bool"
-            },
-            {
-              "indexed": false,
-              "name": "value",
-              "type": "uint256"
-            }
-          ],
-          "name": "Decision",
-          "type": "event"
-        }
-      },
-      "updated_at": 1498153114312
-    },
-    "1498153166408": {
-      "links": {},
-      "events": {
-        "0xda398dc2e18a5cfa0ead2c5c50d11ad8294e0f46df693ca2981b61b59e670f3b": {
-          "anonymous": false,
-          "inputs": [
-            {
-              "indexed": true,
-              "name": "from",
-              "type": "address"
-            },
-            {
-              "indexed": true,
-              "name": "to",
-              "type": "address"
-            },
-            {
-              "indexed": true,
-              "name": "valid",
-              "type": "bool"
-            },
-            {
-              "indexed": false,
-              "name": "value",
-              "type": "uint256"
-            }
-          ],
-          "name": "Decision",
-          "type": "event"
-        }
-      },
-      "updated_at": 1498153172998
+      "address": "0x379c1e39cc6ebd630014a25940b13c3470d82d21",
+      "updated_at": 1498604046377
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1498153730023
+  "updated_at": 1498604046377
 }
