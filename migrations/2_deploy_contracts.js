@@ -20,14 +20,16 @@ var StandardController = artifacts.require("./StandardController");
 module.exports = function(deployer) {
 
   deployer.deploy(SafeMathLib);
-  deployer.link(SafeMathLib, TokenStorageLib, ERC20Lib);
+  deployer.link(SafeMathLib, [TokenStorageLib, ERC20Lib]);
   deployer.deploy([TokenStorageLib, ERC20Lib]);
-  deployer.link(TokenStorageLib, TokenStorage);
+  deployer.link(TokenStorageLib, [TokenStorage, StandardController]);
   deployer.link(ERC20Lib, StandardController);
 
-  deployer.deploy(TokenStorage).then(() => {
-    return deployer.deploy(StandardController, 0x0, TokenStorage.address, 0);
-  });
+  deployer.deploy(TokenStorage, 10000);
+
+  // deployer.deploy(TokenStorage, 0).then(() => {
+  deployer.deploy(StandardController, 0x0, 0x0, 50000);
+  // });
 
   /*
   // MetaCoin

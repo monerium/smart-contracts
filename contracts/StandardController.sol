@@ -33,9 +33,14 @@ contract StandardController {
     // constructor
     function StandardController(address _frontend, address _storage, uint initialSupply) {
         frontend = TokenFrontend(_frontend);
-        db = TokenStorage(_storage);
+        assert(_storage == 0x0 || initialSupply == 0);
+        if (_storage == 0x0) {
+            db = new TokenStorage();
+            db.addBalance(msg.sender, initialSupply);
+        } else {
+            db = TokenStorage(_storage);
+        }
         // db.getBalance(0x0);
-        db.addBalance(msg.sender, initialSupply);
         // token.init(msg.sender, INITIAL_SUPPLY);
         // transferOwnership(_frontend);
     }

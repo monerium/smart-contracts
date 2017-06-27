@@ -9,10 +9,6 @@ contract TokenStorage {
 
     TokenStorageLib.TokenStorage tokenStorage;
 
-    // function addBalance(address to, uint amount) {
-        // tokenStorage.addBalance(to, amount);
-    // }
-
     function getSupply() constant returns (uint) {
         return tokenStorage.getSupply();
     }
@@ -25,6 +21,7 @@ contract TokenStorage {
         tokenStorage.addBalance(to, amount);
     }
 
+    // function setBalance
     // function getTokenStorage() constant returns (TokenStorage) {
         // return tokenStorage;
     // }

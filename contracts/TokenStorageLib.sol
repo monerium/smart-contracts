@@ -19,8 +19,6 @@ library TokenStorageLib {
         return self.balances[who];
     }
 
-    // function setBalance(TokenStorage storage self, address who, uint new_balance)
-
     function addBalance(TokenStorage storage self, address to, uint amount) {
         self.totalSupply = self.totalSupply.plus(amount);
         self.balances[to] = self.balances[to].plus(amount);
