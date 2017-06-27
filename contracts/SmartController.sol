@@ -23,12 +23,10 @@ contract SmartController is MintableController {
     }
 
     // external
-    /*
-    function transfer(address _caller, address to, uint value) returns (bool ok) {
-        if (!smartToken.validate(_caller, to, value)) {
+    function transfer(address to, uint value) returns (bool ok) {
+        if (!smartToken.validate(msg.sender, to, value)) {
             return false;
         }
-        return StandardController.transfer(_caller, to, value);
+        return StandardController.transfer(to, value);
     }
-    */
 }
