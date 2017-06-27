@@ -6,8 +6,6 @@ var MintableTokenLib = artifacts.require("./MintableTokenLib.sol");
 var SmartTokenLib = artifacts.require("./SmartTokenLib.sol");
 // var EternalTokenStorage = artifacts.require("zeppelin-solidity/contracts/token/EternalTokenStorage.sol");
 var BlacklistValidator = artifacts.require("./BlacklistValidator.sol");
-var USD = artifacts.require("./USD.sol");
-var EUR = artifacts.require("./EUR.sol");
 
 var TokenStorageLib = artifacts.require("./TokenStorageLib.sol");
 var TokenStorage = artifacts.require("./TokenStorage.sol");
@@ -15,6 +13,8 @@ var StandardController = artifacts.require("./StandardController.sol");
 var MintableTokenLib = artifacts.require("./MintableTokenLib.sol");
 var MintableController = artifacts.require("./MintableController.sol");
 var SmartController = artifacts.require("./SmartController.sol");
+var USD = artifacts.require("./USD.sol");
+var EUR = artifacts.require("./EUR.sol");
 
 // TODO: Registry?
 
@@ -27,7 +27,7 @@ module.exports = function(deployer) {
   deployer.link(ERC20Lib, [StandardController, MintableController, SmartController]);
 
   deployer.deploy([[TokenStorage, 10000]
-                 , [StandardController, 0x0, 0x0, 50000]
+                 , [StandardController, 0x0, 50000]
                  , [MintableTokenLib]
                  , [SmartTokenLib]]);
 
@@ -35,10 +35,20 @@ module.exports = function(deployer) {
   deployer.deploy(MintableController, 0x0, 0x0, 0);
 
   deployer.link(SmartTokenLib, SmartController);
+  // deployer.deploy(BlacklistValidator).then(() => {
+    // return deployer.deploy(SmartController, 0x0, 0x0, BlacklistValidator.address, "XXX");
+  // });
+  
   deployer.deploy(BlacklistValidator).then(() => {
-    return deployer.deploy(SmartController, 0x0, 0x0, BlacklistValidator.address, "XXX");
-  });
+    deployer.deploy(SmartController, 0x0, BlacklistValidator.address, "XXX");
 
+    deployer.deploy(SmartController, 0x0, BlacklistValidator.address, "USD").then(() => {
+      return deployer.deploy(USD, SmartController.address);
+    });
+    return deployer.deploy(SmartController, 0x0, BlacklistValidator.address, "EUR").then(() => {
+      return deployer.deploy(EUR, SmartController.address);
+    });
+  });
   /*
   // MetaCoin
   // deployer.deploy(ConvertLib);

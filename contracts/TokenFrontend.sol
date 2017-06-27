@@ -1,31 +1,28 @@
 pragma solidity ^0.4.10;
 
-// import "./SmartController.sol";
-import "./StandardController.sol";
+import "./SmartController.sol";
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
 contract TokenFrontend is Ownable {
-    StandardController controller;
+    SmartController controller;
 
     string public name;
     string public symbol;
     bytes3 public ticker;
 
     // constructor
-    function TokenFrontend(string _name, string _symbol, bytes3 _ticker) {
+    function TokenFrontend(string _name, string _symbol, bytes3 _ticker, address _controller) {
         name = _name;
         symbol = _symbol;
         ticker = _ticker;
+        setController(_controller);
     }
 
     // external
     function setController(address _address) onlyOwner {
-        controller = StandardController(_address);
-        /*
-        if (controller.ticker() != ticker) {
-            throw;
-        }
-        */
+        assert(_address != 0x0);
+        controller = SmartController(_address);
+        assert(controller.ticker() == ticker);
         controller.setFrontend(address(this));
     }
 
