@@ -5,7 +5,7 @@ import "./TokenFrontend.sol";
 import "./TokenStorage.sol";
 import "./ERC20Lib.sol";
 // import "zeppelin-solidity/contracts/token/EternalTokenStorage.sol";
-// import "zeppelin-solidity/contracts/ownership/Ownable.sol";
+import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
 /**
  * Standard ERC20 token
@@ -15,8 +15,8 @@ import "./ERC20Lib.sol";
  * https://github.com/Firstbloodio/token/blob/master/smart_contract/FirstBloodToken.sol
  */
 
-contract StandardController {
-    // using ERC20Lib for TokenStorage;
+contract StandardController is Ownable {
+    using ERC20Lib for TokenStorage;
 
     TokenStorage db;
     TokenFrontend frontend;
@@ -40,9 +40,7 @@ contract StandardController {
         } else {
             db = TokenStorage(_storage);
         }
-        // db.getBalance(0x0);
-        // token.init(msg.sender, INITIAL_SUPPLY);
-        // transferOwnership(_frontend);
+        transferOwnership(_frontend);
     }
 
     // external
@@ -54,11 +52,11 @@ contract StandardController {
         frontend = TokenFrontend(_address);
     }
 
-    /*
-    function transfer(address _caller, address to, uint value) returns (bool ok) {
-        return token.transfer(_caller, to, value);
+    function transfer(address to, uint value) returns (bool ok) {
+        return db.transfer(msg.sender, to, value);
     }
 
+    /*
     function transferFrom(address _caller, address from, address to, uint value) 
         returns (bool ok) 
     {
