@@ -71,8 +71,7 @@ contract StandardController {
     }
 
     function balanceOf(address who) constant returns (uint) {
-        // return db.balanceOf(who);
-        return 50;
+        return db.getBalance(who);
     }
 
     /*

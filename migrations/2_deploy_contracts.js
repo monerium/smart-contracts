@@ -26,7 +26,7 @@ module.exports = function(deployer) {
   deployer.link(ERC20Lib, StandardController);
 
   deployer.deploy(TokenStorage).then(() => {
-    return deployer.deploy(StandardController, 0x0, TokenStorage.address, 10000);
+    return deployer.deploy(StandardController, 0x0, TokenStorage.address, 0);
   });
 
   /*
