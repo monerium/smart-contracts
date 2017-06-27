@@ -18,16 +18,20 @@ library ERC20Lib {
         db.totalSupply = _initial_supply;
         db.balances[_caller] = _initial_supply;
     }
+    */
 
     function transfer(TokenStorage db, address _caller, address _to, uint _value) 
         returns (bool success) 
     {
-        db.balances[_caller] = db.balances[_caller].minus(_value);
-        db.balances[_to] = db.balances[_to].plus(_value);
+        db.subBalance(_caller, _value);
+        db.addBalance(_to, _value);
+        // db.balances[_caller] = db.balances[_caller].minus(_value);
+        // db.balances[_to] = db.balances[_to].plus(_value);
         Transfer(_caller, _to, _value);
         return true;
     }
 
+    /*
     function transferFrom(
         TokenStorage db, 
         address _caller, 

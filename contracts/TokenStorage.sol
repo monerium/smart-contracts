@@ -21,8 +21,7 @@ contract TokenStorage {
         tokenStorage.addBalance(to, amount);
     }
 
-    // function setBalance
-    // function getTokenStorage() constant returns (TokenStorage) {
-        // return tokenStorage;
-    // }
+    function subBalance(address from, uint amount) {
+        tokenStorage.subBalance(from, amount);
+    }
 }

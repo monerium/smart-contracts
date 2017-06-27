@@ -24,7 +24,10 @@ library TokenStorageLib {
         self.balances[to] = self.balances[to].plus(amount);
     }
 
-    // function subBalance(address from, uint amount)
+    function subBalance(TokenStorage storage self, address from, uint amount) {
+        self.totalSupply = self.totalSupply.minus(amount);
+        self.balances[from] = self.balances[from].minus(amount);
+    }
 
     // function moveBalance(address from, address to, uint amount)
 }
