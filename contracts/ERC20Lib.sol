@@ -1,4 +1,4 @@
-pragma solidity ^0.4.4;
+pragma solidity ^0.4.11;
 
 import "zeppelin-solidity/contracts/SafeMathLib.sol";
 import "./TokenStorage.sol";
@@ -28,7 +28,6 @@ library ERC20Lib {
         uint _value
     ) returns (bool success) {
         var allowance = db.getAllowed(_from, _caller);
-
         db.subBalance(_from, _value);
         db.addBalance(_to, _value);
         db.setAllowed(_from, _caller, allowance.minus(_value));
