@@ -63,6 +63,10 @@ contract StandardController is Ownable {
         return address(frontend);
     }
 
+    function getStorage() constant returns (address) {
+        return address(token);
+    }
+
     // EXTERNAL CONSTANT
     function setFrontend(address _address) ownerOrFrontend { 
         frontend = TokenFrontend(_address);

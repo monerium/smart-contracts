@@ -1,8 +1,8 @@
 compile:
 	truffle compile --all
 
-migrate: compile
+migrate: 
 	truffle migrate --reset
 
-test: migrate
+test: compile migrate
 	truffle test
