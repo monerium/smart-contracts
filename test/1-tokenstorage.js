@@ -48,4 +48,21 @@ contract("TokenStorage", (accounts) => {
       assert.equal(balance.valueOf(), 30000, "balance is not 30000");
     });
   });
+  it("should fail when minting from a non-owner account", () => {
+    var db;
+    var startSupply, endSupply;
+    return TokenStorage.deployed().then((_db) => {
+      db = _db;
+      return db.getSupply();
+    }).then((supply) => {
+      startSupply = supply.valueOf();
+    }).then(
+      () => db.addBalance(accounts[3], 1000000, {from: accounts[4]})
+    ).then(
+      () => db.getSupply()
+    ).then((supply) => {
+      endSupply = supply.valueOf()
+      assert.notEqual(endSupply-startSupply, 1000000, "new supply shouldn't be 1000000");
+    });
+  });
 });
