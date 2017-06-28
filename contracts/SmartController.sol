@@ -1,4 +1,4 @@
-pragma solidity ^0.4.10;
+pragma solidity ^0.4.11;
 
 import "./SmartTokenLib.sol";
 import "./MintableController.sol";
@@ -14,7 +14,7 @@ contract SmartController is MintableController {
     uint public decimals = 18;
     uint public INITIAL_SUPPLY = 0;
 
-    // constructor
+    // CONSTRUCTOR
     function SmartController(address _storage, address _validator, bytes3 _ticker)
         MintableController(_storage, INITIAL_SUPPLY) 
     {
@@ -23,11 +23,7 @@ contract SmartController is MintableController {
         ticker = _ticker;
     }
 
-    // external
-    function getValidator() constant returns (address) {
-        return smartToken.getValidator();
-    }
-
+    // EXTERNAL
     function setValidator(address _validator) {
         smartToken.setValidator(_validator);
     }
@@ -37,5 +33,10 @@ contract SmartController is MintableController {
             throw;
         }
         return super.transfer(to, value);
+    }
+
+    // EXTERNAL CONSTANT
+    function getValidator() constant returns (address) {
+        return smartToken.getValidator();
     }
 }

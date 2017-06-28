@@ -7,6 +7,7 @@ contract BlacklistValidator is Validator, Ownable {
 
     mapping (address => bool) blacklist;
 
+    // EXTERNAL
     function ban(address adversary) onlyOwner {
        blacklist[adversary] = true; 
     }
@@ -15,6 +16,7 @@ contract BlacklistValidator is Validator, Ownable {
         blacklist[goodguy] = false;
     }
 
+    // EXTERNAL CONSTANT
     function validate(address _from, address _to, uint _value) 
         constant
         returns (bool valid) 

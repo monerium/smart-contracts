@@ -1,4 +1,4 @@
-pragma solidity ^0.4.6;
+pragma solidity ^0.4.11;
 
 
 import "./TokenFrontend.sol";
@@ -25,6 +25,7 @@ contract StandardController is Ownable {
     string public symbol;
     uint public decimals = 18;
 
+    // MODIFIERS
     modifier onlyFrontend() {
         if (msg.sender == address(frontend))
             _;
@@ -42,7 +43,11 @@ contract StandardController is Ownable {
             _;
     }
 
-    // constructor
+    // EVENTS
+    event Transfer(address indexed from, address indexed to, uint value);
+    event Approval(address indexed owner, address indexed spender, uint value);
+
+    // CONSTRUCTOR
     function StandardController(address _storage, uint initialSupply) {
         assert(_storage == 0x0 || initialSupply == 0);
         if (_storage == 0x0) {
@@ -53,18 +58,18 @@ contract StandardController is Ownable {
         }
     }
 
-    // external
+    // EXTERNAL
     function getFrontend() constant returns (address) {
         return address(frontend);
     }
 
-    // external constant
+    // EXTERNAL CONSTANT
     function setFrontend(address _address) ownerOrFrontend { 
         frontend = TokenFrontend(_address);
         transferOwnership(_address);
     }
 
-    // external erc20
+    // EXTERNAL ERC20
     function transfer(address to, uint value) returns (bool ok) {
         return _transfer(msg.sender, to, value);
     }
@@ -81,7 +86,7 @@ contract StandardController is Ownable {
         return _approve(msg.sender, spender, value);
     }
 
-    // external erc20 front
+    // EXTERNAL ERC20 FRONT
     function _transfer(address _caller, address _to, uint _value) 
         isFront(_caller)
         returns (bool ok) 
@@ -103,7 +108,7 @@ contract StandardController is Ownable {
         return token.approve(_caller, _spender, _value);
     }
 
-    // external erc20 constant
+    // EXTERNAL ERC20 CONSTANT
     function totalSupply() constant returns (uint) {
         return token.getSupply();
     }
@@ -116,6 +121,4 @@ contract StandardController is Ownable {
         return token.allowance(owner, spender);
     }
 
-    event Transfer(address indexed from, address indexed to, uint value);
-    event Approval(address indexed owner, address indexed spender, uint value);
 }

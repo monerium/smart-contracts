@@ -10,7 +10,11 @@ contract TokenFrontend is Ownable {
     string public symbol;
     bytes3 public ticker;
 
-    // constructor
+    // EVENTS
+    event Transfer(address indexed from, address indexed to, uint value);
+    event Approval(address indexed owner, address indexed spender, uint value);
+
+    // CONSTRUCTOR
     function TokenFrontend(string _name, string _symbol, bytes3 _ticker, address _controller) {
         name = _name;
         symbol = _symbol;
@@ -18,7 +22,7 @@ contract TokenFrontend is Ownable {
         setController(_controller);
     }
 
-    // external
+    // EXTERNAL
     function setController(address _address) onlyOwner {
         assert(_address != 0x0);
         controller = SmartController(_address);
@@ -38,7 +42,7 @@ contract TokenFrontend is Ownable {
         return controller._approve(msg.sender, spender, value);
     }
 
-    // external constant
+    // EXTERNAL CONSTANT
     function getController() constant returns (address) {
         return address(controller);
     }
@@ -58,7 +62,4 @@ contract TokenFrontend is Ownable {
     function decimals() constant returns (uint) {
         return controller.decimals();
     }
-
-    event Transfer(address indexed from, address indexed to, uint value);
-    event Approval(address indexed owner, address indexed spender, uint value);
 }

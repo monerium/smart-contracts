@@ -6,27 +6,16 @@ import "./TokenStorage.sol";
 library ERC20Lib {
     using SafeMathLib for uint;
 
-    // struct TokenStorage {
-        // mapping (address => uint) balances;
-        // mapping (address => mapping (address => uint)) allowed;
-        // uint totalSupply;
-    // }
+    // EVENTS
+    event Transfer(address indexed from, address indexed to, uint value);
+    event Approval(address indexed owner, address indexed spender, uint value);
 
-    // external
-    /*
-    function init(TokenStorage db, address _caller, uint _initial_supply) {
-        db.totalSupply = _initial_supply;
-        db.balances[_caller] = _initial_supply;
-    }
-    */
-
+    // EXTERNAL
     function transfer(TokenStorage db, address _caller, address _to, uint _value) 
         returns (bool success) 
     {
         db.subBalance(_caller, _value);
         db.addBalance(_to, _value);
-        // db.balances[_caller] = db.balances[_caller].minus(_value);
-        // db.balances[_to] = db.balances[_to].plus(_value);
         Transfer(_caller, _to, _value);
         return true;
     }
@@ -47,6 +36,7 @@ library ERC20Lib {
         return true;
     }
 
+    // EXTERNAL CONSTANT
     function balanceOf(TokenStorage db, address _owner) 
         constant 
         returns (uint balance) 
@@ -71,7 +61,4 @@ library ERC20Lib {
     {
         return db.getAllowed(_owner, _spender);
     }
-
-    event Transfer(address indexed from, address indexed to, uint value);
-    event Approval(address indexed owner, address indexed spender, uint value);
 }

@@ -11,14 +11,7 @@ library TokenStorageLib {
         uint totalSupply;
     }
 
-    function getSupply(TokenStorage storage self) constant returns (uint) {
-        return self.totalSupply;
-    }
-
-    function getBalance(TokenStorage storage self, address who) constant returns (uint) {
-        return self.balances[who];
-    }
-
+    // EXTERNAL
     function addBalance(TokenStorage storage self, address to, uint amount) {
         self.totalSupply = self.totalSupply.plus(amount);
         self.balances[to] = self.balances[to].plus(amount);
@@ -31,6 +24,15 @@ library TokenStorageLib {
 
     function setAllowed(TokenStorage storage self, address owner, address spender, uint amount) {
         self.allowed[owner][spender] = amount;
+    }
+
+    // EXTERNAL CONSTANT
+    function getSupply(TokenStorage storage self) constant returns (uint) {
+        return self.totalSupply;
+    }
+
+    function getBalance(TokenStorage storage self, address who) constant returns (uint) {
+        return self.balances[who];
     }
 
     function getAllowed(TokenStorage storage self, address owner, address spender) 
