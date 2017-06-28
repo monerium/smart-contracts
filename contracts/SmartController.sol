@@ -15,9 +15,7 @@ contract SmartController is MintableController {
     uint public INITIAL_SUPPLY = 0;
 
     // constructor
-    // function SmartController(address _frontend, address _storage, address _validator, bytes3 _ticker)
     function SmartController(address _storage, address _validator, bytes3 _ticker)
-        // MintableController(_frontend, _storage, INITIAL_SUPPLY) 
         MintableController(_storage, INITIAL_SUPPLY) 
     {
         assert(_validator != 0x0);

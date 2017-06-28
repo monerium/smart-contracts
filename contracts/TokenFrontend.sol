@@ -55,11 +55,9 @@ contract TokenFrontend is Ownable {
         return controller.allowance(owner, spender);
     }
 
-    /*
     function decimals() constant returns (uint) {
         return controller.decimals();
     }
-    */
 
     event Transfer(address indexed from, address indexed to, uint value);
     event Approval(address indexed owner, address indexed spender, uint value);

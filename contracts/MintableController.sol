@@ -6,10 +6,9 @@ import "./MintableTokenLib.sol";
 contract MintableController is StandardController {
     using MintableTokenLib for TokenStorage;
 
-    // function MintableController(address _frontend, address _storage, uint initialSupply) 
     function MintableController(address _storage, uint initialSupply) 
-        // StandardController(_frontend, _storage, initialSupply) { }
-        StandardController(_storage, initialSupply) { }
+        StandardController(_storage, initialSupply) 
+    { }
 
     function mint(uint amount) onlyOwner returns (bool) {
         return token.mint(msg.sender, amount);

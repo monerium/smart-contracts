@@ -1,7 +1,5 @@
 pragma solidity ^0.4.11;
 
-// import "zeppelin-solidity/contracts/SafeMathLib.sol";
-// TODO: Ownership
 import "TokenStorageLib.sol";
 
 contract TokenStorage {

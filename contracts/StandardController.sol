@@ -43,9 +43,7 @@ contract StandardController is Ownable {
     }
 
     // constructor
-    // function StandardController(address _frontend, address _storage, uint initialSupply) {
     function StandardController(address _storage, uint initialSupply) {
-        // frontend = TokenFrontend(_frontend);
         assert(_storage == 0x0 || initialSupply == 0);
         if (_storage == 0x0) {
             token = new TokenStorage();
@@ -53,7 +51,6 @@ contract StandardController is Ownable {
         } else {
             token = TokenStorage(_storage);
         }
-        // transferOwnership(_frontend);
     }
 
     // external
