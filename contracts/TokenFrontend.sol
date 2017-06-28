@@ -31,7 +31,8 @@ contract TokenFrontend is Ownable {
     }
 
     function transfer(address to, uint value) returns (bool ok) {
-        return controller._transfer(msg.sender, to, value);
+        ok = controller._transfer(msg.sender, to, value);
+        Transfer(msg.sender, to, value);
     }
 
     function transferFrom(address from, address to, uint value) returns (bool ok) {
@@ -39,7 +40,8 @@ contract TokenFrontend is Ownable {
     }
 
     function approve(address spender, uint value) returns (bool ok) {
-        return controller._approve(msg.sender, spender, value);
+        ok = controller._approve(msg.sender, spender, value);
+        Approval(msg.sender, spender, value);
     }
 
     // EXTERNAL CONSTANT
