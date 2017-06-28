@@ -86,6 +86,12 @@ contract StandardController is Ownable {
         return _approve(msg.sender, spender, value);
     }
 
+    function approveAndCall(address spender, uint value, bytes extraData) 
+        returns (bool ok) 
+    {
+        return _approveAndCall(msg.sender, spender, value, extraData);
+    }
+
     // EXTERNAL ERC20 FRONT
     function _transfer(address _caller, address _to, uint _value) 
         isFront(_caller)
@@ -106,6 +112,12 @@ contract StandardController is Ownable {
         returns (bool ok) 
     {
         return token.approve(_caller, _spender, _value);
+    }
+
+    function _approveAndCall(address _caller, address _spender, uint _value, bytes _extraData) 
+        returns (bool ok) 
+    {
+        return token.approveAndCall(_caller, _spender, _value, _extraData);
     }
 
     // EXTERNAL ERC20 CONSTANT

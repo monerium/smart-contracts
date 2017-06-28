@@ -44,6 +44,12 @@ contract TokenFrontend is Ownable {
         Approval(msg.sender, spender, value);
     }
 
+    function approveAndCall(address spender, uint value, bytes extraData) returns (bool ok) 
+    {
+        ok = controller._approveAndCall(msg.sender, spender, value, extraData);
+		Approval(msg.sender, spender, value);
+    }
+
     // EXTERNAL CONSTANT
     function getController() constant returns (address) {
         return address(controller);
