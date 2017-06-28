@@ -5,15 +5,21 @@ import "./Validator.sol";
 
 contract BlacklistValidator is Validator, Ownable {
 
-    mapping (address => bool) blacklist;
+    mapping (address => bool) public blacklist;
+
+    // EVENTS
+    event Ban(address indexed adversary);
+    event Unban(address indexed goodguy);
 
     // EXTERNAL
     function ban(address adversary) onlyOwner {
        blacklist[adversary] = true; 
+       Ban(adversary);
     }
 
     function unban(address goodguy) onlyOwner {
         blacklist[goodguy] = false;
+        Unban(goodguy);
     }
 
     // EXTERNAL CONSTANT
