@@ -28,11 +28,16 @@ contract SmartController is MintableController {
         smartToken.setValidator(_validator);
     }
 
+    // EXTERNAL ERC20
     function transfer(address to, uint value) returns (bool ok) {
-        if (!smartToken.validate(msg.sender, to, value)) {
+        return _transfer(msg.sender, to, value);
+    }
+
+    function _transfer(address _caller, address to, uint value) returns (bool ok) {
+        if (!smartToken.validate(_caller, to, value)) {
             throw;
         }
-        return super.transfer(to, value);
+        return super._transfer(_caller, to, value);
     }
 
     // EXTERNAL CONSTANT

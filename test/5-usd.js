@@ -1,5 +1,6 @@
 var USD = artifacts.require("./USD.sol");
 var SmartController = artifacts.require("./SmartController.sol");
+var BlacklistValidator = artifacts.require("./BlacklistValidator.sol");
 
 contract("USD", (accounts) => {
   it("should start with zero tokens", () => {
@@ -53,6 +54,24 @@ contract("USD", (accounts) => {
       () => token.balanceOf(accounts[3])
     ).then((balance) => {
       assert.equal(balance.valueOf(), 9300, "The forth account does not have 9300");
+    });
+  });
+  /**/
+  it("should should fail transferring 78 tokens from a blacklisted account", () => {
+    var token;
+    return USD.deployed().then((_token) => {
+      token = _token;
+      return token.getController();
+    }).then(
+      (controller) => SmartController.at(controller).getValidator()
+    ).then(
+      (validator) => BlacklistValidator.at(validator).ban(accounts[1])
+    ).then(
+      () => token.transfer(accounts[3], 78, {from: accounts[1]})
+    ).then(() => {
+      assert.fail("succeeded", "fail", "transfer was supposed to fail");
+    }).catch((e) => {
+      assert.notEqual(e.name, "AssertionError", e.message);
     });
   });
 });
