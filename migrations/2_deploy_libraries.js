@@ -28,36 +28,4 @@ module.exports = function(deployer) {
   deployer.link(ERC20Lib, [StandardController, MintableController, SmartController]);
   deployer.deploy([MintableTokenLib, SmartTokenLib]);
 
-  deployer.link(TokenStorageLib, ConstantSmartController);
-  deployer.link(ERC20Lib, ConstantSmartController);
-  deployer.link(MintableTokenLib, ConstantSmartController);
-  deployer.link(SmartTokenLib, ConstantSmartController);
-
-  // deploy and link controllers
-  deployer.deploy([[TokenStorage, 10000], [StandardController, 0x0, 50000]]);
-  deployer.link(MintableTokenLib, [MintableController, SmartController]);
-  deployer.deploy(MintableController, 0x0, 0x0, 0);
-
-  // smart money
-  deployer.link(SmartTokenLib, SmartController);
-
-  deployer.deploy(BlacklistValidator).then(() => {
-    deployer.deploy(SmartController, 0x0, BlacklistValidator.address, "XXX");
-
-    deployer.deploy(SmartController, 0x0, BlacklistValidator.address, "USD").then(() => {
-      return deployer.deploy(USD, SmartController.address).then(() => {
-
-        // deploy constantsmartcontroller
-        deployer.deploy(ConstantValidator, true);
-
-        var controller = SmartController.at(SmartController.address);
-        return deployer.deploy(ConstantSmartController, controller.getStorage(), "USD");
-        // return deployer.deploy(ConstantSmartController, 0x0, "USD");
-      });
-    });
-    return deployer.deploy(SmartController, 0x0, BlacklistValidator.address, "EUR").then(() => {
-      return deployer.deploy(EUR, SmartController.address);
-    });
-  });
-
 };
