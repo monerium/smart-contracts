@@ -80,6 +80,48 @@
       "type": "function"
     },
     {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "blacklist",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "adversary",
+          "type": "address"
+        }
+      ],
+      "name": "Ban",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "goodguy",
+          "type": "address"
+        }
+      ],
+      "name": "Unban",
+      "type": "event"
+    },
+    {
       "anonymous": false,
       "inputs": [
         {
@@ -107,10 +149,34 @@
       "type": "event"
     }
   ],
-  "unlinked_binary": "0x60606040525b60008054600160a060020a03191633600160a060020a03161790555b5b610291806100316000396000f300606060405263ffffffff60e060020a6000350416638da5cb5b811461004d57806397c3ccd814610079578063aa3ad4e414610097578063b9f14557146100d0578063f2fde38b146100ee575bfe5b341561005557fe5b61005d61010c565b60408051600160a060020a039092168252519081900360200190f35b341561008157fe5b610095600160a060020a036004351661011b565b005b341561009f57fe5b6100bc600160a060020a036004358116906024351660443561015e565b604080519115158252519081900360200190f35b34156100d857fe5b610095600160a060020a03600435166101e0565b005b34156100f657fe5b610095600160a060020a036004351661021d565b005b600054600160a060020a031681565b60005433600160a060020a039081169116141561015957600160a060020a0381166000908152600160208190526040909120805460ff191690911790555b5b5b50565b600160a060020a03831660009081526001602052604081205460ff16156101875750600061018b565b5060015b604080518215158152602081018490528151600160a060020a0380871693908816927fda398dc2e18a5cfa0ead2c5c50d11ad8294e0f46df693ca2981b61b59e670f3b929081900390910190a35b9392505050565b60005433600160a060020a039081169116141561015957600160a060020a0381166000908152600160205260409020805460ff191690555b5b5b50565b60005433600160a060020a039081169116141561015957600160a060020a038116156101595760008054600160a060020a031916600160a060020a0383161790555b5b5b5b505600a165627a7a72305820860064b430e9e526ec50360770be259268eae0f24a83044e173886e191b991b80029",
+  "unlinked_binary": "0x60606040525b60008054600160a060020a03191633600160a060020a03161790555b5b610333806100316000396000f3006060604052361561005c5763ffffffff60e060020a6000350416638da5cb5b811461005e57806397c3ccd81461008a578063aa3ad4e4146100a8578063b9f14557146100e1578063f2fde38b146100ff578063f9f92be41461011d575bfe5b341561006657fe5b61006e61014d565b60408051600160a060020a039092168252519081900360200190f35b341561009257fe5b6100a6600160a060020a036004351661015c565b005b34156100b057fe5b6100cd600160a060020a03600435811690602435166044356101c5565b604080519115158252519081900360200190f35b34156100e957fe5b6100a6600160a060020a0360043516610247565b005b341561010757fe5b6100a6600160a060020a03600435166102aa565b005b341561012557fe5b6100cd600160a060020a03600435166102f2565b604080519115158252519081900360200190f35b600054600160a060020a031681565b60005433600160a060020a03908116911614156101c057600160a060020a0381166000818152600160208190526040808320805460ff1916909217909155517f9a4e757235705bd178419abc9fa645392c5c7dce5b09940a81ef76794b84bd689190a25b5b5b50565b600160a060020a03831660009081526001602052604081205460ff16156101ee575060006101f2565b5060015b604080518215158152602081018490528151600160a060020a0380871693908816927fda398dc2e18a5cfa0ead2c5c50d11ad8294e0f46df693ca2981b61b59e670f3b929081900390910190a35b9392505050565b60005433600160a060020a03908116911614156101c057600160a060020a038116600081815260016020526040808220805460ff19169055517f866c4c4c778f85c380f911e6c43d125e57865fec38a5ccf53b62b74a8473ed169190a25b5b5b50565b60005433600160a060020a03908116911614156101c057600160a060020a038116156101c05760008054600160a060020a031916600160a060020a0383161790555b5b5b5b50565b60016020526000908152604090205460ff16815600a165627a7a72305820fe74549a77d35c2d5c7555886aff505057792cbce7cd91b28ef0ff8382b0466a0029",
   "networks": {
-    "1498596061993": {
+    "2000": {
       "events": {
+        "0x9a4e757235705bd178419abc9fa645392c5c7dce5b09940a81ef76794b84bd68": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "adversary",
+              "type": "address"
+            }
+          ],
+          "name": "Ban",
+          "type": "event"
+        },
+        "0x866c4c4c778f85c380f911e6c43d125e57865fec38a5ccf53b62b74a8473ed16": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "goodguy",
+              "type": "address"
+            }
+          ],
+          "name": "Unban",
+          "type": "event"
+        },
         "0xda398dc2e18a5cfa0ead2c5c50d11ad8294e0f46df693ca2981b61b59e670f3b": {
           "anonymous": false,
           "inputs": [
@@ -140,10 +206,648 @@
         }
       },
       "links": {},
-      "address": "0x379c1e39cc6ebd630014a25940b13c3470d82d21",
-      "updated_at": 1498604046377
+      "address": "0xfa709c1d5a468809c291de2b379b02d0e30bddfd",
+      "updated_at": 1499352623755
+    },
+    "1498653860677": {
+      "events": {
+        "0x9a4e757235705bd178419abc9fa645392c5c7dce5b09940a81ef76794b84bd68": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "adversary",
+              "type": "address"
+            }
+          ],
+          "name": "Ban",
+          "type": "event"
+        },
+        "0x866c4c4c778f85c380f911e6c43d125e57865fec38a5ccf53b62b74a8473ed16": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "goodguy",
+              "type": "address"
+            }
+          ],
+          "name": "Unban",
+          "type": "event"
+        },
+        "0xda398dc2e18a5cfa0ead2c5c50d11ad8294e0f46df693ca2981b61b59e670f3b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "valid",
+              "type": "bool"
+            },
+            {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "name": "Decision",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x8959421cdcb5318f8803a5810b8bc619b937cfa0",
+      "updated_at": 1498835726553
+    },
+    "1499181797610": {
+      "events": {
+        "0x9a4e757235705bd178419abc9fa645392c5c7dce5b09940a81ef76794b84bd68": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "adversary",
+              "type": "address"
+            }
+          ],
+          "name": "Ban",
+          "type": "event"
+        },
+        "0x866c4c4c778f85c380f911e6c43d125e57865fec38a5ccf53b62b74a8473ed16": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "goodguy",
+              "type": "address"
+            }
+          ],
+          "name": "Unban",
+          "type": "event"
+        },
+        "0xda398dc2e18a5cfa0ead2c5c50d11ad8294e0f46df693ca2981b61b59e670f3b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "valid",
+              "type": "bool"
+            },
+            {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "name": "Decision",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x69fbc0c3a84e731849450636eba9ee83bb8b9047",
+      "updated_at": 1499181847169
+    },
+    "1499182898766": {
+      "events": {
+        "0x9a4e757235705bd178419abc9fa645392c5c7dce5b09940a81ef76794b84bd68": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "adversary",
+              "type": "address"
+            }
+          ],
+          "name": "Ban",
+          "type": "event"
+        },
+        "0x866c4c4c778f85c380f911e6c43d125e57865fec38a5ccf53b62b74a8473ed16": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "goodguy",
+              "type": "address"
+            }
+          ],
+          "name": "Unban",
+          "type": "event"
+        },
+        "0xda398dc2e18a5cfa0ead2c5c50d11ad8294e0f46df693ca2981b61b59e670f3b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "valid",
+              "type": "bool"
+            },
+            {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "name": "Decision",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xffc8f9522e19a519e17d140dfcab84081d98ab9b",
+      "updated_at": 1499182922393
+    },
+    "1499182989541": {
+      "events": {
+        "0x9a4e757235705bd178419abc9fa645392c5c7dce5b09940a81ef76794b84bd68": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "adversary",
+              "type": "address"
+            }
+          ],
+          "name": "Ban",
+          "type": "event"
+        },
+        "0x866c4c4c778f85c380f911e6c43d125e57865fec38a5ccf53b62b74a8473ed16": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "goodguy",
+              "type": "address"
+            }
+          ],
+          "name": "Unban",
+          "type": "event"
+        },
+        "0xda398dc2e18a5cfa0ead2c5c50d11ad8294e0f46df693ca2981b61b59e670f3b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "valid",
+              "type": "bool"
+            },
+            {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "name": "Decision",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x705992f8fe0541b6456c5f58e4f7b7bcc2383cb2",
+      "updated_at": 1499183408709
+    },
+    "1499183429725": {
+      "events": {
+        "0x9a4e757235705bd178419abc9fa645392c5c7dce5b09940a81ef76794b84bd68": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "adversary",
+              "type": "address"
+            }
+          ],
+          "name": "Ban",
+          "type": "event"
+        },
+        "0x866c4c4c778f85c380f911e6c43d125e57865fec38a5ccf53b62b74a8473ed16": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "goodguy",
+              "type": "address"
+            }
+          ],
+          "name": "Unban",
+          "type": "event"
+        },
+        "0xda398dc2e18a5cfa0ead2c5c50d11ad8294e0f46df693ca2981b61b59e670f3b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "valid",
+              "type": "bool"
+            },
+            {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "name": "Decision",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x25da63d0cf02364f42f4fda9c6e1c057b7933fbd",
+      "updated_at": 1499183454744
+    },
+    "1499267525006": {
+      "events": {
+        "0x9a4e757235705bd178419abc9fa645392c5c7dce5b09940a81ef76794b84bd68": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "adversary",
+              "type": "address"
+            }
+          ],
+          "name": "Ban",
+          "type": "event"
+        },
+        "0x866c4c4c778f85c380f911e6c43d125e57865fec38a5ccf53b62b74a8473ed16": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "goodguy",
+              "type": "address"
+            }
+          ],
+          "name": "Unban",
+          "type": "event"
+        },
+        "0xda398dc2e18a5cfa0ead2c5c50d11ad8294e0f46df693ca2981b61b59e670f3b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "valid",
+              "type": "bool"
+            },
+            {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "name": "Decision",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x346005c42494246624fa95bad96b117b2ef6ce76",
+      "updated_at": 1499267877916
+    },
+    "1499268960334": {
+      "events": {
+        "0x9a4e757235705bd178419abc9fa645392c5c7dce5b09940a81ef76794b84bd68": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "adversary",
+              "type": "address"
+            }
+          ],
+          "name": "Ban",
+          "type": "event"
+        },
+        "0x866c4c4c778f85c380f911e6c43d125e57865fec38a5ccf53b62b74a8473ed16": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "goodguy",
+              "type": "address"
+            }
+          ],
+          "name": "Unban",
+          "type": "event"
+        },
+        "0xda398dc2e18a5cfa0ead2c5c50d11ad8294e0f46df693ca2981b61b59e670f3b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "valid",
+              "type": "bool"
+            },
+            {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "name": "Decision",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x3a4487f1206f5ba3ca95494c2c5e5fd9e23b79f8",
+      "updated_at": 1499268979351
+    },
+    "1499347577486": {
+      "links": {},
+      "events": {
+        "0x9a4e757235705bd178419abc9fa645392c5c7dce5b09940a81ef76794b84bd68": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "adversary",
+              "type": "address"
+            }
+          ],
+          "name": "Ban",
+          "type": "event"
+        },
+        "0x866c4c4c778f85c380f911e6c43d125e57865fec38a5ccf53b62b74a8473ed16": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "goodguy",
+              "type": "address"
+            }
+          ],
+          "name": "Unban",
+          "type": "event"
+        },
+        "0xda398dc2e18a5cfa0ead2c5c50d11ad8294e0f46df693ca2981b61b59e670f3b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "valid",
+              "type": "bool"
+            },
+            {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "name": "Decision",
+          "type": "event"
+        }
+      },
+      "updated_at": 1499347587423,
+      "address": "0xf1b169765e7248dcddd81252e4ff25b591e83f5c"
+    },
+    "1499351181761": {
+      "links": {},
+      "events": {
+        "0x9a4e757235705bd178419abc9fa645392c5c7dce5b09940a81ef76794b84bd68": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "adversary",
+              "type": "address"
+            }
+          ],
+          "name": "Ban",
+          "type": "event"
+        },
+        "0x866c4c4c778f85c380f911e6c43d125e57865fec38a5ccf53b62b74a8473ed16": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "goodguy",
+              "type": "address"
+            }
+          ],
+          "name": "Unban",
+          "type": "event"
+        },
+        "0xda398dc2e18a5cfa0ead2c5c50d11ad8294e0f46df693ca2981b61b59e670f3b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "valid",
+              "type": "bool"
+            },
+            {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "name": "Decision",
+          "type": "event"
+        }
+      },
+      "updated_at": 1499351235856,
+      "address": "0xb5e6870a94eaa464693cbaf32a4332a5f755912a"
+    },
+    "1499439979645": {
+      "links": {},
+      "events": {
+        "0x9a4e757235705bd178419abc9fa645392c5c7dce5b09940a81ef76794b84bd68": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "adversary",
+              "type": "address"
+            }
+          ],
+          "name": "Ban",
+          "type": "event"
+        },
+        "0x866c4c4c778f85c380f911e6c43d125e57865fec38a5ccf53b62b74a8473ed16": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "goodguy",
+              "type": "address"
+            }
+          ],
+          "name": "Unban",
+          "type": "event"
+        },
+        "0xda398dc2e18a5cfa0ead2c5c50d11ad8294e0f46df693ca2981b61b59e670f3b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "valid",
+              "type": "bool"
+            },
+            {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "name": "Decision",
+          "type": "event"
+        }
+      },
+      "updated_at": 1499440166865,
+      "address": "0x7d447a9b20fe8ba5f7f07071c2d6af8d76e88092"
+    },
+    "1499440206789": {
+      "links": {},
+      "events": {
+        "0x9a4e757235705bd178419abc9fa645392c5c7dce5b09940a81ef76794b84bd68": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "adversary",
+              "type": "address"
+            }
+          ],
+          "name": "Ban",
+          "type": "event"
+        },
+        "0x866c4c4c778f85c380f911e6c43d125e57865fec38a5ccf53b62b74a8473ed16": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "goodguy",
+              "type": "address"
+            }
+          ],
+          "name": "Unban",
+          "type": "event"
+        },
+        "0xda398dc2e18a5cfa0ead2c5c50d11ad8294e0f46df693ca2981b61b59e670f3b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "valid",
+              "type": "bool"
+            },
+            {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "name": "Decision",
+          "type": "event"
+        }
+      },
+      "updated_at": 1499440237011,
+      "address": "0x598532e2d5c8b7c86ef0b45a0e9a13321b154386"
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1498604046377
+  "updated_at": 1499440237011
 }
