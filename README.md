@@ -8,9 +8,9 @@ Smart contracts adhering to the specification have a common interface to token-r
 
 Our tokens are designed as a token system and implemented using Solidity libraries. A token system is a methodology which aims to separate the token into three modules, providing the means for composable and upgradable tokens.
 
-	1. Frontend
-	2. Business logic
-	3. Storage
+1. Frontend
+2. Business logic
+3. Storage
 
 ## Building
 
