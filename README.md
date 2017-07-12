@@ -1,18 +1,12 @@
-<style>
-p.image { text-align: center; }
-p.image > img { display: block; margin-left: auto; margin-right: auto }
-</style>
-
 # (Smart) Fiat Tokens
 
 ERC20 is a suggested specification for Ethereum tokens. Once approved as an Ethereum Improvement Proposal (EIP), it will become a part of the standards for the Ethereum platform.
 
 Smart contracts adhering to the specification have a common interface to token-related functionality and events.
 
-<p class="image">
 ![Our token system design](docs/token-design.png)
+
 *Contracts are represented by grey boxes and libraries by blue boxes with rounded corners*
-</p>
 
 Our tokens are designed as a token system and implemented using Solidity libraries. A token system is a methodology which aims to separate the token into three modules, providing the means for composable and upgradable tokens.
 
@@ -104,9 +98,7 @@ The token system ships with JavaScript unit tests.
 # truffle test
 ```
 
-<p class="image">
 ![Unit tests](docs/test-suite.png)
-</p>
 
 TODO
 
