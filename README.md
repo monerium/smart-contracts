@@ -8,22 +8,6 @@ Smart contracts adhering to the specification have a common interface to token-r
 
 *Contracts are represented by grey boxes and libraries by blue boxes with rounded corners*
 
-Our tokens are designed as a token system and implemented using Solidity libraries. A token system is a methodology which aims to separate the token into three modules, providing the means for composable and upgradable tokens.
-
-1. *Frontend*
-
-    This contract implements the token standard and provides a permanent Ethereum address for the token system. All method calls on this contract are forwarded to the controller.
-
-2. *Controller*
-
-    The controller is responsible for the business logic, which is implemented as a library. Our controllers are further separated by the functionality they provide into; standard controller, mintable controller and smart controller.
-
-3. *Storage*
-
-    Permanent token storage for controllers. Should the storage layout change in the future a new token storage with the extra data fields referencing the old token storage.
-
-
-Using this design we're able to upgrade the business logic &dash; to fix bugs or add functionality &dash; while providing a fixed address on the blockchain and permanent access to the token bookkeeping.
 
 ## Building
 
@@ -63,24 +47,42 @@ The token system is implemented using Solidity, the most widely used high level 
 
 Additional functionality has been implemented in `MintableTokenLib.sol` and `SmartTokenLib.sol`. This includes minting and burning tokens and defining validators who determine whether token transactions are valid or not.
 
+TODO: owner, openzeppelin
+
 ### Solidity libraries
 
-TODO
+Libraries in Solidity provide the means to deploy an implementation once as a compiled bytecode but without an execution context (storage). Contracts deployed subsequently can then be statically linked to the library.
+
+Our token system takes advantage of this feature to save gas deploying multiple tokens. It can also be argued that sharing audited libraries between contracts can reduce the risk of bugs &mdash; and worst case ease the replacement of a buggy implementation.
 
 ### Token Systems
 
-TODO
+Our tokens are designed as a token system and implemented using Solidity libraries. A token system is a methodology which aims to separate the token into three modules, providing the means for composable and upgradable tokens.
 
-### Additional functionality
+1. *Frontend*
 
-TODO
+    This contract implements the token standard and provides a permanent Ethereum address for the token system. All method calls on this contract are forwarded to the controller.
+
+2. *Controller*
+
+    The controller is responsible for the business logic, which is implemented as a library. Our controllers are further separated by the functionality they provide into; standard controller, mintable controller and smart controller.
+
+3. *Storage*
+
+    Permanent token storage for controllers. Should the storage layout change in the future a new token storage with the extra data fields referencing the old token storage.
+
+
+Using this design we're able to upgrade the business logic &mdash; to fix bugs or add functionality &mdash; while providing a fixed address on the blockchain and permanent access to the token bookkeeping.
+
 
 ## Development
 
-* testrpc
-* truffle
+To ease the development, deployment and interaction with the token system we're using both testrpc and truffle.
 
-TODO
+Testrpc simulates full client behavior and makes developing Ethereum applications much faster while Truffle is a development environment, testing framework and asset pipeline for Ethereum.
+
+Development happens on the master branch and we use [Semantic Versioning](http://semver.org) for our tags. The first pre-release version deployed on a non-testrpc blockchain is v0.7.0.
+
 
 ## Deployment
 
@@ -88,7 +90,8 @@ TODO
 # truffle migrate [--network <name>]
 ```
 
-TODO
+The deployment cycle for beta versions (up to v1.0.0) is as follows. During development the smart contracts are continiously deployed and tested locally on testrpc. A patch version update is deployed on the Monerium testnet, a federated blockchain, run by Monerium. A minor version update is deployed on the Rinkeby testnet.
+
 
 ## Unit tests
 
@@ -101,6 +104,7 @@ The token system ships with JavaScript unit tests.
 ![Unit tests](docs/test-suite.png)
 
 TODO
+
 
 ## Token interface
 
