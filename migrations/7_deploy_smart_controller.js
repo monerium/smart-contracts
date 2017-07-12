@@ -20,14 +20,9 @@ var EUR = artifacts.require("./EUR.sol");
 
 module.exports = function(deployer) {
 
-  // deploy and link controllers
-  deployer.link(TokenStorageLib, ConstantSmartController);
-  deployer.link(ERC20Lib, ConstantSmartController);
-  deployer.link(MintableTokenLib, ConstantSmartController);
-  deployer.link(SmartTokenLib, ConstantSmartController);
-
-  deployer.deploy([[TokenStorage, 10000], [StandardController, 0x0, 50000]]);
-  deployer.link(MintableTokenLib, [MintableController, SmartController]);
-  deployer.deploy(MintableController, 0x0, 0x0, 0);
+  deployer.link(TokenStorageLib, SmartController);
+  deployer.link(SmartTokenLib, SmartController);
+  deployer.link(MintableTokenLib, SmartController);
+  deployer.deploy(SmartController, 0x0, BlacklistValidator.address, "XXX");
 
 };
