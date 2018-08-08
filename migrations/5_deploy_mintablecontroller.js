@@ -33,5 +33,5 @@ module.exports = function(deployer) {
   deployer.link(TokenStorageLib, MintableController);
   deployer.link(ERC20Lib, MintableController);
   deployer.link(MintableTokenLib, MintableController);
-  deployer.deploy(MintableController, 0x0, 0x0, 0);
+  deployer.deploy(MintableController, 0x0,  0);
 };
