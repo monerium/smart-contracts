@@ -1,4 +1,4 @@
-pragma solidity ^0.4.11;
+pragma solidity ^0.4.24;
 
 import "./SmartController.sol";
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
