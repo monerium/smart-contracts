@@ -11,16 +11,17 @@ contract MintableController is StandardController {
     event Burn(address indexed from, uint amount);
 
     // CONSTRUCTOR
-    function MintableController(address _storage, uint initialSupply) 
+    constructor(address _storage, uint initialSupply) 
+        internal
         StandardController(_storage, initialSupply) 
     { }
 
     // EXTERNAL
-    function mint(uint amount) onlyOwner returns (bool) {
+    function mint(uint amount) external onlyOwner returns (bool) {
         return token.mint(msg.sender, amount);
     }
 
-    function burn(uint amount) onlyOwner returns (bool) {
+    function burn(uint amount) external onlyOwner returns (bool) {
         return token.burn(msg.sender, amount);
     }
 

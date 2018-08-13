@@ -15,7 +15,8 @@ contract SmartController is MintableController {
     uint public INITIAL_SUPPLY = 0;
 
     // CONSTRUCTOR
-    function SmartController(address _storage, address _validator, bytes3 _ticker)
+    constructor(address _storage, address _validator, bytes3 _ticker)
+        internal
         MintableController(_storage, INITIAL_SUPPLY) 
     {
         assert(_validator != 0x0);
@@ -24,24 +25,28 @@ contract SmartController is MintableController {
     }
 
     // EXTERNAL
-    function setValidator(address _validator) {
+    function setValidator(address _validator) external {
         smartToken.setValidator(_validator);
     }
 
     // EXTERNAL ERC20
-    function transfer(address to, uint value) returns (bool ok) {
+    function transfer(address to, uint value) external returns (bool ok) {
         return _transfer(msg.sender, to, value);
     }
 
-    function _transfer(address _caller, address to, uint value) returns (bool ok) {
+    // PUBLIC
+    function _transfer(address _caller, address to, uint value) 
+        public 
+        returns (bool ok) 
+    {
         if (!smartToken.validate(_caller, to, value)) {
-            throw;
+            revert("transfer is not valid");
         }
         return super._transfer(_caller, to, value);
     }
 
     // EXTERNAL CONSTANT
-    function getValidator() constant returns (address) {
+    function getValidator() external view returns (address) {
         return smartToken.getValidator();
     }
 }

@@ -48,7 +48,7 @@ contract StandardController is Ownable {
     event Approval(address indexed owner, address indexed spender, uint value);
 
     // CONSTRUCTOR
-    function StandardController(address _storage, uint initialSupply) {
+    function StandardController(address _storage, uint initialSupply) internal {
         assert(_storage == 0x0 || initialSupply == 0);
         if (_storage == 0x0) {
             token = new TokenStorage();
@@ -58,46 +58,50 @@ contract StandardController is Ownable {
         }
     }
 
-    // EXTERNAL
-    function getFrontend() constant returns (address) {
+    // EXTERNAL CONSTANT
+    function getFrontend() external view returns (address) {
         return address(frontend);
     }
 
-    function getStorage() constant returns (address) {
+    function getStorage() external view returns (address) {
         return address(token);
     }
 
-    // EXTERNAL CONSTANT
-    function setFrontend(address _address) ownerOrFrontend { 
+    // EXTERNAL
+    function setFrontend(address _address) external ownerOrFrontend { 
         frontend = TokenFrontend(_address);
         transferOwnership(_address);
     }
 
     // EXTERNAL ERC20
-    function transfer(address to, uint value) returns (bool ok) {
+    function transfer(address to, uint value) external returns (bool ok) {
         return _transfer(msg.sender, to, value);
     }
 
     function transferFrom(address from, address to, uint value) 
+        external
         returns (bool ok) 
     {
         return _transferFrom(msg.sender, from, to, value);
     }
 
     function approve(address spender, uint value) 
+        external
         returns (bool ok) 
     {
         return _approve(msg.sender, spender, value);
     }
 
     function approveAndCall(address spender, uint value, bytes extraData) 
+        external
         returns (bool ok) 
     {
         return _approveAndCall(msg.sender, spender, value, extraData);
     }
 
-    // EXTERNAL ERC20 FRONT
+    // PUBLIC ERC20 FRONT
     function _transfer(address _caller, address _to, uint _value) 
+        public
         isFront(_caller)
         returns (bool ok) 
     {
@@ -105,6 +109,7 @@ contract StandardController is Ownable {
     }
 
     function _transferFrom(address _caller, address _from, address _to, uint _value) 
+        public
         isFront(_caller)
         returns (bool ok) 
     {
@@ -112,6 +117,7 @@ contract StandardController is Ownable {
     }
 
     function _approve(address _caller, address _spender, uint _value) 
+        public
         isFront(_caller)
         returns (bool ok) 
     {
@@ -119,21 +125,22 @@ contract StandardController is Ownable {
     }
 
     function _approveAndCall(address _caller, address _spender, uint _value, bytes _extraData) 
+        public
         returns (bool ok) 
     {
         return token.approveAndCall(_caller, _spender, _value, _extraData);
     }
 
     // EXTERNAL ERC20 CONSTANT
-    function totalSupply() constant returns (uint) {
+    function totalSupply() external view returns (uint) {
         return token.getSupply();
     }
 
-    function balanceOf(address who) constant returns (uint) {
+    function balanceOf(address who) external view returns (uint) {
         return token.getBalance(who);
     }
 
-    function allowance(address owner, address spender) constant returns (uint) {
+    function allowance(address owner, address spender) external view returns (uint) {
         return token.allowance(owner, spender);
     }
 

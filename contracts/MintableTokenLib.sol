@@ -18,15 +18,6 @@ library MintableTokenLib {
 
     event Mint(address indexed to, uint amount);
     event Burn(address indexed from, uint amount);
-    // event MintFinished();
-
-    // bool public mintingFinished = false;
-
-
-    // modifier canMint() {
-        // if(mintingFinished) throw;
-        // _;
-    // }
 
     /**
      * @dev Function to mint tokens
@@ -39,11 +30,13 @@ library MintableTokenLib {
         TokenStorage self, 
         address _to, 
         uint _amount
-    ) constant returns (bool) {
-        // self.totalSupply = self.totalSupply.plus(_amount);
-        // self.balances[_to] = self.balances[_to].plus(_amount);
+    ) 
+        external 
+        view 
+        returns (bool) 
+    {
         self.addBalance(_to, _amount);
-        Mint(_to, _amount);
+        emit Mint(_to, _amount);
         return true;
     }
     
@@ -51,23 +44,15 @@ library MintableTokenLib {
         TokenStorage self, 
         address _from, 
         uint _amount
-    ) constant returns (bool) {
-        // self.totalSupply = self.totalSupply.minus(_amount);
-        // self.balances[_from] = self.balances[_from].minus(_amount);
+    ) 
+        external
+        view 
+        returns (bool) 
+    {
         self.subBalance(_from, _amount);
-        Burn(_from, _amount);
+        emit Burn(_from, _amount);
         return true;
     }
 
-    /**
-     * @dev Function to stop minting new tokens.
-     * @return True if the operation was successful.
-     */
-    // function finishMinting() onlyOwner returns (bool) {
-//    function finishMinting() constant returns (bool) {
-//        mintingFinished = true;
-//        MintFinished();
-//        return true;
-//    }
 }
 

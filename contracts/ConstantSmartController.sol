@@ -6,7 +6,8 @@ import "./SmartController.sol";
 contract ConstantSmartController is SmartController {
 
     // CONSTRUCTOR
-    function ConstantSmartController(address _storage, bytes3 _ticker) 
+    constructor(address _storage, bytes3 _ticker) 
+        public
         SmartController(_storage, new ConstantValidator(false), _ticker)
     {
 

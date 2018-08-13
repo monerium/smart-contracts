@@ -10,5 +10,5 @@ contract Validator {
     // _to
     // _value
     // returns: valid
-    function validate(address, address, uint) constant returns (bool) { }
+    function validate(address, address, uint) external view returns (bool) { }
 }

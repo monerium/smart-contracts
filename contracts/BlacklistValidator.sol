@@ -12,19 +12,20 @@ contract BlacklistValidator is Validator, Ownable {
     event Unban(address indexed goodguy);
 
     // EXTERNAL
-    function ban(address adversary) onlyOwner {
-       blacklist[adversary] = true; 
-       Ban(adversary);
+    function ban(address adversary) external onlyOwner {
+        blacklist[adversary] = true; 
+        emit Ban(adversary);
     }
 
-    function unban(address goodguy) onlyOwner {
+    function unban(address goodguy) external onlyOwner {
         blacklist[goodguy] = false;
-        Unban(goodguy);
+        emit Unban(goodguy);
     }
 
     // EXTERNAL CONSTANT
     function validate(address _from, address _to, uint _value) 
-        constant
+        external
+        view
         returns (bool valid) 
     { 
         if (blacklist[_from]) {
@@ -32,7 +33,7 @@ contract BlacklistValidator is Validator, Ownable {
         } else {
             valid = true;
         }
-        Decision(_from, _to, valid, _value);
+        emit Decision(_from, _to, valid, _value);
     }
 
 }
