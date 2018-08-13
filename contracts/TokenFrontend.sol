@@ -15,7 +15,7 @@ contract TokenFrontend is Ownable {
     event Approval(address indexed owner, address indexed spender, uint value);
 
     // CONSTRUCTOR
-    function TokenFrontend(string _name, string _symbol, bytes3 _ticker, address _controller) internal {
+    constructor(string _name, string _symbol, bytes3 _ticker, address _controller) internal {
         name = _name;
         symbol = _symbol;
         ticker = _ticker;

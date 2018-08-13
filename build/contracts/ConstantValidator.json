@@ -40,7 +40,7 @@
       "type": "event"
     },
     {
-      "constant": true,
+      "constant": false,
       "inputs": [
         {
           "name": "",
@@ -63,15 +63,15 @@
         }
       ],
       "payable": false,
-      "stateMutability": "view",
+      "stateMutability": "nonpayable",
       "type": "function"
     }
   ],
-  "bytecode": "0x608060405234801561001057600080fd5b5060405160208061016883398101806040528101908080519060200190929190505050806000806101000a81548160ff0219169083151502179055505061010c8061005c6000396000f300608060405260043610603f576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff168063aa3ad4e4146044575b600080fd5b348015604f57600080fd5b5060ac600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff1690602001909291908035906020019092919050505060c6565b604051808215151515815260200191505060405180910390f35b60008060009054906101000a900460ff16905093925050505600a165627a7a7230582002d575a5d23ce0665b2dcdfb09f538e46ef61d22f5805392937e73e003ee0d960029",
-  "deployedBytecode": "0x608060405260043610603f576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff168063aa3ad4e4146044575b600080fd5b348015604f57600080fd5b5060ac600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff1690602001909291908035906020019092919050505060c6565b604051808215151515815260200191505060405180910390f35b60008060009054906101000a900460ff16905093925050505600a165627a7a7230582002d575a5d23ce0665b2dcdfb09f538e46ef61d22f5805392937e73e003ee0d960029",
-  "sourceMap": "53:285:2:-;;;136:63;8:9:-1;5:2;;;30:1;27;20:12;5:2;136:63:2;;;;;;;;;;;;;;;;;;;;;;;;;;;;;186:6;178:5;;:14;;;;;;;;;;;;;;;;;;136:63;53:285;;;;;;",
-  "deployedSourceMap": "53:285:2:-;;;;;;;;;;;;;;;;;;;;;;;;230:106;;8:9:-1;5:2;;;30:1;27;20:12;5:2;230:106:2;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;295:4;319:5;;;;;;;;;;;312:12;;230:106;;;;;:::o",
-  "source": "pragma solidity ^0.4.24;\n\nimport \"./Validator.sol\";\n\ncontract ConstantValidator is Validator {\n\n    bool valid;\n\n    // CONSTRUCTOR\n    constructor(bool _valid) public {\n        valid = _valid;\n    }\n\n    // EXTERNAL CONSTANT\n    function validate(address, address, uint) external view returns (bool) { \n        return valid;     \n    }\n}\n",
+  "bytecode": "0x608060405234801561001057600080fd5b5060405160208061016883398101806040528101908080519060200190929190505050806000806101000a81548160ff0219169083151502179055505061010c8061005c6000396000f300608060405260043610603f576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff168063aa3ad4e4146044575b600080fd5b348015604f57600080fd5b5060ac600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff1690602001909291908035906020019092919050505060c6565b604051808215151515815260200191505060405180910390f35b60008060009054906101000a900460ff16905093925050505600a165627a7a72305820caa9d530b0d21ab0f1c3c36cdcfa1d08ba816675ee5b05c82145be465ec725e60029",
+  "deployedBytecode": "0x608060405260043610603f576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff168063aa3ad4e4146044575b600080fd5b348015604f57600080fd5b5060ac600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff1690602001909291908035906020019092919050505060c6565b604051808215151515815260200191505060405180910390f35b60008060009054906101000a900460ff16905093925050505600a165627a7a72305820caa9d530b0d21ab0f1c3c36cdcfa1d08ba816675ee5b05c82145be465ec725e60029",
+  "sourceMap": "53:280:2:-;;;136:63;8:9:-1;5:2;;;30:1;27;20:12;5:2;136:63:2;;;;;;;;;;;;;;;;;;;;;;;;;;;;;186:6;178:5;;:14;;;;;;;;;;;;;;;;;;136:63;53:280;;;;;;",
+  "deployedSourceMap": "53:280:2:-;;;;;;;;;;;;;;;;;;;;;;;;230:101;;8:9:-1;5:2;;;30:1;27;20:12;5:2;230:101:2;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;290:4;314:5;;;;;;;;;;;307:12;;230:101;;;;;:::o",
+  "source": "pragma solidity ^0.4.24;\n\nimport \"./Validator.sol\";\n\ncontract ConstantValidator is Validator {\n\n    bool valid;\n\n    // CONSTRUCTOR\n    constructor(bool _valid) public {\n        valid = _valid;\n    }\n\n    // EXTERNAL CONSTANT\n    function validate(address, address, uint) external returns (bool) { \n        return valid;     \n    }\n}\n",
   "sourcePath": "/Users/gislik/Code/smart-contracts/contracts/ConstantValidator.sol",
   "ast": {
     "absolutePath": "/Users/gislik/Code/smart-contracts/contracts/ConstantValidator.sol",
@@ -278,7 +278,7 @@
             "body": {
               "id": 142,
               "nodeType": "Block",
-              "src": "301:35:2",
+              "src": "296:35:2",
               "statements": [
                 {
                   "expression": {
@@ -288,7 +288,7 @@
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
                     "referencedDeclaration": 119,
-                    "src": "319:5:2",
+                    "src": "314:5:2",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -297,7 +297,7 @@
                   "functionReturnParameters": 139,
                   "id": 141,
                   "nodeType": "Return",
-                  "src": "312:12:2"
+                  "src": "307:12:2"
                 }
               ]
             },
@@ -305,7 +305,7 @@
             "id": 143,
             "implemented": true,
             "isConstructor": false,
-            "isDeclaredConst": true,
+            "isDeclaredConst": false,
             "modifiers": [],
             "name": "validate",
             "nodeType": "FunctionDefinition",
@@ -405,7 +405,7 @@
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "scope": 143,
-                  "src": "295:4:2",
+                  "src": "290:4:2",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -416,7 +416,7 @@
                     "id": 137,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "295:4:2",
+                    "src": "290:4:2",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -426,20 +426,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "294:6:2"
+              "src": "289:6:2"
             },
             "scope": 144,
-            "src": "230:106:2",
-            "stateMutability": "view",
+            "src": "230:101:2",
+            "stateMutability": "nonpayable",
             "superFunction": 1725,
             "visibility": "external"
           }
         ],
         "scope": 145,
-        "src": "53:285:2"
+        "src": "53:280:2"
       }
     ],
-    "src": "0:339:2"
+    "src": "0:334:2"
   },
   "legacyAST": {
     "absolutePath": "/Users/gislik/Code/smart-contracts/contracts/ConstantValidator.sol",
@@ -646,7 +646,7 @@
             "body": {
               "id": 142,
               "nodeType": "Block",
-              "src": "301:35:2",
+              "src": "296:35:2",
               "statements": [
                 {
                   "expression": {
@@ -656,7 +656,7 @@
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
                     "referencedDeclaration": 119,
-                    "src": "319:5:2",
+                    "src": "314:5:2",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -665,7 +665,7 @@
                   "functionReturnParameters": 139,
                   "id": 141,
                   "nodeType": "Return",
-                  "src": "312:12:2"
+                  "src": "307:12:2"
                 }
               ]
             },
@@ -673,7 +673,7 @@
             "id": 143,
             "implemented": true,
             "isConstructor": false,
-            "isDeclaredConst": true,
+            "isDeclaredConst": false,
             "modifiers": [],
             "name": "validate",
             "nodeType": "FunctionDefinition",
@@ -773,7 +773,7 @@
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "scope": 143,
-                  "src": "295:4:2",
+                  "src": "290:4:2",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -784,7 +784,7 @@
                     "id": 137,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "295:4:2",
+                    "src": "290:4:2",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -794,20 +794,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "294:6:2"
+              "src": "289:6:2"
             },
             "scope": 144,
-            "src": "230:106:2",
-            "stateMutability": "view",
+            "src": "230:101:2",
+            "stateMutability": "nonpayable",
             "superFunction": 1725,
             "visibility": "external"
           }
         ],
         "scope": 145,
-        "src": "53:285:2"
+        "src": "53:280:2"
       }
     ],
-    "src": "0:339:2"
+    "src": "0:334:2"
   },
   "compiler": {
     "name": "solc",
@@ -1245,5 +1245,5 @@
     }
   },
   "schemaVersion": "2.0.0",
-  "updatedAt": "2018-08-13T10:59:25.575Z"
+  "updatedAt": "2018-08-13T11:12:10.440Z"
 }

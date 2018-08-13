@@ -32,7 +32,6 @@ library MintableTokenLib {
         uint _amount
     ) 
         external 
-        view 
         returns (bool) 
     {
         self.addBalance(_to, _amount);
@@ -46,7 +45,6 @@ library MintableTokenLib {
         uint _amount
     ) 
         external
-        view 
         returns (bool) 
     {
         self.subBalance(_from, _amount);

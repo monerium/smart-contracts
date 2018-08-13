@@ -48,7 +48,7 @@ contract StandardController is Ownable {
     event Approval(address indexed owner, address indexed spender, uint value);
 
     // CONSTRUCTOR
-    function StandardController(address _storage, uint initialSupply) internal {
+    constructor(address _storage, uint initialSupply) internal {
         assert(_storage == 0x0 || initialSupply == 0);
         if (_storage == 0x0) {
             token = new TokenStorage();

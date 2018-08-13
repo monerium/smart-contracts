@@ -17,7 +17,6 @@ library SmartTokenLib {
     // EXTERNAL CONSTANT
     function validate(SmartTokenStorage storage self, address _from, address _to, uint _value) 
         external
-        view
         returns (bool valid) 
     { 
         return self.validator.validate(_from, _to, _value);

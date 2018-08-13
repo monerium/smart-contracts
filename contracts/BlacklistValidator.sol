@@ -25,7 +25,6 @@ contract BlacklistValidator is Validator, Ownable {
     // EXTERNAL CONSTANT
     function validate(address _from, address _to, uint _value) 
         external
-        view
         returns (bool valid) 
     { 
         if (blacklist[_from]) {

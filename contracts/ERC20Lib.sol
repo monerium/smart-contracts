@@ -32,7 +32,7 @@ library ERC20Lib {
         external
         returns (bool success) 
     {
-        var allowance = db.getAllowed(_from, _caller);
+        uint allowance = db.getAllowed(_from, _caller);
         db.subBalance(_from, _value);
         db.addBalance(_to, _value);
         db.setAllowed(_from, _caller, allowance.minus(_value));
