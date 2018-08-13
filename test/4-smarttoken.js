@@ -30,7 +30,7 @@ contract('SmartController', (accounts) => {
     } catch { 
       return;
     }
-    assert.fail("No Error", new Error(), "This operation should fail");
+    assert.fail("succeeded", "fail", "transfer was supposed to fail");
   });
 
 });
