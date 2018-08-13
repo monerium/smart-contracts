@@ -1,11 +1,11 @@
 pragma solidity ^0.4.24;
 
-import "zeppelin-solidity/contracts/SafeMathLib.sol";
+import "zeppelin-solidity/contracts/math/SafeMath.sol";
 import "./TokenRecipient.sol";
 import "./TokenStorage.sol";
 
 library ERC20Lib {
-    using SafeMathLib for uint;
+    using SafeMath for uint;
 
     // EVENTS
     event Transfer(address indexed from, address indexed to, uint value);
@@ -35,7 +35,7 @@ library ERC20Lib {
         uint allowance = db.getAllowed(_from, _caller);
         db.subBalance(_from, _value);
         db.addBalance(_to, _value);
-        db.setAllowed(_from, _caller, allowance.minus(_value));
+        db.setAllowed(_from, _caller, allowance.sub(_value));
         emit Transfer(_from, _to, _value);
         return true;
     }

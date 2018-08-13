@@ -2,7 +2,7 @@ pragma solidity ^0.4.24;
 
 
 // import "zeppelin-solidity/contracts/token/EternalTokenStorage.sol";
-import "zeppelin-solidity/contracts/SafeMathLib.sol";
+import "zeppelin-solidity/contracts/math/SafeMath.sol";
 import "./TokenStorage.sol";
 
 
@@ -14,7 +14,7 @@ import "./TokenStorage.sol";
  */
 
 library MintableTokenLib {
-    using SafeMathLib for uint;
+    using SafeMath for uint;
 
     event Mint(address indexed to, uint amount);
     event Burn(address indexed from, uint amount);

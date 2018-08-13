@@ -1,9 +1,9 @@
 pragma solidity ^0.4.24;
 
-import "zeppelin-solidity/contracts/SafeMathLib.sol";
+import "zeppelin-solidity/contracts/math/SafeMath.sol";
 
 library TokenStorageLib {
-    using SafeMathLib for uint;
+    using SafeMath for uint;
 
     struct TokenStorage {
         mapping (address => uint) balances;
@@ -15,15 +15,15 @@ library TokenStorageLib {
     function addBalance(TokenStorage storage self, address to, uint amount) 
         external 
     {
-        self.totalSupply = self.totalSupply.plus(amount);
-        self.balances[to] = self.balances[to].plus(amount);
+        self.totalSupply = self.totalSupply.add(amount);
+        self.balances[to] = self.balances[to].add(amount);
     }
 
     function subBalance(TokenStorage storage self, address from, uint amount) 
         external 
     {
-        self.totalSupply = self.totalSupply.minus(amount);
-        self.balances[from] = self.balances[from].minus(amount);
+        self.totalSupply = self.totalSupply.sub(amount);
+        self.balances[from] = self.balances[from].sub(amount);
     }
 
     function setAllowed(TokenStorage storage self, address owner, address spender, uint amount) 
