@@ -2,6 +2,9 @@ var SmartController = artifacts.require("./SmartController.sol");
 var BlacklistValidator = artifacts.require("./BlacklistValidator.sol");
 
 const controller = SmartController.at(SmartController.address);
+const address = `0xB0A6Ed7Fa5C6C5cc507840924591C1494eF47D04`;
+const hash = `0xa1de988600a42c4b4ab089b619297c17d53cffae5d5120d82d8a92d0bb3b78f2`;
+const sig = `b5354ef622856f2acd9926752828d609b74471fa349891c70ec4512da5b7b8695418c39d82057dc09c480e8e65c5362327e882033e670e24b6a701983d93e18e1c`;
 
 contract('SmartController', (accounts) => {
 
@@ -32,5 +35,23 @@ contract('SmartController', (accounts) => {
     }
     assert.fail("succeeded", "fail", "transfer was supposed to fail");
   });
+
+  it("should be able to recover the balance of a known address to a new address", async () => {
+    await controller.transfer(address, 13, {from: accounts[0]});
+
+    const r = `0x${sig.slice(0, 64)}`;
+    const s = `0x${sig.slice(64, 128)}`;
+    var v = web3.toDecimal(`0x${sig.slice(128, 130)}`);
+
+    if (v < 27) v += 27;
+    assert(v == 27 || v == 28);
+
+    await controller.recover(address, address[5], hash, v, r, s);
+    const balanceFrom = await controller.balanceOf(address);
+    assert.equal(balanceFrom.valueOf(), 0, "did not recover 13 tokens");
+    const balanceTo = await controller.balanceOf(address[5]);
+    assert.equal(balanceTo.valueOf(), 13, "did not recover 13 tokens");
+
+  })
 
 });

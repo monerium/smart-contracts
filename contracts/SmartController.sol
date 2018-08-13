@@ -29,6 +29,18 @@ contract SmartController is MintableController {
         smartToken.setValidator(_validator);
     }
 
+    function recover(address from, address to, bytes32 h, uint8 v, bytes32 r, bytes32 s)
+        external
+        onlyOwner
+        returns (bool)
+    {
+        require(SmartTokenLib.recover(from, h, v, r, s), "signature/hash does not recover from address");
+        uint amount = this.balanceOf(from);
+        require(token.burn(from, amount));
+        require(token.mint(to, amount)); 
+        return true;
+    }
+
     // EXTERNAL ERC20
     function transfer(address to, uint value) external returns (bool ok) {
         return _transfer(msg.sender, to, value);

@@ -29,4 +29,13 @@ library SmartTokenLib {
     {
         return address(self.validator);
     }
+
+    // INTERNAL PURE
+    function recover(address a, bytes32 h, uint8 v, bytes32 r, bytes32 s) 
+        internal 
+        pure
+        returns (bool) 
+    {
+        return ecrecover(h, v, r, s) == a;
+    }
 }
