@@ -70,7 +70,7 @@ contract StandardController is Ownable {
     // EXTERNAL
     function setFrontend(address _address) external ownerOrFrontend { 
         frontend = TokenFrontend(_address);
-        transferOwnership(_address);
+        // transferOwnership(_address);
     }
 
     // EXTERNAL ERC20
