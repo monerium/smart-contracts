@@ -12,7 +12,7 @@ contract MintableController is StandardController {
 
     // CONSTRUCTOR
     constructor(address _storage, uint initialSupply) 
-        internal
+        public
         StandardController(_storage, initialSupply) 
     { }
 

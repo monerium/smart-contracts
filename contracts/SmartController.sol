@@ -16,7 +16,7 @@ contract SmartController is MintableController {
 
     // CONSTRUCTOR
     constructor(address _storage, address _validator, bytes3 _ticker)
-        internal
+        public
         MintableController(_storage, INITIAL_SUPPLY) 
     {
         assert(_validator != 0x0);
