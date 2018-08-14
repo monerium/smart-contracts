@@ -14,6 +14,9 @@ contract SmartController is MintableController {
     uint public decimals = 18;
     uint public INITIAL_SUPPLY = 0;
 
+    // EVENTS
+    event Recovered(address indexed from, address indexed to, uint amount);
+
     // CONSTRUCTOR
     constructor(address _storage, address _validator, bytes3 _ticker)
         public
@@ -38,6 +41,7 @@ contract SmartController is MintableController {
         uint amount = this.balanceOf(from);
         require(token.burn(from, amount));
         require(token.mint(to, amount)); 
+        emit Recovered(from, to, amount);
         return true;
     }
 
