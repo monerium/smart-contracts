@@ -16,6 +16,10 @@ const wallets = {
     address: `0xFB7ce0578B4dc16803A3CB04fA0b286fCFfFF76d`,
     signature: `0x1e1769b8ca9ca3d7d4b747f15336c185aac391c89cd9b9bfaf26f0a38631690e64ccd925382278c055c527a58ffab853a9734d889a6bae2b920544645f8ce4361c`,
   },
+  "trezor": {
+    address: `0xbc89Bea7B6156be4514f5D429e30240F4C2600e4`,
+    signature: `0x884d210ebc1437a56e4507c47a5fadcf1076ef366d37d23937a515e8af63075605fbb6be98a9c9dd41bfc68b57795c79375ef10e34a8bf90701a2200ff5cc59d1b`,
+  },
 };
 
 contract('SmartController', (accounts) => {
