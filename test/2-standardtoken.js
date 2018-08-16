@@ -4,7 +4,7 @@ const controller = StandardController.at(StandardController.address);
 
 contract('StandardController', accounts => {
 
-  it("should have a total supply of 50000 tokens", async() => {
+  it("should have a total supply of 50000 tokens", async () => {
     const supply = await controller.totalSupply();
     assert.equal(supply.valueOf(), 50000, "The total supply isn't 50000");
   });
