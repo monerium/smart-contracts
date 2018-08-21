@@ -31,22 +31,22 @@ contract TokenFrontend is Ownable {
     }
 
     function transfer(address to, uint value) external returns (bool ok) {
-        ok = controller._transfer(msg.sender, to, value);
+        ok = controller.transfer(msg.sender, to, value);
         emit Transfer(msg.sender, to, value);
     }
 
     function transferFrom(address from, address to, uint value) external returns (bool ok) {
-        return controller._transferFrom(msg.sender, from, to, value);
+        return controller.transferFrom(msg.sender, from, to, value);
     }
 
     function approve(address spender, uint value) external returns (bool ok) {
-        ok = controller._approve(msg.sender, spender, value);
+        ok = controller.approve(msg.sender, spender, value);
         emit Approval(msg.sender, spender, value);
     }
 
     function approveAndCall(address spender, uint value, bytes extraData) external returns (bool ok) 
     {
-        ok = controller._approveAndCall(msg.sender, spender, value, extraData);
+        ok = controller.approveAndCall(msg.sender, spender, value, extraData);
         emit Approval(msg.sender, spender, value);
     }
 

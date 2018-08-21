@@ -1,5 +1,5 @@
 // artifacts
-var SafeMathLib = artifacts.require("./SafeMathLib.sol");
+var SafeMathLib = artifacts.require("zeppelin-solidity/math/SafeMath.sol");
 var ERC20Lib = artifacts.require("./ERC20Lib.sol");
 var MintableTokenLib = artifacts.require("./MintableTokenLib.sol");
 var SmartTokenLib = artifacts.require("./SmartTokenLib.sol");
