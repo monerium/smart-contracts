@@ -1,7 +1,6 @@
 pragma solidity ^0.4.24;
 
 
-import "./TokenFrontend.sol";
 import "./TokenStorage.sol";
 import "./ERC20Lib.sol";
 // import "zeppelin-solidity/contracts/token/EternalTokenStorage.sol";
@@ -11,15 +10,13 @@ import "zeppelin-solidity/contracts/ownership/Ownable.sol";
  * Standard ERC20 token
  *
  * https://github.com/ethereum/EIPs/issues/20
- * Based on code by FirstBlood:
- * https://github.com/Firstbloodio/token/blob/master/smart_contract/FirstBloodToken.sol
  */
 
 contract StandardController is Ownable {
     using ERC20Lib for TokenStorage;
 
     TokenStorage token;
-    TokenFrontend frontend;
+    address frontend;
 
     string public name;
     string public symbol;
@@ -27,19 +24,19 @@ contract StandardController is Ownable {
 
     // MODIFIERS
     modifier onlyFrontend() {
-        if (msg.sender == address(frontend))
+        if (msg.sender == frontend)
             _;
     }
 
     // either frontend or calling directly
     modifier isFront(address _caller) {
-        if (msg.sender == address(frontend) || _caller == msg.sender)
+        if (msg.sender == frontend || _caller == msg.sender)
             _;
     }
 
     // TODO: better solution?
     modifier ownerOrFrontend() {
-        if (msg.sender == address(frontend) || tx.origin == owner)
+        if (msg.sender == frontend || tx.origin == owner)
             _;
     }
 
@@ -60,16 +57,16 @@ contract StandardController is Ownable {
 
     // EXTERNAL CONSTANT
     function getFrontend() external view returns (address) {
-        return address(frontend);
+        return frontend;
     }
 
     function getStorage() external view returns (address) {
-        return address(token);
+        return token;
     }
 
     // EXTERNAL
     function setFrontend(address _address) external ownerOrFrontend { 
-        frontend = TokenFrontend(_address);
+        frontend = _address;
     }
 
     // EXTERNAL ERC20
