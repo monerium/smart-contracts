@@ -36,7 +36,7 @@ contract('SmartController', (accounts) => {
   });
 
   it("should transfer 3400 tokens to second account", async () => {
-    await controller.transfer(accounts[1], 3400, {from: accounts[0]});
+    await controller.transfer(accounts[0], accounts[1], 3400, {from: accounts[0]});
     const balance = await controller.balanceOf(accounts[1])
     assert.equal(balance.valueOf(), 3400, "did not transfer 3400 tokens"); 
   });
@@ -45,7 +45,7 @@ contract('SmartController', (accounts) => {
     const validator = await controller.getValidator();
     BlacklistValidator.at(validator).ban(accounts[2]);
     try {
-      await controller.transfer(accounts[3], 1840, {from: accounts[2]});
+      await controller.transfer(accounts[2], accounts[3], 1840, {from: accounts[2]});
     } catch { 
       return;
     }
@@ -57,7 +57,7 @@ contract('SmartController', (accounts) => {
     const account = accounts[i++];
     const wallet = wallets[name];
     it(`should be able to recover the balance of a known address to a new address [${name}]`, async () => {
-      await controller.transfer(wallet.address, 13, {from: accounts[0]});
+      await controller.transfer(accounts[0], wallet.address, 13, {from: accounts[0]});
       const sig = wallet.signature.replace(/^0x/, '');
       const r = `0x${sig.slice(0, 64)}`;
       const s = `0x${sig.slice(64, 128)}`;
