@@ -1,8 +1,8 @@
 pragma solidity ^0.4.24;
 
-contract TokenRecipient { 
+interface TokenRecipient { 
 
-    function receiveApproval(address _from, uint256 _value, address _token, bytes _extraData) public; 
+    function tokenFallback(address from, uint256 amount, bytes data) external; 
 
 }
 

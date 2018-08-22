@@ -1,5 +1,6 @@
 pragma solidity ^0.4.24;
 
+import "zeppelin-solidity/contracts/AddressUtils.sol";
 import "./TokenRecipient.sol";
 import "./TokenStorage.sol";
 import "./ERC20Lib.sol";
@@ -7,23 +8,30 @@ import "./ERC20Lib.sol";
 library ERC677Lib {
 
     using ERC20Lib for TokenStorage;
+    using AddressUtils for address;
 
-    // TODO: race condition
-    function approveAndCall(
+    // EVENTS
+    event Transfer(address indexed from, address indexed to, uint amount, bytes data);
+
+    function transferAndCall(
         TokenStorage db, 
         address caller, 
-        address spender, 
-        uint256 value, 
-        bytes _extraData
+        address receiver, 
+        uint256 amount, 
+        bytes data
     ) 
         external
-        returns (bool success) 
+        returns (bool) 
     {
-        if (db.approve(caller, spender, value)) {
-            TokenRecipient recipient = TokenRecipient(spender);
-            recipient.receiveApproval(caller, value, this, _extraData);
+        if (db.transfer(caller, receiver, amount)) {
+            emit Transfer(caller, receiver, amount, data);
+            if (receiver.isContract()) {
+                TokenRecipient recipient = TokenRecipient(receiver);
+                recipient.tokenFallback(caller, amount, data);
+            }
             return true;
         }
+        return false;
     }        
 
 }

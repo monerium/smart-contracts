@@ -81,45 +81,55 @@ contract StandardController is Claimable {
         return approve_withCaller(msg.sender, spender, value);
     }
 
-    function approveAndCall(address spender, uint value, bytes extraData) 
+    // EXTERNAL ERC677
+    function transferAndCall(
+        address receiver, 
+        uint256 amount, 
+        bytes data
+    ) 
         external
         returns (bool ok) 
     {
-        return approveAndCall_withCaller(msg.sender, spender, value, extraData);
+        return transferAndCall_withCaller(msg.sender, receiver, amount, data);
     }
 
     // PUBLIC ERC20 FRONT
-    function transfer_withCaller(address _caller, address _to, uint _value) 
+    function transfer_withCaller(address caller, address _to, uint _value) 
         public
-        guarded(_caller)
+        guarded(caller)
         returns (bool ok) 
     {
-        return token.transfer(_caller, _to, _value);
+        return token.transfer(caller, _to, _value);
     }
 
-    function transferFrom_withCaller(address _caller, address _from, address _to, uint _value) 
+    function transferFrom_withCaller(address caller, address _from, address _to, uint _value) 
         public
-        guarded(_caller)
+        guarded(caller)
         returns (bool ok) 
     {
-        return token.transferFrom(_caller, _from, _to, _value);
+        return token.transferFrom(caller, _from, _to, _value);
     }
 
-    function approve_withCaller(address _caller, address _spender, uint _value) 
+    function approve_withCaller(address caller, address _spender, uint _value) 
         public
-        guarded(_caller)
+        guarded(caller)
         returns (bool ok) 
     {
-        return token.approve(_caller, _spender, _value);
+        return token.approve(caller, _spender, _value);
     }
 
     // PUBLIC ERC677 FRONT
-    function approveAndCall_withCaller(address _caller, address _spender, uint _value, bytes _extraData) 
+    function transferAndCall_withCaller(
+        address caller, 
+        address receiver, 
+        uint256 amount, 
+        bytes data
+    ) 
         public
-        guarded(_caller)
+        guarded(caller)
         returns (bool ok) 
     {
-        return token.approveAndCall(_caller, _spender, _value, _extraData);
+        return token.transferAndCall(caller, receiver, amount, data);
     }
 
     // EXTERNAL ERC20 CONSTANT

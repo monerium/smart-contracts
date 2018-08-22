@@ -14,6 +14,7 @@ contract TokenFrontend is Claimable {
     // EVENTS
     event Transfer(address indexed from, address indexed to, uint value);
     event Approval(address indexed owner, address indexed spender, uint value);
+    event Transfer(address indexed from, address indexed to, uint amount, bytes data);
 
     // CONSTRUCTOR
     constructor(string name_, string symbol_, bytes3 ticker_, address controller_) internal {
@@ -45,10 +46,12 @@ contract TokenFrontend is Claimable {
         emit Approval(msg.sender, spender, value);
     }
 
-    function approveAndCall(address spender, uint value, bytes extraData) external returns (bool ok) 
+    function transferAndCall(address receiver, uint256 amount, bytes data) 
+        external
+        returns (bool ok) 
     {
-        ok = controller.approveAndCall_withCaller(msg.sender, spender, value, extraData);
-        emit Approval(msg.sender, spender, value);
+        ok = controller.transferAndCall_withCaller(msg.sender, receiver, amount, data);
+        emit Transfer(msg.sender, receiver, amount, data);
     }
 
     // EXTERNAL CONSTANT
