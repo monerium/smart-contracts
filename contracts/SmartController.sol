@@ -45,7 +45,12 @@ contract SmartController is MintableController {
         return true;
     }
 
-    // PUBLIC ERC20 FRONT
+    // EXTERNAL ERC20
+    function transfer(address to, uint value) external returns (bool ok) {
+        return _transfer(msg.sender, to, value);
+    }
+
+    // PUBLIC
     function _transfer(address _caller, address to, uint value) 
         public 
         returns (bool ok) 
@@ -53,7 +58,7 @@ contract SmartController is MintableController {
         if (!smartToken.validate(_caller, to, value)) {
             revert("transfer is not valid");
         }
-        return super.transfer(_caller, to, value);
+        return super._transfer(_caller, to, value);
     }
 
     // EXTERNAL CONSTANT

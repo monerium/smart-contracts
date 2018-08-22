@@ -29,8 +29,8 @@ contract StandardController is Ownable {
     }
 
     // either frontend or calling directly
-    modifier isFront(address caller) {
-        if (msg.sender == frontend || caller == msg.sender)
+    modifier isFront(address _caller) {
+        if (msg.sender == frontend || _caller == msg.sender)
             _;
     }
 
@@ -69,37 +69,63 @@ contract StandardController is Ownable {
         frontend = _address;
     }
 
+    // EXTERNAL ERC20
+    function transfer(address to, uint value) external returns (bool ok) {
+        return _transfer(msg.sender, to, value);
+    }
+
+    function transferFrom(address from, address to, uint value) 
+        external
+        returns (bool ok) 
+    {
+        return _transferFrom(msg.sender, from, to, value);
+    }
+
+    function approve(address spender, uint value) 
+        external
+        returns (bool ok) 
+    {
+        return _approve(msg.sender, spender, value);
+    }
+
+    function approveAndCall(address spender, uint value, bytes extraData) 
+        external
+        returns (bool ok) 
+    {
+        return _approveAndCall(msg.sender, spender, value, extraData);
+    }
+
     // PUBLIC ERC20 FRONT
-    function transfer(address caller, address _to, uint _value) 
+    function _transfer(address _caller, address _to, uint _value) 
         public
-        isFront(caller)
+        isFront(_caller)
         returns (bool ok) 
     {
-        return token.transfer(caller, _to, _value);
+        return token.transfer(_caller, _to, _value);
     }
 
-    function transferFrom(address caller, address _from, address _to, uint _value) 
+    function _transferFrom(address _caller, address _from, address _to, uint _value) 
         public
-        isFront(caller)
+        isFront(_caller)
         returns (bool ok) 
     {
-        return token.transferFrom(caller, _from, _to, _value);
+        return token.transferFrom(_caller, _from, _to, _value);
     }
 
-    function approve(address caller, address _spender, uint _value) 
+    function _approve(address _caller, address _spender, uint _value) 
         public
-        isFront(caller)
+        isFront(_caller)
         returns (bool ok) 
     {
-        return token.approve(caller, _spender, _value);
+        return token.approve(_caller, _spender, _value);
     }
 
-    function approveAndCall(address caller, address _spender, uint _value, bytes _extraData) 
+    function _approveAndCall(address _caller, address _spender, uint _value, bytes _extraData) 
         public
         isFront(caller)
         returns (bool ok) 
     {
-        return token.approveAndCall(caller, _spender, _value, _extraData);
+        return token.approveAndCall(_caller, _spender, _value, _extraData);
     }
 
     // EXTERNAL ERC20 CONSTANT
