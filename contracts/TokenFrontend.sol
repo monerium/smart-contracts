@@ -2,9 +2,10 @@ pragma solidity ^0.4.24;
 
 import "./SmartController.sol";
 import "zeppelin-solidity/contracts/ownership/Claimable.sol";
+import "zeppelin-solidity/contracts/ownership/CanReclaimToken.sol";
 import "zeppelin-solidity/contracts/ownership/NoOwner.sol";
 
-contract TokenFrontend is Claimable, NoOwner {
+contract TokenFrontend is Claimable, CanReclaimToken, NoOwner {
 
     SmartController controller;
 

@@ -5,6 +5,7 @@ import "./TokenStorage.sol";
 import "./ERC20Lib.sol";
 import "./ERC677Lib.sol";
 import "zeppelin-solidity/contracts/ownership/Claimable.sol";
+import "zeppelin-solidity/contracts/ownership/CanReclaimToken.sol";
 import "zeppelin-solidity/contracts/ownership/NoOwner.sol";
 import "zeppelin-solidity/contracts/lifecycle/Destructible.sol";
 import "zeppelin-solidity/contracts/lifecycle/Pausable.sol";
@@ -15,7 +16,7 @@ import "zeppelin-solidity/contracts/lifecycle/Pausable.sol";
  * https://github.com/ethereum/EIPs/issues/20
  */
 
-contract StandardController is Pausable, Destructible, Claimable, NoOwner {
+contract StandardController is Pausable, Destructible, Claimable, CanReclaimToken, NoOwner {
 
     using ERC20Lib for TokenStorage;
     using ERC677Lib for TokenStorage;

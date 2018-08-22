@@ -1,5 +1,6 @@
 var StandardController = artifacts.require("./StandardController.sol");
 var AcceptingRecipient = artifacts.require("./AcceptingRecipient.sol");
+var RejectingRecipient = artifacts.require("./RejectingRecipient.sol");
 
 const controller = StandardController.at(StandardController.address);
 

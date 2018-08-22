@@ -4,7 +4,7 @@ import "zeppelin-solidity/contracts/ownership/Claimable.sol";
 import "zeppelin-solidity/contracts/ownership/NoOwner.sol";
 import "./Validator.sol";
 
-contract BlacklistValidator is Validator, Claimable, NoOwner {
+contract BlacklistValidator is Validator, Claimable, CanReclaimToken, NoOwner {
 
     mapping (address => bool) public blacklist;
 
