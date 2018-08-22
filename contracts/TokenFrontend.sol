@@ -31,17 +31,17 @@ contract TokenFrontend is Claimable {
     }
 
     function transfer(address to, uint value) external returns (bool ok) {
-        ok = controller.transfer20(msg.sender, to, value);
+        ok = controller.transfer_withCaller(msg.sender, to, value);
         emit Transfer(msg.sender, to, value);
     }
 
     function transferFrom(address from, address to, uint value) external returns (bool ok) {
-        ok = controller.transferFrom20(msg.sender, from, to, value);
+        ok = controller.transferFrom_withCaller(msg.sender, from, to, value);
         emit Transfer(from, to, value);
     }
 
     function approve(address spender, uint value) external returns (bool ok) {
-        ok = controller.approve20(msg.sender, spender, value);
+        ok = controller.approve_withCaller(msg.sender, spender, value);
         emit Approval(msg.sender, spender, value);
     }
 

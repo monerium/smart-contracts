@@ -62,21 +62,21 @@ contract StandardController is Claimable {
         external 
         returns (bool ok) 
     {
-        return transfer20(msg.sender, to, value);
+        return transfer_withCaller(msg.sender, to, value);
     }
 
     function transferFrom(address from, address to, uint value) 
         external
         returns (bool ok) 
     {
-        return transferFrom20(msg.sender, from, to, value);
+        return transferFrom_withCaller(msg.sender, from, to, value);
     }
 
     function approve(address spender, uint value) 
         external
         returns (bool ok) 
     {
-        return approve20(msg.sender, spender, value);
+        return approve_withCaller(msg.sender, spender, value);
     }
 
     function approveAndCall(address spender, uint value, bytes extraData) 
@@ -87,7 +87,7 @@ contract StandardController is Claimable {
     }
 
     // PUBLIC ERC20 FRONT
-    function transfer20(address _caller, address _to, uint _value) 
+    function transfer_withCaller(address _caller, address _to, uint _value) 
         public
         guarded(_caller)
         returns (bool ok) 
@@ -95,7 +95,7 @@ contract StandardController is Claimable {
         return token.transfer(_caller, _to, _value);
     }
 
-    function transferFrom20(address _caller, address _from, address _to, uint _value) 
+    function transferFrom_withCaller(address _caller, address _from, address _to, uint _value) 
         public
         guarded(_caller)
         returns (bool ok) 
@@ -103,7 +103,7 @@ contract StandardController is Claimable {
         return token.transferFrom(_caller, _from, _to, _value);
     }
 
-    function approve20(address _caller, address _spender, uint _value) 
+    function approve_withCaller(address _caller, address _spender, uint _value) 
         public
         guarded(_caller)
         returns (bool ok) 
