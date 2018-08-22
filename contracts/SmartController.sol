@@ -6,17 +6,13 @@ import "./Validator.sol";
 
 contract SmartController is MintableController {
 
-    using SmartTokenLib for SmartTokenLib.SmartTokenStorage;
-    using MintableTokenLib for SmartTokenLib.SmartTokenStorage;
+    using SmartTokenLib for SmartTokenLib.SmartStorage;
 
-    SmartTokenLib.SmartTokenStorage smartToken;
+    SmartTokenLib.SmartStorage smartToken;
 
     bytes3 public ticker;
     uint public decimals = 18;
     uint constant public INITIAL_SUPPLY = 0;
-
-    // EVENTS
-    event Recovered(address indexed from, address indexed to, uint amount);
 
     // CONSTRUCTOR
     constructor(address _storage, address validator, bytes3 ticker_)
@@ -38,15 +34,7 @@ contract SmartController is MintableController {
         onlyOwner
         returns (bool)
     {
-        require(
-            SmartTokenLib.recover(from, h, v, r, s), 
-            "signature/hash does not recover from address"
-        );
-        uint amount = this.balanceOf(from);
-        require(token.burn(from, amount), "unable to burn tokens");
-        require(token.mint(to, amount), "unable to mint tokens"); 
-        emit Recovered(from, to, amount);
-        return true;
+        return SmartTokenLib.recover(token, from, to, h, v, r, s);
     }
 
     // EXTERNAL ERC20
