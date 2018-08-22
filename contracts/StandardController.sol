@@ -96,6 +96,7 @@ contract StandardController is Ownable {
 
     function approveAndCall(address caller, address _spender, uint _value, bytes _extraData) 
         public
+        isFront(caller)
         returns (bool ok) 
     {
         return token.approveAndCall(caller, _spender, _value, _extraData);
