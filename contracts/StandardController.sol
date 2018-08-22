@@ -32,10 +32,6 @@ contract StandardController is Claimable {
         _;
     }
 
-    // EVENTS
-    event Transfer(address indexed from, address indexed to, uint value);
-    event Approval(address indexed owner, address indexed spender, uint value);
-
     // CONSTRUCTOR
     constructor(address _storage, uint initialSupply) public {
         assert(_storage == 0x0 || initialSupply == 0);

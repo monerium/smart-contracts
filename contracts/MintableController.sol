@@ -7,10 +7,6 @@ contract MintableController is StandardController {
 
     using MintableTokenLib for TokenStorage;
 
-    // EVENTS
-    event Mint(address indexed to, uint amount);
-    event Burn(address indexed from, uint amount);
-
     // CONSTRUCTOR
     constructor(address _storage, uint initialSupply) 
         public

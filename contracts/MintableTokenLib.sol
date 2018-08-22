@@ -17,6 +17,7 @@ library MintableTokenLib {
 
     event Mint(address indexed to, uint amount);
     event Burn(address indexed from, uint amount);
+    event Transfer(address indexed from, address indexed to, uint value);
 
     /**
      * @dev Function to mint tokens
@@ -35,6 +36,7 @@ library MintableTokenLib {
     {
         self.addBalance(to, amount);
         emit Mint(to, amount);
+        emit Transfer(0x0, to, amount);
         return true;
     }
     
