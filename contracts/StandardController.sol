@@ -23,20 +23,9 @@ contract StandardController is Ownable {
     uint public decimals = 18;
 
     // MODIFIERS
-    modifier onlyFrontend() {
-        if (msg.sender == frontend)
-            _;
-    }
-
-    // either frontend or calling directly
-    modifier isFront(address _caller) {
-        if (msg.sender == frontend || _caller == msg.sender)
-            _;
-    }
-
-    // TODO: better solution?
-    modifier ownerOrFrontend() {
-        if (msg.sender == frontend || tx.origin == owner)
+    // either calling caller is sender or calling via frontend
+    modifier guarded(address caller) {
+        if (msg.sender == caller || msg.sender == frontend)
             _;
     }
 
@@ -65,12 +54,15 @@ contract StandardController is Ownable {
     }
 
     // EXTERNAL
-    function setFrontend(address _address) external ownerOrFrontend { 
+    function setFrontend(address _address) external onlyOwner { 
         frontend = _address;
     }
 
     // EXTERNAL ERC20
-    function transfer(address to, uint value) external returns (bool ok) {
+    function transfer(address to, uint value) 
+        external 
+        returns (bool ok) 
+    {
         return transfer20(msg.sender, to, value);
     }
 
@@ -98,7 +90,7 @@ contract StandardController is Ownable {
     // PUBLIC ERC20 FRONT
     function transfer20(address _caller, address _to, uint _value) 
         public
-        isFront(_caller)
+        guarded(_caller)
         returns (bool ok) 
     {
         return token.transfer(_caller, _to, _value);
@@ -106,7 +98,7 @@ contract StandardController is Ownable {
 
     function transferFrom20(address _caller, address _from, address _to, uint _value) 
         public
-        isFront(_caller)
+        guarded(_caller)
         returns (bool ok) 
     {
         return token.transferFrom(_caller, _from, _to, _value);
@@ -114,7 +106,7 @@ contract StandardController is Ownable {
 
     function approve20(address _caller, address _spender, uint _value) 
         public
-        isFront(_caller)
+        guarded(_caller)
         returns (bool ok) 
     {
         return token.approve(_caller, _spender, _value);
@@ -123,7 +115,7 @@ contract StandardController is Ownable {
     // PUBLIC ERC677 FRONT
     function approveAndCall677(address _caller, address _spender, uint _value, bytes _extraData) 
         public
-        isFront(_caller)
+        guarded(_caller)
         returns (bool ok) 
     {
         return token.approveAndCall(_caller, _spender, _value, _extraData);

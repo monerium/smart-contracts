@@ -5,7 +5,10 @@ var USD = artifacts.require("./USD.sol");
 module.exports = function(deployer) {
 
   deployer.deploy(SmartController, 0x0, BlacklistValidator.address, "USD").then(() => {
-    return deployer.deploy(USD, SmartController.address);
+    const controller = SmartController.at(SmartController.address);
+    return deployer.deploy(USD, SmartController.address).then(() => {
+      return controller.setFrontend(USD.address); 
+    });
   });
 
 };

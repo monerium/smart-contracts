@@ -27,7 +27,7 @@ contract TokenFrontend is Ownable {
         assert(_address != 0x0);
         controller = SmartController(_address);
         assert(controller.ticker() == ticker);
-        controller.setFrontend(address(this));
+        // controller.setFrontend(address(this));
     }
 
     function transfer(address to, uint value) external returns (bool ok) {
