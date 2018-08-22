@@ -71,32 +71,32 @@ contract StandardController is Ownable {
 
     // EXTERNAL ERC20
     function transfer(address to, uint value) external returns (bool ok) {
-        return _transfer(msg.sender, to, value);
+        return transfer20(msg.sender, to, value);
     }
 
     function transferFrom(address from, address to, uint value) 
         external
         returns (bool ok) 
     {
-        return _transferFrom(msg.sender, from, to, value);
+        return transferFrom20(msg.sender, from, to, value);
     }
 
     function approve(address spender, uint value) 
         external
         returns (bool ok) 
     {
-        return _approve(msg.sender, spender, value);
+        return approve20(msg.sender, spender, value);
     }
 
     function approveAndCall(address spender, uint value, bytes extraData) 
         external
         returns (bool ok) 
     {
-        return _approveAndCall(msg.sender, spender, value, extraData);
+        return approveAndCall677(msg.sender, spender, value, extraData);
     }
 
     // PUBLIC ERC20 FRONT
-    function _transfer(address _caller, address _to, uint _value) 
+    function transfer20(address _caller, address _to, uint _value) 
         public
         isFront(_caller)
         returns (bool ok) 
@@ -104,7 +104,7 @@ contract StandardController is Ownable {
         return token.transfer(_caller, _to, _value);
     }
 
-    function _transferFrom(address _caller, address _from, address _to, uint _value) 
+    function transferFrom20(address _caller, address _from, address _to, uint _value) 
         public
         isFront(_caller)
         returns (bool ok) 
@@ -112,7 +112,7 @@ contract StandardController is Ownable {
         return token.transferFrom(_caller, _from, _to, _value);
     }
 
-    function _approve(address _caller, address _spender, uint _value) 
+    function approve20(address _caller, address _spender, uint _value) 
         public
         isFront(_caller)
         returns (bool ok) 
@@ -120,9 +120,10 @@ contract StandardController is Ownable {
         return token.approve(_caller, _spender, _value);
     }
 
-    function _approveAndCall(address _caller, address _spender, uint _value, bytes _extraData) 
+    // PUBLIC ERC677 FRONT
+    function approveAndCall677(address _caller, address _spender, uint _value, bytes _extraData) 
         public
-        isFront(caller)
+        isFront(_caller)
         returns (bool ok) 
     {
         return token.approveAndCall(_caller, _spender, _value, _extraData);
