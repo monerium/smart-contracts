@@ -12,44 +12,46 @@ library TokenStorageLib {
         uint totalSupply;
     }
 
-    // EXTERNAL
+    // INTERNAL
     function addBalance(TokenStorage storage self, address to, uint amount) 
-        external 
+        internal 
     {
         self.totalSupply = self.totalSupply.add(amount);
         self.balances[to] = self.balances[to].add(amount);
     }
 
     function subBalance(TokenStorage storage self, address from, uint amount) 
-        external 
+        internal 
     {
         self.totalSupply = self.totalSupply.sub(amount);
         self.balances[from] = self.balances[from].sub(amount);
     }
 
     function setAllowed(TokenStorage storage self, address owner, address spender, uint amount) 
-        external
+        internal
     {
         self.allowed[owner][spender] = amount;
     }
 
-    // EXTERNAL CONSTANT
+    // INTERNAL CONSTANT
     function getSupply(TokenStorage storage self) 
-        external
-        view returns (uint) 
+        internal
+        view 
+        returns (uint) 
     {
         return self.totalSupply;
     }
 
     function getBalance(TokenStorage storage self, address who) 
-        external
-        view returns (uint) 
+        internal
+        view 
+        returns (uint) 
     {
         return self.balances[who];
     }
 
     function getAllowed(TokenStorage storage self, address owner, address spender) 
-        external
+        internal
         view
         returns (uint) 
     {

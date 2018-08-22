@@ -6,6 +6,9 @@ import "./Validator.sol";
 
 library SmartTokenLib {
 
+    using ERC20Lib for TokenStorage;
+    using MintableTokenLib for TokenStorage;
+
     struct SmartStorage {
         Validator validator;
     }
@@ -13,30 +16,20 @@ library SmartTokenLib {
     // EVENTS
     event Recovered(address indexed from, address indexed to, uint amount);
 
-    // EXTERNAL
+    // INTERNAL
     function setValidator(SmartStorage storage self, address validator) 
-        external 
+        internal 
     {
         self.validator = Validator(validator);
     }
 
-    // EXTERNAL CONSTANT
     function validate(SmartStorage storage self, address from, address to, uint value) 
-        external
+        internal
         returns (bool valid) 
     { 
         return self.validator.validate(from, to, value);
     }
 
-    function getValidator(SmartStorage storage self) 
-        external 
-        view 
-        returns (address) 
-    {
-        return address(self.validator);
-    }
-
-    // INTERNAL 
     function recover(
         TokenStorage token, 
         address from, 
@@ -53,11 +46,20 @@ library SmartTokenLib {
             ecrecover(h, v, r, s) == from,
             "signature/hash does not recover from address"
         );
-        uint amount = ERC20Lib.balanceOf(token, from);
-        require(MintableTokenLib.burn(token, from, amount), "unable to burn tokens");
-        require(MintableTokenLib.mint(token, to, amount), "unable to mint tokens"); 
+        uint amount = token.balanceOf(from);
+        require(token.burn(from, amount), "unable to burn tokens");
+        require(token.mint(to, amount), "unable to mint tokens"); 
         emit Recovered(from, to, amount);
         return true;
+    }
+
+    // INTERNAL CONSTANT
+    function getValidator(SmartStorage storage self) 
+        external 
+        view 
+        returns (address) 
+    {
+        return address(self.validator);
     }
 
 }

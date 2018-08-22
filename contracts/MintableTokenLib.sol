@@ -31,7 +31,7 @@ library MintableTokenLib {
         address to, 
         uint amount
     ) 
-        external 
+        internal 
         returns (bool) 
     {
         self.addBalance(to, amount);
@@ -45,7 +45,7 @@ library MintableTokenLib {
         address from, 
         uint amount
     ) 
-        external
+        internal
         returns (bool) 
     {
         self.subBalance(from, amount);

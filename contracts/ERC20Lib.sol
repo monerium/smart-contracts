@@ -11,9 +11,9 @@ library ERC20Lib {
     event Transfer(address indexed from, address indexed to, uint value);
     event Approval(address indexed owner, address indexed spender, uint value);
 
-    // EXTERNAL
+    // INTERNAL
     function transfer(TokenStorage db, address caller, address to, uint value) 
-        external
+        internal
         returns (bool success) 
     {
         db.subBalance(caller, value);
@@ -29,7 +29,7 @@ library ERC20Lib {
         address to, 
         uint value
     ) 
-        external
+        internal
         returns (bool success) 
     {
         uint allowance = db.getAllowed(from, caller);
@@ -50,9 +50,9 @@ library ERC20Lib {
         return true;
     }
 
-    // EXTERNAL CONSTANT
+    // INTERNAL CONSTANT
     function balanceOf(TokenStorage db, address _owner) 
-        external
+        internal
         view 
         returns (uint balance) 
     {
@@ -60,7 +60,7 @@ library ERC20Lib {
     }
 
     function allowance(TokenStorage db, address _owner, address spender) 
-        external
+        internal
         view 
         returns (uint remaining) 
     {
