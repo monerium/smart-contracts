@@ -23,10 +23,12 @@ contract StandardController is Ownable {
     uint public decimals = 18;
 
     // MODIFIERS
-    // either calling caller is sender or calling via frontend
     modifier guarded(address caller) {
-        if (msg.sender == caller || msg.sender == frontend)
-            _;
+        require(
+            msg.sender == caller || msg.sender == frontend, 
+            "Either caller must be sender or calling via frontend"
+        );
+        _;
     }
 
     // EVENTS
