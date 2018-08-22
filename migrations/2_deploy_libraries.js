@@ -11,8 +11,6 @@ var MintableTokenLib = artifacts.require("./MintableTokenLib.sol");
 var MintableController = artifacts.require("./MintableController.sol");
 var SmartController = artifacts.require("./SmartController.sol");
 
-// TODO: Registry?
-
 module.exports = function(deployer) {
 
   // deploy and link libraries
