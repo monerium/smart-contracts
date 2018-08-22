@@ -83,7 +83,7 @@ contract StandardController is Claimable {
         external
         returns (bool ok) 
     {
-        return approveAndCall677(msg.sender, spender, value, extraData);
+        return approveAndCall_withCaller(msg.sender, spender, value, extraData);
     }
 
     // PUBLIC ERC20 FRONT
@@ -112,7 +112,7 @@ contract StandardController is Claimable {
     }
 
     // PUBLIC ERC677 FRONT
-    function approveAndCall677(address _caller, address _spender, uint _value, bytes _extraData) 
+    function approveAndCall_withCaller(address _caller, address _spender, uint _value, bytes _extraData) 
         public
         guarded(_caller)
         returns (bool ok) 

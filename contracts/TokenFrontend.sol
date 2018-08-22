@@ -47,7 +47,7 @@ contract TokenFrontend is Claimable {
 
     function approveAndCall(address spender, uint value, bytes extraData) external returns (bool ok) 
     {
-        ok = controller.approveAndCall677(msg.sender, spender, value, extraData);
+        ok = controller.approveAndCall_withCaller(msg.sender, spender, value, extraData);
         emit Approval(msg.sender, spender, value);
     }
 
