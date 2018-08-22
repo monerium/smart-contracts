@@ -4,7 +4,7 @@ pragma solidity ^0.4.24;
 import "./TokenStorage.sol";
 import "./ERC20Lib.sol";
 // import "zeppelin-solidity/contracts/token/EternalTokenStorage.sol";
-import "zeppelin-solidity/contracts/ownership/Ownable.sol";
+import "zeppelin-solidity/contracts/ownership/Claimable.sol";
 
 /**
  * Standard ERC20 token
@@ -12,7 +12,7 @@ import "zeppelin-solidity/contracts/ownership/Ownable.sol";
  * https://github.com/ethereum/EIPs/issues/20
  */
 
-contract StandardController is Ownable {
+contract StandardController is Claimable {
     using ERC20Lib for TokenStorage;
 
     TokenStorage token;

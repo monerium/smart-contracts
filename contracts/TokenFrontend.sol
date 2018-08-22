@@ -1,9 +1,9 @@
 pragma solidity ^0.4.24;
 
 import "./SmartController.sol";
-import "zeppelin-solidity/contracts/ownership/Ownable.sol";
+import "zeppelin-solidity/contracts/ownership/Claimable.sol";
 
-contract TokenFrontend is Ownable {
+contract TokenFrontend is Claimable {
     SmartController controller;
 
     string public name;
