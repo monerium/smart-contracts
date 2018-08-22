@@ -4,6 +4,7 @@ import "./StandardController.sol";
 import "./MintableTokenLib.sol";
 
 contract MintableController is StandardController {
+
     using MintableTokenLib for TokenStorage;
 
     // EVENTS

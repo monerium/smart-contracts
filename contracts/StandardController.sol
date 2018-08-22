@@ -13,6 +13,7 @@ import "zeppelin-solidity/contracts/ownership/Claimable.sol";
  */
 
 contract StandardController is Claimable {
+
     using ERC20Lib for TokenStorage;
 
     TokenStorage token;
@@ -26,7 +27,7 @@ contract StandardController is Claimable {
     modifier guarded(address caller) {
         require(
             msg.sender == caller || msg.sender == frontend, 
-            "Either caller must be sender or calling via frontend"
+            "either caller must be sender or calling via frontend"
         );
         _;
     }

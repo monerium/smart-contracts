@@ -7,12 +7,13 @@ contract ConstantValidator is Validator {
     bool valid;
 
     // CONSTRUCTOR
-    constructor(bool _valid) public {
-        valid = _valid;
+    constructor(bool valid_) public {
+        valid = valid_;
     }
 
     // EXTERNAL CONSTANT
     function validate(address, address, uint) external returns (bool) { 
         return valid;     
     }
+
 }

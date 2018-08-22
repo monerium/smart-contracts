@@ -3,6 +3,7 @@ pragma solidity ^0.4.24;
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
 
 library TokenStorageLib {
+
     using SafeMath for uint;
 
     struct TokenStorage {
@@ -54,4 +55,5 @@ library TokenStorageLib {
     {
         return self.allowed[owner][spender];
     }
+
 }

@@ -5,6 +5,7 @@ import "./TokenRecipient.sol";
 import "./TokenStorage.sol";
 
 library ERC20Lib {
+
     using SafeMath for uint;
 
     // EVENTS
@@ -12,58 +13,58 @@ library ERC20Lib {
     event Approval(address indexed owner, address indexed spender, uint value);
 
     // EXTERNAL
-    function transfer(TokenStorage db, address _caller, address _to, uint _value) 
+    function transfer(TokenStorage db, address caller, address to, uint value) 
         external
         returns (bool success) 
     {
-        db.subBalance(_caller, _value);
-        db.addBalance(_to, _value);
-        emit Transfer(_caller, _to, _value);
+        db.subBalance(caller, value);
+        db.addBalance(to, value);
+        emit Transfer(caller, to, value);
         return true;
     }
 
     function transferFrom(
         TokenStorage db, 
-        address _caller, 
-        address _from, 
-        address _to, 
-        uint _value
+        address caller, 
+        address from, 
+        address to, 
+        uint value
     ) 
         external
         returns (bool success) 
     {
-        uint allowance = db.getAllowed(_from, _caller);
-        db.subBalance(_from, _value);
-        db.addBalance(_to, _value);
-        db.setAllowed(_from, _caller, allowance.sub(_value));
-        emit Transfer(_from, _to, _value);
+        uint allowance = db.getAllowed(from, caller);
+        db.subBalance(from, value);
+        db.addBalance(to, value);
+        db.setAllowed(from, caller, allowance.sub(value));
+        emit Transfer(from, to, value);
         return true;
     }
 
     // TODO: race condition
-    function approve(TokenStorage db, address _caller, address _spender, uint _value) 
+    function approve(TokenStorage db, address caller, address spender, uint value) 
         public
         returns (bool success) 
     {
-        db.setAllowed(_caller, _spender, _value);
-        emit Approval(_caller, _spender, _value);
+        db.setAllowed(caller, spender, value);
+        emit Approval(caller, spender, value);
         return true;
     }
 
     // TODO: race condition
     function approveAndCall(
         TokenStorage db, 
-        address _caller, 
-        address _spender, 
-        uint256 _value, 
+        address caller, 
+        address spender, 
+        uint256 value, 
         bytes _extraData
     ) 
         external
         returns (bool success) 
     {
-        TokenRecipient spender = TokenRecipient(_spender);
-        if (approve(db, _caller, _spender, _value)) {
-            spender.receiveApproval(_caller, _value, this, _extraData);
+        if (approve(db, caller, spender, value)) {
+            TokenRecipient recipient = TokenRecipient(spender);
+            recipient.receiveApproval(caller, value, this, _extraData);
             return true;
         }
     }        
@@ -77,11 +78,12 @@ library ERC20Lib {
         return db.getBalance(_owner);
     }
 
-    function allowance(TokenStorage db, address _owner, address _spender) 
+    function allowance(TokenStorage db, address _owner, address spender) 
         external
         view 
         returns (uint remaining) 
     {
-        return db.getAllowed(_owner, _spender);
+        return db.getAllowed(_owner, spender);
     }
+
 }

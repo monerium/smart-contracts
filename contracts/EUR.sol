@@ -3,8 +3,10 @@ pragma solidity ^0.4.24;
 import "./TokenFrontend.sol";
 
 contract EUR is TokenFrontend {
-    constructor(address _controller) 
+
+    constructor(address controller) 
         public
-        TokenFrontend("Smart EUR", "EURS", "EUR", _controller) 
+        TokenFrontend("Smart EUR", "EURS", "EUR", controller) 
     { }
+
 }

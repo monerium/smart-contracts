@@ -4,6 +4,7 @@ import "./SmartController.sol";
 import "zeppelin-solidity/contracts/ownership/Claimable.sol";
 
 contract TokenFrontend is Claimable {
+
     SmartController controller;
 
     string public name;
@@ -15,11 +16,11 @@ contract TokenFrontend is Claimable {
     event Approval(address indexed owner, address indexed spender, uint value);
 
     // CONSTRUCTOR
-    constructor(string _name, string _symbol, bytes3 _ticker, address _controller) internal {
-        name = _name;
-        symbol = _symbol;
-        ticker = _ticker;
-        setController(_controller);
+    constructor(string name_, string symbol_, bytes3 ticker_, address controller_) internal {
+        name = name_;
+        symbol = symbol_;
+        ticker = ticker_;
+        setController(controller_);
     }
 
     // EXTERNAL
@@ -27,7 +28,6 @@ contract TokenFrontend is Claimable {
         assert(_address != 0x0);
         controller = SmartController(_address);
         assert(controller.ticker() == ticker);
-        // controller.setFrontend(address(this));
     }
 
     function transfer(address to, uint value) external returns (bool ok) {
@@ -36,7 +36,8 @@ contract TokenFrontend is Claimable {
     }
 
     function transferFrom(address from, address to, uint value) external returns (bool ok) {
-        return controller.transferFrom20(msg.sender, from, to, value);
+        ok = controller.transferFrom20(msg.sender, from, to, value);
+        emit Transfer(from, to, value);
     }
 
     function approve(address spender, uint value) external returns (bool ok) {
@@ -70,4 +71,5 @@ contract TokenFrontend is Claimable {
     function decimals() external view returns (uint) {
         return controller.decimals();
     }
+
 }

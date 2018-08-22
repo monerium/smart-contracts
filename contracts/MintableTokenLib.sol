@@ -1,10 +1,8 @@
 pragma solidity ^0.4.24;
 
-
 // import "zeppelin-solidity/contracts/token/EternalTokenStorage.sol";
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
 import "./TokenStorage.sol";
-
 
 /**
  * @title Mintable token
@@ -14,6 +12,7 @@ import "./TokenStorage.sol";
  */
 
 library MintableTokenLib {
+
     using SafeMath for uint;
 
     event Mint(address indexed to, uint amount);
@@ -21,34 +20,34 @@ library MintableTokenLib {
 
     /**
      * @dev Function to mint tokens
-     * @param _to The address that will recieve the minted tokens.
-     * @param _amount The amount of tokens to mint.
+     * @param to The address that will recieve the minted tokens.
+     * @param amount The amount of tokens to mint.
      * @return A boolean that indicates if the operation was successful.
      */
-    // function mint(address _to, uint _amount) onlyOwner canMint returns (bool) {
+    // function mint(address to, uint amount) onlyOwner canMint returns (bool) {
     function mint(
         TokenStorage self, 
-        address _to, 
-        uint _amount
+        address to, 
+        uint amount
     ) 
         external 
         returns (bool) 
     {
-        self.addBalance(_to, _amount);
-        emit Mint(_to, _amount);
+        self.addBalance(to, amount);
+        emit Mint(to, amount);
         return true;
     }
     
     function burn(
         TokenStorage self, 
-        address _from, 
-        uint _amount
+        address from, 
+        uint amount
     ) 
         external
         returns (bool) 
     {
-        self.subBalance(_from, _amount);
-        emit Burn(_from, _amount);
+        self.subBalance(from, amount);
+        emit Burn(from, amount);
         return true;
     }
 

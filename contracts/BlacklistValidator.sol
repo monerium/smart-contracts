@@ -9,7 +9,7 @@ contract BlacklistValidator is Validator, Claimable {
 
     // EVENTS
     event Ban(address indexed adversary);
-    event Unban(address indexed goodguy);
+    event Unban(address indexed friend);
 
     // EXTERNAL
     function ban(address adversary) external onlyOwner {
@@ -17,22 +17,21 @@ contract BlacklistValidator is Validator, Claimable {
         emit Ban(adversary);
     }
 
-    function unban(address goodguy) external onlyOwner {
-        blacklist[goodguy] = false;
-        emit Unban(goodguy);
+    function unban(address friend) external onlyOwner {
+        blacklist[friend] = false;
+        emit Unban(friend);
     }
 
-    // EXTERNAL CONSTANT
-    function validate(address _from, address _to, uint _value) 
+    function validate(address from, address to, uint value) 
         external
         returns (bool valid) 
     { 
-        if (blacklist[_from]) {
+        if (blacklist[from]) {
             valid = false;
         } else {
             valid = true;
         }
-        emit Decision(_from, _to, valid, _value);
+        emit Decision(from, to, valid, value);
     }
 
 }

@@ -4,6 +4,7 @@ import "zeppelin-solidity/contracts/ownership/Claimable.sol";
 import "./TokenStorageLib.sol";
 
 contract TokenStorage is Claimable {
+
     using TokenStorageLib for TokenStorageLib.TokenStorage;
 
     TokenStorageLib.TokenStorage tokenStorage;
@@ -37,4 +38,5 @@ contract TokenStorage is Claimable {
     {
         return tokenStorage.getAllowed(owner, spender);
     }
+
 }

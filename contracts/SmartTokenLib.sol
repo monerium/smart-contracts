@@ -3,23 +3,24 @@ pragma solidity ^0.4.24;
 import "./Validator.sol";
 
 library SmartTokenLib {
+
     struct SmartTokenStorage {
         Validator validator;
     }
 
     // EXTERNAL
-    function setValidator(SmartTokenStorage storage self, address _validator) 
+    function setValidator(SmartTokenStorage storage self, address validator) 
         external 
     {
-        self.validator = Validator(_validator);
+        self.validator = Validator(validator);
     }
 
     // EXTERNAL CONSTANT
-    function validate(SmartTokenStorage storage self, address _from, address _to, uint _value) 
+    function validate(SmartTokenStorage storage self, address from, address to, uint value) 
         external
         returns (bool valid) 
     { 
-        return self.validator.validate(_from, _to, _value);
+        return self.validator.validate(from, to, value);
     }
 
     function getValidator(SmartTokenStorage storage self) 
@@ -38,4 +39,5 @@ library SmartTokenLib {
     {
         return ecrecover(h, v, r, s) == a;
     }
+
 }
