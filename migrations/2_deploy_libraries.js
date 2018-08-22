@@ -19,11 +19,9 @@ module.exports = function(deployer) {
   deployer.deploy(SafeMathLib);
   deployer.link(SafeMathLib, [TokenStorageLib, ERC20Lib, MintableTokenLib]);
   deployer.deploy([TokenStorageLib, ERC20Lib]);
-  deployer.link(TokenStorageLib, [TokenStorage]);
-  deployer.link(ERC20Lib, [StandardController, SmartController, SmartTokenLib, ERC677Lib]);
+  deployer.link(ERC20Lib, [SmartTokenLib, ERC677Lib]);
   deployer.deploy([ERC677Lib]);
-  deployer.link(ERC677Lib, [StandardController, MintableController, SmartController]);
   deployer.deploy([MintableTokenLib, SmartTokenLib]);
-  deployer.link(MintableTokenLib, [MintableController, SmartTokenLib])
+  deployer.link(MintableTokenLib, SmartTokenLib)
 
 };
