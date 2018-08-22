@@ -1,7 +1,6 @@
 pragma solidity ^0.4.24;
 
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
-import "./TokenRecipient.sol";
 import "./TokenStorage.sol";
 
 library ERC20Lib {
@@ -50,24 +49,6 @@ library ERC20Lib {
         emit Approval(caller, spender, value);
         return true;
     }
-
-    // TODO: race condition
-    function approveAndCall(
-        TokenStorage db, 
-        address caller, 
-        address spender, 
-        uint256 value, 
-        bytes _extraData
-    ) 
-        external
-        returns (bool success) 
-    {
-        if (approve(db, caller, spender, value)) {
-            TokenRecipient recipient = TokenRecipient(spender);
-            recipient.receiveApproval(caller, value, this, _extraData);
-            return true;
-        }
-    }        
 
     // EXTERNAL CONSTANT
     function balanceOf(TokenStorage db, address _owner) 

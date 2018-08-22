@@ -3,6 +3,7 @@ pragma solidity ^0.4.24;
 
 import "./TokenStorage.sol";
 import "./ERC20Lib.sol";
+import "./ERC677Lib.sol";
 // import "zeppelin-solidity/contracts/token/EternalTokenStorage.sol";
 import "zeppelin-solidity/contracts/ownership/Claimable.sol";
 
@@ -15,6 +16,7 @@ import "zeppelin-solidity/contracts/ownership/Claimable.sol";
 contract StandardController is Claimable {
 
     using ERC20Lib for TokenStorage;
+    using ERC677Lib for TokenStorage;
 
     TokenStorage token;
     address frontend;

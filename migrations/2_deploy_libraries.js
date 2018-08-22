@@ -1,6 +1,7 @@
 // artifacts
 var SafeMathLib = artifacts.require("zeppelin-solidity/math/SafeMath.sol");
 var ERC20Lib = artifacts.require("./ERC20Lib.sol");
+var ERC677Lib = artifacts.require("./ERC677Lib.sol");
 var MintableTokenLib = artifacts.require("./MintableTokenLib.sol");
 var SmartTokenLib = artifacts.require("./SmartTokenLib.sol");
 var TokenStorageLib = artifacts.require("./TokenStorageLib.sol");
@@ -19,7 +20,9 @@ module.exports = function(deployer) {
   deployer.link(SafeMathLib, [TokenStorageLib, ERC20Lib, MintableTokenLib]);
   deployer.deploy([TokenStorageLib, ERC20Lib]);
   deployer.link(TokenStorageLib, [TokenStorage]);
-  deployer.link(ERC20Lib, [StandardController, SmartController, SmartTokenLib]);
+  deployer.link(ERC20Lib, [StandardController, SmartController, SmartTokenLib, ERC677Lib]);
+  deployer.deploy([ERC677Lib]);
+  deployer.link(ERC677Lib, [StandardController, MintableController, SmartController]);
   deployer.deploy([MintableTokenLib, SmartTokenLib]);
   deployer.link(MintableTokenLib, [MintableController, SmartTokenLib])
 
