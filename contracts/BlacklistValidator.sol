@@ -1,9 +1,10 @@
 pragma solidity ^0.4.24;
 
 import "zeppelin-solidity/contracts/ownership/Claimable.sol";
+import "zeppelin-solidity/contracts/ownership/NoOwner.sol";
 import "./Validator.sol";
 
-contract BlacklistValidator is Validator, Claimable {
+contract BlacklistValidator is Validator, Claimable, NoOwner {
 
     mapping (address => bool) public blacklist;
 

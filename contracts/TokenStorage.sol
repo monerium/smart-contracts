@@ -1,9 +1,10 @@
 pragma solidity ^0.4.24;
 
 import "zeppelin-solidity/contracts/ownership/Claimable.sol";
+import "zeppelin-solidity/contracts/ownership/NoOwner.sol";
 import "./TokenStorageLib.sol";
 
-contract TokenStorage is Claimable {
+contract TokenStorage is Claimable, NoOwner {
 
     using TokenStorageLib for TokenStorageLib.TokenStorage;
 

@@ -4,8 +4,9 @@ pragma solidity ^0.4.24;
 import "./TokenStorage.sol";
 import "./ERC20Lib.sol";
 import "./ERC677Lib.sol";
-// import "zeppelin-solidity/contracts/token/EternalTokenStorage.sol";
 import "zeppelin-solidity/contracts/ownership/Claimable.sol";
+import "zeppelin-solidity/contracts/ownership/NoOwner.sol";
+import "zeppelin-solidity/contracts/lifecycle/Destructible.sol";
 import "zeppelin-solidity/contracts/lifecycle/Pausable.sol";
 
 /**
@@ -14,7 +15,7 @@ import "zeppelin-solidity/contracts/lifecycle/Pausable.sol";
  * https://github.com/ethereum/EIPs/issues/20
  */
 
-contract StandardController is Claimable, Pausable {
+contract StandardController is Pausable, Destructible, Claimable, NoOwner {
 
     using ERC20Lib for TokenStorage;
     using ERC677Lib for TokenStorage;
