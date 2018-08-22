@@ -53,4 +53,13 @@ contract('StandardController', accounts => {
     assert.fail("succeeded", "fail", "transfer and call was supposed to fail");
   });
 
+  it("should be claimable", async () => {
+    await controller.transferOwnership(accounts[1]);
+    const owner0 = await controller.owner();
+    assert.equal(owner0, accounts[0], "not original owner");
+    await controller.claimOwnership({from: accounts[1]});
+    const owner1 = await controller.owner();
+    assert.equal(owner1, accounts[1], "ownership claim failed");
+  });
+
 });

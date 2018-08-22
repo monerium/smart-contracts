@@ -6,6 +6,7 @@ import "./ERC20Lib.sol";
 import "./ERC677Lib.sol";
 // import "zeppelin-solidity/contracts/token/EternalTokenStorage.sol";
 import "zeppelin-solidity/contracts/ownership/Claimable.sol";
+import "zeppelin-solidity/contracts/lifecycle/Pausable.sol";
 
 /**
  * Standard ERC20 token
@@ -13,7 +14,7 @@ import "zeppelin-solidity/contracts/ownership/Claimable.sol";
  * https://github.com/ethereum/EIPs/issues/20
  */
 
-contract StandardController is Claimable {
+contract StandardController is Claimable, Pausable {
 
     using ERC20Lib for TokenStorage;
     using ERC677Lib for TokenStorage;
@@ -97,6 +98,7 @@ contract StandardController is Claimable {
     function transfer_withCaller(address caller, address _to, uint _value) 
         public
         guarded(caller)
+        whenNotPaused
         returns (bool ok) 
     {
         return token.transfer(caller, _to, _value);
@@ -105,6 +107,7 @@ contract StandardController is Claimable {
     function transferFrom_withCaller(address caller, address _from, address _to, uint _value) 
         public
         guarded(caller)
+        whenNotPaused
         returns (bool ok) 
     {
         return token.transferFrom(caller, _from, _to, _value);
@@ -113,6 +116,7 @@ contract StandardController is Claimable {
     function approve_withCaller(address caller, address _spender, uint _value) 
         public
         guarded(caller)
+        whenNotPaused
         returns (bool ok) 
     {
         return token.approve(caller, _spender, _value);
@@ -127,6 +131,7 @@ contract StandardController is Claimable {
     ) 
         public
         guarded(caller)
+        whenNotPaused
         returns (bool ok) 
     {
         return token.transferAndCall(caller, receiver, amount, data);
