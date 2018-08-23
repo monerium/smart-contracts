@@ -37,6 +37,14 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
         _;
     }
 
+    modifier avoidBlackholes(address to) {
+        require(to != 0x0, "must not send to 0x0");
+        require(to != address(this), "must not send to controller");
+        require(to != address(token), "must not send to token storage");
+        require(to != frontend, "must not send to frontend");
+        _;
+    }
+
     // CONSTRUCTOR
     constructor(address _storage, uint initialSupply) public {
         assert(_storage == 0x0 || initialSupply == 0);
@@ -54,12 +62,12 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
     }
 
     function getStorage() external view returns (address) {
-        return token;
+        return address(token);
     }
 
     // EXTERNAL
-    function setFrontend(address _address) external onlyOwner { 
-        frontend = _address;
+    function setFrontend(address frontend_) external onlyOwner { 
+        frontend = frontend_;
     }
 
     // EXTERNAL ERC20
@@ -86,57 +94,60 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
 
     // EXTERNAL ERC677
     function transferAndCall(
-        address receiver, 
+        address to, 
         uint256 amount, 
         bytes data
     ) 
         external
         returns (bool ok) 
     {
-        return transferAndCall_withCaller(msg.sender, receiver, amount, data);
+        return transferAndCall_withCaller(msg.sender, to, amount, data);
     }
 
     // PUBLIC ERC20 FRONT
-    function transfer_withCaller(address caller, address _to, uint _value) 
+    function transfer_withCaller(address caller, address to, uint value) 
         public
         guarded(caller)
+        avoidBlackholes(to)
         whenNotPaused
         returns (bool ok) 
     {
-        return token.transfer(caller, _to, _value);
+        return token.transfer(caller, to, value);
     }
 
-    function transferFrom_withCaller(address caller, address _from, address _to, uint _value) 
+    function transferFrom_withCaller(address caller, address from, address to, uint value) 
         public
         guarded(caller)
+        avoidBlackholes(to)
         whenNotPaused
         returns (bool ok) 
     {
-        return token.transferFrom(caller, _from, _to, _value);
+        return token.transferFrom(caller, from, to, value);
     }
 
-    function approve_withCaller(address caller, address _spender, uint _value) 
+    function approve_withCaller(address caller, address spender, uint value) 
         public
         guarded(caller)
         whenNotPaused
         returns (bool ok) 
     {
-        return token.approve(caller, _spender, _value);
+        return token.approve(caller, spender, value);
     }
 
     // PUBLIC ERC677 FRONT
     function transferAndCall_withCaller(
         address caller, 
-        address receiver, 
+        address to, 
         uint256 amount, 
         bytes data
     ) 
         public
         guarded(caller)
+        avoidBlackholes(to)
         whenNotPaused
         returns (bool ok) 
     {
-        return token.transferAndCall(caller, receiver, amount, data);
+        return token.transferAndCall(caller, to, amount, data);
     }
 
     // EXTERNAL ERC20 CONSTANT

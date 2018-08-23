@@ -63,4 +63,42 @@ contract('StandardController', accounts => {
     assert.equal(owner1, accounts[1], "ownership claim failed");
   });
 
+  it("should avoid blackholes [0x0]", async () => {
+    try {
+      await controller.transfer(0x0, 1);
+    } catch {
+      return;
+    }
+    assert.fail("succeeded", "fail", "transfer and call was supposed to fail");
+  });
+
+  it("should avoid blackholes [controller]", async () => {
+    try {
+      await controller.transfer(StandardController.address, 2);
+    } catch {
+      return;
+    }
+    assert.fail("succeeded", "fail", "transfer and call was supposed to fail");
+  });
+
+  it("should avoid blackholes [storage]", async () => {
+    const storage = await controller.getStorage();
+    try {
+      await controller.transfer(storage, 3);
+    } catch {
+      return;
+    }
+    assert.fail("succeeded", "fail", "transfer and call was supposed to fail");
+  });
+
+  it("should avoid blackholes [frontend]", async () => {
+    const frontend = await controller.getFrontend();
+    try {
+      await controller.transfer(frontend, 4);
+    } catch {
+      return;
+    }
+    assert.fail("succeeded", "fail", "transfer and call was supposed to fail");
+  });
+
 });
