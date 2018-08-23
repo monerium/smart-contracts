@@ -1,6 +1,7 @@
 var StandardController = artifacts.require("./StandardController.sol");
 var AcceptingRecipient = artifacts.require("./AcceptingRecipient.sol");
 var RejectingRecipient = artifacts.require("./RejectingRecipient.sol");
+var SimpleToken = artifacts.require("./SimpleToken.sol");
 
 const controller = StandardController.at(StandardController.address);
 
@@ -61,6 +62,10 @@ contract('StandardController', accounts => {
     await controller.claimOwnership({from: accounts[1]});
     const owner1 = await controller.owner();
     assert.equal(owner1, accounts[1], "ownership claim failed");
+    await controller.transferOwnership(accounts[0], {from: accounts[1]});
+    await controller.claimOwnership({from: accounts[0]});
+    const owner = await controller.owner();
+    assert.equal(owner, accounts[0], "should be owned by original owner");
   });
 
   it("should avoid blackholes [0x0]", async () => {
@@ -99,6 +104,74 @@ contract('StandardController', accounts => {
       return;
     }
     assert.fail("succeeded", "fail", "transfer and call was supposed to fail");
+  });
+
+  it("should be pausable", async () => {
+    await controller.pause({from: accounts[0]});
+    try {
+      await controller.transfer(accounts[2], 5, {from: accounts[1]});
+    } catch {
+      await controller.unpause({from: accounts[0]});
+      await controller.transfer(accounts[2], 5, {from: accounts[1]});
+      return;
+    }
+    assert.fail("succeeded", "fail", "transfer and call was supposed to fail");
+  });
+
+  it("should be able to reclaim ownership of contracts", async () => {
+    const recipient = AcceptingRecipient.at(AcceptingRecipient.address)
+    const owner0 = await recipient.owner();
+    assert.strictEqual(owner0, accounts[0], "incorrect original owner");
+    await recipient.transferOwnership(StandardController.address, {from: owner0});
+    const owner1 = await recipient.owner();
+    assert.strictEqual(owner1, StandardController.address, "standard controller should be owner");
+    await controller.reclaimContract(AcceptingRecipient.address);
+    const owner2 = await recipient.owner();
+    assert.strictEqual(owner2, owner0, "must be original owner after reclaiming ownership");
+  });
+
+  it("should not be allowed to receive ether", async () => {
+    try {
+    await web3.eth.sendTransaction({to: StandardController.address, from: accounts[0], value: 10});
+    } catch {
+      return;
+    }
+    assert.fail("succeeded", "fail", "transfer and call was supposed to fail");
+  });
+
+  it("should not be allowed to receive tokens (ERC223, ERC677)", async () => {
+    try {
+      await controller.transferAndCall(StandardController.address, 223, 0x0);
+    } catch {
+      return;
+    }
+    assert.fail("succeeded", "fail", "transfer and call was supposed to fail");
+  });
+
+  it("should be able to recover tokens (ERC20)", async () => {
+    const token = SimpleToken.at(SimpleToken.address);
+    const amount0 = await token.balanceOf(accounts[0]);
+    assert.notEqual(amount0.toNumber(), 0, "owner must have some tokens");
+    const balance0 = await token.balanceOf(StandardController.address);
+    assert.strictEqual(balance0.toNumber(), 0, "initial balance must be 0");
+    await token.transfer(StandardController.address, 20, {from: accounts[0]});
+    const balance1 = await token.balanceOf(StandardController.address);
+    assert.strictEqual(balance1.toNumber(), 20, "ERC20 transfer should succeed");
+    await controller.reclaimToken(token.address);
+    const balance2 = await token.balanceOf(StandardController.address);
+    assert.strictEqual(balance2.toNumber(), balance0.toNumber(), "mismatch in token before and after");
+    const amount1 = await token.balanceOf(accounts[0]);
+    assert.strictEqual(amount1.toNumber(), amount0.toNumber(), "unable to recover");
+  });
+
+  it("should be destructible", async () => {
+    await controller.destroy();
+    try {
+      await controller.balanceOf(0x0);
+    } catch {
+      return;
+    }
+    assert.fail("succeeded", "fail", "contract should be destroyed");
   });
 
 });

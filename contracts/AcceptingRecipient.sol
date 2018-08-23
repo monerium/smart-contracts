@@ -1,8 +1,9 @@
 pragma solidity ^0.4.24;
 
 import "./TokenRecipient.sol";
+import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
-contract AcceptingRecipient is TokenRecipient {
+contract AcceptingRecipient is TokenRecipient, Ownable {
 
     address public from;
     uint256 public amount;
