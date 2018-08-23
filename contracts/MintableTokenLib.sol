@@ -38,7 +38,7 @@ library MintableTokenLib {
         emit Transfer(0x0, to, amount);
         return true;
     }
-    
+
     function burn(
         TokenStorage self, 
         address from, 
@@ -53,4 +53,3 @@ library MintableTokenLib {
     }
 
 }
-
