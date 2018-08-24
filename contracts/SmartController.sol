@@ -4,6 +4,10 @@ import "./SmartTokenLib.sol";
 import "./MintableController.sol";
 import "./Validator.sol";
 
+/**
+ * @title SmartController
+ * @dev This contract adds "smart" functionality which is required from a regulatory perspective.
+ */
 contract SmartController is MintableController {
 
     using SmartTokenLib for SmartTokenLib.SmartStorage;
@@ -14,7 +18,12 @@ contract SmartController is MintableController {
     uint public decimals = 18;
     uint constant public INITIAL_SUPPLY = 0;
 
-    // CONSTRUCTOR
+    /**
+     * @dev Contract constructor.
+     * @param _storage Address of the token storage for the controller.
+     * @param validator Address of validator.
+     * @param ticker_ 3 letter currency ticker.
+     */
     constructor(address _storage, address validator, bytes3 ticker_)
         public
         MintableController(_storage, INITIAL_SUPPLY) 
@@ -24,11 +33,27 @@ contract SmartController is MintableController {
         ticker = ticker_;
     }
 
-    // EXTERNAL
+    /**
+     * @dev Sets a new validator.
+     * @param validator Address of validator.
+     */
     function setValidator(address validator) external {
         smartToken.setValidator(validator);
     }
 
+    /**
+     * @dev Recovers tokens from an address and reissues them to another address.
+     * In case a user loses its private key the tokens can be recovered by burning
+     * the tokens from that address and reissuing to a new address.
+     * To recover tokens the contract owner needs to provide a signature
+     * proving that the token owner has authorized the owner to do so.
+     * @param from Address to burn tokens from.
+     * @param to Address to mint tokens to.
+     * @param h Hash which the token owner signed.
+     * @param v Signature component.
+     * @param r Signature component.
+     * @param s Sigature component.
+     */
     function recover(address from, address to, bytes32 h, uint8 v, bytes32 r, bytes32 s)
         external
         onlyOwner
@@ -37,19 +62,28 @@ contract SmartController is MintableController {
         return SmartTokenLib.recover(token, from, to, h, v, r, s);
     }
 
-    // EXTERNAL ERC20
+    /**
+     * @dev Transfers tokens [ERC20]. 
+     * See transfer_withCaller for documentation.
+     */
     function transfer(address to, uint value) 
         external 
-        returns (bool ok) 
+        returns (bool) 
     {
         return transfer_withCaller(msg.sender, to, value);
     }
 
-    // PUBLIC ERC20 FRONT
+    /**
+     * @dev Transfers tokens [ERC20]. 
+     * Prior to transfering tokens the validator needs to approve.
+     * @param caller Address of the caller passed through the frontend.
+     * @param to Recipient address.
+     * @param amount Number of tokens to transfer.
+     */
     function transfer_withCaller(address _caller, address to, uint value) 
         public 
         whenNotPaused
-        returns (bool ok) 
+        returns (bool) 
     {
         if (!smartToken.validate(_caller, to, value)) {
             revert("transfer is not valid");
@@ -57,7 +91,11 @@ contract SmartController is MintableController {
         return super.transfer_withCaller(_caller, to, value);
     }
 
-    // EXTERNAL CONSTANT
+
+    /**
+     * @dev Gets the current validator.
+     * @return Address of validator.
+     */
     function getValidator() external view returns (address) {
         return smartToken.getValidator();
     }

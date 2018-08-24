@@ -153,6 +153,7 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
 
     /**
      * @dev Transfers tokens [ERC20]. 
+     * @param caller Address of the caller passed through the frontend.
      * @param to Recipient address.
      * @param amount Number of tokens to transfer.
      */
@@ -169,6 +170,7 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
     /**
      * @dev Transfers tokens from a specific address [ERC20].
      * The address owner has to approve the spender beforehand.
+     * @param caller Address of the caller passed through the frontend.
      * @param from Address to debet the tokens from.
      * @param to Recipient address.
      * @param amount Number of tokens to transfer.
@@ -189,6 +191,7 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
      * security vulnerability described in:
      * https://docs.google.com/document/d/1YLPtQxZu1UAvO9cZ1O2RPXBbT0mooh4DYKjA_jp-RLM/edit#heading=h.quou09mcbpzw
      * Use transferAndCall to mitigate.
+     * @param caller Address of the caller passed through the frontend.
      * @param spender The address of the future spender.
      * @param amount The allowance of the spender.
      */
@@ -204,6 +207,7 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
     /**
      * @dev Transfers tokens and subsequently calls a method on the recipient [ERC677].
      * If the recipient is a non-contract address this method behaves just like transfer.
+     * @param caller Address of the caller passed through the frontend.
      * @param to Recipient address.
      * @param amount Number of tokens to transfer.
      */
