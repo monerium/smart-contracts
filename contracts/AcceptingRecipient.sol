@@ -3,6 +3,11 @@ pragma solidity ^0.4.24;
 import "./ITokenRecipient.sol";
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
+/**
+ * @title AcceptingRecipient
+ * @dev [ERC677]-compatible contract.
+ * The contract accepts token ownership and stores data in public member variables.
+ */
 contract AcceptingRecipient is ITokenRecipient, Ownable {
 
     address public from;
