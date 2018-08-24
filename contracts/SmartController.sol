@@ -66,11 +66,11 @@ contract SmartController is MintableController {
      * @dev Transfers tokens [ERC20]. 
      * See transfer_withCaller for documentation.
      */
-    function transfer(address to, uint value) 
+    function transfer(address to, uint amount) 
         external 
         returns (bool) 
     {
-        return transfer_withCaller(msg.sender, to, value);
+        return transfer_withCaller(msg.sender, to, amount);
     }
 
     /**
@@ -80,15 +80,15 @@ contract SmartController is MintableController {
      * @param to Recipient address.
      * @param amount Number of tokens to transfer.
      */
-    function transfer_withCaller(address _caller, address to, uint value) 
+    function transfer_withCaller(address caller, address to, uint amount) 
         public 
         whenNotPaused
         returns (bool) 
     {
-        if (!smartToken.validate(_caller, to, value)) {
+        if (!smartToken.validate(caller, to, amount)) {
             revert("transfer is not valid");
         }
-        return super.transfer_withCaller(_caller, to, value);
+        return super.transfer_withCaller(caller, to, amount);
     }
 
 

@@ -27,7 +27,7 @@ contract MintableController is StandardController {
      * @param amount Number of tokens to mint.
      */
     function mint(uint amount) external onlyOwner returns (bool) {
-        return token.mintTo(owner, amount);
+        return token.mint(owner, amount);
     }
 
     /**

@@ -31,6 +31,15 @@ contract TokenFrontend is Claimable, CanReclaimToken, NoOwner {
     event Transfer(address indexed from, address indexed to, uint amount);
 
     /**
+     * @dev Emitted when tokens are transferred.
+     * @param from Sender address.
+     * @param to Recipient address.
+     * @param amount Number of tokens transferred.
+     * @param data Additional data passed to the recipient's tokenFallback method.
+     */
+    event Transfer(address indexed from, address indexed to, uint amount, bytes data);
+
+    /**
      * @dev Emitted when spender is granted an allowance.
      * @param owner Address of the owner of the tokens to spend.
      * @param spender The address of the future spender.
@@ -57,7 +66,7 @@ contract TokenFrontend is Claimable, CanReclaimToken, NoOwner {
      */
     function setController(address address_) public onlyOwner {
         assert(address_ != 0x0);
-        controller = SmartController(_address);
+        controller = SmartController(address_);
         assert(controller.ticker() == ticker);
     }
 
@@ -104,12 +113,12 @@ contract TokenFrontend is Claimable, CanReclaimToken, NoOwner {
      * @param amount Number of tokens to transfer.
      * @param data Additional data passed to the recipient's tokenFallback method.
      */
-    function transferAndCall(address receiver, uint256 amount, bytes data) 
+    function transferAndCall(address to, uint256 amount, bytes data) 
         external
         returns (bool ok) 
     {
-        ok = controller.transferAndCall_withCaller(msg.sender, receiver, amount, data);
-        emit Transfer(msg.sender, receiver, amount, data);
+        ok = controller.transferAndCall_withCaller(msg.sender, to, amount, data);
+        emit Transfer(msg.sender, to, amount, data);
     }
 
     /**
