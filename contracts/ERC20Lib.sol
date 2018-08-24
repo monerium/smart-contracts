@@ -3,6 +3,11 @@ pragma solidity ^0.4.24;
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
 import "./TokenStorage.sol";
 
+/**
+ * @title ERC20Lib
+ * @dev Standard ERC20 token functionality.
+ * https://github.com/ethereum/EIPs/issues/20
+ */
 library ERC20Lib {
 
     using SafeMath for uint;
