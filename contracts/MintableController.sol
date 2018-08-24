@@ -18,22 +18,11 @@ contract MintableController is StandardController {
         return token.mint(owner, amount);
     }
 
-    function mintTo(
-        address to,
-        uint amount,
-        bytes32 h,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    )
+    function mintTo(address to, uint amount)
         external
         onlyOwner
         returns (bool)
     {
-        require(
-            ecrecover(h, v, r, s) == to,
-            "signature/hash does not recover to address"
-        );
         return token.mint(to, amount);
     }
     
