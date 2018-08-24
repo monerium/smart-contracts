@@ -2,7 +2,7 @@ pragma solidity ^0.4.24;
 
 import "./ERC20Lib.sol";
 import "./MintableTokenLib.sol";
-import "./Validator.sol";
+import "./IValidator.sol";
 
 library SmartTokenLib {
 
@@ -10,7 +10,7 @@ library SmartTokenLib {
     using MintableTokenLib for TokenStorage;
 
     struct SmartStorage {
-        Validator validator;
+        IValidator validator;
     }
 
     // EVENTS
@@ -20,7 +20,7 @@ library SmartTokenLib {
     function setValidator(SmartStorage storage self, address validator) 
         internal 
     {
-        self.validator = Validator(validator);
+        self.validator = IValidator(validator);
     }
 
     function validate(SmartStorage storage self, address from, address to, uint value) 

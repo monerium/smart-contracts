@@ -1,6 +1,6 @@
 pragma solidity ^0.4.24;
 
-interface Validator {
+interface IValidator {
 
     // EVENTS
     event Decision(address indexed from, address indexed to, bool valid, uint value);

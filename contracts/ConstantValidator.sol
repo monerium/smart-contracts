@@ -1,11 +1,11 @@
 pragma solidity ^0.4.24;
 
-import "./Validator.sol";
+import "./IValidator.sol";
 import "zeppelin-solidity/contracts/ownership/Claimable.sol";
 import "zeppelin-solidity/contracts/ownership/NoOwner.sol";
 import "zeppelin-solidity/contracts/ownership/CanReclaimToken.sol";
 
-contract ConstantValidator is Validator, Claimable, CanReclaimToken, NoOwner {
+contract ConstantValidator is IValidator, Claimable, CanReclaimToken, NoOwner {
 
     bool valid;
 

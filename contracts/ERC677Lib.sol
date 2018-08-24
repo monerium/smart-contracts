@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 
 import "zeppelin-solidity/contracts/AddressUtils.sol";
-import "./TokenRecipient.sol";
+import "./ITokenRecipient.sol";
 import "./TokenStorage.sol";
 import "./ERC20Lib.sol";
 
@@ -26,7 +26,7 @@ library ERC677Lib {
         if (db.transfer(caller, receiver, amount)) {
             emit Transfer(caller, receiver, amount, data);
             if (receiver.isContract()) {
-                TokenRecipient recipient = TokenRecipient(receiver);
+                ITokenRecipient recipient = ITokenRecipient(receiver);
                 recipient.tokenFallback(caller, amount, data);
             }
             return true;

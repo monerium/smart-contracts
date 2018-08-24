@@ -2,7 +2,7 @@ pragma solidity ^0.4.24;
 
 import "./SmartTokenLib.sol";
 import "./MintableController.sol";
-import "./Validator.sol";
+import "./IValidator.sol";
 
 /**
  * @title SmartController
