@@ -12,64 +12,113 @@ library ERC20Lib {
 
     using SafeMath for uint;
 
-    // EVENTS
-    event Transfer(address indexed from, address indexed to, uint value);
-    event Approval(address indexed owner, address indexed spender, uint value);
+    /**
+     * @dev Emitted when tokens are transferred.
+     * @param from Sender address.
+     * @param to Recipient address.
+     * @param amount Number of tokens transferred.
+     */
+    event Transfer(address indexed from, address indexed to, uint amount);
 
-    // INTERNAL
-    function transfer(TokenStorage db, address caller, address to, uint value) 
+    /**
+     * @dev Emitted when spender is granted an allowance.
+     * @param owner Address of the owner of the tokens to spend.
+     * @param spender The address of the future spender.
+     * @param amount The allowance of the spender.
+     */
+    event Approval(address indexed owner, address indexed spender, uint amount);
+
+    /**
+     * @dev Transfers tokens [ERC20]. 
+     * @param db Token storage to operate on.
+     * @param caller Address of the caller passed through the frontend.
+     * @param to Recipient address.
+     * @param amount Number of tokens to transfer.
+     */
+    function transfer(TokenStorage db, address caller, address to, uint amount) 
         internal
         returns (bool success) 
     {
-        db.subBalance(caller, value);
-        db.addBalance(to, value);
-        emit Transfer(caller, to, value);
+        db.subBalance(caller, amount);
+        db.addBalance(to, amount);
+        emit Transfer(caller, to, amount);
         return true;
     }
 
+    /**
+     * @dev Transfers tokens from a specific address [ERC20].
+     * The address owner has to approve the spender beforehand.
+     * @param db Token storage to operate on.
+     * @param caller Address of the caller passed through the frontend.
+     * @param from Address to debet the tokens from.
+     * @param to Recipient address.
+     * @param amount Number of tokens to transfer.
+     */
     function transferFrom(
         TokenStorage db, 
         address caller, 
         address from, 
         address to, 
-        uint value
+        uint amount
     ) 
         internal
         returns (bool success) 
     {
         uint allowance = db.getAllowed(from, caller);
-        db.subBalance(from, value);
-        db.addBalance(to, value);
-        db.setAllowed(from, caller, allowance.sub(value));
-        emit Transfer(from, to, value);
+        db.subBalance(from, amount);
+        db.addBalance(to, amount);
+        db.setAllowed(from, caller, allowance.sub(amount));
+        emit Transfer(from, to, amount);
         return true;
     }
 
-    // TODO: race condition
-    function approve(TokenStorage db, address caller, address spender, uint value) 
+    /**
+     * @dev Approves a spender [ERC20].
+     * Note that using the approve/transferFrom presents a possible
+     * security vulnerability described in:
+     * https://docs.google.com/document/d/1YLPtQxZu1UAvO9cZ1O2RPXBbT0mooh4DYKjA_jp-RLM/edit#heading=h.quou09mcbpzw
+     * Use transferAndCall to mitigate.
+     * @param db Token storage to operate on.
+     * @param caller Address of the caller passed through the frontend.
+     * @param spender The address of the future spender.
+     * @param amount The allowance of the spender.
+     */
+    function approve(TokenStorage db, address caller, address spender, uint amount) 
         public
         returns (bool success) 
     {
-        db.setAllowed(caller, spender, value);
-        emit Approval(caller, spender, value);
+        db.setAllowed(caller, spender, amount);
+        emit Approval(caller, spender, amount);
         return true;
     }
 
-    // INTERNAL CONSTANT
-    function balanceOf(TokenStorage db, address _owner) 
+    /**
+     * @dev Returns the number tokens associated with an address.
+     * @param db Token storage to operate on.
+     * @param who Address to lookup.
+     * @return Balance of address.
+     */
+    function balanceOf(TokenStorage db, address who) 
         internal
         view 
         returns (uint balance) 
     {
-        return db.getBalance(_owner);
+        return db.getBalance(who);
     }
 
-    function allowance(TokenStorage db, address _owner, address spender) 
+    /** 
+     * @dev Returns the allowance for a spender 
+     * @param db Token storage to operate on.
+     * @param owner The address of the owner of the tokens.
+     * @param spender The address of the spender.
+     * @return Number of tokens the spender is allowed to spend.
+     */
+    function allowance(TokenStorage db, address owner, address spender) 
         internal
         view 
         returns (uint remaining) 
     {
-        return db.getAllowed(_owner, spender);
+        return db.getAllowed(owner, spender);
     }
 
 }
