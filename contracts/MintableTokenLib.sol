@@ -19,35 +19,40 @@ library MintableTokenLib {
     event Transfer(address indexed from, address indexed to, uint value);
 
     /**
-     * @dev Function to mint tokens
+     * @dev Mints new tokens.
+     * @param db Token storage to operate on.
      * @param to The address that will recieve the minted tokens.
      * @param amount The amount of tokens to mint.
-     * @return A boolean that indicates if the operation was successful.
      */
-    // function mint(address to, uint amount) onlyOwner canMint returns (bool) {
     function mint(
-        TokenStorage self, 
+        TokenStorage db, 
         address to, 
         uint amount
     ) 
         internal 
         returns (bool) 
     {
-        self.addBalance(to, amount);
+        db.addBalance(to, amount);
         emit Mint(to, amount);
         emit Transfer(0x0, to, amount);
         return true;
     }
 
+    /**
+     * @dev Burns tokens.
+     * @param db Token storage to operate on.
+     * @param from The address holding tokens.
+     * @param amount The amount of tokens to burn.
+     */
     function burn(
-        TokenStorage self, 
+        TokenStorage db, 
         address from, 
         uint amount
     ) 
         internal
         returns (bool) 
     {
-        self.subBalance(from, amount);
+        db.subBalance(from, amount);
         emit Burn(from, amount);
         return true;
     }
