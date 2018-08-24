@@ -14,6 +14,7 @@ import "zeppelin-solidity/contracts/lifecycle/Pausable.sol";
  * @title StandardController
  * @dev This is the base contract which delegates token methods [ERC20 and ERC677]
  * to their respective library implementations.
+ * The controller is primarily intended to be interacted with via a token frontend.
  */
 contract StandardController is Pausable, Destructible, Claimable, CanReclaimToken, NoOwner {
 
@@ -210,6 +211,7 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
      * @param caller Address of the caller passed through the frontend.
      * @param to Recipient address.
      * @param amount Number of tokens to transfer.
+     * @param data Additional data passed to the recipient's tokenFallback method.
      */
     function transferAndCall_withCaller(
         address caller, 
@@ -228,7 +230,7 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
 
     /**
      * @dev Returns the total supply.
-     * @return Number of tokens 
+     * @return Number of tokens.
      */
     function totalSupply() external view returns (uint) {
         return token.getSupply();
@@ -237,7 +239,7 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
     /**
      * @dev Returns the number tokens associated with an address.
      * @param who Address to lookup.
-     * @return Balance of address 
+     * @return Balance of address.
      */
     function balanceOf(address who) external view returns (uint) {
         return token.getBalance(who);
