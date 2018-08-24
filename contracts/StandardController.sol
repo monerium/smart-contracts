@@ -11,11 +11,10 @@ import "zeppelin-solidity/contracts/lifecycle/Destructible.sol";
 import "zeppelin-solidity/contracts/lifecycle/Pausable.sol";
 
 /**
- * Standard ERC20 token
- *
- * https://github.com/ethereum/EIPs/issues/20
+ * @title StandardController
+ * @dev This is the base contract which delegates token methods [ERC20 and ERC677]
+ * to their respective library implementations.
  */
-
 contract StandardController is Pausable, Destructible, Claimable, CanReclaimToken, NoOwner {
 
     using ERC20Lib for TokenStorage;
@@ -28,7 +27,12 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
     string public symbol;
     uint public decimals = 18;
 
-    // MODIFIERS
+    /**
+    * @dev Modifier which prevents the function from being called by unauthorized parties.
+    * The caller must either be the sender or the function must be
+    * called via the frontend, otherwise the call is reverted. 
+    * @param caller The address of the passed-in caller. Used to preserve the original caller.
+    */
     modifier guarded(address caller) {
         require(
             msg.sender == caller || msg.sender == frontend, 
@@ -37,6 +41,10 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
         _;
     }
 
+    /**
+    * @dev Modifier which prevents tokens to be sent to well known blackholes.
+    * @param to The address of the intended recipient.
+    */
     modifier avoidBlackholes(address to) {
         require(to != 0x0, "must not send to 0x0");
         require(to != address(this), "must not send to controller");
@@ -45,9 +53,16 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
         _;
     }
 
-    // CONSTRUCTOR
+    /**
+    * @dev Contract constructor.
+    * @param _storage Address of the token storage for the controller.
+    * @param initialSupply The amount of tokens to mint upon creation. 
+    */
     constructor(address _storage, uint initialSupply) public {
-        assert(_storage == 0x0 || initialSupply == 0);
+        require(
+            _storage == 0x0 || initialSupply == 0,
+            "either a token storage must be initialized or no initial supply"
+        );
         if (_storage == 0x0) {
             token = new TokenStorage();
             token.addBalance(msg.sender, initialSupply);
@@ -56,43 +71,75 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
         }
     }
 
-    // EXTERNAL CONSTANT
+    /**
+    * @dev Returns the current frontend.
+    * @return Address of the frontend.
+    */
     function getFrontend() external view returns (address) {
         return frontend;
     }
 
+    /**
+    * @dev Returns the current storage.
+    * @return Address of the storage.
+    */
     function getStorage() external view returns (address) {
         return address(token);
     }
 
-    // EXTERNAL
+    /**
+    * @dev Sets a new frontend.
+    * @param frontend_ Address of the new frontend.
+     */
     function setFrontend(address frontend_) external onlyOwner { 
         frontend = frontend_;
     }
 
-    // EXTERNAL ERC20
-    function transfer(address to, uint value) 
+    /**
+    * @dev Sets a new storage.
+    * @param storage_ Address of the new storage.
+    */
+    function setStorage(address storage_) external onlyOwner { 
+        token = TokenStorage(storage_);
+    }
+
+    /**
+    * @dev Transfers tokens [ERC20]. 
+    * See transfer_withCaller for documentation.
+    */
+    function transfer(address to, uint amount) 
         external 
         returns (bool ok) 
     {
-        return transfer_withCaller(msg.sender, to, value);
+        return transfer_withCaller(msg.sender, to, amount);
     }
 
-    function transferFrom(address from, address to, uint value) 
+    /**
+    * @dev Transfers tokens from a specific address [ERC20].
+    * See transferFrom_withCaller for documentation.
+    */
+    function transferFrom(address from, address to, uint amount) 
         external
         returns (bool ok) 
     {
-        return transferFrom_withCaller(msg.sender, from, to, value);
+        return transferFrom_withCaller(msg.sender, from, to, amount);
     }
 
-    function approve(address spender, uint value) 
+    /**
+    * @dev Approves a spender [ERC20].
+    * See approve_withCaller for documentation.
+    */
+    function approve(address spender, uint amount) 
         external
         returns (bool ok) 
     {
-        return approve_withCaller(msg.sender, spender, value);
+        return approve_withCaller(msg.sender, spender, amount);
     }
 
-    // EXTERNAL ERC677
+    /**
+    * @dev Transfers tokens and subsequently calls a method on the recipient [ERC677].
+    * See transferAndCAll_withCaller for documentation.
+    */
     function transferAndCall(
         address to, 
         uint256 amount, 
@@ -104,37 +151,62 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
         return transferAndCall_withCaller(msg.sender, to, amount, data);
     }
 
-    // PUBLIC ERC20 FRONT
-    function transfer_withCaller(address caller, address to, uint value) 
+    /**
+    * @dev Transfers tokens [ERC20]. 
+    * @param to Recipient address.
+    * @param amount Number of tokens to transfer.
+    */
+    function transfer_withCaller(address caller, address to, uint amount) 
         public
         guarded(caller)
         avoidBlackholes(to)
         whenNotPaused
         returns (bool ok) 
     {
-        return token.transfer(caller, to, value);
+        return token.transfer(caller, to, amount);
     }
 
-    function transferFrom_withCaller(address caller, address from, address to, uint value) 
+    /**
+    * @dev Transfers tokens from a specific address [ERC20].
+    * The address owner has to approve the spender beforehand.
+    * @param from Address to debet the tokens from.
+    * @param to Recipient address.
+    * @param amount Number of tokens to transfer.
+    */
+    function transferFrom_withCaller(address caller, address from, address to, uint amount) 
         public
         guarded(caller)
         avoidBlackholes(to)
         whenNotPaused
         returns (bool ok) 
     {
-        return token.transferFrom(caller, from, to, value);
+        return token.transferFrom(caller, from, to, amount);
     }
 
-    function approve_withCaller(address caller, address spender, uint value) 
+    /**
+    * @dev Approves a spender [ERC20].
+    * Note that using the approve/transferFrom presents a possible
+    * security vulnerability described in:
+    * https://docs.google.com/document/d/1YLPtQxZu1UAvO9cZ1O2RPXBbT0mooh4DYKjA_jp-RLM/edit#heading=h.quou09mcbpzw
+    * Use transferAndCall to mitigate.
+    * @param spender The address of the future spender.
+    * @param amount The allowance of the spender.
+    */
+    function approve_withCaller(address caller, address spender, uint amount) 
         public
         guarded(caller)
         whenNotPaused
         returns (bool ok) 
     {
-        return token.approve(caller, spender, value);
+        return token.approve(caller, spender, amount);
     }
 
-    // PUBLIC ERC677 FRONT
+    /**
+    * @dev Transfers tokens and subsequently calls a method on the recipient [ERC677].
+    * If the recipient is a non-contract address this method behaves just like transfer.
+    * @param to Recipient address.
+    * @param amount Number of tokens to transfer.
+    */
     function transferAndCall_withCaller(
         address caller, 
         address to, 
@@ -150,15 +222,29 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
         return token.transferAndCall(caller, to, amount, data);
     }
 
-    // EXTERNAL ERC20 CONSTANT
+    /**
+    * @dev Returns the total supply.
+    * @return Number of tokens 
+    */
     function totalSupply() external view returns (uint) {
         return token.getSupply();
     }
 
+    /**
+    * @dev Returns the number tokens associated with an address.
+    * @param who Address to lookup.
+    @ @return Balance of address 
+    */
     function balanceOf(address who) external view returns (uint) {
         return token.getBalance(who);
     }
 
+    /** 
+    * @dev Returns the allowance for a spender 
+    * @param owner The address of the owner of the tokens.
+    * @param spender The address of the spender.
+    * @return Number of tokens the spender is allowed to spend.
+    */
     function allowance(address owner, address spender) external view returns (uint) {
         return token.allowance(owner, spender);
     }
