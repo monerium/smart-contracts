@@ -28,11 +28,11 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
     uint public decimals = 18;
 
     /**
-    * @dev Modifier which prevents the function from being called by unauthorized parties.
-    * The caller must either be the sender or the function must be
-    * called via the frontend, otherwise the call is reverted. 
-    * @param caller The address of the passed-in caller. Used to preserve the original caller.
-    */
+     * @dev Modifier which prevents the function from being called by unauthorized parties.
+     * The caller must either be the sender or the function must be
+     * called via the frontend, otherwise the call is reverted. 
+     * @param caller The address of the passed-in caller. Used to preserve the original caller.
+     */
     modifier guarded(address caller) {
         require(
             msg.sender == caller || msg.sender == frontend, 
@@ -42,9 +42,9 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
     }
 
     /**
-    * @dev Modifier which prevents tokens to be sent to well known blackholes.
-    * @param to The address of the intended recipient.
-    */
+     * @dev Modifier which prevents tokens to be sent to well known blackholes.
+     * @param to The address of the intended recipient.
+     */
     modifier avoidBlackholes(address to) {
         require(to != 0x0, "must not send to 0x0");
         require(to != address(this), "must not send to controller");
@@ -54,10 +54,10 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
     }
 
     /**
-    * @dev Contract constructor.
-    * @param _storage Address of the token storage for the controller.
-    * @param initialSupply The amount of tokens to mint upon creation. 
-    */
+     * @dev Contract constructor.
+     * @param _storage Address of the token storage for the controller.
+     * @param initialSupply The amount of tokens to mint upon creation. 
+     */
     constructor(address _storage, uint initialSupply) public {
         require(
             _storage == 0x0 || initialSupply == 0,
@@ -72,41 +72,41 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
     }
 
     /**
-    * @dev Returns the current frontend.
-    * @return Address of the frontend.
-    */
+     * @dev Returns the current frontend.
+     * @return Address of the frontend.
+     */
     function getFrontend() external view returns (address) {
         return frontend;
     }
 
     /**
-    * @dev Returns the current storage.
-    * @return Address of the storage.
-    */
+     * @dev Returns the current storage.
+     * @return Address of the storage.
+     */
     function getStorage() external view returns (address) {
         return address(token);
     }
 
     /**
-    * @dev Sets a new frontend.
-    * @param frontend_ Address of the new frontend.
+     * @dev Sets a new frontend.
+     * @param frontend_ Address of the new frontend.
      */
     function setFrontend(address frontend_) external onlyOwner { 
         frontend = frontend_;
     }
 
     /**
-    * @dev Sets a new storage.
-    * @param storage_ Address of the new storage.
-    */
+     * @dev Sets a new storage.
+     * @param storage_ Address of the new storage.
+     */
     function setStorage(address storage_) external onlyOwner { 
         token = TokenStorage(storage_);
     }
 
     /**
-    * @dev Transfers tokens [ERC20]. 
-    * See transfer_withCaller for documentation.
-    */
+     * @dev Transfers tokens [ERC20]. 
+     * See transfer_withCaller for documentation.
+     */
     function transfer(address to, uint amount) 
         external 
         returns (bool ok) 
@@ -115,9 +115,9 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
     }
 
     /**
-    * @dev Transfers tokens from a specific address [ERC20].
-    * See transferFrom_withCaller for documentation.
-    */
+     * @dev Transfers tokens from a specific address [ERC20].
+     * See transferFrom_withCaller for documentation.
+     */
     function transferFrom(address from, address to, uint amount) 
         external
         returns (bool ok) 
@@ -126,9 +126,9 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
     }
 
     /**
-    * @dev Approves a spender [ERC20].
-    * See approve_withCaller for documentation.
-    */
+     * @dev Approves a spender [ERC20].
+     * See approve_withCaller for documentation.
+     */
     function approve(address spender, uint amount) 
         external
         returns (bool ok) 
@@ -137,9 +137,9 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
     }
 
     /**
-    * @dev Transfers tokens and subsequently calls a method on the recipient [ERC677].
-    * See transferAndCAll_withCaller for documentation.
-    */
+     * @dev Transfers tokens and subsequently calls a method on the recipient [ERC677].
+     * See transferAndCAll_withCaller for documentation.
+     */
     function transferAndCall(
         address to, 
         uint256 amount, 
@@ -152,10 +152,10 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
     }
 
     /**
-    * @dev Transfers tokens [ERC20]. 
-    * @param to Recipient address.
-    * @param amount Number of tokens to transfer.
-    */
+     * @dev Transfers tokens [ERC20]. 
+     * @param to Recipient address.
+     * @param amount Number of tokens to transfer.
+     */
     function transfer_withCaller(address caller, address to, uint amount) 
         public
         guarded(caller)
@@ -167,12 +167,12 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
     }
 
     /**
-    * @dev Transfers tokens from a specific address [ERC20].
-    * The address owner has to approve the spender beforehand.
-    * @param from Address to debet the tokens from.
-    * @param to Recipient address.
-    * @param amount Number of tokens to transfer.
-    */
+     * @dev Transfers tokens from a specific address [ERC20].
+     * The address owner has to approve the spender beforehand.
+     * @param from Address to debet the tokens from.
+     * @param to Recipient address.
+     * @param amount Number of tokens to transfer.
+     */
     function transferFrom_withCaller(address caller, address from, address to, uint amount) 
         public
         guarded(caller)
@@ -184,14 +184,14 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
     }
 
     /**
-    * @dev Approves a spender [ERC20].
-    * Note that using the approve/transferFrom presents a possible
-    * security vulnerability described in:
-    * https://docs.google.com/document/d/1YLPtQxZu1UAvO9cZ1O2RPXBbT0mooh4DYKjA_jp-RLM/edit#heading=h.quou09mcbpzw
-    * Use transferAndCall to mitigate.
-    * @param spender The address of the future spender.
-    * @param amount The allowance of the spender.
-    */
+     * @dev Approves a spender [ERC20].
+     * Note that using the approve/transferFrom presents a possible
+     * security vulnerability described in:
+     * https://docs.google.com/document/d/1YLPtQxZu1UAvO9cZ1O2RPXBbT0mooh4DYKjA_jp-RLM/edit#heading=h.quou09mcbpzw
+     * Use transferAndCall to mitigate.
+     * @param spender The address of the future spender.
+     * @param amount The allowance of the spender.
+     */
     function approve_withCaller(address caller, address spender, uint amount) 
         public
         guarded(caller)
@@ -202,11 +202,11 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
     }
 
     /**
-    * @dev Transfers tokens and subsequently calls a method on the recipient [ERC677].
-    * If the recipient is a non-contract address this method behaves just like transfer.
-    * @param to Recipient address.
-    * @param amount Number of tokens to transfer.
-    */
+     * @dev Transfers tokens and subsequently calls a method on the recipient [ERC677].
+     * If the recipient is a non-contract address this method behaves just like transfer.
+     * @param to Recipient address.
+     * @param amount Number of tokens to transfer.
+     */
     function transferAndCall_withCaller(
         address caller, 
         address to, 
@@ -223,28 +223,28 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
     }
 
     /**
-    * @dev Returns the total supply.
-    * @return Number of tokens 
-    */
+     * @dev Returns the total supply.
+     * @return Number of tokens 
+     */
     function totalSupply() external view returns (uint) {
         return token.getSupply();
     }
 
     /**
-    * @dev Returns the number tokens associated with an address.
-    * @param who Address to lookup.
-    @ @return Balance of address 
-    */
+     * @dev Returns the number tokens associated with an address.
+     * @param who Address to lookup.
+     * @return Balance of address 
+     */
     function balanceOf(address who) external view returns (uint) {
         return token.getBalance(who);
     }
 
     /** 
-    * @dev Returns the allowance for a spender 
-    * @param owner The address of the owner of the tokens.
-    * @param spender The address of the spender.
-    * @return Number of tokens the spender is allowed to spend.
-    */
+     * @dev Returns the allowance for a spender 
+     * @param owner The address of the owner of the tokens.
+     * @param spender The address of the spender.
+     * @return Number of tokens the spender is allowed to spend.
+     */
     function allowance(address owner, address spender) external view returns (uint) {
         return token.allowance(owner, spender);
     }
