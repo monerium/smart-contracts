@@ -25,15 +25,7 @@ contract('MintableController', accounts => {
   });
 
   it("should mint 82300 tokens to a non-owner address", async () => {
-    const sig = signature.replace(/^0x/, '');
-    const r = `0x${sig.slice(0, 64)}`;
-    const s = `0x${sig.slice(64, 128)}`;
-    var v = web3.toDecimal(`0x${sig.slice(128, 130)}`);
-
-    if (v < 27) v += 27;
-    assert(v == 27 || v == 28);
-
-    await controller.mintTo(address, 82300, hash, v, r, s);
+    await controller.mintTo(address, 82300);
     const balance = await controller.balanceOf(address);
     assert.strictEqual(balance.toNumber(), 82300, "did not mint 82300 tokens");
   });
