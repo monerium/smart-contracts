@@ -11,7 +11,7 @@ interface IValidator {
      * @param from Sender address.
      * @param to Recipient address.
      * @param valid True if transfer approved, false if rejected.
-     * @param amount The number of tokens.
+     * @param amount Number of tokens.
      */
     event Decision(address indexed from, address indexed to, bool valid, uint amount);
 
