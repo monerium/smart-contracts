@@ -2,6 +2,9 @@ pragma solidity ^0.4.24;
 
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
 
+/** @title TokenStorageLib
+ * @dev Implementation of an[external storage for tokens.
+ */
 library TokenStorageLib {
 
     using SafeMath for uint;
@@ -12,7 +15,12 @@ library TokenStorageLib {
         uint totalSupply;
     }
 
-    // INTERNAL
+    /**
+     * @dev Increases balance of an address.
+     * @param self Token storage to operate on.
+     * @param to Address to increase.
+     * @param amount Number of units to add.
+     */
     function addBalance(TokenStorage storage self, address to, uint amount) 
         internal 
     {
@@ -20,6 +28,12 @@ library TokenStorageLib {
         self.balances[to] = self.balances[to].add(amount);
     }
 
+    /**
+     * @dev Decreases balance of an address.
+     * @param self Token storage to operate on.
+     * @param from Address to decrease.
+     * @param amount Number of units to subtract.
+     */
     function subBalance(TokenStorage storage self, address from, uint amount) 
         internal 
     {
@@ -27,13 +41,24 @@ library TokenStorageLib {
         self.balances[from] = self.balances[from].sub(amount);
     }
 
+    /**
+     * @dev Sets the allowance for a spender.
+     * @param self Token storage to operate on.
+     * @param owner Address of the owner of the tokens to spend.
+     * @param spender Address of the spender.
+     * @param amount Qunatity of allowance.
+     */
     function setAllowed(TokenStorage storage self, address owner, address spender, uint amount) 
         internal
     {
         self.allowed[owner][spender] = amount;
     }
 
-    // INTERNAL CONSTANT
+    /**
+     * @dev Returns the supply of tokens.
+     * @param self Token storage to operate on.
+     * @return Total supply.
+     */
     function getSupply(TokenStorage storage self) 
         internal
         view 
@@ -42,6 +67,12 @@ library TokenStorageLib {
         return self.totalSupply;
     }
 
+    /**
+     * @dev Returns the balance of an address.
+     * @param self Token storage to operate on.
+     * @param who Address to lookup.
+     * @return Number of units.
+     */
     function getBalance(TokenStorage storage self, address who) 
         internal
         view 
@@ -50,6 +81,13 @@ library TokenStorageLib {
         return self.balances[who];
     }
 
+    /**
+     * @dev Returns the allowance for a spender.
+     * @param self Token storage to operate on.
+     * @param owner Address of the owner of the tokens to spend.
+     * @param spender Address of the spender.
+     * @return Number of units.
+     */
     function getAllowed(TokenStorage storage self, address owner, address spender) 
         internal
         view

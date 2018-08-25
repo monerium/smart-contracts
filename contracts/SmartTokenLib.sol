@@ -54,34 +54,6 @@ library SmartTokenLib {
     }
 
     /**
-     * @dev Sets a new validator.
-     * @param self Smart storage to operate on.
-     * @param validator Address of validator.
-     */
-    function setValidator(SmartStorage storage self, address validator) 
-        internal 
-    {
-        self.validator = IValidator(validator);
-    }
-
-
-    /**
-     * @dev Approves or rejects a transfer request.
-     * The request is forwarded to a validator which implements
-     * the actual business logic.
-     * @param self Smart storage to operate on.
-     * @param from Sender address.
-     * @param to Recipient address.
-     * @param amount Number of tokens.
-     */
-    function validate(SmartStorage storage self, address from, address to, uint amount) 
-        internal
-        returns (bool valid) 
-    { 
-        return self.validator.validate(from, to, amount);
-    }
-
-    /**
      * @dev Recovers tokens from an address and reissues them to another address.
      * In case a user loses its private key the tokens can be recovered by burning
      * the tokens from that address and reissuing to a new address.
