@@ -20,13 +20,13 @@ contract SmartController is MintableController {
 
     /**
      * @dev Contract constructor.
-     * @param _storage Address of the token storage for the controller.
+     * @param storage_ Address of the token storage for the controller.
      * @param validator Address of validator.
      * @param ticker_ 3 letter currency ticker.
      */
-    constructor(address _storage, address validator, bytes3 ticker_)
+    constructor(address storage_, address validator, bytes3 ticker_)
         public
-        MintableController(_storage, INITIAL_SUPPLY) 
+        MintableController(storage_, INITIAL_SUPPLY) 
     {
         assert(validator != 0x0);
         smartToken.setValidator(validator);

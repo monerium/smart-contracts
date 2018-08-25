@@ -13,12 +13,12 @@ contract MintableController is StandardController {
 
     /**
      * @dev Contract constructor.
-     * @param _storage Address of the token storage for the controller.
+     * @param storage_ Address of the token storage for the controller.
      * @param initialSupply The amount of tokens to mint upon creation. 
      */
-    constructor(address _storage, uint initialSupply) 
+    constructor(address storage_, uint initialSupply) 
         public
-        StandardController(_storage, initialSupply) 
+        StandardController(storage_, initialSupply) 
     { }
 
     /**

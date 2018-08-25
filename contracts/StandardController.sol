@@ -56,19 +56,19 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
 
     /**
      * @dev Contract constructor.
-     * @param _storage Address of the token storage for the controller.
+     * @param storage_ Address of the token storage for the controller.
      * @param initialSupply The amount of tokens to mint upon creation. 
      */
-    constructor(address _storage, uint initialSupply) public {
+    constructor(address storage_, uint initialSupply) public {
         require(
-            _storage == 0x0 || initialSupply == 0,
+            storage_ == 0x0 || initialSupply == 0,
             "either a token storage must be initialized or no initial supply"
         );
-        if (_storage == 0x0) {
+        if (storage_ == 0x0) {
             token = new TokenStorage();
             token.addBalance(msg.sender, initialSupply);
         } else {
-            token = TokenStorage(_storage);
+            token = TokenStorage(storage_);
         }
     }
 
