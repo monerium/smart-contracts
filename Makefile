@@ -1,8 +1,8 @@
 compile:
-	truffle compile --all
+	npx truffle compile --all
 
 migrate: 
-	truffle migrate --reset
+	npx truffle migrate --reset
 
 test: compile migrate
-	truffle test
+	npx truffle test
