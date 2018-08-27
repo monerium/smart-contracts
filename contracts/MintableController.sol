@@ -59,7 +59,7 @@ contract MintableController is StandardController {
      * proving that the token owner has authorized the owner to do so.
      * @param from Address of the token owner.
      * @param amount Number of tokens to burn.
-     * @param h Hash which the token owner signed.
+     * @param height Signature expires at this blockheight.
      * @param v Signature component.
      * @param r Signature component.
      * @param s Sigature component.
@@ -67,7 +67,7 @@ contract MintableController is StandardController {
     function burnFrom(
         address from,
         uint amount,
-        bytes32 h,
+        bytes height,
         uint8 v,
         bytes32 r,
         bytes32 s
@@ -76,6 +76,9 @@ contract MintableController is StandardController {
         onlyOwner
         returns (bool)
     {
+        bytes32 h = ECRecovery.toEthSignedMessageHash(
+            keccak256(abi.encodePacked(height))
+        );
         require(
             ecrecover(h, v, r, s) == from,
             "signature/hash does not recover from address"

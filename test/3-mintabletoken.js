@@ -30,10 +30,11 @@ contract('MintableController', accounts => {
     assert.strictEqual(balance.toNumber(), 82300, "did not mint 82300 tokens");
   });
 
-  it("should burn 82000 tokens to a non-owner address", async () => {
+  it("should burn 82000 tokens from a non-owner address", async () => {
     const balance0 = await controller.balanceOf(address);
 
-    const sig = signature.replace(/^0x/, '');
+    const signature1 = '0xe1965b11d51ae7f1b7c310bdac5e337ef79d71fa145c15318352e41d6affe70f659815dfd79d85f5290955a1aea9fabd6133d4c31bede2cb4b25735f60a55bb81b'
+    const sig = signature1.replace(/^0x/, '');
     const r = `0x${sig.slice(0, 64)}`;
     const s = `0x${sig.slice(64, 128)}`;
     var v = web3.toDecimal(`0x${sig.slice(128, 130)}`);
@@ -41,7 +42,7 @@ contract('MintableController', accounts => {
     if (v < 27) v += 27;
     assert(v == 27 || v == 28);
 
-    await controller.burnFrom(address, 82000, hash, v, r, s);
+    await controller.burnFrom(address, 82000, 100, v, r, s);
     const balance1 = await controller.balanceOf(address);
     assert.strictEqual(balance1.toNumber()-balance0.toNumber(), -82000, "did not burn 82000 tokens");
   });
