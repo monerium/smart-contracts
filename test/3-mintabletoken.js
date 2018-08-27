@@ -33,7 +33,8 @@ contract('MintableController', accounts => {
   it("should burn 82000 tokens from a non-owner address", async () => {
     const balance0 = await controller.balanceOf(address);
 
-    const signature1 = '0xe1965b11d51ae7f1b7c310bdac5e337ef79d71fa145c15318352e41d6affe70f659815dfd79d85f5290955a1aea9fabd6133d4c31bede2cb4b25735f60a55bb81b'
+    // const signature1 = '0xe1965b11d51ae7f1b7c310bdac5e337ef79d71fa145c15318352e41d6affe70f659815dfd79d85f5290955a1aea9fabd6133d4c31bede2cb4b25735f60a55bb81b';
+    const signature1 = '0xc88fee880e28de7db09d22de099063bed815fdf7fafc674a148ada7c1c53719a2360f794f0ba81767f92d93eaceedb9875966019a630dbd8735d35401ba897cf1c';
     const sig = signature1.replace(/^0x/, '');
     const r = `0x${sig.slice(0, 64)}`;
     const s = `0x${sig.slice(64, 128)}`;

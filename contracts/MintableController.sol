@@ -1,6 +1,6 @@
 pragma solidity ^0.4.24;
 
-import "openzeppelin-solidity/contracts/ECRecovery.sol";
+// import "openzeppelin-solidity/contracts/ECRecovery.sol";
 import "./StandardController.sol";
 import "./MintableTokenLib.sol";
 
@@ -67,7 +67,7 @@ contract MintableController is StandardController {
     function burnFrom(
         address from,
         uint amount,
-        bytes height,
+        uint height,
         uint8 v,
         bytes32 r,
         bytes32 s
@@ -76,14 +76,44 @@ contract MintableController is StandardController {
         onlyOwner
         returns (bool)
     {
-        bytes32 h = ECRecovery.toEthSignedMessageHash(
-            keccak256(abi.encodePacked(height))
-        );
+        bytes32 h = toEthereumSignedMessage(height);
         require(
             ecrecover(h, v, r, s) == from,
             "signature/hash does not recover from address"
         );
+        // require(
+            // block.number < height,
+            // "signature only valid before block"
+        // );
         return token.burn(from, amount);
     }
-    
+
+    // @dev Hashes the signed message
+    // @ref https://github.com/ethereum/go-ethereum/issues/3731#issuecomment-293866868
+    function toEthereumSignedMessage(uint num) internal pure returns (bytes32) {
+        string memory msg_ = uint2str(num);
+        uint len = bytes(msg_).length;
+        require(len > 0, "message must be non-zero");
+        bytes memory prefix = "\x19Ethereum Signed Message:\n";
+        return keccak256(abi.encodePacked(prefix, uint2str(len), msg_));
+    }
+
+    function uint2str(uint i) internal pure returns (string) {
+        if (i == 0) return "0";
+        uint i1 = i;
+        uint j = i1;
+        uint len;
+        while (j != 0){
+            len++;
+            j /= 10;
+        }
+        bytes memory bstr = new bytes(len);
+        uint k = len - 1;
+        while (i1 != 0){
+            bstr[k--] = byte(48 + i1 % 10);
+            i1 /= 10;
+        }
+        return string(bstr);
+    }
+
 }
