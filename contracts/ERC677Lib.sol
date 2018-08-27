@@ -1,6 +1,6 @@
 pragma solidity ^0.4.24;
 
-import "zeppelin-solidity/contracts/AddressUtils.sol";
+import "openzeppelin-solidity/contracts/AddressUtils.sol";
 import "./ITokenRecipient.sol";
 import "./TokenStorage.sol";
 import "./ERC20Lib.sol";

@@ -4,11 +4,11 @@ pragma solidity ^0.4.24;
 import "./TokenStorage.sol";
 import "./ERC20Lib.sol";
 import "./ERC677Lib.sol";
-import "zeppelin-solidity/contracts/ownership/Claimable.sol";
-import "zeppelin-solidity/contracts/ownership/CanReclaimToken.sol";
-import "zeppelin-solidity/contracts/ownership/NoOwner.sol";
-import "zeppelin-solidity/contracts/lifecycle/Destructible.sol";
-import "zeppelin-solidity/contracts/lifecycle/Pausable.sol";
+import "openzeppelin-solidity/contracts/ownership/Claimable.sol";
+import "openzeppelin-solidity/contracts/ownership/CanReclaimToken.sol";
+import "openzeppelin-solidity/contracts/ownership/NoOwner.sol";
+import "openzeppelin-solidity/contracts/lifecycle/Destructible.sol";
+import "openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 
 /**
  * @title StandardController

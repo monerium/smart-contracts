@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 
-import "zeppelin-solidity/contracts/ownership/Claimable.sol";
-import "zeppelin-solidity/contracts/ownership/NoOwner.sol";
+import "openzeppelin-solidity/contracts/ownership/Claimable.sol";
+import "openzeppelin-solidity/contracts/ownership/NoOwner.sol";
 import "./IValidator.sol";
 
 /**

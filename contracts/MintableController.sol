@@ -1,5 +1,6 @@
 pragma solidity ^0.4.24;
 
+import "openzeppelin-solidity/contracts/ECRecovery.sol";
 import "./StandardController.sol";
 import "./MintableTokenLib.sol";
 
