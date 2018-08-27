@@ -4,10 +4,12 @@ var ERC677Lib = artifacts.require("./ERC677Lib.sol");
 var MintableTokenLib = artifacts.require("./MintableTokenLib.sol");
 var TokenStorageLib = artifacts.require("./TokenStorageLib.sol");
 var MintableTokenLib = artifacts.require("./MintableTokenLib.sol");
+var UIntLib = artifacts.require("./UIntLib.sol");
 var MintableController = artifacts.require("./MintableController.sol");
 
 module.exports = function(deployer) {
 
+  deployer.link(UIntLib, MintableController);
   deployer.link(TokenStorageLib, MintableController);
   deployer.link(ERC20Lib, MintableController);
   deployer.link(ERC677Lib, MintableController);

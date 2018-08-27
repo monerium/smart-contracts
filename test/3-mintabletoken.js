@@ -1,9 +1,9 @@
 var MintableController = artifacts.require("./MintableController.sol");
+var EthUtil = require("ethereumjs-util");
 
 const controller = MintableController.at(MintableController.address);
-const address = `0xFB7ce0578B4dc16803A3CB04fA0b286fCFfFF76d`;
-const hash = `0xa1de988600a42c4b4ab089b619297c17d53cffae5d5120d82d8a92d0bb3b78f2`;
-const signature = `0x1e1769b8ca9ca3d7d4b747f15336c185aac391c89cd9b9bfaf26f0a38631690e64ccd925382278c055c527a58ffab853a9734d889a6bae2b920544645f8ce4361c`;
+const key = Buffer.from("23f2ee33c522046e80b67e96ceb84a05b60b9434b0ee2e3ae4b1311b9f5dcc46", "hex");
+const address = `0x${EthUtil.privateToAddress(key).toString("hex")}`;
 
 contract('MintableController', accounts => {
 
@@ -30,20 +30,38 @@ contract('MintableController', accounts => {
     assert.strictEqual(balance.toNumber(), 82300, "did not mint 82300 tokens");
   });
 
-  it("should burn 82000 tokens from a non-owner address", async () => {
-    const balance0 = await controller.balanceOf(address);
-
-    // const signature1 = '0xe1965b11d51ae7f1b7c310bdac5e337ef79d71fa145c15318352e41d6affe70f659815dfd79d85f5290955a1aea9fabd6133d4c31bede2cb4b25735f60a55bb81b';
-    const signature1 = '0xc88fee880e28de7db09d22de099063bed815fdf7fafc674a148ada7c1c53719a2360f794f0ba81767f92d93eaceedb9875966019a630dbd8735d35401ba897cf1c';
-    const sig = signature1.replace(/^0x/, '');
-    const r = `0x${sig.slice(0, 64)}`;
-    const s = `0x${sig.slice(64, 128)}`;
-    var v = web3.toDecimal(`0x${sig.slice(128, 130)}`);
+  it("should not burn 82000 tokens from a non-owner address [fails blockheight]", async () => {
+    const height = await web3.eth.blockNumber;
+    const hash = EthUtil.hashPersonalMessage(Buffer.from(height.toString()));
+    const sig = EthUtil.ecsign(hash, key);
+    const r = `0x${sig.r.toString("hex")}`;
+    const s = `0x${sig.s.toString("hex")}`;
+    const v = sig.v;
 
     if (v < 27) v += 27;
     assert(v == 27 || v == 28);
 
-    await controller.burnFrom(address, 82000, 100, v, r, s);
+    try {
+      await controller.burnFrom(address, 82000, height, v, r, s);
+    } catch (e) {
+      return;
+    }
+    assert.fail("succeeded", "fail", "burn from address was supposed to fail");
+  });
+
+  it("should burn 82000 tokens from a non-owner address", async () => {
+    const height = await web3.eth.blockNumber+1;
+    const hash = EthUtil.hashPersonalMessage(Buffer.from(height.toString()));
+    const sig = EthUtil.ecsign(hash, key);
+    const r = `0x${sig.r.toString("hex")}`;
+    const s = `0x${sig.s.toString("hex")}`;
+    const v = sig.v;
+
+    if (v < 27) v += 27;
+    assert(v == 27 || v == 28);
+
+    const balance0 = await controller.balanceOf(address);
+    await controller.burnFrom(address, 82000, height, v, r, s);
     const balance1 = await controller.balanceOf(address);
     assert.strictEqual(balance1.toNumber()-balance0.toNumber(), -82000, "did not burn 82000 tokens");
   });

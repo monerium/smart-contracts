@@ -1,8 +1,8 @@
 pragma solidity ^0.4.24;
 
-// import "openzeppelin-solidity/contracts/ECRecovery.sol";
 import "./StandardController.sol";
 import "./MintableTokenLib.sol";
+import "./UIntLib.sol";
 
 /**
 * @title MintableController
@@ -11,6 +11,7 @@ import "./MintableTokenLib.sol";
 contract MintableController is StandardController {
 
     using MintableTokenLib for TokenStorage;
+    using UIntLib for uint;
 
     /**
      * @dev Contract constructor.
@@ -59,7 +60,7 @@ contract MintableController is StandardController {
      * proving that the token owner has authorized the owner to do so.
      * @param from Address of the token owner.
      * @param amount Number of tokens to burn.
-     * @param height Signature expires at this blockheight.
+     * @param height Signature valid upto this blockheight.
      * @param v Signature component.
      * @param r Signature component.
      * @param s Sigature component.
@@ -76,44 +77,16 @@ contract MintableController is StandardController {
         onlyOwner
         returns (bool)
     {
-        bytes32 h = toEthereumSignedMessage(height);
+        bytes32 h = height.toEthereumSignedMessage();
         require(
             ecrecover(h, v, r, s) == from,
             "signature/hash does not recover from address"
         );
-        // require(
-            // block.number < height,
-            // "signature only valid before block"
-        // );
+        require(
+            block.number <= height,
+            "signature only valid before block"
+        );
         return token.burn(from, amount);
-    }
-
-    // @dev Hashes the signed message
-    // @ref https://github.com/ethereum/go-ethereum/issues/3731#issuecomment-293866868
-    function toEthereumSignedMessage(uint num) internal pure returns (bytes32) {
-        string memory msg_ = uint2str(num);
-        uint len = bytes(msg_).length;
-        require(len > 0, "message must be non-zero");
-        bytes memory prefix = "\x19Ethereum Signed Message:\n";
-        return keccak256(abi.encodePacked(prefix, uint2str(len), msg_));
-    }
-
-    function uint2str(uint i) internal pure returns (string) {
-        if (i == 0) return "0";
-        uint i1 = i;
-        uint j = i1;
-        uint len;
-        while (j != 0){
-            len++;
-            j /= 10;
-        }
-        bytes memory bstr = new bytes(len);
-        uint k = len - 1;
-        while (i1 != 0){
-            bstr[k--] = byte(48 + i1 % 10);
-            i1 /= 10;
-        }
-        return string(bstr);
     }
 
 }
