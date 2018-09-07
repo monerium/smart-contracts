@@ -5,12 +5,8 @@ var ERC677Lib = artifacts.require("./ERC677Lib.sol");
 var MintableTokenLib = artifacts.require("./MintableTokenLib.sol");
 var SmartTokenLib = artifacts.require("./SmartTokenLib.sol");
 var TokenStorageLib = artifacts.require("./TokenStorageLib.sol");
-var TokenStorage = artifacts.require("./TokenStorage.sol");
-var StandardController = artifacts.require("./StandardController.sol");
 var MintableTokenLib = artifacts.require("./MintableTokenLib.sol");
 var UIntLib = artifacts.require("./UIntLib.sol");
-var MintableController = artifacts.require("./MintableController.sol");
-var SmartController = artifacts.require("./SmartController.sol");
 
 module.exports = function(deployer) {
 
