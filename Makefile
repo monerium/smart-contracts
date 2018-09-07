@@ -6,3 +6,9 @@ migrate:
 
 test: compile migrate
 	npx truffle test
+
+poa-migrate:
+	npx truffle migrate --reset --network poa
+
+poa-test: compile poa-migrate
+	npx truffle test --network poa

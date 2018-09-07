@@ -5,6 +5,11 @@ module.exports = {
 			port: 9545,
 			network_id: "*" // Match any network id
 		},
+		poa: {
+			host: "localhost",
+			port: 8545,
+			network_id: 100
+		},
 		monerium: {
 			host: "e.monerium.com", // Random IP for example purposes (do not use)
 			port: 8549,

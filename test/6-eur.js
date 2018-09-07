@@ -1,12 +1,14 @@
 var EUR = artifacts.require("./EUR.sol");
 var AcceptingRecipient = artifacts.require("./AcceptingRecipient.sol");
 var SimpleToken = artifacts.require("./SimpleToken.sol");
-var StandardController = artifacts.require("./StandardController.sol");
-
-const eur = EUR.at(EUR.address);
-const controller = StandardController.at(StandardController.address);
+var SmartController = artifacts.require("./SmartController.sol");
 
 contract("EUR", accounts => {
+
+  if (web3.version.network <= 100) return;
+
+  const eur = EUR.at(EUR.address);
+  const controller = SmartController.at(SmartController.address);
 
   it("should start with zero tokens", async () => {
     const supply = await eur.totalSupply();

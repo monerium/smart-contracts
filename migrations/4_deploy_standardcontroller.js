@@ -8,6 +8,8 @@ var RejectingRecipient = artifacts.require("./RejectingRecipient.sol");
 
 module.exports = function(deployer) {
 
+  if (web3.version.network <= 100) return;
+
   deployer.link(TokenStorageLib, StandardController);
   deployer.link(ERC20Lib, StandardController);
   deployer.link(ERC677Lib, StandardController);

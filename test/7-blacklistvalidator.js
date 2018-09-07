@@ -3,10 +3,12 @@ const AcceptingRecipient = artifacts.require("./AcceptingRecipient.sol");
 var SimpleToken = artifacts.require("./SimpleToken.sol");
 var StandardController = artifacts.require("./StandardController.sol");
 
-const validator = BlacklistValidator.at(BlacklistValidator.address);
-const controller = StandardController.at(StandardController.address);
-
 contract("BlacklistValidator", accounts => {
+
+  if (web3.version.network <= 100) return;
+
+  const validator = BlacklistValidator.at(BlacklistValidator.address);
+  const controller = StandardController.at(StandardController.address);
 
   it("should be able to reclaim ownership of contracts", async () => {
     const recipient = AcceptingRecipient.at(AcceptingRecipient.address)

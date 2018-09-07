@@ -9,6 +9,8 @@ var MintableController = artifacts.require("./MintableController.sol");
 
 module.exports = function(deployer) {
 
+  if (web3.version.network <= 100) return;
+
   deployer.link(UIntLib, MintableController);
   deployer.link(TokenStorageLib, MintableController);
   deployer.link(ERC20Lib, MintableController);

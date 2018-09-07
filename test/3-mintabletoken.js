@@ -1,11 +1,13 @@
 var MintableController = artifacts.require("./MintableController.sol");
 var EthUtil = require("ethereumjs-util");
 
-const controller = MintableController.at(MintableController.address);
-const key = Buffer.from("23f2ee33c522046e80b67e96ceb84a05b60b9434b0ee2e3ae4b1311b9f5dcc46", "hex");
-const address = `0x${EthUtil.privateToAddress(key).toString("hex")}`;
-
 contract('MintableController', accounts => {
+
+  if (web3.version.network <= 100) return;
+
+  const controller = MintableController.at(MintableController.address);
+  const key = Buffer.from("23f2ee33c522046e80b67e96ceb84a05b60b9434b0ee2e3ae4b1311b9f5dcc46", "hex");
+  const address = `0x${EthUtil.privateToAddress(key).toString("hex")}`;
 
   it("should start with zero tokens", async () => {
     const supply = await controller.totalSupply();

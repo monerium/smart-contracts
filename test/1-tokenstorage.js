@@ -3,10 +3,12 @@ var AcceptingRecipient = artifacts.require("./AcceptingRecipient.sol");
 var SimpleToken = artifacts.require("./SimpleToken.sol");
 var StandardController = artifacts.require("./StandardController.sol");
 
-const storage = TokenStorage.at(TokenStorage.address);
-const controller = StandardController.at(StandardController.address);
-
 contract("TokenStorage", accounts => {
+
+  if (web3.version.network <= 100) return;
+
+  const storage = TokenStorage.at(TokenStorage.address);
+  const controller = StandardController.at(StandardController.address);
 
   it("should not have initial supply", async () => {
     const supply = await storage.getSupply();

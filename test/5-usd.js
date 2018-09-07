@@ -2,9 +2,10 @@ var USD = artifacts.require("./USD.sol");
 var SmartController = artifacts.require("./SmartController.sol");
 var BlacklistValidator = artifacts.require("./BlacklistValidator.sol");
 
-const usd = USD.at(USD.address);
-
 contract("USD", accounts => {
+
+  const usd = USD.at(USD.address);
+
   it("should start with zero tokens", async () => {
     const supply = await usd.totalSupply()
     assert.equal(supply.valueOf(), 0, "initial supply is not 0");  

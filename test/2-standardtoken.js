@@ -3,9 +3,11 @@ var AcceptingRecipient = artifacts.require("./AcceptingRecipient.sol");
 var RejectingRecipient = artifacts.require("./RejectingRecipient.sol");
 var SimpleToken = artifacts.require("./SimpleToken.sol");
 
-const controller = StandardController.at(StandardController.address);
-
 contract('StandardController', accounts => {
+
+  if (web3.version.network <= 100) return;
+
+  const controller = StandardController.at(StandardController.address);
 
   it("should have a total supply of 50000 tokens", async () => {
     const supply = await controller.totalSupply();
