@@ -1,9 +1,9 @@
 // artifacts
 var SimpleToken = artifacts.require("./SimpleToken.sol");
 
-module.exports = function(deployer) {
+module.exports = function(deployer, network) {
 
-  if (web3.version.network <= 100) return;
+  if (network.startsWith('develop') == false) return;
 
   deployer.deploy(SimpleToken);
 

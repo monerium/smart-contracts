@@ -2,9 +2,9 @@
 var TokenStorageLib = artifacts.require("./TokenStorageLib.sol");
 var TokenStorage = artifacts.require("./TokenStorage.sol");
 
-module.exports = function(deployer) {
+module.exports = function(deployer, network) {
 
-  if (web3.version.network <= 100) return;
+  if (network.startsWith('develop') == false) return;
 
   deployer.link(TokenStorageLib, TokenStorage);
   deployer.deploy(TokenStorage, 10000);

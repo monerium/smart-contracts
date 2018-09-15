@@ -6,9 +6,9 @@ var StandardController = artifacts.require("./StandardController.sol");
 var AcceptingRecipient = artifacts.require("./AcceptingRecipient.sol");
 var RejectingRecipient = artifacts.require("./RejectingRecipient.sol");
 
-module.exports = function(deployer) {
+module.exports = function(deployer, network) {
 
-  if (web3.version.network <= 100) return;
+  if (network.startsWith('develop') == false) return;
 
   deployer.link(TokenStorageLib, StandardController);
   deployer.link(ERC20Lib, StandardController);

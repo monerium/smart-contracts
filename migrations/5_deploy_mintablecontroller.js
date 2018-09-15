@@ -7,9 +7,9 @@ var MintableTokenLib = artifacts.require("./MintableTokenLib.sol");
 var UIntLib = artifacts.require("./UIntLib.sol");
 var MintableController = artifacts.require("./MintableController.sol");
 
-module.exports = function(deployer) {
+module.exports = function(deployer, network) {
 
-  if (web3.version.network <= 100) return;
+  if (network.startsWith('develop') == false) return;
 
   deployer.link(UIntLib, MintableController);
   deployer.link(TokenStorageLib, MintableController);

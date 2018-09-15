@@ -10,6 +10,8 @@ var SmartController = artifacts.require("./SmartController.sol");
 
 module.exports = function(deployer) {
 
+  if (network.startsWith('develop') == false) return;
+
   deployer.link(TokenStorageLib, SmartController);
   deployer.link(SmartTokenLib, SmartController);
   deployer.link(ERC20Lib, SmartController);
