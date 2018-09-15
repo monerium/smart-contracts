@@ -20,25 +20,30 @@ Smart contracts adhering to the specification have a common interface to token-r
 2. Install dependencies
 
 	```sh
-	$ npm install -g ethereumjs-testrpc
-	$ npm install -g truffle
+	$ yarn install
 	```
 
-3. Run testrpc
+3. Run truffle
 
-	`$ testrpc`
+	`$ npx truffle develop`
 
 4. Compile token system
 
-	`$ make compile`
+	```sh
+	truffle(develop)> compile --all
+	```
 
 5. Deploy
 
-	`$ make migrate`
+	```sh
+	truffle(develop)> migrate --reset
+	```
 
 6. Run test suite
 
-	`$ make test`
+	```sh
+	truffle(develop)> test
+	```
 
 
 ## Implementation
@@ -77,9 +82,9 @@ Using this design we're able to upgrade the business logic &mdash; to fix bugs o
 
 ## Development
 
-To ease the development, deployment and interaction with the token system we're using both testrpc and truffle.
+To ease the development, deployment and interaction with the token system we're using truffle.
 
-Testrpc simulates full client behavior and makes developing Ethereum applications much faster while Truffle is a development environment, testing framework and asset pipeline for Ethereum.
+Truffle's ganache simulates full client behavior and makes developing Ethereum applications much faster while Truffle is a development environment, testing framework and asset pipeline for Ethereum.
 
 Development happens on the master branch and we use [Semantic Versioning](http://semver.org) for our tags. The first pre-release version deployed on a non-testrpc blockchain is v0.7.0.
 
@@ -87,34 +92,33 @@ Development happens on the master branch and we use [Semantic Versioning](http:/
 ## Deployment
 
 ```sh
-# truffle migrate [--network <name>]
+# npx truffle migrate [--network <name>]
 ```
 
 The deployment cycle for beta versions (up to v1.0.0) is as follows. During development the smart contracts are continuously deployed and tested locally on testrpc. A patch version update is deployed on the Monerium testnet, a federated blockchain, run by Monerium. A minor version update is deployed on the Rinkeby testnet.
 
-|  Contract            |  Rinkeby                                     |  Monerium                                    |
-|----------------------|----------------------------------------------|----------------------------------------------|
-|  BlacklistValidator  |  0x91e729e24d39500a19d08b5257c5c808d3c87b78  |  0xfa709c1d5a468809c291de2b379b02d0e30bddfd  |
-|  ERC20Lib            |  0xe7708e44eef5eac6db767c7835629a2f0510ce2a  |  0xe879564d3548c30c22976b0009a9377c387e1118  |
-|  EUR                 |  0x26191aacdeef5955c487bd3a75849644673bd408  |  0x2a3589b9e272c92c4d06b46665f04f60443157ef  |
-|  Migrations          |  0x5c20b21a5edf44e7a8673675797aa1b2547a0155  |  0xe84c38c2e4af29af65bdb720a8dca1b2bdd08cce  |
-|  MintableController  |  0xd1d33736088962699b83707bc4d375333d9d1e50  |  0x4aa03a8be13968199cf6baa5f22dab1221ee8361  |
-|  MintableTokenLib    |  0xb375dd49a72a4071428b102a59f45895b7e63e14  |  0x2f131d95a84289470d9618cfd9405c8ab09833e7  |
-|  SafeMathLib         |  0x678ff16287ada64e0b5e65524b4d52a23b422e36  |  0x7a8669cf284795724c1bb8f7cdaedd725418d5d6  |
-|  SmartController     |  0x8c96c4a76052f9db1dbec9bbf1d81ba4f3d01339  |  0x0264853860bd7835c0f32f6648d1666cff4e974a  |
-|  SmartTokenLib       |  0xba98211d2ac02e822bfbc8db2e8843e2e62b546a  |  0xce1d42b62217624acdc4ab263bbca3e9a07917d1  |
-|  StandardController  |  0x29686a4c85ebc54e7c1d76a823d6aa53e1b99867  |  0xce5845214a7711620c3ce6f63580e1918bf95b26  |
-|  TokenStorage        |  0xee3a30994bd98a5cf49629b459c2f7ac727efd36  |  0x178ec026863bb7a8adbc7f351bfcc956e083a022  |
-|  TokenStorageLib     |  0xc752eb408c9aac42c8f578f5ad6bdaaa737770b5  |  0x1734e6ff759a6692fe18a348b2402ee4bf13340a  |
-|  USD                 |  0x538523bfe6621b87967e73e9c2ba4fd527abd33a  |  0x5994eeca34dd29cc532c1721a8279556454845ea  |
+| Contract            | Rinkeby                                    |
+|---------------------| -------------------------------------------|
+| ERC20Lib            | 0xf97495963a148a09ff96a4c971bad108a4e23f27 |
+| ERC677Lib           | 0xe1d416a18e668a0be12d501391bab7105383b38b |
+| EUR                 | 0x7c49d3758987c55d858b7a57a2489693d052b68d |
+| Migrations          | 0xf474fd2045f7c41bf97a806837bcc0c97c82e865 |
+| MintableTokenLib    | 0x85c80683e06bdc53339383e91b26f40692a911cf |
+| SafeMath            | 0xb3dce07230165a13b5b0aeee2ed62834887800c7 |
+| SmartController     | 0x785a894ca26220cef6c92ee156426ec5fe2436c6 |
+| SmartTokenLib       | 0x31f9ca1f6b43d25b2dc0fea25fc865ef2a7ecebe |
+| TokenStorageLib     | 0xb6c1e5e831401b4e4494eeb53122fa4138715daa |
+| UIntLib             | 0x5613fd988a46483d8f0dd81145aebc6151f6ff1b |
+| USD                 | 0xc2e2547e7848fcb5fd7f98bd3ac9e3bba97b238a |
 
+Current version is v0.8.0.
 
 ## Unit tests
 
 The token system ships with JavaScript unit tests.
 
 ```sh
-# truffle test
+# npx truffle test
 ```
 
 ![Unit tests](docs/test-suite.png)
@@ -162,4 +166,4 @@ contract ERC20Interface {
 ```
 
 
-Copyright &copy; 2016-2017, Gísli Kristjánsson for Monerium ehf.
+Copyright &copy; 2018, Gísli Kristjánsson for Monerium ehf.
