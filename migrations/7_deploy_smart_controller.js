@@ -5,10 +5,9 @@ var BlacklistValidator = artifacts.require("./BlacklistValidator.sol");
 var TokenStorageLib = artifacts.require("./TokenStorageLib.sol");
 var ERC20Lib = artifacts.require("./ERC20Lib.sol");
 var ERC677Lib = artifacts.require("./ERC677Lib.sol");
-var MintableTokenLib = artifacts.require("./MintableTokenLib.sol");
 var SmartController = artifacts.require("./SmartController.sol");
 
-module.exports = function(deployer) {
+module.exports = function(deployer, network) {
 
   if (network.startsWith('develop') == false) return;
 
