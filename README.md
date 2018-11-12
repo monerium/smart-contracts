@@ -124,6 +124,17 @@ The token system ships with JavaScript unit tests.
 ![Unit tests](docs/test-suite.png)
 
 
+## Code coverage
+
+Code coverage for the token system can be checked with [solidity-coverage](https://github.com/sc-forks/solidity-coverage).
+
+```sh
+# npx solidity-coverage
+```
+
+![Code coverage](docs/48D90BC8-0F81-4D02-B5C0-837ACD8C7E09.jpeg)
+
+
 ## Token interface
 
 ```javascript
