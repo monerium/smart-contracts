@@ -132,7 +132,7 @@ Code coverage for the token system can be checked with [solidity-coverage](https
 # npx solidity-coverage
 ```
 
-![Code coverage](docs/48D90BC8-0F81-4D02-B5C0-837ACD8C7E09.jpeg)
+![Code coverage](docs/code-coverage.jpg)
 
 
 ## Token interface
