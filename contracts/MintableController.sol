@@ -56,36 +56,18 @@ contract MintableController is StandardController {
 
     /**
      * @dev Burns tokens from token owner.
-     * To burn tokens the contract owner needs to provide a signature
-     * proving that the token owner has authorized the owner to do so.
+     * This removfes the burned tokens from circulation.
      * @param from Address of the token owner.
      * @param amount Number of tokens to burn.
-     * @param height Signature valid upto this blockheight.
-     * @param v Signature component.
-     * @param r Signature component.
-     * @param s Sigature component.
      */
     function burnFrom(
         address from,
-        uint amount,
-        uint height,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
+        uint amount
     )
         external
         onlyOwner
         returns (bool)
     {
-        bytes32 h = height.toEthereumSignedMessage();
-        require(
-            ecrecover(h, v, r, s) == from,
-            "signature/hash does not recover from address"
-        );
-        require(
-            block.number <= height,
-            "signature only valid before block"
-        );
         return token.burn(from, amount);
     }
 

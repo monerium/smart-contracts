@@ -32,38 +32,9 @@ contract('MintableController', accounts => {
     assert.strictEqual(balance.toNumber(), 82300, "did not mint 82300 tokens");
   });
 
-  it("should not burn 82000 tokens from a non-owner address [fails blockheight]", async () => {
-    const height = await web3.eth.blockNumber;
-    const hash = EthUtil.hashPersonalMessage(Buffer.from(height.toString()));
-    const sig = EthUtil.ecsign(hash, key);
-    const r = `0x${sig.r.toString("hex")}`;
-    const s = `0x${sig.s.toString("hex")}`;
-    const v = sig.v;
-
-    if (v < 27) v += 27;
-    assert(v == 27 || v == 28);
-
-    try {
-      await controller.burnFrom(address, 82000, height, v, r, s);
-    } catch (e) {
-      return;
-    }
-    assert.fail("succeeded", "fail", "burn from address was supposed to fail");
-  });
-
   it("should burn 82000 tokens from a non-owner address", async () => {
-    const height = await web3.eth.blockNumber+1;
-    const hash = EthUtil.hashPersonalMessage(Buffer.from(height.toString()));
-    const sig = EthUtil.ecsign(hash, key);
-    const r = `0x${sig.r.toString("hex")}`;
-    const s = `0x${sig.s.toString("hex")}`;
-    const v = sig.v;
-
-    if (v < 27) v += 27;
-    assert(v == 27 || v == 28);
-
     const balance0 = await controller.balanceOf(address);
-    await controller.burnFrom(address, 82000, height, v, r, s);
+    await controller.burnFrom(address, 82000);
     const balance1 = await controller.balanceOf(address);
     assert.strictEqual(balance1.toNumber()-balance0.toNumber(), -82000, "did not burn 82000 tokens");
   });
