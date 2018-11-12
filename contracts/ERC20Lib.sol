@@ -13,22 +13,6 @@ library ERC20Lib {
     using SafeMath for uint;
 
     /**
-     * @dev Emitted when tokens are transferred.
-     * @param from Sender address.
-     * @param to Recipient address.
-     * @param amount Number of tokens transferred.
-     */
-    event Transfer(address indexed from, address indexed to, uint amount);
-
-    /**
-     * @dev Emitted when spender is granted an allowance.
-     * @param owner Address of the owner of the tokens to spend.
-     * @param spender The address of the future spender.
-     * @param amount The allowance of the spender.
-     */
-    event Approval(address indexed owner, address indexed spender, uint amount);
-
-    /**
      * @dev Transfers tokens [ERC20]. 
      * @param db Token storage to operate on.
      * @param caller Address of the caller passed through the frontend.
@@ -41,7 +25,6 @@ library ERC20Lib {
     {
         db.subBalance(caller, amount);
         db.addBalance(to, amount);
-        emit Transfer(caller, to, amount);
         return true;
     }
 
@@ -68,7 +51,6 @@ library ERC20Lib {
         db.subBalance(from, amount);
         db.addBalance(to, amount);
         db.setAllowed(from, caller, allowance.sub(amount));
-        emit Transfer(from, to, amount);
         return true;
     }
 
@@ -88,7 +70,6 @@ library ERC20Lib {
         returns (bool success) 
     {
         db.setAllowed(caller, spender, amount);
-        emit Approval(caller, spender, amount);
         return true;
     }
 

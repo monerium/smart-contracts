@@ -16,15 +16,6 @@ library ERC677Lib {
     using AddressUtils for address;
 
     /**
-     * @dev Emitted when tokens are transferred.
-     * @param from Sender address.
-     * @param to Recipient address.
-     * @param amount Number of tokens transferred.
-     * @param data Additional data passed to the recipient's tokenFallback method.
-     */
-    event Transfer(address indexed from, address indexed to, uint amount, bytes data);
-
-    /**
      * @dev Transfers tokens and subsequently calls a method on the recipient [ERC677].
      * If the recipient is a non-contract address this method behaves just like transfer.
      * @param db Token storage to operate on.
@@ -44,7 +35,6 @@ library ERC677Lib {
         returns (bool) 
     {
         if (db.transfer(caller, to, amount)) {
-            emit Transfer(caller, to, amount, data);
             if (to.isContract()) {
                 ITokenRecipient recipient = ITokenRecipient(to);
                 recipient.tokenFallback(caller, amount, data);
