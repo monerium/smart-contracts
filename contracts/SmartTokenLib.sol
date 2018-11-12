@@ -26,6 +26,13 @@ library SmartTokenLib {
     event Recovered(address indexed from, address indexed to, uint amount);
 
     /**
+     * @dev Emitted when updating the validator.
+     * @param old Address of the old validator.
+     * @param current Address of the new validator.
+     */
+    event Validator(address indexed old, address indexed current);
+
+    /**
      * @dev Sets a new validator.
      * @param self Smart storage to operate on.
      * @param validator Address of validator.
@@ -33,6 +40,7 @@ library SmartTokenLib {
     function setValidator(SmartStorage storage self, address validator) 
         internal 
     {
+        emit Validator(self.validator, validator);
         self.validator = IValidator(validator);
     }
 

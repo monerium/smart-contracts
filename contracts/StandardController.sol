@@ -29,6 +29,20 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
     uint public decimals = 18;
 
     /**
+     * @dev Emitted when updating the frontend.
+     * @param old Address of the old frontend.
+     * @param current Address of the new frontend.
+     */
+    event Frontend(address indexed old, address indexed current);
+
+    /**
+     * @dev Emitted when updating the storage.
+     * @param old Address of the old storage.
+     * @param current Address of the new storage.
+     */
+    event Storage(address indexed old, address indexed current);
+
+    /**
      * @dev Modifier which prevents the function from being called by unauthorized parties.
      * The caller must either be the sender or the function must be
      * called via the frontend, otherwise the call is reverted. 
@@ -93,6 +107,7 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
      * @param frontend_ Address of the new frontend.
      */
     function setFrontend(address frontend_) external onlyOwner { 
+        emit Frontend(frontend, frontend_);
         frontend = frontend_;
     }
 
@@ -101,6 +116,7 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
      * @param storage_ Address of the new storage.
      */
     function setStorage(address storage_) external onlyOwner { 
+        emit Storage(address(token), storage_);
         token = TokenStorage(storage_);
     }
 

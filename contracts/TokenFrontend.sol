@@ -48,6 +48,14 @@ contract TokenFrontend is Claimable, CanReclaimToken, NoOwner {
     event Approval(address indexed owner, address indexed spender, uint amount);
 
     /**
+     * @dev Emitted when updating the controller.
+     * @param ticker Three letter ticker representing the currency.
+     * @param old Address of the old controller.
+     * @param current Address of the new controller.
+     */
+    event Controller(bytes3 indexed ticker, address indexed old, address indexed current);
+
+    /**
      * @dev Contract constructor.
      * @param name_ Token name.
      * @param symbol_ Token symbol.
@@ -66,6 +74,7 @@ contract TokenFrontend is Claimable, CanReclaimToken, NoOwner {
      */
     function setController(address address_) public onlyOwner {
         assert(address_ != 0x0);
+        emit Controller(ticker, controller, address_);
         controller = SmartController(address_);
         assert(controller.ticker() == ticker);
     }
