@@ -1,4 +1,5 @@
-require('dotenv').config();
+const result = require('dotenv').config();
+if (result.error) console.log(result.error.toString())
 const Web3 = require('web3');
 const web3 = new Web3();
 const WalletProvider = require('truffle-hdwallet-provider');
@@ -32,8 +33,6 @@ if (mnemonic != '') {
 // the wallet provider possibly losing (and reusing) nonces, resulting in
 // replacement transaction underpriced errors.
 const walletProvider = mnemonic ? new WalletProvider(mnemonic, `${url}/v3/${api}`) : null;
-
-process.exit();
 
 module.exports = {
 	networks: {
