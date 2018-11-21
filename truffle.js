@@ -1,28 +1,39 @@
 require('dotenv').config();
 const Web3 = require('web3');
 const web3 = new Web3();
-const WalletProvider = require('truffle-wallet-provider');
-const Wallet = require('ethereumjs-wallet');
+const WalletProvider = require('truffle-hdwallet-provider');
+const bip39 = require('bip39');
+const Wallet = require('ethereumjs-wallet/hdkey');
 
-const key = process.env['KEY'];
 const api = process.env['API'];
 const url = process.env['URL'];
+const mnemonic = process.env['MNEMONIC'];
 
-const wallet = key ? Wallet.fromPrivateKey(Buffer.from(key, 'hex')) : null;
+const address = `0x808b6dB94ce973Bab908450E764Db7405A533FAa`;
+
+function die(s) {
+	console.error(s);
+	process.exit();
+}
+
+if (mnemonic != '') {
+	if (api == '') die('API not set')
+	if (url == '') die('URL not set')
+
+	if (!bip39.validateMnemonic(mnemonic)) die(`${mnemonic} not valid`);
+	const seed = bip39.mnemonicToSeed(mnemonic);
+	var wallet = Wallet.fromMasterSeed(seed).derivePath("m/44'/60'/0'/0/0").getWallet();
+  const walletAddress = wallet.getAddress().toString('hex');
+
+  if (`0x${walletAddress}` != address.toLowerCase()) die(`Wallet address 0x${walletAddress} does not match ${address}`);
+}
 
 // if this is a function return a wallet provider truffle will reinstantiate
 // the wallet provider possibly losing (and reusing) nonces, resulting in
 // replacement transaction underpriced errors.
-const walletProvider = 
-	 wallet ? new WalletProvider(wallet, `${url}/v3/${api}`) : null;
+const walletProvider = mnemonic ? new WalletProvider(mnemonic, `${url}/v3/${api}`) : null;
 
-const address = 
-	wallet ? wallet.getAddressString() : null;
-
-if (address && address != "0xb912740f1389fa0c99965fcda9039b9e5638e5f7") {
-  console.log("Wrong key");
-  return;
-}
+process.exit();
 
 module.exports = {
 	networks: {
@@ -44,9 +55,9 @@ module.exports = {
     },
 		rinkeby: {
 			network_id: 4,      // rinkeby
-			from: address,
+      from: address,
 			gas: 6800000,       // balance between out of gas errors and block gas limit errors
-			gasPrice: web3.utils.toWei('1', 'gwei'), // average gas price on rinkeby
+			gasPrice: web3.utils.toWei('41', 'gwei'), // average gas price on rinkeby
 			provider: () => walletProvider
 			// optional config values:
 			// gas

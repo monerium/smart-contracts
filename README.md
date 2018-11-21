@@ -97,21 +97,24 @@ Development happens on the master branch and we use [Semantic Versioning](http:/
 
 The deployment cycle for beta versions (up to v1.0.0) is as follows. During development the smart contracts are continuously deployed and tested locally on testrpc. A patch version update is deployed on the Monerium testnet, a federated blockchain, run by Monerium. A minor version update is deployed on the Rinkeby testnet.
 
-| Contract            | Rinkeby                                    |
-|---------------------| -------------------------------------------|
-| ERC20Lib            | 0xf97495963a148a09ff96a4c971bad108a4e23f27 |
-| ERC677Lib           | 0xe1d416a18e668a0be12d501391bab7105383b38b |
-| EUR                 | 0x7c49d3758987c55d858b7a57a2489693d052b68d |
-| Migrations          | 0xf474fd2045f7c41bf97a806837bcc0c97c82e865 |
-| MintableTokenLib    | 0x85c80683e06bdc53339383e91b26f40692a911cf |
-| SafeMath            | 0xb3dce07230165a13b5b0aeee2ed62834887800c7 |
-| SmartController     | 0x785a894ca26220cef6c92ee156426ec5fe2436c6 |
-| SmartTokenLib       | 0x31f9ca1f6b43d25b2dc0fea25fc865ef2a7ecebe |
-| TokenStorageLib     | 0xb6c1e5e831401b4e4494eeb53122fa4138715daa |
-| UIntLib             | 0x5613fd988a46483d8f0dd81145aebc6151f6ff1b |
-| USD                 | 0xc2e2547e7848fcb5fd7f98bd3ac9e3bba97b238a |
+| Contract               | Rinkeby																	  |
+-------------------------|--------------------------------------------|
+| ERC20Lib               | 0x4f36c035f6691cac6701e1c15c40bf6381519726 |
+| ERC677Lib              | 0x6c857791d1a6cf1780f719a45d91c00f3bfe426f |
+| EUR                    | 0xf84a830d82006932b59dff28dd742d26d5bf28fe |
+| Migrations             | 0x31c23171059e0bca8fba504783ff04d46ca5b6ed |
+| MintableTokenLib       | 0x4def1c62e958dc2a137cf0988fb9e51c836f6433 |
+| SafeMath               | 0x50292b3da3c7e9a31ab72aeeb51c2036c5374e82 |
+| SmartController (EUR)  | 0x4d7fe551ec1c9f358b884c23b584729a2d0888cc |
+| SmartController (USD)  | 0xf018439cd9690fc40f60658a3d9ff68534d0dba6 |
+| SmartTokenLib          | 0xbb8f916e0de4fcc7f9fccaada948771580e2d9c6 |
+| Storage (EUR)          | 0x0d98f3f476bfb0e5448917296e24563ab24353fd |
+| Storage (USD)          | 0x896c6cc936e618d8fbad0f507abba050c7b6956a |
+| TokenStorageLib        | 0xce48d54135d6ec93f46ebad802380fb5f6219880 |
+| UIntLib                | 0x473d4059faa91e8944f811a173af3aa7505a0238 |
+| USD                    | 0xc2da8e52f9149c1f92b7543399168b03cd40767d |
 
-Current version is v0.8.0.
+Current version is v0.9.0.
 
 ## Unit tests
 
@@ -138,7 +141,7 @@ Code coverage for the token system can be checked with [solidity-coverage](https
 ## Token interface
 
 ```javascript
-pragma solidity ^0.4.8;
+pragma solidity ^0.4.24;
  
 // ----------------------------------------------------------------------------------------------
 // Sample fixed supply token contract
