@@ -6,12 +6,11 @@ var MintableTokenLib = artifacts.require("./MintableTokenLib.sol");
 var SmartTokenLib = artifacts.require("./SmartTokenLib.sol");
 var TokenStorageLib = artifacts.require("./TokenStorageLib.sol");
 var MintableTokenLib = artifacts.require("./MintableTokenLib.sol");
-var UIntLib = artifacts.require("./UIntLib.sol");
 
 module.exports = function(deployer) {
 
   // deploy and link libraries
-  deployer.deploy([SafeMathLib, UIntLib]);
+  deployer.deploy([SafeMathLib]);
   deployer.link(SafeMathLib, [TokenStorageLib, ERC20Lib, MintableTokenLib]);
   deployer.deploy([TokenStorageLib, ERC20Lib]);
   deployer.link(ERC20Lib, [SmartTokenLib, ERC677Lib]);

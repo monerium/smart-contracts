@@ -2,7 +2,6 @@ pragma solidity ^0.4.24;
 
 import "./StandardController.sol";
 import "./MintableTokenLib.sol";
-import "./UIntLib.sol";
 
 /**
 * @title MintableController
@@ -11,7 +10,6 @@ import "./UIntLib.sol";
 contract MintableController is StandardController {
 
     using MintableTokenLib for TokenStorage;
-    using UIntLib for uint;
 
     /**
      * @dev Contract constructor.
