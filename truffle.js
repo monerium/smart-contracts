@@ -27,8 +27,8 @@ if (key != undefined) {
   const wallet = Wallet.fromPrivateKey(Buffer.from(key, 'hex'));
   const walletAddress = wallet.getAddressString();
   if (walletAddress != address) die(`Key address ${walletAddress} does not match ${address}`);
-  walletProvider = () => new WalletProvider(mnemonic, `${url}/v3/${api}`, 0);
-} if (mnemonic != undefined) {
+  walletProvider = () => new WalletProvider(key, `${url}/v3/${api}`, 0);
+} else if (mnemonic != undefined) {
 	if (api == undefined) die('API not set')
 	if (url == undefined) die('URL not set')
   address = `0x808b6dB94ce973Bab908450E764Db7405A533FAa`;
