@@ -1,4 +1,4 @@
-const result = require('dotenv').config();
+result = require('dotenv').config();
 if (result.error) console.log(result.error.toString())
 const Web3 = require('web3');
 const web3 = new Web3();
@@ -17,9 +17,9 @@ function die(s) {
 	process.exit();
 }
 
-if (mnemonic != '') {
-	if (api == '') die('API not set')
-	if (url == '') die('URL not set')
+if (mnemonic != undefined) {
+	if (api == undefined) die('API not set')
+	if (url == undefined) die('URL not set')
 
 	if (!bip39.validateMnemonic(mnemonic)) die(`${mnemonic} not valid`);
 	const seed = bip39.mnemonicToSeed(mnemonic);

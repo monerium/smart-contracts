@@ -114,7 +114,7 @@ The deployment cycle for beta versions (up to v1.0.0) is as follows. During deve
 | UIntLib                | 0x473d4059faa91e8944f811a173af3aa7505a0238 |
 | USD                    | 0xc2da8e52f9149c1f92b7543399168b03cd40767d |
 
-Current version is v0.9.2.
+Current version is v0.9.3.
 
 ## Unit tests
 
