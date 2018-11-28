@@ -1,7 +1,7 @@
 // artifacts
 var BlacklistValidator = artifacts.require("./BlacklistValidator.sol");
 var SmartController = artifacts.require("./SmartController.sol");
-var EUR = artifacts.require("./EUR.sol");
+var ISK = artifacts.require("./ISK.sol");
 
 var MintableTokenLib = artifacts.require("./MintableTokenLib.sol");
 var SmartTokenLib = artifacts.require("./SmartTokenLib.sol");
@@ -17,8 +17,8 @@ module.exports = function(deployer) {
   deployer.link(ERC677Lib, SmartController);
   deployer.link(MintableTokenLib, SmartController);
 
-  return deployer.deploy(SmartController, 0x0, BlacklistValidator.address, "EUR").then(() => {
-    return deployer.deploy(EUR, SmartController.address);
+  return deployer.deploy(SmartController, 0x0, BlacklistValidator.address, "ISK").then(() => {
+    return deployer.deploy(ISK, SmartController.address);
   });
 
 };
