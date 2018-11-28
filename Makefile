@@ -2,6 +2,11 @@
 compile:
 	npx truffle compile --all
 
+.PHONY: clean
+clean:
+	$(RM) -rf coverage*
+	$(RM) -rf build
+
 .PHONY: migrate
 migrate: 
 	npx truffle migrate --reset
