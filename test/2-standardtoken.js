@@ -7,7 +7,11 @@ contract('StandardController', accounts => {
 
   if (web3.version.network <= 100) return;
 
-  const controller = StandardController.at(StandardController.address);
+  let controller;
+
+  beforeEach("setup standard controller", async () => { 
+    controller = await StandardController.deployed();
+  });
 
   it("should have a total supply of 50000 tokens", async () => {
     const supply = await controller.totalSupply();
@@ -39,7 +43,7 @@ contract('StandardController', accounts => {
 
   it("should transfer 456 to an accepting contract", async () => {
     await controller.transferAndCall(AcceptingRecipient.address, 456, 0x10, {from: accounts[3]});
-    const recipient = AcceptingRecipient.at(AcceptingRecipient.address)
+    const recipient = await AcceptingRecipient.deployed();
     const from = await recipient.from();
     assert.equal(from, accounts[3], "from address not stored in recipient");
     const amount = await recipient.amount();
@@ -121,7 +125,7 @@ contract('StandardController', accounts => {
   });
 
   it("should be able to reclaim ownership of contracts", async () => {
-    const recipient = AcceptingRecipient.at(AcceptingRecipient.address)
+    const recipient = await AcceptingRecipient.deployed();
     const owner0 = await recipient.owner();
     assert.strictEqual(owner0, accounts[0], "incorrect original owner");
     await recipient.transferOwnership(StandardController.address, {from: owner0});
@@ -151,7 +155,7 @@ contract('StandardController', accounts => {
   });
 
   it("should be able to recover tokens (ERC20)", async () => {
-    const token = SimpleToken.at(SimpleToken.address);
+    const token = await SimpleToken.deployed();
     const amount0 = await token.balanceOf(accounts[0]);
     assert.notEqual(amount0.toNumber(), 0, "owner must have some tokens");
     const balance0 = await token.balanceOf(StandardController.address);

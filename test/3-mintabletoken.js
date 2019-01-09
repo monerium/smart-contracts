@@ -5,7 +5,12 @@ contract('MintableController', accounts => {
 
   if (web3.version.network <= 100) return;
 
-  const controller = MintableController.at(MintableController.address);
+  let controller;
+
+  beforeEach("setup mintable controller", async () => { 
+    controller = await MintableController.deployed();
+  });
+
   const key = Buffer.from("23f2ee33c522046e80b67e96ceb84a05b60b9434b0ee2e3ae4b1311b9f5dcc46", "hex");
   const address = `0x${EthUtil.privateToAddress(key).toString("hex")}`;
 

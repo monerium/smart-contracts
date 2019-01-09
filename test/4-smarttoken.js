@@ -1,7 +1,6 @@
 var SmartController = artifacts.require("./SmartController.sol");
 var BlacklistValidator = artifacts.require("./BlacklistValidator.sol");
 
-const controller = SmartController.at(SmartController.address);
 const hash = `0xa1de988600a42c4b4ab089b619297c17d53cffae5d5120d82d8a92d0bb3b78f2`;
 const wallets = {
   "trust wallet": {
@@ -24,6 +23,12 @@ const wallets = {
 
 contract('SmartController', (accounts) => {
 
+  let controller;
+
+  beforeEach("setup smart controller", async () => { 
+    controller = await SmartController.deployed();
+  });
+
   it("should start with zero tokens", async () => {
     const supply = await controller.totalSupply();
     assert.equal(supply.valueOf(), 0, "initial supply is not 0");  
@@ -43,7 +48,7 @@ contract('SmartController', (accounts) => {
 
   it("should should fail transferring 1840 tokens from a blacklisted account", async () => {
     const validator = await controller.getValidator();
-    BlacklistValidator.at(validator).ban(accounts[2]);
+    (await BlacklistValidator.deployed()).ban(accounts[2]);
     try {
       await controller.transfer(accounts[3], 1840, {from: accounts[2]});
     } catch { 

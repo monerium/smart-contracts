@@ -7,8 +7,11 @@ contract("ISK", accounts => {
 
   if (web3.version.network <= 100) return;
 
-  const isk = ISK.at(ISK.address);
-  const controller = SmartController.at(SmartController.address);
+  let isk;
+
+  beforeEach("setup isk", async () => { 
+    isk = await ISK.deployed();
+  });
 
   it("should start with zero tokens", async () => {
     const supply = await isk.totalSupply();
@@ -16,7 +19,7 @@ contract("ISK", accounts => {
   });
 
   it("should be able to reclaim ownership of contracts", async () => {
-    const recipient = AcceptingRecipient.at(AcceptingRecipient.address)
+    const recipient = await AcceptingRecipient.deployed();
     const owner0 = await recipient.owner();
     assert.strictEqual(owner0, accounts[0], "incorrect original owner");
     await recipient.transferOwnership(ISK.address, {from: owner0});
@@ -37,6 +40,7 @@ contract("ISK", accounts => {
   });
 
   it("should not be allowed to receive tokens (ERC223, ERC677)", async () => {
+    const controller = await SmartController.deployed();
     try {
       await controller.transferAndCall(ISK.address, 223, 0x0);
     } catch {
@@ -46,7 +50,7 @@ contract("ISK", accounts => {
   });
 
   it("should be able to recover tokens (ERC20)", async () => {
-    const token = SimpleToken.at(SimpleToken.address);
+    const token = await SimpleToken.deployed();
     const amount0 = await token.balanceOf(accounts[0]);
     assert.notEqual(amount0.toNumber(), 0, "owner must have some tokens");
     const balance0 = await token.balanceOf(ISK.address);

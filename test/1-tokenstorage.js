@@ -7,8 +7,11 @@ contract("TokenStorage", accounts => {
 
   if (web3.version.network <= 100) return;
 
-  const storage = TokenStorage.at(TokenStorage.address);
-  const controller = StandardController.at(StandardController.address);
+  let storage;
+
+  beforeEach("setup storage", async () => { 
+    storage = await TokenStorage.deployed(); 
+  });
 
   it("should not have initial supply", async () => {
     const supply = await storage.getSupply();
@@ -48,10 +51,10 @@ contract("TokenStorage", accounts => {
   });
 
   it("should be able to reclaim ownership of contracts", async () => {
-    const recipient = AcceptingRecipient.at(AcceptingRecipient.address)
+    const recipient = await AcceptingRecipient.deployed()
     const owner0 = await recipient.owner();
     assert.strictEqual(owner0, accounts[0], "incorrect original owner");
-    await recipient.transferOwnership(TokenStorage.address, {from: owner0});
+    await recipient.transferOwnership(storage.address, {from: owner0});
     const owner1 = await recipient.owner();
     assert.strictEqual(owner1, TokenStorage.address, "standard controller should be owner");
     await storage.reclaimContract(AcceptingRecipient.address);
@@ -69,6 +72,7 @@ contract("TokenStorage", accounts => {
   });
 
   it("should not be allowed to receive tokens (ERC223, ERC677)", async () => {
+    const controller = await StandardController.deployed();
     try {
       await controller.transferAndCall(TokenStorage.address, 223, 0x0);
     } catch {
@@ -78,7 +82,7 @@ contract("TokenStorage", accounts => {
   });
 
   it("should be able to recover tokens (ERC20)", async () => {
-    const token = SimpleToken.at(SimpleToken.address);
+    const token = await SimpleToken.deployed();
     const amount0 = await token.balanceOf(accounts[0]);
     assert.notEqual(amount0.toNumber(), 0, "owner must have some tokens");
     const balance0 = await token.balanceOf(TokenStorage.address);

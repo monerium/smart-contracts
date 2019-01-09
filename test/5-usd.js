@@ -4,7 +4,12 @@ var BlacklistValidator = artifacts.require("./BlacklistValidator.sol");
 
 contract("USD", accounts => {
 
-  const usd = USD.at(USD.address);
+  let usd;
+
+  beforeEach("setup usd", async () => { 
+    usd = await USD.deployed();
+  });
+
 
   it("should start with zero tokens", async () => {
     const supply = await usd.totalSupply()
@@ -12,8 +17,8 @@ contract("USD", accounts => {
   });
 
   it("should mint 74000 new tokens", async () => {
-    const controller = await usd.getController();
-    await SmartController.at(controller).mint(74000, {from: accounts[0]});
+    const controller = SmartController.at(await usd.getController());
+    await controller.mint(74000, {from: accounts[0]});
     const balance = await usd.balanceOf(accounts[0]);
     assert.equal(balance.valueOf(), 74000, "did not mint 74000 tokens");
   });
@@ -37,9 +42,7 @@ contract("USD", accounts => {
   });
 
   it("should should fail transferring 78 tokens from a blacklisted account", async () => {
-    const controller = await usd.getController();
-    const validator = await SmartController.at(controller).getValidator();
-    await BlacklistValidator.at(validator).ban(accounts[1]);
+    (await BlacklistValidator.deployed()).ban(accounts[1]);
     try {
       await token.transfer(accounts[3], 78, {from: accounts[1]});
     } catch {
