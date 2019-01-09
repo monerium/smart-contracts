@@ -121,6 +121,21 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
     }
 
     /**
+     * @dev Transfers the ownership of the storage.
+     * @param newOwner Address of the new storage owner.
+     */
+    function transferStorageOwnership(address newOwner) public onlyOwner {
+        token.transferOwnership(newOwner);
+    }
+
+    /**
+     * @dev Claims the ownership of the storage.
+     */
+    function claimStorageOwnership() public onlyOwner {
+        token.claimOwnership();
+    }
+
+   /**
      * @dev Transfers tokens [ERC20]. 
      * See transfer_withCaller for documentation.
      */

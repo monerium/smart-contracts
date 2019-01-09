@@ -1,4 +1,5 @@
 var StandardController = artifacts.require("./StandardController.sol");
+var TokenStorage = artifacts.require("./TokenStorage.sol");
 var AcceptingRecipient = artifacts.require("./AcceptingRecipient.sol");
 var RejectingRecipient = artifacts.require("./RejectingRecipient.sol");
 var SimpleToken = artifacts.require("./SimpleToken.sol");
@@ -168,6 +169,20 @@ contract('StandardController', accounts => {
     assert.strictEqual(balance2.toNumber(), balance0.toNumber(), "mismatch in token before and after");
     const amount1 = await token.balanceOf(accounts[0]);
     assert.strictEqual(amount1.toNumber(), amount0.toNumber(), "unable to recover");
+  });
+
+  it("should be able to change ownership of its storage", async () => {
+    const storage = TokenStorage.at(await controller.getStorage());
+    const owner0 = await storage.owner();
+    assert.strictEqual(owner0, controller.address, "incorrect original owner");
+    await controller.transferStorageOwnership(accounts[0]);
+    await storage.claimOwnership({from: accounts[0]})
+    const owner1 = await storage.owner();
+    assert.strictEqual(owner1, accounts[0], "unable to transfer/claim ownership");
+    await storage.transferOwnership(controller.address);
+    await controller.claimStorageOwnership();
+    const owner2 = await storage.owner();
+    assert.strictEqual(owner2, owner0, "controller should be the storage owner");
   });
 
   it("should be destructible", async () => {
