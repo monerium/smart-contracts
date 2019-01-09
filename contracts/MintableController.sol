@@ -2,12 +2,13 @@ pragma solidity ^0.4.24;
 
 import "./StandardController.sol";
 import "./MintableTokenLib.sol";
+import "./SystemRole.sol";
 
 /**
 * @title MintableController
 * @dev This contracts implements functionality allowing for minting and burning of tokens. 
 */
-contract MintableController is StandardController {
+contract MintableController is SystemRole, StandardController {
 
     using MintableTokenLib for TokenStorage;
 
@@ -26,8 +27,8 @@ contract MintableController is StandardController {
      * This is a convenience method for mintTo.
      * @param amount Number of tokens to mint.
      */
-    function mint(uint amount) external onlyOwner returns (bool) {
-        return token.mint(owner, amount);
+    function mint(uint amount) external onlySystemAccounts returns (bool) {
+        return token.mint(msg.sender, amount);
     }
 
     /**
@@ -37,7 +38,7 @@ contract MintableController is StandardController {
      */
     function mintTo(address to, uint amount)
         external
-        onlyOwner
+        onlySystemAccounts
         returns (bool)
     {
         return token.mint(to, amount);
@@ -48,8 +49,8 @@ contract MintableController is StandardController {
      * This removes the burned tokens from circulation.
      * @param amount Number of tokens to burn.
      */
-    function burn(uint amount) external onlyOwner returns (bool) {
-        return token.burn(owner, amount);
+    function burn(uint amount) external onlySystemAccounts returns (bool) {
+        return token.burn(msg.sender, amount);
     }
 
     /**
@@ -63,10 +64,25 @@ contract MintableController is StandardController {
         uint amount
     )
         external
-        onlyOwner
+        onlySystemAccounts
         returns (bool)
     {
         return token.burn(from, amount);
+    }
+
+
+    /**
+     * @dev Assigns the system role to an account.
+     */
+    function addSystemAccount(address account) public onlyOwner {
+        super.addSystemAccount(account);
+    }
+
+    /**
+     * @dev Removes the system role from an account.
+     */
+    function removeSystemAccount(address account) public  onlyOwner {
+        super.removeSystemAccount(account);
     }
 
 }

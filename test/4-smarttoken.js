@@ -23,10 +23,12 @@ const wallets = {
 
 contract('SmartController', (accounts) => {
 
+  const system = accounts[9];
   let controller;
 
   beforeEach("setup smart controller", async () => { 
     controller = await SmartController.deployed();
+    await controller.addSystemAccount(system);
   });
 
   it("should start with zero tokens", async () => {
@@ -35,13 +37,13 @@ contract('SmartController', (accounts) => {
   });
 
   it("should mint 88000 new tokens", async () => {
-    await controller.mint(88000, {from: accounts[0]});
-    const balance = await controller.balanceOf(accounts[0])
+    await controller.mint(88000, {from: system});
+    const balance = await controller.balanceOf(system)
     assert.equal(balance.valueOf(), 88000, "did not mint 88000 tokens");
   });
 
   it("should transfer 3400 tokens to second account", async () => {
-    await controller.transfer(accounts[1], 3400, {from: accounts[0]});
+    await controller.transfer(accounts[1], 3400, {from: system});
     const balance = await controller.balanceOf(accounts[1])
     assert.equal(balance.valueOf(), 3400, "did not transfer 3400 tokens"); 
   });
@@ -62,7 +64,7 @@ contract('SmartController', (accounts) => {
     const account = accounts[i++];
     const wallet = wallets[name];
     it(`should be able to recover the balance of a known address to a new address [${name}]`, async () => {
-      await controller.transfer(wallet.address, 13, {from: accounts[0]});
+      await controller.transfer(wallet.address, 13, {from: system});
       const sig = wallet.signature.replace(/^0x/, '');
       const r = `0x${sig.slice(0, 64)}`;
       const s = `0x${sig.slice(64, 128)}`;
