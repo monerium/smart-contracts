@@ -56,7 +56,7 @@ contract SmartController is MintableController {
      */
     function recover(address from, address to, bytes32 h, uint8 v, bytes32 r, bytes32 s)
         external
-        onlyOwner
+        onlySystemAccounts
         returns (bool)
     {
         return SmartTokenLib.recover(token, from, to, h, v, r, s);
