@@ -16,11 +16,8 @@ module.exports = function(deployer) {
   deployer.link(ERC677Lib, SmartController);
   deployer.link(MintableTokenLib, SmartController);
 
-  deployer.deploy(SmartController, 0x0, BlacklistValidator.address, "USD").then(() => {
-    const controller = SmartController.at(SmartController.address);
-    return deployer.deploy(USD, SmartController.address).then(() => {
-      return controller.setFrontend(USD.address); 
-    });
-  });
+  deployer.deploy(SmartController, 0x0, BlacklistValidator.address, "USD").then(controller => 
+    deployer.deploy(USD, SmartController.address).then(frontend => 
+      SmartController.at(controller.address).setFrontend(frontend.address)));
 
 };
