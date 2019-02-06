@@ -49,7 +49,6 @@ contract('SmartController', (accounts) => {
   });
 
   it("should should fail transferring 1840 tokens from a blacklisted account", async () => {
-    const validator = await controller.getValidator();
     (await BlacklistValidator.deployed()).ban(accounts[2]);
     try {
       await controller.transfer(accounts[3], 1840, {from: accounts[2]});

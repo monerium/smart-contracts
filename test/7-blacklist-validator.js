@@ -47,6 +47,12 @@ contract("BlacklistValidator", accounts => {
     assert.fail("succeeded", "fail", "unbanning account should fail from non-owner account");
   });
 
+  it("should not validate from a banned account", async () => {
+    await validator.ban(accounts[8]);
+    // unable to check return value since the method is non-pure because it emits an event.
+    await validator.validate(accounts[8], accounts[8], 0); 
+  });
+
   it("should be able to reclaim ownership of contracts", async () => {
     const recipient = await AcceptingRecipient.deployed();
     const owner0 = await recipient.owner();
