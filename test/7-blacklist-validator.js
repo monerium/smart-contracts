@@ -7,10 +7,44 @@ contract("BlacklistValidator", accounts => {
 
   if (web3.version.network <= 100) return;
 
+  const owner = accounts[0];
   let validator;
 
   beforeEach("setup blacklist validator", async () => { 
     validator = await BlacklistValidator.deployed();
+  });
+
+  it("should succeed in banning account from an owner address", async () => {
+    await validator.ban(accounts[7], {from: owner});
+    const success = await validator.blacklist(accounts[7]);
+    assert.strictEqual(success, true, "unable to ban account");
+  });
+
+  it("should succeed in unbanning account from an owner address", async () => {
+    await validator.unban(accounts[7], {from: owner});
+    const isBanned = await validator.blacklist(accounts[7]);
+    assert.strictEqual(isBanned, false, "unable to unban account");
+  });
+
+  it("should fail banning account from a non-owner address", async () => {
+    try {
+      await validator.ban(accounts[6], {from: accounts[5]});
+    } catch { 
+      return;
+    }
+    assert.fail("succeeded", "fail", "banning account should fail from non-owner account");
+  });
+
+  it("should fail unbanning account from a non-owner address", async () => {
+    await validator.ban(accounts[6], {from: owner});
+    const success = await validator.blacklist(accounts[6]);
+    assert.strictEqual(success, true, "unable to ban account");
+    try {
+      await validator.unban(accounts[6], {from: accounts[5]});
+    } catch { 
+      return;
+    }
+    assert.fail("succeeded", "fail", "unbanning account should fail from non-owner account");
   });
 
   it("should be able to reclaim ownership of contracts", async () => {
