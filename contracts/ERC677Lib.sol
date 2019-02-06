@@ -18,6 +18,7 @@ library ERC677Lib {
     /**
      * @dev Transfers tokens and subsequently calls a method on the recipient [ERC677].
      * If the recipient is a non-contract address this method behaves just like transfer.
+     * @notice db.transfer either returns true or reverts.
      * @param db Token storage to operate on.
      * @param caller Address of the caller passed through the frontend.
      * @param to Recipient address.
@@ -39,9 +40,8 @@ library ERC677Lib {
                 ITokenRecipient recipient = ITokenRecipient(to);
                 recipient.tokenFallback(caller, amount, data);
             }
-            return true;
         }
-        return false;
+        return true;
     }        
 
 }
