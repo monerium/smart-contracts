@@ -5,6 +5,7 @@ contract('MintableController', accounts => {
 
   if (web3.version.network <= 100) return;
 
+  const owner = accounts[0];
   const system = accounts[9];
   let controller;
 
@@ -98,6 +99,18 @@ contract('MintableController', accounts => {
       return;
     }
     assert.fail("succeeded", "fail", "system system account should fail from non-owner account");
+  });
+
+  it("should succeed in adding system account from an owner address", async () => {
+    await controller.addSystemAccount(accounts[7], {from: owner});
+    const success = await controller.isSystemAccount(accounts[7]);
+    assert.strictEqual(success, true, "unable to add system account");
+  });
+
+  it("should succeed in removing system account from an owner address", async () => {
+    await controller.removeSystemAccount(accounts[7], {from: owner});
+    const isSystem = await controller.isSystemAccount(accounts[7]);
+    assert.strictEqual(isSystem, false, "unable to remove system account");
   });
 
 });
