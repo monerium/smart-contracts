@@ -90,7 +90,7 @@ contract('MintableController', accounts => {
   });
 
   it("should fail removing system account from a non-owner address", async () => {
-    await controller.addSystemAccount(accounts[6], {from: accounts[0]});
+    await controller.addSystemAccount(accounts[6], {from: owner});
     const success = await controller.isSystemAccount(accounts[6]);
     assert.strictEqual(success, true, "unable to add system account");
     try {
@@ -98,7 +98,7 @@ contract('MintableController', accounts => {
     } catch { 
       return;
     }
-    assert.fail("succeeded", "fail", "system system account should fail from non-owner account");
+    assert.fail("succeeded", "fail", "removing system account should fail from non-owner account");
   });
 
   it("should succeed in adding system account from an owner address", async () => {
