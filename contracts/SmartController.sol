@@ -84,9 +84,7 @@ contract SmartController is MintableController {
         whenNotPaused
         returns (bool) 
     {
-        if (!smartToken.validate(caller, to, amount)) {
-            revert("transfer is not valid");
-        }
+        require(smartToken.validate(caller, to, amount), "transfer id not valid");
         return super.transfer_withCaller(caller, to, amount);
     }
 
