@@ -22,6 +22,14 @@ test: compile migrate
 coverage: 
 	npx solidity-coverage
 
+.PHONY: slither
+slither:
+	slither .
+
+.PHONY: smartcheck
+smartcheck:
+	npx smartcheck -p contracts
+
 .PHONY: poa-migrate
 poa-migrate:
 	npx truffle migrate --reset --network poa
