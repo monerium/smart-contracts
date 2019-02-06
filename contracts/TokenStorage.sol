@@ -15,7 +15,7 @@ contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
 
     using TokenStorageLib for TokenStorageLib.TokenStorage;
 
-    TokenStorageLib.TokenStorage tokenStorage;
+    TokenStorageLib.TokenStorage internal tokenStorage;
 
     /**
      * @dev Increases balance of an address.

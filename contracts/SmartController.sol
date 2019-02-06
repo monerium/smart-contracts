@@ -12,7 +12,7 @@ contract SmartController is MintableController {
 
     using SmartTokenLib for SmartTokenLib.SmartStorage;
 
-    SmartTokenLib.SmartStorage smartToken;
+    SmartTokenLib.SmartStorage internal smartToken;
 
     bytes3 public ticker;
     uint constant public INITIAL_SUPPLY = 0;

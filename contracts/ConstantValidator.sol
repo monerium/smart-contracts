@@ -11,7 +11,7 @@ import "openzeppelin-solidity/contracts/ownership/CanReclaimToken.sol";
  */
 contract ConstantValidator is IValidator, Claimable, CanReclaimToken, NoOwner {
 
-    bool valid;
+    bool internal valid;
 
     /**
      * @dev Contract constructor.

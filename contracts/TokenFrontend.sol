@@ -16,7 +16,7 @@ import "./SmartController.sol";
  */
 contract TokenFrontend is Claimable, CanReclaimToken, NoOwner {
 
-    SmartController controller;
+    SmartController internal controller;
 
     string public name;
     string public symbol;
