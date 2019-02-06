@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity 0.4.24;
 
 import "./IValidator.sol";
 import "openzeppelin-solidity/contracts/ownership/Claimable.sol";
