@@ -1,3 +1,6 @@
+.PHONY: build
+build: compile
+
 .PHONY: compile
 compile:
 	npx truffle compile --all
