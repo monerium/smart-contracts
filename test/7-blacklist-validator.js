@@ -50,7 +50,7 @@ contract("BlacklistValidator", accounts => {
   it("should be able to reclaim ownership of contracts", async () => {
     const recipient = await AcceptingRecipient.deployed();
     const owner0 = await recipient.owner();
-    assert.strictEqual(owner0, accounts[0], "incorrect original owner");
+    assert.strictEqual(owner0, owner, "incorrect original owner");
     await recipient.transferOwnership(BlacklistValidator.address, {from: owner0});
     const owner1 = await recipient.owner();
     assert.strictEqual(owner1, BlacklistValidator.address, "standard controller should be owner");
@@ -61,7 +61,7 @@ contract("BlacklistValidator", accounts => {
 
   it("should not be allowed to receive ether", async () => {
     try {
-    await web3.eth.sendTransaction({to: BlacklistValidator.address, from: accounts[0], value: 10});
+    await web3.eth.sendTransaction({to: BlacklistValidator.address, from: owner, value: 10});
     } catch {
       return;
     }
@@ -80,17 +80,17 @@ contract("BlacklistValidator", accounts => {
 
   it("should be able to recover tokens (ERC20)", async () => {
     const token = await SimpleToken.deployed();
-    const amount0 = await token.balanceOf(accounts[0]);
+    const amount0 = await token.balanceOf(owner);
     assert.notEqual(amount0.toNumber(), 0, "owner must have some tokens");
     const balance0 = await token.balanceOf(BlacklistValidator.address);
     assert.strictEqual(balance0.toNumber(), 0, "initial balance must be 0");
-    await token.transfer(BlacklistValidator.address, 20, {from: accounts[0]});
+    await token.transfer(BlacklistValidator.address, 20, {from: owner});
     const balance1 = await token.balanceOf(BlacklistValidator.address);
     assert.strictEqual(balance1.toNumber(), 20, "ERC20 transfer should succeed");
     await validator.reclaimToken(token.address);
     const balance2 = await token.balanceOf(BlacklistValidator.address);
     assert.strictEqual(balance2.toNumber(), balance0.toNumber(), "mismatch in token before and after");
-    const amount1 = await token.balanceOf(accounts[0]);
+    const amount1 = await token.balanceOf(owner);
     assert.strictEqual(amount1.toNumber(), amount0.toNumber(), "unable to recover");
   });
 
