@@ -27,7 +27,7 @@ contract SmartController is MintableController {
         public
         MintableController(storage_, INITIAL_SUPPLY) 
     {
-        assert(validator != 0x0);
+        require(validator != 0x0, "validator cannot be the null address");
         smartToken.setValidator(validator);
         ticker = ticker_;
     }

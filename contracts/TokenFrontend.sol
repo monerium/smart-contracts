@@ -73,7 +73,7 @@ contract TokenFrontend is Claimable, CanReclaimToken, NoOwner {
      * @param address_ Address of the controller.
      */
     function setController(address address_) public onlyOwner {
-        assert(address_ != 0x0);
+        require(address_ != 0x0, "controller address cannot be the null address");
         emit Controller(ticker, controller, address_);
         controller = SmartController(address_);
         assert(controller.ticker() == ticker);
