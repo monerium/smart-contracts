@@ -57,6 +57,7 @@ contract TokenFrontend is Claimable, CanReclaimToken, NoOwner {
 
     /**
      * @dev Contract constructor.
+     * @notice The contract is an abstract contract as a result of the internal modifier.
      * @param name_ Token name.
      * @param symbol_ Token symbol.
      * @param ticker_ 3 letter currency ticker.
