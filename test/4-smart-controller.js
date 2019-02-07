@@ -31,8 +31,8 @@ contract('SmartController', (accounts) => {
   beforeEach("setup smart controller", async () => { 
     controller = await SmartController.deployed();
     const validator = await BlacklistValidator.deployed();
-    await controller.setValidator(validator.address);
     await controller.addSystemAccount(system);
+    await controller.setValidator(validator.address, {from: system});
   });
 
   it("should start with zero tokens", async () => {
@@ -88,7 +88,7 @@ contract('SmartController', (accounts) => {
     })
   }
 
-  it("should fail setting a new validator from a non-owner account", async () => {
+  it("should fail setting a new validator from a non-system account", async () => {
     const initial = await controller.getValidator();
     const validator = await ConstantValidator.deployed();
     assert.notEqual(validator.address, initial, "initial validator should not be constant validator");
@@ -102,11 +102,11 @@ contract('SmartController', (accounts) => {
     assert.fail("succeeded", "fail", "setting validator was supposed to fail");
   });
 
-  it("should succeed setting new validator from the owner account", async () => {
+  it("should succeed setting new validator from a system account", async () => {
     const initial = await controller.getValidator();
     const validator = await ConstantValidator.deployed();
     assert.notEqual(validator.address, initial, "initial validator should not be constant validator");
-    await controller.setValidator(validator.address, {from: owner});
+    await controller.setValidator(validator.address, {from: system});
     const post = await controller.getValidator();
     assert.strictEqual(post, validator.address, "validator should be set to constant validator");
   });

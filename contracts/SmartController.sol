@@ -36,7 +36,7 @@ contract SmartController is MintableController {
      * @dev Sets a new validator.
      * @param validator Address of validator.
      */
-    function setValidator(address validator) external {
+    function setValidator(address validator) external onlySystemAccounts {
         smartToken.setValidator(validator);
     }
 
