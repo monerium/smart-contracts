@@ -1,5 +1,6 @@
 var SmartController = artifacts.require("./SmartController.sol");
 var BlacklistValidator = artifacts.require("./BlacklistValidator.sol");
+var ConstantValidator = artifacts.require("./ConstantValidator.sol");
 
 const hash = `0xa1de988600a42c4b4ab089b619297c17d53cffae5d5120d82d8a92d0bb3b78f2`;
 const wallets = {
@@ -23,11 +24,14 @@ const wallets = {
 
 contract('SmartController', (accounts) => {
 
+  const owner = accounts[0];
   const system = accounts[9];
   let controller;
 
   beforeEach("setup smart controller", async () => { 
     controller = await SmartController.deployed();
+    const validator = await BlacklistValidator.deployed();
+    await controller.setValidator(validator.address);
     await controller.addSystemAccount(system);
   });
 
@@ -83,5 +87,28 @@ contract('SmartController', (accounts) => {
       }
     })
   }
+
+  it("should fail setting a new validator from a non-owner account", async () => {
+    const initial = await controller.getValidator();
+    const validator = await ConstantValidator.deployed();
+    assert.notEqual(validator.address, initial, "initial validator should not be constant validator");
+    try {
+      await controller.setValidator(validator.address, {from: accounts[6]});
+    } catch {
+      return;
+    }
+    const post = await controller.getValidator();
+    assert.strictEqual(post, initial, "validator should not have changed");
+    assert.fail("succeeded", "fail", "setting validator was supposed to fail");
+  });
+
+  it("should succeed setting new validator from the owner account", async () => {
+    const initial = await controller.getValidator();
+    const validator = await ConstantValidator.deployed();
+    assert.notEqual(validator.address, initial, "initial validator should not be constant validator");
+    await controller.setValidator(validator.address, {from: owner});
+    const post = await controller.getValidator();
+    assert.strictEqual(post, validator.address, "validator should be set to constant validator");
+  });
 
 });
