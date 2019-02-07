@@ -10,8 +10,7 @@ import "./ITokenRecipient.sol";
 contract RejectingRecipient is ITokenRecipient {
 
     function tokenFallback(address, uint256, bytes) external returns (bool) {
-        revert();
-        return false;
+        assert(false);
     }
 
 }
