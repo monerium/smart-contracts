@@ -77,7 +77,7 @@ contract TokenFrontend is Claimable, CanReclaimToken, NoOwner {
         require(address_ != 0x0, "controller address cannot be the null address");
         emit Controller(ticker, controller, address_);
         controller = SmartController(address_);
-        assert(controller.ticker() == ticker);
+        require(controller.ticker() == ticker, "ticker does not match controller ticket");
     }
 
     /**

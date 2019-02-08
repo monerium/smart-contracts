@@ -15,6 +15,6 @@ module.exports = function(deployer, network) {
   deployer.link(SmartTokenLib, ConstantSmartController);
   deployer.link(ERC20Lib, ConstantSmartController);
   deployer.link(ERC677Lib, ConstantSmartController);
-  deployer.deploy(ConstantSmartController, TokenStorage.address, "CSC");
+  deployer.deploy(ConstantSmartController, TokenStorage.address, "USD");
 
 };

@@ -1,5 +1,6 @@
 var USD = artifacts.require("./USD.sol");
 var SmartController = artifacts.require("./SmartController.sol");
+var ConstantSmartController = artifacts.require("./ConstantSmartController.sol");
 var BlacklistValidator = artifacts.require("./BlacklistValidator.sol");
 var AcceptingRecipient = artifacts.require("./AcceptingRecipient");
 var RejectingRecipient = artifacts.require("./RejectingRecipient");
@@ -7,6 +8,7 @@ var SimpleToken = artifacts.require("./SimpleToken.sol");
 
 contract("USD", accounts => {
 
+  const owner = accounts[0];
   const system = accounts[9];
   let usd;
 
@@ -95,6 +97,33 @@ contract("USD", accounts => {
   it("should return the decimal points for units in the contract", async () => {
     const decimals = await usd.decimals();
     assert.strictEqual(decimals.toNumber(), 18, "decimals do not match");
+  });
+
+  it("should fail to set the controller to 0x0", async () => {
+    const initial = await usd.getController();
+    try {
+      await usd.setController(0x0);
+    } catch {
+    }
+    const post = await usd.getController();
+    assert.strictEqual(post, initial, "controller should not change");
+  });
+
+  it("should fail to set the controller to a non null address from a non-owner", async () => {
+    const initial = await usd.getController();
+    try {
+      await usd.setController(0x0, {from: accounts[5]});
+    } catch {
+    }
+    const post = await usd.getController();
+    assert.strictEqual(post, initial, "controller should not change");
+  });
+
+  it("should succeed setting the controller to a non null address", async () => {
+    const standard = await ConstantSmartController.deployed();
+    await usd.setController(standard.address, {from: owner});
+    const post = await usd.getController();
+    assert.strictEqual(post, standard.address, "incorrect post state");
   });
 
 });
