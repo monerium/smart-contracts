@@ -214,10 +214,11 @@ contract('StandardController', accounts => {
     assert.strictEqual(initial, owner);
     await controller.destroy();
     try {
-    const owner0 = await controller.owner()
+      await controller.owner()
     } catch {
+      return;
     }
-    assert.strictEqual(owner0, "0x", "contract should be destroyed");
+    assert.fail("succeeded", "fail", "calling contract after destruction should fail");
   });
 
 });
