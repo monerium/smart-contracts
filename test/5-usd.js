@@ -85,4 +85,9 @@ contract("USD", accounts => {
     assert.strictEqual(balance.toNumber(), 0, "balance mismatch for recipient");
   });
 
+  it("should return the decimal points for units in the contract", async () => {
+    const decimals = await usd.decimals();
+    assert.strictEqual(decimals.toNumber(), 18, "decimals do not match");
+  });
+
 });
