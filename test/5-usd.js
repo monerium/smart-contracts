@@ -1,5 +1,6 @@
 var USD = artifacts.require("./USD.sol");
 var SmartController = artifacts.require("./SmartController.sol");
+var StandardController = artifacts.require("./StandardController.sol");
 var ConstantSmartController = artifacts.require("./ConstantSmartController.sol");
 var BlacklistValidator = artifacts.require("./BlacklistValidator.sol");
 var AcceptingRecipient = artifacts.require("./AcceptingRecipient");
@@ -113,6 +114,18 @@ contract("USD", accounts => {
     const initial = await usd.getController();
     try {
       await usd.setController(0x0, {from: accounts[5]});
+    } catch {
+    }
+    const post = await usd.getController();
+    assert.strictEqual(post, initial, "controller should not change");
+  });
+
+  it("should fail to set the controller to a controller with different ticker", async () => {
+    const initial = await usd.getController();
+    const standard = await StandardController.deployed();
+    assert.notEqual(standard.address, initial, "invalid initial controller");
+    try {
+      await usd.setController(standard.address, {from: owner});
     } catch {
     }
     const post = await usd.getController();
