@@ -35,11 +35,10 @@ library ERC677Lib {
         external
         returns (bool) 
     {
-        if (db.transfer(caller, to, amount)) {
-            if (to.isContract()) {
-                ITokenRecipient recipient = ITokenRecipient(to);
-                recipient.tokenFallback(caller, amount, data);
-            }
+        assert(db.transfer(caller, to, amount));
+        if (to.isContract()) {
+            ITokenRecipient recipient = ITokenRecipient(to);
+            assert(recipient.tokenFallback(caller, amount, data));
         }
         return true;
     }        
