@@ -35,6 +35,22 @@ contract('SmartController', (accounts) => {
     await controller.setValidator(validator.address, {from: system});
   });
 
+  it("should fail to construct if validator is the null address", async () => {
+    try {
+      await SmartController.new("0x", "0x", "000");
+    } catch {
+      return;
+    }
+    assert.fail("succeeded", "fail", "constructor was supposed to fail");
+  });
+
+  it("should construct if validator is a non-null address", async () => {
+    const validator = await BlacklistValidator.deployed();
+    const smart = await SmartController.new("0x0", validator.address, "000");
+    const initial = await smart.getValidator();
+    assert.strictEqual(initial, validator.address, "validator should be set");
+  });
+
   it("should start with zero tokens", async () => {
     const supply = await controller.totalSupply();
     assert.equal(supply.valueOf(), 0, "initial supply is not 0");  
@@ -62,6 +78,21 @@ contract('SmartController', (accounts) => {
     assert.fail("succeeded", "fail", "transfer was supposed to fail");
   });
 
+  it("should fail to transfer 849 tokens when paused", async () => {
+    await controller.pause();
+    const initial = await controller.balanceOf(accounts[3]);
+    try {
+      await controller.transfer(accounts[3], 849, {from: system});
+    } catch { 
+    }
+    const balance = await controller.balanceOf(accounts[3]);
+    assert.strictEqual(balance.toNumber(), initial.toNumber(), "should not have transferred when paused");
+    await controller.unpause();
+    await controller.transfer(accounts[3], 849, {from: system});
+    const post = await controller.balanceOf(accounts[3]);
+    assert.strictEqual(post.toNumber(), initial.toNumber() + 849, "unable to transfer when unpaused");
+  });
+
   var i = 5;
   for(var name in wallets) {
     const account = accounts[i++];
@@ -87,6 +118,27 @@ contract('SmartController', (accounts) => {
       }
     })
   }
+
+  it("should fail to recover from a non-system account", async () => {
+    const wallet = wallets["trust wallet"];
+    await controller.transfer(wallet.address, 15, {from: system});
+    const sig = wallet.signature.replace(/^0x/, '');
+    const r = `0x${sig.slice(0, 64)}`;
+    const s = `0x${sig.slice(64, 128)}`;
+    var v = web3.toDecimal(`0x${sig.slice(128, 130)}`);
+
+    if (v < 27) v += 27;
+    assert(v == 27 || v == 28);
+
+    try {
+      await controller.recover(wallet.address, accounts[8], hash, v, r, s, {from: owner});
+    } catch {
+    }
+    const balanceFrom = await controller.balanceOf(wallet.address);
+    assert.equal(balanceFrom.toNumber(), 15, "should not recover 15 tokens");
+    const balanceTo = await controller.balanceOf(accounts[8]);
+    assert.equal(balanceTo.valueOf(), 13, "should still be 13 tokens");
+  });
 
   it("should fail setting a new validator from a non-system account", async () => {
     const initial = await controller.getValidator();
