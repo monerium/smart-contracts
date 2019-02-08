@@ -58,14 +58,14 @@ contract("USD", accounts => {
     assert.fail("succeeded", "fail", "transfer was supposed to fail");
   });
 
-  it("should succeed transferring and calling a contract which implements token fallback method by accepting", async () => {
+  it("should succeed transferring to and calling a contract which implements token fallback method by accepting", async () => {
     const recipient = await AcceptingRecipient.deployed();
     await usd.transferAndCall(recipient.address, 3, "");
     const balance = await usd.balanceOf(recipient.address);
     assert.strictEqual(balance.toNumber(), 3, "balance mismatch for recipient");
   });
 
-  it("should fail transferring and calling a contract which implements token fallback method by rejecting", async () => {
+  it("should fail transferring to and calling a contract which implements token fallback method by rejecting", async () => {
     const recipient = await RejectingRecipient.deployed();
     try {
       await usd.transferAndCall(recipient.address, 3, "");
@@ -75,7 +75,7 @@ contract("USD", accounts => {
     assert.strictEqual(balance.toNumber(), 0, "balance mismatch for recipient");
   });
 
-  it("should fail transferring and calling a contract which does not implements token fallback method", async () => {
+  it("should fail transferring to and calling a contract which does not implements token fallback method", async () => {
     const recipient = await SimpleToken.deployed();
     try {
       await usd.transferAndCall(recipient.address, 3, "");
@@ -83,6 +83,13 @@ contract("USD", accounts => {
     }
     const balance = await usd.balanceOf(recipient.address);
     assert.strictEqual(balance.toNumber(), 0, "balance mismatch for recipient");
+  });
+
+  it("should succeed transferring to and calling a non-contract", async () => {
+    const account = accounts[7];
+    await usd.transferAndCall(account, 3, "");
+    const balance = await usd.balanceOf(account);
+    assert.strictEqual(balance.toNumber(), 3, "balance mismatch for account");
   });
 
   it("should return the decimal points for units in the contract", async () => {
