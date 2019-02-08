@@ -1,6 +1,9 @@
 var USD = artifacts.require("./USD.sol");
 var SmartController = artifacts.require("./SmartController.sol");
 var BlacklistValidator = artifacts.require("./BlacklistValidator.sol");
+var AcceptingRecipient = artifacts.require("./AcceptingRecipient");
+var RejectingRecipient = artifacts.require("./RejectingRecipient");
+var SimpleToken = artifacts.require("./SimpleToken.sol");
 
 contract("USD", accounts => {
 
@@ -53,6 +56,33 @@ contract("USD", accounts => {
       return;
     }
     assert.fail("succeeded", "fail", "transfer was supposed to fail");
+  });
+
+  it("should succeed transferring and calling a contract which implements token fallback method by accepting", async () => {
+    const recipient = await AcceptingRecipient.deployed();
+    await usd.transferAndCall(recipient.address, 3, "");
+    const balance = await usd.balanceOf(recipient.address);
+    assert.strictEqual(balance.toNumber(), 3, "balance mismatch for recipient");
+  });
+
+  it("should fail transferring and calling a contract which implements token fallback method by rejecting", async () => {
+    const recipient = await RejectingRecipient.deployed();
+    try {
+      await usd.transferAndCall(recipient.address, 3, "");
+    } catch {
+    }
+    const balance = await usd.balanceOf(recipient.address);
+    assert.strictEqual(balance.toNumber(), 0, "balance mismatch for recipient");
+  });
+
+  it("should fail transferring and calling a contract which does not implements token fallback method", async () => {
+    const recipient = await SimpleToken.deployed();
+    try {
+      await usd.transferAndCall(recipient.address, 3, "");
+    } catch {
+    }
+    const balance = await usd.balanceOf(recipient.address);
+    assert.strictEqual(balance.toNumber(), 0, "balance mismatch for recipient");
   });
 
 });
