@@ -23,15 +23,6 @@ contract MintableController is SystemRole, StandardController {
     { }
 
     /**
-     * @dev Mints new tokens to the contract owner.
-     * This is a convenience method for mintTo.
-     * @param amount Number of tokens to mint.
-     */
-    function mint(uint amount) external onlySystemAccounts returns (bool) {
-        return token.mint(msg.sender, amount);
-    }
-
-    /**
      * @dev Mints new tokens.
      * @param to Address to credit the tokens.
      * @param amount Number of tokens to mint.
@@ -47,10 +38,17 @@ contract MintableController is SystemRole, StandardController {
     /**
      * @dev Burns tokens from the calling system account.
      * This removes the burned tokens from circulation.
+     * @notice only possible when token owners are system accounts.
+     * @param from Address of the token owner
      * @param amount Number of tokens to burn.
      */
-    function burn(uint amount) external onlySystemAccounts returns (bool) {
-        return token.burn(msg.sender, amount);
+    function burn(address from, uint amount) 
+        external 
+        onlySystemAccounts 
+        onlySystemAccount(from) 
+        returns (bool) 
+    {
+        return token.burn(from, amount);
     }
 
     /**

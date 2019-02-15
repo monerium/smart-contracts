@@ -34,6 +34,14 @@ contract SystemRole {
     }
 
     /**
+     * @dev Modifier which prevents non-system accounts to pass the guard.
+     */
+    modifier onlySystemAccount(address account) {
+        require(isSystemAccount(account));
+        _;
+    }
+
+    /**
      * @dev System Role constructor.
      * @notice The contract is an abstract contract as a result of the internal modifier.
      */
