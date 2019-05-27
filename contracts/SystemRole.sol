@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity 0.4.24;
 
 import "openzeppelin-solidity/contracts/access/rbac/Roles.sol";
 
@@ -30,6 +30,14 @@ contract SystemRole {
      */
     modifier onlySystemAccounts() {
         require(isSystemAccount(msg.sender));
+        _;
+    }
+
+    /**
+     * @dev Modifier which prevents non-system accounts to pass the guard.
+     */
+    modifier onlySystemAccount(address account) {
+        require(isSystemAccount(account));
         _;
     }
 
