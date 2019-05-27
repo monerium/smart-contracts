@@ -97,23 +97,24 @@ Development happens on the master branch and we use [Semantic Versioning](http:/
 
 The deployment cycle for beta versions (up to v1.0.0) is as follows. During development the smart contracts are continuously deployed and tested locally on testrpc. A patch version update is deployed on the Monerium testnet, a federated blockchain, run by Monerium. A minor version update is deployed on the Rinkeby testnet.
 
-| Contract              | Rinkeby                                    |
-|---------------------  |--------------------------------------------|
-| ERC20Lib              | 0xc942b5e9847aa8e1d80806506bbda5c8c6479e74 |
-| ERC677Lib             | 0xe4fd34df297f5c7e21bdbbc8d367a971430b5af5 |
-| ISK                   | 0xdb41b413aede3602a3e9b74ba45967039b985057 |
-| Migrations            | 0x3784f034560cb3708b071aec74cda331c99b5961 |
-| MintableTokenLib      | 0x90fafb2cf289ed1b46c0383a1316994307faf260 |
-| SafeMath              | 0xf7b2b93e110c526341425c4d55aacae7c94b1029 |
-| SmartController (ISK) | 0xd03b5d1396eec8584076ae45b7f139d6e2aa00f5 |
-| SmartController (USD) | 0x16708f9d60eab5c39968ab3722ace1d51cbe9373 |
-| SmartTokenLib         | 0x480a671f020c44ac5a59acee55d9e0d3127ec62f |
-| Storage (ISK)         | 0xc0ab16f778e29de73d4b168d2a1b2edf3f95978f |
-| Storage (USD)         | 0xd94587e43c5b18d1643a3680366ca51f87b8504c |
-| TokenStorageLib       | 0x407723beb5b30e4aa1d2239903fa2a6b3d184c30 |
-| USD                   | 0x3c56645f17d80cbc3ea1baedca2b14acbb33f0c9 |
 
-Current version is v0.9.4.
+| Contract               | Rinkeby																		|
+|------------------------|--------------------------------------------|
+| ERC20Lib               | 0xe7b1f1c4a99b68a3f84aeacb2de8ff86acfbf8a3 |
+| ERC677Lib              | 0x29218e4c2d78e016ccaab256dbc9c3861bef389e |
+| ISK                    | 0xcd8704bdb144f05c3c01d21943167b46684fe5c4 |
+| Migrations             | 0x92227e4b662e02a84acea457711f1a24821fdede |
+| MintableTokenLib       | 0x159b85aae18653162ba1ca4fb294ab1da3a3536e |
+| SafeMath               | 0x0dd2411ad961ab71cf0583dd8f938193ec21dd19 |
+| SmartController (ISK)  | 0xf2330aff917446c486e2d9b6014e9d9a6fbb2af4 |
+| SmartController (USD)  | 0xadca2746f59e849abe656f337271dea4ddc5f33b |
+| SmartTokenLib          | 0x5a9f218539142f2ddceb326be1f940b8c858ce02 |
+| Storage (ISK)          | 0xe84501ce6c17d9104d1c3e607945b44cf656b941 |
+| Storage (USD)          | 0x37fe072f85c878bd685b332fe9155f987a78bd96 |
+| TokenStorageLib        | 0x3607493828521fa8edd3dd4d6a19fed10c5cb7af |
+| USD                    | 0x8e4727c509e41cefa2ef6298c1b399049f4f8fe5 |
+
+Current version is v0.9.6.
 
 ## Unit tests
 
