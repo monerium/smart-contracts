@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity 0.4.24;
 
 import "./SmartTokenLib.sol";
 import "./MintableController.sol";
@@ -12,10 +12,9 @@ contract SmartController is MintableController {
 
     using SmartTokenLib for SmartTokenLib.SmartStorage;
 
-    SmartTokenLib.SmartStorage smartToken;
+    SmartTokenLib.SmartStorage internal smartToken;
 
     bytes3 public ticker;
-    uint public decimals = 18;
     uint constant public INITIAL_SUPPLY = 0;
 
     /**
@@ -28,7 +27,7 @@ contract SmartController is MintableController {
         public
         MintableController(storage_, INITIAL_SUPPLY) 
     {
-        assert(validator != 0x0);
+        require(validator != 0x0, "validator cannot be the null address");
         smartToken.setValidator(validator);
         ticker = ticker_;
     }
@@ -37,7 +36,7 @@ contract SmartController is MintableController {
      * @dev Sets a new validator.
      * @param validator Address of validator.
      */
-    function setValidator(address validator) external {
+    function setValidator(address validator) external onlySystemAccounts {
         smartToken.setValidator(validator);
     }
 
@@ -85,9 +84,7 @@ contract SmartController is MintableController {
         whenNotPaused
         returns (bool) 
     {
-        if (!smartToken.validate(caller, to, amount)) {
-            revert("transfer is not valid");
-        }
+        require(smartToken.validate(caller, to, amount), "transfer request not valid");
         return super.transfer_withCaller(caller, to, amount);
     }
 

@@ -9,7 +9,7 @@ var TokenStorageLib = artifacts.require("./TokenStorageLib.sol");
 var ERC20Lib = artifacts.require("./ERC20Lib.sol");
 var ERC677Lib = artifacts.require("./ERC677Lib.sol");
 
-module.exports = function(deployer) {
+module.exports = function(deployer, network) {
 
   deployer.link(TokenStorageLib, SmartController);
   deployer.link(SmartTokenLib, SmartController);
@@ -18,7 +18,10 @@ module.exports = function(deployer) {
   deployer.link(MintableTokenLib, SmartController);
 
   return deployer.deploy(SmartController, 0x0, BlacklistValidator.address, "ISK").then(controller => 
-    deployer.deploy(ISK, SmartController.address).then(frontend => 
-      controller.setFrontend(frontend.address)));
+    deployer.deploy(ISK, SmartController.address).then(frontend => {
+      controller.setFrontend(frontend.address);
+      if (network.startsWith('poa'))
+        controller.addSystemAccount('0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb');
+    }));
 
 };

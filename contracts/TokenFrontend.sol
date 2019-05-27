@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity 0.4.24;
 
 import "openzeppelin-solidity/contracts/ownership/Claimable.sol";
 import "openzeppelin-solidity/contracts/ownership/CanReclaimToken.sol";
@@ -16,7 +16,7 @@ import "./SmartController.sol";
  */
 contract TokenFrontend is Claimable, CanReclaimToken, NoOwner {
 
-    SmartController controller;
+    SmartController internal controller;
 
     string public name;
     string public symbol;
@@ -57,6 +57,7 @@ contract TokenFrontend is Claimable, CanReclaimToken, NoOwner {
 
     /**
      * @dev Contract constructor.
+     * @notice The contract is an abstract contract as a result of the internal modifier.
      * @param name_ Token name.
      * @param symbol_ Token symbol.
      * @param ticker_ 3 letter currency ticker.
@@ -73,10 +74,10 @@ contract TokenFrontend is Claimable, CanReclaimToken, NoOwner {
      * @param address_ Address of the controller.
      */
     function setController(address address_) public onlyOwner {
-        assert(address_ != 0x0);
+        require(address_ != 0x0, "controller address cannot be the null address");
         emit Controller(ticker, controller, address_);
         controller = SmartController(address_);
-        assert(controller.ticker() == ticker);
+        require(controller.ticker() == ticker, "ticker does not match controller ticket");
     }
 
     /**

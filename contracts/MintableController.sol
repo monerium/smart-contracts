@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity 0.4.24;
 
 import "./StandardController.sol";
 import "./MintableTokenLib.sol";
@@ -23,15 +23,6 @@ contract MintableController is SystemRole, StandardController {
     { }
 
     /**
-     * @dev Mints new tokens to the contract owner.
-     * This is a convenience method for mintTo.
-     * @param amount Number of tokens to mint.
-     */
-    function mint(uint amount) external onlySystemAccounts returns (bool) {
-        return token.mint(msg.sender, amount);
-    }
-
-    /**
      * @dev Mints new tokens.
      * @param to Address to credit the tokens.
      * @param amount Number of tokens to mint.
@@ -45,12 +36,19 @@ contract MintableController is SystemRole, StandardController {
     }
     
     /**
-     * @dev Burns tokens from the contract owner.
+     * @dev Burns tokens from the calling system account.
      * This removes the burned tokens from circulation.
+     * @notice only possible when token owners are system accounts.
+     * @param from Address of the token owner
      * @param amount Number of tokens to burn.
      */
-    function burn(uint amount) external onlySystemAccounts returns (bool) {
-        return token.burn(msg.sender, amount);
+    function burn(address from, uint amount) 
+        external 
+        onlySystemAccounts 
+        onlySystemAccount(from) 
+        returns (bool) 
+    {
+        return token.burn(from, amount);
     }
 
     /**
@@ -58,18 +56,18 @@ contract MintableController is SystemRole, StandardController {
      * This removfes the burned tokens from circulation.
      * @param from Address of the token owner.
      * @param amount Number of tokens to burn.
+     * @param h Hash which the token owner signed.
+     * @param v Signature component.
+     * @param r Signature component.
+     * @param s Sigature component.
      */
-    function burnFrom(
-        address from,
-        uint amount
-    )
+    function burnFrom(address from, uint amount, bytes32 h, uint8 v, bytes32 r, bytes32 s)
         external
         onlySystemAccounts
         returns (bool)
     {
-        return token.burn(from, amount);
+        return token.burn(from, amount, h, v, r, s);
     }
-
 
     /**
      * @dev Assigns the system role to an account.

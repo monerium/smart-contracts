@@ -1,3 +1,6 @@
+.PHONY: build
+build: compile
+
 .PHONY: compile
 compile:
 	npx truffle compile --all
@@ -18,6 +21,14 @@ test: compile migrate
 .PHONY: coverage
 coverage: 
 	npx solidity-coverage
+
+.PHONY: slither
+slither:
+	slither .
+
+.PHONY: smartcheck
+smartcheck:
+	npx smartcheck -p contracts
 
 .PHONY: poa-migrate
 poa-migrate:

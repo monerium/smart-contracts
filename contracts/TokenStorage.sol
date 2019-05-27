@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity 0.4.24;
 
 import "openzeppelin-solidity/contracts/ownership/Claimable.sol";
 import "openzeppelin-solidity/contracts/ownership/CanReclaimToken.sol";
@@ -15,7 +15,7 @@ contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
 
     using TokenStorageLib for TokenStorageLib.TokenStorage;
 
-    TokenStorageLib.TokenStorage tokenStorage;
+    TokenStorageLib.TokenStorage internal tokenStorage;
 
     /**
      * @dev Increases balance of an address.

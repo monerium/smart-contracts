@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity 0.4.24;
 
 
 import "./TokenStorage.sol";
@@ -21,8 +21,8 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
     using ERC20Lib for TokenStorage;
     using ERC677Lib for TokenStorage;
 
-    TokenStorage token;
-    address frontend;
+    TokenStorage internal token;
+    address internal frontend;
 
     string public name;
     string public symbol;

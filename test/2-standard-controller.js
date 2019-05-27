@@ -3,11 +3,13 @@ var TokenStorage = artifacts.require("./TokenStorage.sol");
 var AcceptingRecipient = artifacts.require("./AcceptingRecipient.sol");
 var RejectingRecipient = artifacts.require("./RejectingRecipient.sol");
 var SimpleToken = artifacts.require("./SimpleToken.sol");
+var TokenStorage = artifacts.require("./TokenStorage.sol");
 
 contract('StandardController', accounts => {
 
   if (web3.version.network <= 100) return;
 
+  const owner = accounts[0];
   let controller;
 
   beforeEach("setup standard controller", async () => { 
@@ -185,14 +187,39 @@ contract('StandardController', accounts => {
     assert.strictEqual(owner2, owner0, "controller should be the storage owner");
   });
 
-  it("should be destructible", async () => {
-    await controller.destroy();
+  it("should fail to set a new storage from a non-owner account", async () => {
+    const initial = await controller.getStorage();
+    const storage = await TokenStorage.deployed();
+    assert.notEqual(storage.address, initial, "initial storage should not be a newly instantiated storage");
     try {
-      await controller.balanceOf(0x0);
+      await controller.setStorage(storage.address, {from: accounts[7]});
+    } catch {
+    }
+    const post = await controller.getStorage();
+    assert.strictEqual(post, initial, "storage should not change");
+  });
+
+  it("should be able to set a new storage from an owner account", async () => {
+    const initial = await controller.getStorage();
+    const storage = await TokenStorage.deployed();
+    assert.notEqual(storage.address, initial, "initial storage should not be a newly instantiated storage");
+    await controller.setStorage(storage.address, {from: owner});
+    const post = await controller.getStorage();
+    assert.strictEqual(post, storage.address, "storage did not change");
+  });
+
+  it("should be destructible", async () => {
+    const initial = await controller.owner();
+    assert.notEqual(initial, "0x", "contract should be owned by someone");
+    assert.strictEqual(initial, owner);
+    await controller.destroy();
+    let owner0;
+    try {
+      owner0 = await controller.owner()
     } catch {
       return;
     }
-    assert.fail("succeeded", "fail", "contract should be destroyed");
+    assert.strictEqual(owner0, "0x", "after destroying contract it should be ownerless");
   });
 
 });
