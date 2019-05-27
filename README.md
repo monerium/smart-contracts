@@ -114,7 +114,7 @@ The deployment cycle for beta versions (up to v1.0.0) is as follows. During deve
 | TokenStorageLib        | 0x3607493828521fa8edd3dd4d6a19fed10c5cb7af |
 | USD                    | 0x8e4727c509e41cefa2ef6298c1b399049f4f8fe5 |
 
-Current version is v0.9.6.
+Current version is v0.9.7.
 
 ## Unit tests
 
