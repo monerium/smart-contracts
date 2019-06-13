@@ -121,7 +121,7 @@ Current version is v0.9.7.
 The token system ships with JavaScript unit tests.
 
 ```sh
-# npx truffle test
+# make test
 ```
 
 ![Unit tests](docs/test-suite.png)
@@ -132,10 +132,10 @@ The token system ships with JavaScript unit tests.
 Code coverage for the token system can be checked with [solidity-coverage](https://github.com/sc-forks/solidity-coverage).
 
 ```sh
-# npx solidity-coverage
+# make coverage
 ```
 
-![Code coverage](docs/code-coverage.jpg)
+![Code coverage](docs/code-coverage.png)
 
 
 ## Token interface
@@ -180,4 +180,4 @@ contract ERC20Interface {
 ```
 
 
-Copyright &copy; 2018, Gísli Kristjánsson for Monerium ehf.
+Copyright &copy; 2019, Gísli Kristjánsson for Monerium ehf.
