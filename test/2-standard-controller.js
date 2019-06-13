@@ -4,6 +4,7 @@ var AcceptingRecipient = artifacts.require("./AcceptingRecipient.sol");
 var RejectingRecipient = artifacts.require("./RejectingRecipient.sol");
 var SimpleToken = artifacts.require("./SimpleToken.sol");
 var TokenStorage = artifacts.require("./TokenStorage.sol");
+var USD = artifacts.require("./USD.sol");
 
 contract('StandardController', accounts => {
 
@@ -206,6 +207,27 @@ contract('StandardController', accounts => {
     await controller.setStorage(storage.address, {from: owner});
     const post = await controller.getStorage();
     assert.strictEqual(post, storage.address, "storage did not change");
+  });
+
+  it("should fail to set the frontend as a non-owner", async () => {
+    const initial = await controller.getFrontend();
+    const frontend = await USD.deployed();
+    assert.notEqual(frontend.address, initial, "initial frontend should not be a newly instantiated frontend");
+    try {
+      await controller.setFrontend(frontend.address, {from: accounts[9]});
+    } catch {
+    }
+    const post = await controller.getFrontend();
+    assert.strictEqual(post, initial, "frontend should not change");
+  });
+
+  it("should be able to set the frontend as an owner", async () => {
+    const initial = await controller.getFrontend();
+    const frontend = await USD.deployed();
+    assert.notEqual(frontend.address, initial, "initial frontend should not be a newly instantiated frontend");
+    await controller.setFrontend(frontend.address, {from: owner});
+    const post = await controller.getFrontend();
+    assert.strictEqual(post, frontend.address, "frontend did not change");
   });
 
   it("should be destructible", async () => {
