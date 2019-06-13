@@ -132,8 +132,20 @@ contract("USD", accounts => {
     assert.strictEqual(post, initial, "controller should not change");
   });
 
-  it("should succeed setting the controller to a non null address", async () => {
+  it("should fail setting the controller to a non null address not pointing back", async () => {
+    const initial = await usd.getController();
     const standard = await ConstantSmartController.deployed();
+    try {
+    await usd.setController(standard.address, {from: owner});
+    } catch {
+    }
+    const post = await usd.getController();
+    assert.strictEqual(post, initial, "incorrect post state");
+  });
+
+  it("should succeed setting the controller to a non null address pointing back", async () => {
+    const standard = await ConstantSmartController.deployed();
+    await standard.setFrontend(usd.address, {from: owner});
     await usd.setController(standard.address, {from: owner});
     const post = await usd.getController();
     assert.strictEqual(post, standard.address, "incorrect post state");
