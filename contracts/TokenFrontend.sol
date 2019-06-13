@@ -62,21 +62,21 @@ contract TokenFrontend is Claimable, CanReclaimToken, NoOwner {
      * @param symbol_ Token symbol.
      * @param ticker_ 3 letter currency ticker.
      */
-    constructor(string name_, string symbol_, bytes3 ticker_, address controller_) internal {
+    constructor(string name_, string symbol_, bytes3 ticker_) internal {
         name = name_;
         symbol = symbol_;
         ticker = ticker_;
-        setController(controller_);
     }
 
     /**
      * @dev Sets a new controller.
      * @param address_ Address of the controller.
      */
-    function setController(address address_) public onlyOwner {
+    function setController(address address_) external onlyOwner {
         require(address_ != 0x0, "controller address cannot be the null address");
         emit Controller(ticker, controller, address_);
         controller = SmartController(address_);
+        require(controller.getFrontend() == address(this), "controller frontend does not point back");
         require(controller.ticker() == ticker, "ticker does not match controller ticket");
     }
 

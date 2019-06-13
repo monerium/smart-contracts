@@ -4,9 +4,9 @@ import "./TokenFrontend.sol";
 
 contract ISK is TokenFrontend {
 
-    constructor(address controller) 
+    constructor() 
         public
-        TokenFrontend("Smart ISK", "ISKS", "ISK", controller) 
+        TokenFrontend("Smart ISK", "ISKS", "ISK") 
     { }
 
 }

@@ -4,9 +4,9 @@ import "./TokenFrontend.sol";
 
 contract USD is TokenFrontend {
 
-    constructor(address _controller) 
+    constructor() 
         public
-        TokenFrontend("Smart USD", "USDS", "USD", _controller) 
+        TokenFrontend("Smart USD", "USDS", "USD") 
     { }
 
 }

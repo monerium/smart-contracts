@@ -14,6 +14,6 @@ module.exports = function(deployer, network) {
   deployer.link(ERC20Lib, MintableController);
   deployer.link(ERC677Lib, MintableController);
   deployer.link(MintableTokenLib, MintableController);
-  deployer.deploy(MintableController, 0x0,  0);
+  deployer.deploy(MintableController, 0x0,  0, 0x0);
 
 };

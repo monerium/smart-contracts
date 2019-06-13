@@ -16,10 +16,11 @@ contract MintableController is SystemRole, StandardController {
      * @dev Contract constructor.
      * @param storage_ Address of the token storage for the controller.
      * @param initialSupply The amount of tokens to mint upon creation. 
+     * @param frontend_ Address of the authorized frontend.
      */
-    constructor(address storage_, uint initialSupply) 
+    constructor(address storage_, uint initialSupply, address frontend_) 
         public
-        StandardController(storage_, initialSupply) 
+        StandardController(storage_, initialSupply, frontend_) 
     { }
 
     /**

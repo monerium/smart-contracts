@@ -16,7 +16,7 @@ contract ConstantSmartController is SmartController {
      */
     constructor(address storage_, bytes3 ticker) 
         public
-        SmartController(storage_, new ConstantValidator(false), ticker)
+        SmartController(storage_, new ConstantValidator(false), ticker, 0x0)
     { }
 
 }

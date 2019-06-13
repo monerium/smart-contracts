@@ -22,10 +22,11 @@ contract SmartController is MintableController {
      * @param storage_ Address of the token storage for the controller.
      * @param validator Address of validator.
      * @param ticker_ 3 letter currency ticker.
+     * @param frontend_ Address of the authorized frontend.
      */
-    constructor(address storage_, address validator, bytes3 ticker_)
+    constructor(address storage_, address validator, bytes3 ticker_, address frontend_)
         public
-        MintableController(storage_, INITIAL_SUPPLY) 
+        MintableController(storage_, INITIAL_SUPPLY, frontend_) 
     {
         require(validator != 0x0, "validator cannot be the null address");
         smartToken.setValidator(validator);

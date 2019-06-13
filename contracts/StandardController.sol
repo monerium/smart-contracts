@@ -72,8 +72,9 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
      * @dev Contract constructor.
      * @param storage_ Address of the token storage for the controller.
      * @param initialSupply The amount of tokens to mint upon creation. 
+     * @param frontend_ Address of the authorized frontend.
      */
-    constructor(address storage_, uint initialSupply) public {
+    constructor(address storage_, uint initialSupply, address frontend_) public {
         require(
             storage_ == 0x0 || initialSupply == 0,
             "either a token storage must be initialized or no initial supply"
@@ -84,6 +85,7 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
         } else {
             token = TokenStorage(storage_);
         }
+        frontend = frontend_;
     }
 
     /**
@@ -106,7 +108,7 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
      * @dev Sets a new frontend.
      * @param frontend_ Address of the new frontend.
      */
-    function setFrontend(address frontend_) external onlyOwner { 
+    function setFrontend(address frontend_) public onlyOwner { 
         emit Frontend(frontend, frontend_);
         frontend = frontend_;
     }

@@ -17,9 +17,9 @@ module.exports = function(deployer, network) {
   deployer.link(ERC677Lib, SmartController);
   deployer.link(MintableTokenLib, SmartController);
 
-  return deployer.deploy(SmartController, 0x0, BlacklistValidator.address, "ISK").then(controller => 
-    deployer.deploy(ISK, SmartController.address).then(frontend => {
-      controller.setFrontend(frontend.address);
+  return deployer.deploy(ISK).then(frontend => 
+    deployer.deploy(SmartController, 0x0, BlacklistValidator.address, "ISK", frontend.address).then(controller => {
+      frontend.setController(controller.address);
       if (network.startsWith('poa'))
         controller.addSystemAccount('0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb');
     }));

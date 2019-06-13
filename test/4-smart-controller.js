@@ -46,7 +46,7 @@ contract('SmartController', (accounts) => {
 
   it("should construct if validator is a non-null address", async () => {
     const validator = await BlacklistValidator.deployed();
-    const smart = await SmartController.new("0x0", validator.address, "000");
+    const smart = await SmartController.new("0x0", validator.address, "000", "0x0");
     const initial = await smart.getValidator();
     assert.strictEqual(initial, validator.address, "validator should be set");
   });
