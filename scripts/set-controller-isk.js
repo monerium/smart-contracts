@@ -2,12 +2,13 @@ var ISK = artifacts.require("./ISK.sol");
 
 module.exports = async function(exit) {
 
-  if (process.argv.length != 5) {
+  if (process.argv.length < 5) {
     console.log(`Usage: ${process.argv.join(" ")} <account>`)
     exit(1);
   }
 
-  const address = process.argv[4];
+  const len = process.argv.length;
+  const address = process.argv[len-1];
   console.log(`controller ${address}`);
 
   try {
