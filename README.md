@@ -1,5 +1,8 @@
 # <img src="logo.svg" alt="Monerium" width="400px">
 
+![GitHub release](https://img.shields.io/github/release-pre/monerium/smart-contracts.svg)
+
+
 ERC20 is a suggested specification for Ethereum tokens. Once approved as an Ethereum Improvement Proposal (EIP), it will become a part of the standards for the Ethereum platform.
 
 Smart contracts adhering to the specification have a common interface to token-related functionality and events.
