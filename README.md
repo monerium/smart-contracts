@@ -1,4 +1,4 @@
-# (Smart) Fiat Tokens
+# <img src="logo.svg" alt="Monerium" width="400px">
 
 ERC20 is a suggested specification for Ethereum tokens. Once approved as an Ethereum Improvement Proposal (EIP), it will become a part of the standards for the Ethereum platform.
 
@@ -12,43 +12,46 @@ Smart contracts adhering to the specification have a common interface to token-r
 ## Building
 
 1. Clone the repository
-	```sh
-	$ git clone --recursive https://github.com/monerium/smart-contracts.git
-	$ cd smart-contracts
-	```
+
+    ```sh
+    git clone --recursive https://github.com/monerium/smart-contracts.git
+    cd smart-contracts
+    ```
 
 2. Install dependencies
 
-	```sh
-	$ yarn install
-	```
+    ```sh
+    yarn install
+    ```
 
 3. Run truffle
 
-	`$ npx truffle develop`
+    ```sh
+    npx truffle develop
+    ```
 
 4. Compile token system
 
-	```sh
-	truffle(develop)> compile --all
-	```
+    ```sh
+    truffle(develop)> compile --all
+    ```
 
 5. Deploy
 
-	```sh
-	truffle(develop)> migrate --reset
-	```
+    ```sh
+    truffle(develop)> migrate --reset
+    ```
 
 6. Run test suite
 
-	```sh
-	truffle(develop)> test
-	```
+    ```sh
+    truffle(develop)> test
+    ```
 
 
 ## Implementation
 
-The token system is implemented using Solidity, the most widely used high level language targeting the EVM. We build upon community vetted libraries where possible to minimise the risk of bugs.
+The token system is implemented using Solidity, the most widely used high level language targeting the EVM. We build upon community vetted libraries where possible to minimize the risk of bugs.
 
 Additional functionality has been implemented in `MintableTokenLib.sol` and `SmartTokenLib.sol`. This includes minting and burning tokens and defining validators who determine whether token transactions are valid or not.
 
@@ -56,7 +59,7 @@ Functionality which requires authorization is protected by OpenZeppelin's implem
 
 ### Solidity libraries
 
-Libraries in Solidity provide the means to deploy an implementation once as a compiled bytecode but without an execution context (storage). Contracts deployed subsequently can then be statically linked to the library.
+Libraries in Solidity provide the means to deploy an implementation once as a compiled byte code but without an execution context (storage). Contracts deployed subsequently can then be statically linked to the library.
 
 Our token system takes advantage of this feature to save gas deploying multiple tokens. It can also be argued that sharing audited libraries between contracts can reduce the risk of bugs &mdash; and worst case ease the replacement of a buggy implementation.
 
