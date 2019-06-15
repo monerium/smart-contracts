@@ -1,5 +1,7 @@
 # <img src="logo.svg" alt="Monerium" width="400px">
 
+![GitHub release](https://img.shields.io/github/release-pre/monerium/smart-contracts.svg)
+
 The [Monerium](https://monerium.com) e-money platform offers programmable fiat money on blockchains, an indispensable building block for the nascent blockchain economy.
 
 ## Token Design
@@ -86,23 +88,23 @@ Development happens on the master branch and we use [Semantic Versioning](http:/
 The deployment cycle for beta versions (up to v1.0.0) is as follows. During development the smart contracts are continuously deployed and tested locally on testrpc. A patch version update is deployed on the Monerium testnet, a federated blockchain, run by Monerium. A minor version update is deployed on the Rinkeby testnet.
 
 
-| Contract               | Rinkeby																		|
+| Contract               | Rinkeby 																		|
 |------------------------|--------------------------------------------|
-| ERC20Lib               | 0xe7b1f1c4a99b68a3f84aeacb2de8ff86acfbf8a3 |
-| ERC677Lib              | 0x29218e4c2d78e016ccaab256dbc9c3861bef389e |
-| ISK                    | 0xcd8704bdb144f05c3c01d21943167b46684fe5c4 |
-| Migrations             | 0x92227e4b662e02a84acea457711f1a24821fdede |
-| MintableTokenLib       | 0x159b85aae18653162ba1ca4fb294ab1da3a3536e |
-| SafeMath               | 0x0dd2411ad961ab71cf0583dd8f938193ec21dd19 |
-| SmartController (ISK)  | 0xf2330aff917446c486e2d9b6014e9d9a6fbb2af4 |
-| SmartController (USD)  | 0xadca2746f59e849abe656f337271dea4ddc5f33b |
-| SmartTokenLib          | 0x5a9f218539142f2ddceb326be1f940b8c858ce02 |
-| Storage (ISK)          | 0xe84501ce6c17d9104d1c3e607945b44cf656b941 |
-| Storage (USD)          | 0x37fe072f85c878bd685b332fe9155f987a78bd96 |
-| TokenStorageLib        | 0x3607493828521fa8edd3dd4d6a19fed10c5cb7af |
-| USD                    | 0x8e4727c509e41cefa2ef6298c1b399049f4f8fe5 |
+| ERC20Lib               | 0x218bb707be04ab12a28e339cd654b151a9a72d9e |
+| ERC677Lib              | 0xc9d673d30b9598a70c63ebe72f0167fc80e431f0 |
+| ISK                    | 0xe6f9ad37afe22edc33c482d7694b90333d14498e |
+| Migrations             | 0x8222eca943e85b08f509436d8cf6314bcb8a0bb4 |
+| MintableTokenLib       | 0xf09b796c0cd1a9569a0a2d92512c101bfb47fbb3 |
+| SafeMath               | 0x4031b16a22f650b132643dbe2481a7db3ce22340 |
+| SmartController (ISK)  | 0xd2d5f6ee4fb0182e1735bbda2e8103099d3b4aa1 |
+| SmartController (USD)  | 0xe2482f228a7098d9d58e5f70d4712d46e7ba7310 |
+| SmartTokenLib          | 0xdada997f5c49cac5d458bc4e3caf28e741eac037 |
+| Storage (ISK)          | 0x5881f17c4627cfee259a852ee96f8f23e641e6c5 |
+| Storage (USD)          | 0xe8d4741d06dbf08dd323c1f7972ceb09283674e8 |
+| TokenStorageLib        | 0x855368e1c36415de1e9624dbf2d93c7efed4baa4 |
+| USD                    | 0xb63baffa7f19b1eeec270804b359b858a330bf20 |
 
-Current version is v0.9.7.
+Current version is v0.9.8.
 
 ## Unit tests
 
