@@ -11,7 +11,7 @@ import "openzeppelin-solidity/contracts/access/rbac/Roles.sol";
 contract SystemRole {
 
     using Roles for Roles.Role;
-    Roles.Role private _systemAccounts;
+    Roles.Role private systemAccounts;
 
     /** 
      * @dev Emitted when system account is added.
@@ -34,10 +34,14 @@ contract SystemRole {
     }
 
     /**
-     * @dev Modifier which prevents non-system accounts to pass the guard.
+     * @dev Modifier which prevents non-system accounts from being passed to the guard.
+     * @param account The account to check.
      */
     modifier onlySystemAccount(address account) {
-        require(isSystemAccount(account));
+        require(
+            isSystemAccount(account),
+            "must be a system account"
+        );
         _;
     }
 
@@ -53,7 +57,7 @@ contract SystemRole {
      * @return true if system account.
      */
     function isSystemAccount(address account) public view returns (bool) {
-        return _systemAccounts.has(account);
+        return systemAccounts.has(account);
     }
 
     /**
@@ -61,7 +65,7 @@ contract SystemRole {
      * @notice This method is unprotected and should be authorized in the child contract.
      */
     function addSystemAccount(address account) public {
-        _systemAccounts.add(account);
+        systemAccounts.add(account);
         emit SystemAccountAdded(account);
     }
 
@@ -70,7 +74,7 @@ contract SystemRole {
      * @notice This method is unprotected and should be authorized in the child contract.
      */
     function removeSystemAccount(address account) public {
-        _systemAccounts.remove(account);
+        systemAccounts.remove(account);
         emit SystemAccountRemoved(account);
     }
 
