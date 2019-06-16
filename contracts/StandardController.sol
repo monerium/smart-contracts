@@ -63,7 +63,7 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
     modifier avoidBlackholes(address to) {
         require(to != 0x0, "must not send to 0x0");
         require(to != address(this), "must not send to controller");
-        require(to != address(token), "must not send to token storage");
+        // require(to != address(token), "must not send to token storage");
         require(to != frontend, "must not send to frontend");
         _;
     }

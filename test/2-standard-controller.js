@@ -96,15 +96,15 @@ contract('StandardController', accounts => {
     assert.fail("succeeded", "fail", "transfer and call was supposed to fail");
   });
 
-  it("should avoid blackholes [storage]", async () => {
-    const storage = await controller.getStorage();
-    try {
-      await controller.transfer(storage, 3);
-    } catch {
-      return;
-    }
-    assert.fail("succeeded", "fail", "transfer and call was supposed to fail");
-  });
+  // it("should avoid blackholes [storage]", async () => {
+    // const storage = await controller.getStorage();
+    // try {
+      // await controller.transfer(storage, 3);
+    // } catch {
+      // return;
+    // }
+    // assert.fail("succeeded", "fail", "transfer and call was supposed to fail");
+  // });
 
   it("should avoid blackholes [frontend]", async () => {
     const frontend = await controller.getFrontend();
