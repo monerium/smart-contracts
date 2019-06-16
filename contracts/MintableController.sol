@@ -31,6 +31,7 @@ contract MintableController is SystemRole, StandardController {
     function mintTo(address to, uint amount)
         external
         onlySystemAccounts
+        avoidBlackholes(to)
         returns (bool)
     {
         return token.mint(to, amount);
