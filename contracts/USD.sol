@@ -6,7 +6,7 @@ contract USD is TokenFrontend {
 
     constructor() 
         public
-        TokenFrontend("Smart USD", "USDS", "USD") 
+        TokenFrontend("Monerium USD emoney", "USDe", "USD") 
     { }
 
 }

@@ -6,7 +6,7 @@ contract ISK is TokenFrontend {
 
     constructor() 
         public
-        TokenFrontend("Smart ISK", "ISKS", "ISK") 
+        TokenFrontend("Monerium ISK emoney", "ISKe", "ISK") 
     { }
 
 }
