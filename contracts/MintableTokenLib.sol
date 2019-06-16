@@ -15,8 +15,6 @@ library MintableTokenLib {
 
     using SafeMath for uint;
 
-    event Mint(address indexed to, uint amount);
-    event Burn(address indexed from, uint amount);
     event Transfer(address indexed from, address indexed to, uint value);
 
     /**
@@ -34,7 +32,6 @@ library MintableTokenLib {
         returns (bool) 
     {
         db.addBalance(to, amount);
-        emit Mint(to, amount);
         emit Transfer(0x0, to, amount);
         return true;
     }
@@ -54,7 +51,7 @@ library MintableTokenLib {
         returns (bool) 
     {
         db.subBalance(from, amount);
-        emit Burn(from, amount);
+        emit Transfer(from, 0x0, amount);
         return true;
     }
 
