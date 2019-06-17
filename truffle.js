@@ -85,6 +85,14 @@ module.exports = {
 			gas: 6800000,       // balance between out of gas errors and block gas limit errors
 			from: address,
 			gasPrice: web3.utils.toWei('41', 'gwei'), // average gas price on rinkeby
-		}
+		},
+		mainnet: {
+			provider: () => walletProvider(),
+			network_id: 1,
+			// gas: 4600000,
+			gas: 6800000,       // balance between out of gas errors and block gas limit errors
+			from: address,
+			gasPrice: web3.utils.toWei('41', 'gwei'), // average gas price on rinkeby
+		},
   },
 }
