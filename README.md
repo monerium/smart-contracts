@@ -88,23 +88,23 @@ Development happens on the master branch and we use [Semantic Versioning](http:/
 The deployment cycle for beta versions (up to v1.0.0) is as follows. During development the smart contracts are continuously deployed and tested locally on testrpc. A patch version update is deployed on the Monerium testnet, a federated blockchain, run by Monerium. A minor version update is deployed on the Rinkeby testnet.
 
 
-| Contract               | Rinkeby 																		| Ropsten                                    |
-|------------------------|--------------------------------------------|--------------------------------------------|
-| ERC20Lib               | 0x218bb707be04ab12a28e339cd654b151a9a72d9e | 0xe28884ed5bd43e3f9f1dd733d254c9f5c6f983d2 |
-| ERC677Lib              | 0xc9d673d30b9598a70c63ebe72f0167fc80e431f0 | 0x95f066a44a8261ff91393664b0e8a19118e63ba3 |
-| ISK                    | 0xe6f9ad37afe22edc33c482d7694b90333d14498e | 0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd |
-| Migrations             | 0x8222eca943e85b08f509436d8cf6314bcb8a0bb4 | 0x39ad1ad871787ba4b3df5b8ac3d81b2c9b7c6290 |
-| MintableTokenLib       | 0xf09b796c0cd1a9569a0a2d92512c101bfb47fbb3 | 0xb46605f088fdd4547250351c84500f2925c89a85 |
-| SafeMath               | 0x4031b16a22f650b132643dbe2481a7db3ce22340 | 0x9de2debd521aabdbc48ccd2acea45a7a6b995f55 |
-| SmartController (ISK)  | 0xd2d5f6ee4fb0182e1735bbda2e8103099d3b4aa1 | 0x6196d618d97d01645c1fd03a0748800da16efbf3 |
-| SmartController (USD)  | 0xe2482f228a7098d9d58e5f70d4712d46e7ba7310 | 0x042b24bb81660cf6b3db649aa0596e69e5174a81 |
-| SmartTokenLib          | 0xdada997f5c49cac5d458bc4e3caf28e741eac037 | 0x2d72003cccf633dfd1966df8c5c19129e30cd9fd |
-| Storage (ISK)          | 0x5881f17c4627cfee259a852ee96f8f23e641e6c5 | 0xd3bfe8fcf6926ecf33562667b7882ecc5a62b755 |
-| Storage (USD)          | 0xe8d4741d06dbf08dd323c1f7972ceb09283674e8 | 0x57f1b40baf4d5708a15fea71e06841897cd2d262 |
-| TokenStorageLib        | 0x855368e1c36415de1e9624dbf2d93c7efed4baa4 | 0x0121490da48b5fe099be3542176219a2a32ebabd |
-| USD                    | 0xb63baffa7f19b1eeec270804b359b858a330bf20 | 0x3231cb76718cdef2155fc47b5286d82e6eda273f |
+| Contract               | Mainnet																		  | Rinkeby 																	 | Ropsten                                    |
+|------------------------|----------------------------------------------|--------------------------------------------|--------------------------------------------|
+| ERC20Lib               |0xf38a10ee8b591e09208ff3d9b033abfbf5a6bf9c		| 0x218bb707be04ab12a28e339cd654b151a9a72d9e | 0xe28884ed5bd43e3f9f1dd733d254c9f5c6f983d2 |
+| ERC677Lib              |0x071b13ab779fae6ac1d1beceeccaf7369a251036		| 0xc9d673d30b9598a70c63ebe72f0167fc80e431f0 | 0x95f066a44a8261ff91393664b0e8a19118e63ba3 |
+| ISK                    |0x6e9e62eacad75e4b130db84f3bcba390dac47944		| 0xe6f9ad37afe22edc33c482d7694b90333d14498e | 0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd |
+| Migrations             |0x496d5aa262f9f044769caf1a5303c89fb36adeef		| 0x8222eca943e85b08f509436d8cf6314bcb8a0bb4 | 0x39ad1ad871787ba4b3df5b8ac3d81b2c9b7c6290 |
+| MintableTokenLib       |0x82d59b83b00475e009e913a6e470aea1e2dcc451		| 0xf09b796c0cd1a9569a0a2d92512c101bfb47fbb3 | 0xb46605f088fdd4547250351c84500f2925c89a85 |
+| SafeMath               |0x2e7e62e0bea9f9e0d5957550d147bf1dd4580880		| 0x4031b16a22f650b132643dbe2481a7db3ce22340 | 0x9de2debd521aabdbc48ccd2acea45a7a6b995f55 |
+| SmartController (ISK)  |0x54eb7ed5f98b7f498e3b59de9f2d3774394f42a7		| 0xd2d5f6ee4fb0182e1735bbda2e8103099d3b4aa1 | 0x6196d618d97d01645c1fd03a0748800da16efbf3 |
+| SmartController (USD)  |0xf7958b010226ae8791debfee6df3f20f7a13b623		| 0xe2482f228a7098d9d58e5f70d4712d46e7ba7310 | 0x042b24bb81660cf6b3db649aa0596e69e5174a81 |
+| SmartTokenLib          |0x3ea4e0542ab3220b3c514d041ecea51ca93baa9b		| 0xdada997f5c49cac5d458bc4e3caf28e741eac037 | 0x2d72003cccf633dfd1966df8c5c19129e30cd9fd |
+| Storage (ISK)          |0xd86984389d3b02c46201eb1f1ec07a0f47b403fa		| 0x5881f17c4627cfee259a852ee96f8f23e641e6c5 | 0xd3bfe8fcf6926ecf33562667b7882ecc5a62b755 |
+| Storage (USD)          |0xc9ba890b119ed6ebc7fdc1c0613c0d7f4d7307a6		| 0xe8d4741d06dbf08dd323c1f7972ceb09283674e8 | 0x57f1b40baf4d5708a15fea71e06841897cd2d262 |
+| TokenStorageLib        |0xaa881be95479a669544d44de648562eca10b8762		| 0x855368e1c36415de1e9624dbf2d93c7efed4baa4 | 0x0121490da48b5fe099be3542176219a2a32ebabd |
+| USD                    |0x7a83d84801fe56570e942f6fef6657f2ae3ebdd6		| 0xb63baffa7f19b1eeec270804b359b858a330bf20 | 0x3231cb76718cdef2155fc47b5286d82e6eda273f |
 
-Current version is v0.9.9.
+Current version is v1.0.0.
 
 ## Unit tests
 
