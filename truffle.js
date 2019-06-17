@@ -31,7 +31,8 @@ if (key != undefined) {
 } else if (mnemonic != undefined) {
 	if (api == undefined) die('API not set')
 	if (url == undefined) die('URL not set')
-  address = `0x808b6dB94ce973Bab908450E764Db7405A533FAa`;
+	// address = `0x808b6dB94ce973Bab908450E764Db7405A533FAa`;
+	address = `0xe90319CBACc28aA19c12A7225322Ce64e5701D56`;
 
 	if (!bip39.validateMnemonic(mnemonic)) die(`${mnemonic} not valid`);
 	const seed = bip39.mnemonicToSeed(mnemonic);
@@ -77,5 +78,13 @@ module.exports = {
 			// provider - web3 provider instance Truffle should use to talk to the Ethereum network.
 			//          - if specified, host and port are ignored.
 		},
+		ropsten: {
+			provider: () => walletProvider(),
+			network_id: 3,
+			// gas: 4600000,
+			gas: 6800000,       // balance between out of gas errors and block gas limit errors
+			from: address,
+			gasPrice: web3.utils.toWei('41', 'gwei'), // average gas price on rinkeby
+		}
   },
 }
