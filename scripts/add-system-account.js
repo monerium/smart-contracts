@@ -7,7 +7,7 @@ module.exports = async function(exit) {
     exit(1);
   }
 
-  const len = process.argv.len;
+  const len = process.argv.length;
   const account = process.argv[len-1];
   console.log(`adding ${account}`);
 
