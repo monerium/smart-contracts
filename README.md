@@ -1,4 +1,4 @@
-# <img src="logo.svg" alt="Monerium" width="400px">
+# <img src="docs/logo.svg" alt="Monerium" width="400px">
 
 ![GitHub release](https://img.shields.io/github/release/monerium/smart-contracts.svg)
 
