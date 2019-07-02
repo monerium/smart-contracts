@@ -7,6 +7,7 @@ const bip39 = require('bip39');
 const Wallet = require('ethereumjs-wallet');
 const HDKey = require('ethereumjs-wallet/hdkey');
 
+const testkey = process.env['TESTKEY'];
 const key = process.env['KEY'];
 const api = process.env['API'];
 const url = process.env['URL'];
@@ -40,6 +41,13 @@ if (key != undefined) {
   const walletAddress = wallet.getAddress().toString('hex');
   if (`0x${walletAddress}` != address.toLowerCase()) die(`HDKey address 0x${walletAddress} does not match ${address}`);
   walletProvider = () => new WalletProvider(mnemonic, `${url}/v3/${api}`, 0);
+} else if (testkey != undefined) {
+	if (api == undefined) die('API not set')
+	if (url == undefined) die('URL not set')
+  const wallet = Wallet.fromPrivateKey(Buffer.from(testkey, 'hex'));
+  const walletAddress = wallet.getAddressString();
+  const address = walletAddress;
+  walletProvider = () => new WalletProvider(testkey, `${url}/v3/${api}`, 0);
 }
 
 // if this is a function return a wallet provider truffle will reinstantiate
