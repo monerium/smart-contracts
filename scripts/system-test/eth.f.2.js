@@ -28,12 +28,18 @@ module.exports = async function(exit) {
   // console.log(v);
 
   var tx;
+  var c, f, initial;
+  var error;
 
   try {
-    const c = await SmartController.at(controller);
-    const f = await TokenFrontend.at(frontend);
-    const initial = await f.balanceOf(account);
-    
+    c = await SmartController.at(controller);
+    f = await TokenFrontend.at(frontend);
+    initial = await f.balanceOf(account);
+  } catch (e) {
+    exit(e);
+  }
+
+  try {
     console.log("minting...");
     tx = await c.mintTo(account, web3.toWei(tokens, 'ether'));
     console.log(tx);
@@ -42,7 +48,12 @@ module.exports = async function(exit) {
     if (post.toNumber() != initial.toNumber() + tokens*10**18) {
       exit(`did not mint correct amount ${post.toNumber()} != ${initial.toNumber()} + ${tokens*10**18}`);
     }
+  } catch (e) {
+    error = e;
+    console.log(e);
+  }
 
+  try {
     console.log("burning...");
     tx = await c.burnFrom(account, web3.toWei(tokens, 'ether'), hash, v, r, s);
     console.log(tx);
@@ -51,10 +62,13 @@ module.exports = async function(exit) {
     if (end.toNumber() != initial.toNumber()) {
       exit(`did not burn correct amount ${end.toNumber()} != ${initial.toNumber()}`);
     }
-
-
-    exit(0);
   } catch (e) {
-    exit(e);
+    error = e;
+    console.log(e);
   }
+
+  if (error) {
+    exit(error)
+  }
+  exit(0);
 }
