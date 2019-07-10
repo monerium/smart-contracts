@@ -97,6 +97,23 @@ contract('SmartController', (accounts) => {
     assert.fail("succeeded", "fail", "transferFrom was supposed to fail");
   });
 
+  it("should transfer 34 tokens using transferAndCall", async () => {
+    (await BlacklistValidator.deployed()).unban(accounts[1]);
+    await controller.transferAndCall(accounts[4], 34, "0x123", {from: accounts[1]});
+    const balance = await controller.balanceOf(accounts[4]);
+    assert.equal(balance.valueOf(), 34, "did not transfer 34 tokens"); 
+  });
+
+  it("should fail transferring 4 tokens from a blacklisted account using transferAndCall", async () => {
+    (await BlacklistValidator.deployed()).ban(accounts[1]);
+    try {
+      await controller.transferAndCall(accounts[4], 4, "0x234", {from: accounts[1]});
+    } catch {
+      return;
+    }
+    assert.fail("succeeded", "fail", "transferAndCall was supposed to fail");
+  });
+
   it("should fail to transfer 849 tokens when paused", async () => {
     await controller.pause();
     const initial = await controller.balanceOf(accounts[3]);

@@ -99,6 +99,29 @@ contract SmartController is MintableController {
         return super.transferFrom_withCaller(caller, from, to, amount);
     }
 
+    /**
+     * @dev Transfers tokens and subsequently calls a method on the recipient [ERC677].
+     * If the recipient is a non-contract address this method behaves just like transfer.
+     * The caller, to address and amount are validated before executing method.
+     * @notice Overrides method in a parent.
+     * @param caller Address of the caller passed through the frontend.
+     * @param to Recipient address.
+     * @param amount Number of tokens to transfer.
+     * @param data Additional data passed to the recipient's tokenFallback method.
+     */
+    function transferAndCall_withCaller(
+        address caller,
+        address to,
+        uint256 amount,
+        bytes data
+    )
+        public
+        whenNotPaused
+        returns (bool)
+    {
+        require(smartToken.validate(caller, to, amount), "transferAndCall request not valid");
+        return super.transferAndCall_withCaller(caller, to, amount, data);
+    }
 
     /**
      * @dev Gets the current validator.
