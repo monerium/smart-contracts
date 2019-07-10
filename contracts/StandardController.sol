@@ -137,54 +137,6 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
         token.claimOwnership();
     }
 
-   /**
-     * @dev Transfers tokens [ERC20].
-     * See transfer_withCaller for documentation.
-     */
-    function transfer(address to, uint amount)
-        external
-        returns (bool ok)
-    {
-        return transfer_withCaller(msg.sender, to, amount);
-    }
-
-    /**
-     * @dev Transfers tokens from a specific address [ERC20].
-     * See transferFrom_withCaller for documentation.
-     */
-    function transferFrom(address from, address to, uint amount)
-        external
-        returns (bool ok)
-    {
-        return transferFrom_withCaller(msg.sender, from, to, amount);
-    }
-
-    /**
-     * @dev Approves a spender [ERC20].
-     * See approve_withCaller for documentation.
-     */
-    function approve(address spender, uint amount)
-        external
-        returns (bool ok)
-    {
-        return approve_withCaller(msg.sender, spender, amount);
-    }
-
-    /**
-     * @dev Transfers tokens and subsequently calls a method on the recipient [ERC677].
-     * See transferAndCAll_withCaller for documentation.
-     */
-    function transferAndCall(
-        address to,
-        uint256 amount,
-        bytes data
-    )
-        external
-        returns (bool ok)
-    {
-        return transferAndCall_withCaller(msg.sender, to, amount, data);
-    }
-
     /**
      * @dev Transfers tokens [ERC20].
      * @param caller Address of the caller passed through the frontend.

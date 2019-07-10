@@ -67,17 +67,6 @@ contract SmartController is MintableController {
 
     /**
      * @dev Transfers tokens [ERC20].
-     * See transfer_withCaller for documentation.
-     */
-    function transfer(address to, uint amount)
-        external
-        returns (bool)
-    {
-        return transfer_withCaller(msg.sender, to, amount);
-    }
-
-    /**
-     * @dev Transfers tokens [ERC20].
      * Prior to transfering tokens the validator needs to approve.
      * @param caller Address of the caller passed through the frontend.
      * @param to Recipient address.
