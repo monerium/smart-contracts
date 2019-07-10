@@ -178,6 +178,28 @@ contract TokenFrontend is Claimable, CanReclaimToken, NoOwner {
     }
 
     /**
+     * @dev Recovers tokens from an address and reissues them to another address.
+     * In case a user loses its private key the tokens can be recovered by burning
+     * the tokens from that address and reissuing to a new address.
+     * To recover tokens the contract owner needs to provide a signature
+     * proving that the token owner has authorized the owner to do so.
+     * @param from Address to burn tokens from.
+     * @param to Address to mint tokens to.
+     * @param h Hash which the token owner signed.
+     * @param v Signature component.
+     * @param r Signature component.
+     * @param s Sigature component.
+     * @return Amount recovered.
+     */
+    function recover(address from, address to, bytes32 h, uint8 v, bytes32 r, bytes32 s)
+        external
+        returns (uint amount)
+    {
+        amount = controller.recover_withCaller(msg.sender, from, to, h ,v, r, s);
+        emit Transfer(from, to, amount);
+    }
+
+    /**
      * @dev Gets the current controller.
      * @return Address of the controller.
      */

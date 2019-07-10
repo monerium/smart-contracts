@@ -108,7 +108,7 @@ contract('SmartController', (accounts) => {
       assert(v == 27 || v == 28);
 
       try {
-        await controller.recover(wallet.address, account, hash, v, r, s, {from: system});
+        await controller.recover_withCaller(system, wallet.address, account, hash, v, r, s, {from: system});
         const balanceFrom = await controller.balanceOf(wallet.address);
         assert.equal(balanceFrom.valueOf(), 0, "did not recover 13 tokens");
         const balanceTo = await controller.balanceOf(account);
@@ -131,7 +131,7 @@ contract('SmartController', (accounts) => {
     assert(v == 27 || v == 28);
 
     try {
-      await controller.recover(wallet.address, accounts[8], hash, v, r, s, {from: owner});
+      await controller.recover_withCaller(owner, wallet.address, accounts[8], hash, v, r, s, {from: owner});
     } catch {
     }
     const balanceFrom = await controller.balanceOf(wallet.address);

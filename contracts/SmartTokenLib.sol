@@ -73,6 +73,7 @@ library SmartTokenLib {
      * @param v Signature component.
      * @param r Signature component.
      * @param s Sigature component.
+     * @return Amount recovered.
      */
     function recover(
         TokenStorage token,
@@ -84,7 +85,7 @@ library SmartTokenLib {
         bytes32 s
     )
         internal
-        returns (bool)
+        returns (uint)
     {
         require(
             ecrecover(h, v, r, s) == from,
@@ -94,7 +95,7 @@ library SmartTokenLib {
         require(token.burn(from, amount), "unable to burn tokens");
         require(token.mint(to, amount), "unable to mint tokens");
         emit Recovered(from, to, amount);
-        return true;
+        return amount;
     }
 
     /**
