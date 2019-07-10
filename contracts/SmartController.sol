@@ -73,6 +73,7 @@ contract SmartController is MintableController {
      */
     function transfer_withCaller(address caller, address to, uint amount)
         public
+        guarded(caller)
         whenNotPaused
         returns (bool)
     {
