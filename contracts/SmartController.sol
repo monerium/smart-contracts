@@ -26,7 +26,7 @@ contract SmartController is MintableController {
      */
     constructor(address storage_, address validator, bytes3 ticker_, address frontend_)
         public
-        MintableController(storage_, INITIAL_SUPPLY, frontend_) 
+        MintableController(storage_, INITIAL_SUPPLY, frontend_)
     {
         require(validator != 0x0, "validator cannot be the null address");
         smartToken.setValidator(validator);
@@ -63,16 +63,18 @@ contract SmartController is MintableController {
     }
 
     /**
-     * @dev Transfers tokens [ERC20]. 
+     * @dev Transfers tokens [ERC20].
+     * The caller, to address and amount are validated before executing method.
      * Prior to transfering tokens the validator needs to approve.
+     * @notice Overrides method in a parent.
      * @param caller Address of the caller passed through the frontend.
      * @param to Recipient address.
      * @param amount Number of tokens to transfer.
      */
-    function transfer_withCaller(address caller, address to, uint amount) 
-        public 
+    function transfer_withCaller(address caller, address to, uint amount)
+        public
         whenNotPaused
-        returns (bool) 
+        returns (bool)
     {
         require(smartToken.validate(caller, to, amount), "transfer request not valid");
         return super.transfer_withCaller(caller, to, amount);
@@ -88,10 +90,10 @@ contract SmartController is MintableController {
      * @param to Recipient address.
      * @param amount Number of tokens to transfer.
      */
-    function transferFrom_withCaller(address caller, address from, address to, uint amount) 
-        public 
+    function transferFrom_withCaller(address caller, address from, address to, uint amount)
+        public
         whenNotPaused
-        returns (bool) 
+        returns (bool)
     {
         require(smartToken.validate(from, to, amount), "transferFrom request not valid");
         return super.transferFrom_withCaller(caller, from, to, amount);

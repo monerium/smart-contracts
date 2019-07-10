@@ -68,7 +68,7 @@ contract('SmartController', (accounts) => {
     assert.equal(balance.valueOf(), 3400, "did not transfer 3400 tokens"); 
   });
 
-  it("should should fail transferring 1840 tokens from a blacklisted account", async () => {
+  it("should fail transferring 1840 tokens from a blacklisted account", async () => {
     (await BlacklistValidator.deployed()).ban(accounts[2]);
     try {
       await controller.transfer(accounts[3], 1840, {from: accounts[2]});
@@ -86,7 +86,7 @@ contract('SmartController', (accounts) => {
     assert.equal(balance.valueOf(), 12, "did not transfer 12 tokens"); 
   });
 
-  it("should should fail transferring 22 tokens from a blacklisted account using transferFrom", async () => {
+  it("should fail transferring 22 tokens from a blacklisted account using transferFrom", async () => {
     (await BlacklistValidator.deployed()).ban(accounts[1]);
     controller.approve(accounts[2], 30, {from: accounts[1]});
     try {

@@ -51,7 +51,7 @@ contract("USD", accounts => {
     assert.equal(balance.valueOf(), 9300, "The forth account does not have 9300");
   });
 
-  it("should should fail transferring 78 tokens from a blacklisted account", async () => {
+  it("should fail transferring 78 tokens from a blacklisted account", async () => {
     (await BlacklistValidator.deployed()).ban(accounts[1]);
     try {
       await token.transfer(accounts[3], 78, {from: accounts[1]});
