@@ -81,7 +81,7 @@ contract MintableController is SystemRole, StandardController {
     /**
      * @dev Removes the system role from an account.
      */
-    function removeSystemAccount(address account) public  onlyOwner {
+    function removeSystemAccount(address account) public onlyOwner {
         super.removeSystemAccount(account);
     }
 
