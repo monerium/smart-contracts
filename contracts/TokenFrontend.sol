@@ -132,6 +132,52 @@ contract TokenFrontend is Claimable, CanReclaimToken, NoOwner {
     }
 
     /**
+     * @dev Mints new tokens.
+     * @param to Address to credit the tokens.
+     * @param amount Number of tokens to mint.
+     */
+    function mintTo(address to, uint amount)
+        external
+        returns (bool ok)
+    {
+        ok = controller.mintTo_withCaller(msg.sender, to, amount);
+        emit Transfer(0x0, to, amount);
+    }
+
+    /**
+     * @dev Burns tokens from the calling system account.
+     * This removes the burned tokens from circulation.
+     * @notice only possible when token owners are system accounts.
+     * @param from Address of the token owner
+     * @param amount Number of tokens to burn.
+     */
+    function burn(address from, uint amount)
+        external
+        returns (bool ok)
+    {
+        ok = controller.burn_withCaller(msg.sender, from, amount);
+        emit Transfer(from, 0x0, amount);
+    }
+
+    /**
+     * @dev Burns tokens from token owner.
+     * This removfes the burned tokens from circulation.
+     * @param from Address of the token owner.
+     * @param amount Number of tokens to burn.
+     * @param h Hash which the token owner signed.
+     * @param v Signature component.
+     * @param r Signature component.
+     * @param s Sigature component.
+     */
+    function burnFrom(address from, uint amount, bytes32 h, uint8 v, bytes32 r, bytes32 s)
+        external
+        returns (bool ok)
+    {
+        ok = controller.burnFrom_withCaller(msg.sender, from, amount, h, v, r, s);
+        emit Transfer(from, 0x0, amount);
+    }
+
+    /**
      * @dev Gets the current controller.
      * @return Address of the controller.
      */

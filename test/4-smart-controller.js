@@ -57,7 +57,7 @@ contract('SmartController', (accounts) => {
   });
 
   it("should mint 88000 new tokens", async () => {
-    await controller.mintTo(system, 88000, {from: system});
+    await controller.mintTo_withCaller(system, system, 88000, {from: system});
     const balance = await controller.balanceOf(system)
     assert.equal(balance.valueOf(), 88000, "did not mint 88000 tokens");
   });
