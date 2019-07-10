@@ -118,6 +118,7 @@ contract SmartController is MintableController {
         bytes data
     )
         public
+        guarded(caller)
         whenNotPaused
         returns (bool)
     {
