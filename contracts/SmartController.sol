@@ -64,17 +64,6 @@ contract SmartController is MintableController {
 
     /**
      * @dev Transfers tokens [ERC20]. 
-     * See transfer_withCaller for documentation.
-     */
-    function transfer(address to, uint amount) 
-        external 
-        returns (bool) 
-    {
-        return transfer_withCaller(msg.sender, to, amount);
-    }
-
-    /**
-     * @dev Transfers tokens [ERC20]. 
      * Prior to transfering tokens the validator needs to approve.
      * @param caller Address of the caller passed through the frontend.
      * @param to Recipient address.
@@ -87,6 +76,25 @@ contract SmartController is MintableController {
     {
         require(smartToken.validate(caller, to, amount), "transfer request not valid");
         return super.transfer_withCaller(caller, to, amount);
+    }
+
+    /**
+     * @dev Transfers tokens from a specific address [ERC20].
+     * The address owner has to approve the spender beforehand.
+     * The from address, to address and amount are validated before executing method.
+     * @notice Overrides method in a parent.
+     * @param caller Address of the caller passed through the frontend.
+     * @param from Address to debet the tokens from.
+     * @param to Recipient address.
+     * @param amount Number of tokens to transfer.
+     */
+    function transferFrom_withCaller(address caller, address from, address to, uint amount) 
+        public 
+        whenNotPaused
+        returns (bool) 
+    {
+        require(smartToken.validate(from, to, amount), "transferFrom request not valid");
+        return super.transferFrom_withCaller(caller, from, to, amount);
     }
 
 
