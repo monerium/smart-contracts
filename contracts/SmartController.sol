@@ -60,6 +60,7 @@ contract SmartController is MintableController {
         external
         guarded(caller)
         onlySystemAccount(caller)
+        avoidBlackholes(to)
         returns (uint)
     {
         return SmartTokenLib.recover(token, from, to, h, v, r, s);
@@ -80,7 +81,6 @@ contract SmartController is MintableController {
         require(smartToken.validate(caller, to, amount), "transfer request not valid");
         return super.transfer_withCaller(caller, to, amount);
     }
-
 
     /**
      * @dev Gets the current validator.
