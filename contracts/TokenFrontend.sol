@@ -81,7 +81,7 @@ contract TokenFrontend is Claimable, CanReclaimToken, NoOwner {
     }
 
     /**
-     * @dev Transfers tokens [ERC20]. 
+     * @dev Transfers tokens [ERC20].
      * @param to Recipient address.
      * @param amount Number of tokens to transfer.
      */
@@ -123,9 +123,9 @@ contract TokenFrontend is Claimable, CanReclaimToken, NoOwner {
      * @param amount Number of tokens to transfer.
      * @param data Additional data passed to the recipient's tokenFallback method.
      */
-    function transferAndCall(address to, uint256 amount, bytes data) 
+    function transferAndCall(address to, uint256 amount, bytes data)
         external
-        returns (bool ok) 
+        returns (bool ok)
     {
         ok = controller.transferAndCall_withCaller(msg.sender, to, amount, data);
         emit Transfer(msg.sender, to, amount, data);
@@ -156,8 +156,8 @@ contract TokenFrontend is Claimable, CanReclaimToken, NoOwner {
         return controller.balanceOf(who);
     }
 
-    /** 
-     * @dev Returns the allowance for a spender 
+    /**
+     * @dev Returns the allowance for a spender
      * @param owner The address of the owner of the tokens.
      * @param spender The address of the spender.
      * @return Number of tokens the spender is allowed to spend.
@@ -167,7 +167,7 @@ contract TokenFrontend is Claimable, CanReclaimToken, NoOwner {
     }
 
     /**
-     * @dev Returns the number of decimals in one token. 
+     * @dev Returns the number of decimals in one token.
      * @return Number of decimals.
      */
     function decimals() external view returns (uint) {

@@ -45,12 +45,12 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
     /**
      * @dev Modifier which prevents the function from being called by unauthorized parties.
      * The caller must either be the sender or the function must be
-     * called via the frontend, otherwise the call is reverted. 
+     * called via the frontend, otherwise the call is reverted.
      * @param caller The address of the passed-in caller. Used to preserve the original caller.
      */
     modifier guarded(address caller) {
         require(
-            msg.sender == caller || msg.sender == frontend, 
+            msg.sender == caller || msg.sender == frontend,
             "either caller must be sender or calling via frontend"
         );
         _;
@@ -71,7 +71,7 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
     /**
      * @dev Contract constructor.
      * @param storage_ Address of the token storage for the controller.
-     * @param initialSupply The amount of tokens to mint upon creation. 
+     * @param initialSupply The amount of tokens to mint upon creation.
      * @param frontend_ Address of the authorized frontend.
      */
     constructor(address storage_, uint initialSupply, address frontend_) public {
@@ -108,7 +108,7 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
      * @dev Sets a new frontend.
      * @param frontend_ Address of the new frontend.
      */
-    function setFrontend(address frontend_) public onlyOwner { 
+    function setFrontend(address frontend_) public onlyOwner {
         emit Frontend(frontend, frontend_);
         frontend = frontend_;
     }
@@ -117,7 +117,7 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
      * @dev Sets a new storage.
      * @param storage_ Address of the new storage.
      */
-    function setStorage(address storage_) external onlyOwner { 
+    function setStorage(address storage_) external onlyOwner {
         emit Storage(address(token), storage_);
         token = TokenStorage(storage_);
     }
@@ -138,12 +138,12 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
     }
 
    /**
-     * @dev Transfers tokens [ERC20]. 
+     * @dev Transfers tokens [ERC20].
      * See transfer_withCaller for documentation.
      */
-    function transfer(address to, uint amount) 
-        external 
-        returns (bool ok) 
+    function transfer(address to, uint amount)
+        external
+        returns (bool ok)
     {
         return transfer_withCaller(msg.sender, to, amount);
     }
@@ -152,9 +152,9 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
      * @dev Transfers tokens from a specific address [ERC20].
      * See transferFrom_withCaller for documentation.
      */
-    function transferFrom(address from, address to, uint amount) 
+    function transferFrom(address from, address to, uint amount)
         external
-        returns (bool ok) 
+        returns (bool ok)
     {
         return transferFrom_withCaller(msg.sender, from, to, amount);
     }
@@ -163,9 +163,9 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
      * @dev Approves a spender [ERC20].
      * See approve_withCaller for documentation.
      */
-    function approve(address spender, uint amount) 
+    function approve(address spender, uint amount)
         external
-        returns (bool ok) 
+        returns (bool ok)
     {
         return approve_withCaller(msg.sender, spender, amount);
     }
@@ -175,28 +175,28 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
      * See transferAndCAll_withCaller for documentation.
      */
     function transferAndCall(
-        address to, 
-        uint256 amount, 
+        address to,
+        uint256 amount,
         bytes data
-    ) 
+    )
         external
-        returns (bool ok) 
+        returns (bool ok)
     {
         return transferAndCall_withCaller(msg.sender, to, amount, data);
     }
 
     /**
-     * @dev Transfers tokens [ERC20]. 
+     * @dev Transfers tokens [ERC20].
      * @param caller Address of the caller passed through the frontend.
      * @param to Recipient address.
      * @param amount Number of tokens to transfer.
      */
-    function transfer_withCaller(address caller, address to, uint amount) 
+    function transfer_withCaller(address caller, address to, uint amount)
         public
         guarded(caller)
         avoidBlackholes(to)
         whenNotPaused
-        returns (bool ok) 
+        returns (bool ok)
     {
         return token.transfer(caller, to, amount);
     }
@@ -209,12 +209,12 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
      * @param to Recipient address.
      * @param amount Number of tokens to transfer.
      */
-    function transferFrom_withCaller(address caller, address from, address to, uint amount) 
+    function transferFrom_withCaller(address caller, address from, address to, uint amount)
         public
         guarded(caller)
         avoidBlackholes(to)
         whenNotPaused
-        returns (bool ok) 
+        returns (bool ok)
     {
         return token.transferFrom(caller, from, to, amount);
     }
@@ -229,11 +229,11 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
      * @param spender The address of the future spender.
      * @param amount The allowance of the spender.
      */
-    function approve_withCaller(address caller, address spender, uint amount) 
+    function approve_withCaller(address caller, address spender, uint amount)
         public
         guarded(caller)
         whenNotPaused
-        returns (bool ok) 
+        returns (bool ok)
     {
         return token.approve(caller, spender, amount);
     }
@@ -247,16 +247,16 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
      * @param data Additional data passed to the recipient's tokenFallback method.
      */
     function transferAndCall_withCaller(
-        address caller, 
-        address to, 
-        uint256 amount, 
+        address caller,
+        address to,
+        uint256 amount,
         bytes data
-    ) 
+    )
         public
         guarded(caller)
         avoidBlackholes(to)
         whenNotPaused
-        returns (bool ok) 
+        returns (bool ok)
     {
         return token.transferAndCall(caller, to, amount, data);
     }
@@ -278,8 +278,8 @@ contract StandardController is Pausable, Destructible, Claimable, CanReclaimToke
         return token.getBalance(who);
     }
 
-    /** 
-     * @dev Returns the allowance for a spender 
+    /**
+     * @dev Returns the allowance for a spender
      * @param owner The address of the owner of the tokens.
      * @param spender The address of the spender.
      * @return Number of tokens the spender is allowed to spend.

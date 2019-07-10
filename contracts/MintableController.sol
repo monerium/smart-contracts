@@ -6,7 +6,7 @@ import "./SystemRole.sol";
 
 /**
 * @title MintableController
-* @dev This contracts implements functionality allowing for minting and burning of tokens. 
+* @dev This contracts implements functionality allowing for minting and burning of tokens.
 */
 contract MintableController is SystemRole, StandardController {
 
@@ -15,12 +15,12 @@ contract MintableController is SystemRole, StandardController {
     /**
      * @dev Contract constructor.
      * @param storage_ Address of the token storage for the controller.
-     * @param initialSupply The amount of tokens to mint upon creation. 
+     * @param initialSupply The amount of tokens to mint upon creation.
      * @param frontend_ Address of the authorized frontend.
      */
-    constructor(address storage_, uint initialSupply, address frontend_) 
+    constructor(address storage_, uint initialSupply, address frontend_)
         public
-        StandardController(storage_, initialSupply, frontend_) 
+        StandardController(storage_, initialSupply, frontend_)
     { }
 
     /**
@@ -36,7 +36,7 @@ contract MintableController is SystemRole, StandardController {
     {
         return token.mint(to, amount);
     }
-    
+
     /**
      * @dev Burns tokens from the calling system account.
      * This removes the burned tokens from circulation.
@@ -44,11 +44,11 @@ contract MintableController is SystemRole, StandardController {
      * @param from Address of the token owner
      * @param amount Number of tokens to burn.
      */
-    function burn(address from, uint amount) 
-        external 
-        onlySystemAccounts 
-        onlySystemAccount(from) 
-        returns (bool) 
+    function burn(address from, uint amount)
+        external
+        onlySystemAccounts
+        onlySystemAccount(from)
+        returns (bool)
     {
         return token.burn(from, amount);
     }

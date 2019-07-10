@@ -37,8 +37,8 @@ library SmartTokenLib {
      * @param self Smart storage to operate on.
      * @param validator Address of validator.
      */
-    function setValidator(SmartStorage storage self, address validator) 
-        internal 
+    function setValidator(SmartStorage storage self, address validator)
+        internal
     {
         emit Validator(self.validator, validator);
         self.validator = IValidator(validator);
@@ -54,10 +54,10 @@ library SmartTokenLib {
      * @param to Recipient address.
      * @param amount Number of tokens.
      */
-    function validate(SmartStorage storage self, address from, address to, uint amount) 
+    function validate(SmartStorage storage self, address from, address to, uint amount)
         internal
-        returns (bool valid) 
-    { 
+        returns (bool valid)
+    {
         return self.validator.validate(from, to, amount);
     }
 
@@ -75,16 +75,16 @@ library SmartTokenLib {
      * @param s Sigature component.
      */
     function recover(
-        TokenStorage token, 
-        address from, 
-        address to, 
-        bytes32 h, 
-        uint8 v, 
-        bytes32 r, 
+        TokenStorage token,
+        address from,
+        address to,
+        bytes32 h,
+        uint8 v,
+        bytes32 r,
         bytes32 s
-    ) 
-        internal 
-        returns (bool) 
+    )
+        internal
+        returns (bool)
     {
         require(
             ecrecover(h, v, r, s) == from,
@@ -92,7 +92,7 @@ library SmartTokenLib {
         );
         uint amount = token.balanceOf(from);
         require(token.burn(from, amount), "unable to burn tokens");
-        require(token.mint(to, amount), "unable to mint tokens"); 
+        require(token.mint(to, amount), "unable to mint tokens");
         emit Recovered(from, to, amount);
         return true;
     }
@@ -102,10 +102,10 @@ library SmartTokenLib {
      * @param self Smart storage to operate on.
      * @return Address of validator.
      */
-    function getValidator(SmartStorage storage self) 
-        external 
-        view 
-        returns (address) 
+    function getValidator(SmartStorage storage self)
+        external
+        view
+        returns (address)
     {
         return address(self.validator);
     }

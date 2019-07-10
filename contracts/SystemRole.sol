@@ -13,13 +13,13 @@ contract SystemRole {
     using Roles for Roles.Role;
     Roles.Role private systemAccounts;
 
-    /** 
+    /**
      * @dev Emitted when system account is added.
      * @param account is a new system account.
      */
     event SystemAccountAdded(address indexed account);
 
-    /** 
+    /**
      * @dev Emitted when system account is removed.
      * @param account is the old system account.
      */

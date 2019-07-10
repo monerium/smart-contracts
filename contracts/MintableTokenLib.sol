@@ -24,12 +24,12 @@ library MintableTokenLib {
      * @param amount The amount of tokens to mint.
      */
     function mint(
-        TokenStorage db, 
-        address to, 
+        TokenStorage db,
+        address to,
         uint amount
-    ) 
-        internal 
-        returns (bool) 
+    )
+        internal
+        returns (bool)
     {
         db.addBalance(to, amount);
         emit Transfer(0x0, to, amount);
@@ -43,12 +43,12 @@ library MintableTokenLib {
      * @param amount The amount of tokens to burn.
      */
     function burn(
-        TokenStorage db, 
-        address from, 
+        TokenStorage db,
+        address from,
         uint amount
-    ) 
+    )
         internal
-        returns (bool) 
+        returns (bool)
     {
         db.subBalance(from, amount);
         emit Transfer(from, 0x0, amount);
@@ -68,19 +68,19 @@ library MintableTokenLib {
      * @param s Sigature component.
      */
     function burn(
-        TokenStorage db, 
-        address from, 
+        TokenStorage db,
+        address from,
         uint amount,
-        bytes32 h, 
-        uint8 v, 
-        bytes32 r, 
+        bytes32 h,
+        uint8 v,
+        bytes32 r,
         bytes32 s
-    ) 
+    )
         internal
-        returns (bool) 
+        returns (bool)
     {
         require(
-            ecrecover(h, v, r, s) == from, 
+            ecrecover(h, v, r, s) == from,
             "signature/hash does not match"
         );
         return burn(db, from, amount);

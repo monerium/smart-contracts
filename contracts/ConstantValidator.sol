@@ -5,7 +5,7 @@ import "openzeppelin-solidity/contracts/ownership/Claimable.sol";
 import "openzeppelin-solidity/contracts/ownership/NoOwner.sol";
 import "openzeppelin-solidity/contracts/ownership/CanReclaimToken.sol";
 
-/** 
+/**
  * @title ConstantValidator
  * @dev Constantly validates token transfers based on the constructor value.
  */
@@ -25,8 +25,8 @@ contract ConstantValidator is IValidator, Claimable, CanReclaimToken, NoOwner {
      * @dev Validates token transfer.
      * Implements IValidator interface.
      */
-    function validate(address, address, uint) external returns (bool) { 
-        return valid;     
+    function validate(address, address, uint) external returns (bool) {
+        return valid;
     }
 
 }

@@ -68,9 +68,9 @@ contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
      * @param spender Address of the spender.
      * @return Number of units.
      */
-    function getAllowed(address owner, address spender) 
-        external 
-        view 
+    function getAllowed(address owner, address spender)
+        external
+        view
         returns (uint)
     {
         return tokenStorage.getAllowed(owner, spender);
