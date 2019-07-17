@@ -56,18 +56,6 @@ contract StandardController is Pausable, Destructible, Claimable {
     }
 
     /**
-     * @dev Modifier which prevents tokens to be sent to well known blackholes.
-     * @param to The address of the intended recipient.
-     */
-    modifier avoidBlackholes(address to) {
-        require(to != 0x0, "must not send to 0x0");
-        require(to != address(this), "must not send to controller");
-        // require(to != address(token), "must not send to token storage");
-        require(to != frontend, "must not send to frontend");
-        _;
-    }
-
-    /**
      * @dev Contract constructor.
      * @param storage_ Address of the token storage for the controller.
      * @param initialSupply The amount of tokens to mint upon creation.
@@ -85,6 +73,17 @@ contract StandardController is Pausable, Destructible, Claimable {
             token = TokenStorage(storage_);
         }
         frontend = frontend_;
+    }
+
+    /**
+     * @dev Prevents tokens to be sent to well known blackholes by throwing on known blackholes.
+     * @param to The address of the intended recipient.
+     */
+    function avoidBlackholes(address to) internal view {
+        require(to != 0x0, "must not send to 0x0");
+        require(to != address(this), "must not send to controller");
+        require(to != address(token), "must not send to token storage");
+        require(to != frontend, "must not send to frontend");
     }
 
     /**
@@ -145,10 +144,10 @@ contract StandardController is Pausable, Destructible, Claimable {
     function transfer_withCaller(address caller, address to, uint amount)
         public
         guarded(caller)
-        avoidBlackholes(to)
         whenNotPaused
         returns (bool ok)
     {
+        avoidBlackholes(to);
         return token.transfer(caller, to, amount);
     }
 
@@ -163,10 +162,10 @@ contract StandardController is Pausable, Destructible, Claimable {
     function transferFrom_withCaller(address caller, address from, address to, uint amount)
         public
         guarded(caller)
-        avoidBlackholes(to)
         whenNotPaused
         returns (bool ok)
     {
+        avoidBlackholes(to);
         return token.transferFrom(caller, from, to, amount);
     }
 
@@ -205,10 +204,10 @@ contract StandardController is Pausable, Destructible, Claimable {
     )
         public
         guarded(caller)
-        avoidBlackholes(to)
         whenNotPaused
         returns (bool ok)
     {
+        avoidBlackholes(to);
         return token.transferAndCall(caller, to, amount, data);
     }
 

@@ -92,8 +92,8 @@ library SmartTokenLib {
             "signature/hash does not recover from address"
         );
         uint amount = token.balanceOf(from);
-        require(token.burn(from, amount), "unable to burn tokens");
-        require(token.mint(to, amount), "unable to mint tokens");
+        token.burn(from, amount);
+        token.mint(to, amount);
         emit Recovered(from, to, amount);
         return amount;
     }

@@ -1,3 +1,4 @@
+const truffleAssert = require('truffle-assertions');
 var SmartController = artifacts.require("./SmartController.sol");
 var BlacklistValidator = artifacts.require("./BlacklistValidator.sol");
 var ConstantValidator = artifacts.require("./ConstantValidator.sol");
@@ -68,7 +69,7 @@ contract('SmartController', (accounts) => {
     assert.equal(balance.valueOf(), 3400, "did not transfer 3400 tokens"); 
   });
 
-  it("should should fail transferring 1840 tokens from a blacklisted account", async () => {
+  it("should fail transferring 1840 tokens from a blacklisted account", async () => {
     (await BlacklistValidator.deployed()).ban(accounts[2]);
     try {
       await controller.transfer_withCaller(accounts[2], accounts[3], 1840, {from: accounts[2]});
@@ -76,6 +77,42 @@ contract('SmartController', (accounts) => {
       return;
     }
     assert.fail("succeeded", "fail", "transfer was supposed to fail");
+  });
+
+  it("should transfer 12 tokens to second account using transferFrom", async () => {
+    (await BlacklistValidator.deployed()).unban(accounts[1]);
+    await controller.approve_withCaller(accounts[1], accounts[2], 20, {from: accounts[1]});
+    await controller.transferFrom_withCaller(accounts[2], accounts[1], accounts[3], 12, {from: accounts[2]});
+    const balance = await controller.balanceOf(accounts[3]);
+    assert.equal(balance.valueOf(), 12, "did not transfer 12 tokens"); 
+  });
+
+  it("should fail transferring 22 tokens from a blacklisted account using transferFrom", async () => {
+    (await BlacklistValidator.deployed()).ban(accounts[1]);
+    controller.approve_withCaller(accounts[1], accounts[2], 30, {from: accounts[1]});
+    try {
+      await controller.transferFrom(accounts[1], accounts[3], 22, {from: accounts[2]});
+    } catch { 
+      return;
+    }
+    assert.fail("succeeded", "fail", "transferFrom was supposed to fail");
+  });
+
+  it("should transfer 34 tokens using transferAndCall", async () => {
+    await (await BlacklistValidator.deployed()).unban(accounts[1]);
+    await controller.transferAndCall_withCaller(accounts[1], accounts[4], 34, "0x123", {from: accounts[1]});
+    const balance = await controller.balanceOf(accounts[4]);
+    assert.equal(balance.valueOf(), 34, "did not transfer 34 tokens"); 
+  });
+
+  it("should fail transferring 4 tokens from a blacklisted account using transferAndCall", async () => {
+    await (await BlacklistValidator.deployed()).ban(accounts[1]);
+    try {
+      await controller.transferAndCall_withCaller(accounts[1], accounts[4], 4, "0x234", {from: accounts[1]});
+    } catch {
+      return;
+    }
+    assert.fail("succeeded", "fail", "transferAndCall was supposed to fail");
   });
 
   it("should fail to transfer 849 tokens when paused", async () => {
@@ -117,7 +154,7 @@ contract('SmartController', (accounts) => {
       assert.equal(balanceFrom.valueOf(), 0, "did not recover 13 tokens");
       const balanceTo = await controller.balanceOf(account);
       assert.equal(balanceTo.valueOf(), 13, "did not recover 13 tokens");
-    })
+    });
   }
 
   it("should fail to recover from a non-system account", async () => {
@@ -139,6 +176,31 @@ contract('SmartController', (accounts) => {
     assert.equal(balanceFrom.toNumber(), 15, "should not recover 15 tokens");
     const balanceTo = await controller.balanceOf(accounts[8]);
     assert.equal(balanceTo.valueOf(), 13, "should still be 13 tokens");
+  });
+
+  it("should fail to recover using an incorrect signature", async () => {
+    const wallet1 = wallets["trust wallet"];
+    const wallet2 = wallets["ledger s nano"];
+    const balance10 = await controller.balanceOf(wallet1.address);
+    const balance20 = await controller.balanceOf(wallet2.address);
+    await controller.mintTo_withCaller(system, wallet1.address, 999, {from: system});
+
+    const sig = wallet1.signature.replace(/^0x/, '');
+    const r = `0x${sig.slice(0, 64)}`;
+    const s = `0x${sig.slice(64, 128)}`;
+    var v = web3.toDecimal(`0x${sig.slice(128, 130)}`);
+
+    if (v < 27) v += 27;
+    assert(v == 27 || v == 28);
+
+    await truffleAssert.reverts(
+      controller.recover_withCaller(system, wallet1.address, wallet2.address, hash, v, 0x0, 0x0, {from: system})
+    );
+
+    const balance11 = await controller.balanceOf(wallet1.address);
+    assert.strictEqual(balance11.toNumber(), balance10.toNumber() + 999, "wallet1 should contain 999 more tokens");
+    const balance21 = await controller.balanceOf(wallet2.address);
+    assert.strictEqual(balance21.toString(), balance20.toString(), "wallet2 end state should equal its initial state");
   });
 
   it("should fail setting a new validator from a non-system account", async () => {

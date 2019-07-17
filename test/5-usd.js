@@ -69,7 +69,7 @@ contract("USD", accounts => {
     assert.equal(balance.valueOf(), 9300, "The forth account does not have 9300");
   });
 
-  it("should should fail transferring 78 tokens from a blacklisted account", async () => {
+  it("should fail transferring 78 tokens from a blacklisted account", async () => {
     (await BlacklistValidator.deployed()).ban(accounts[1]);
     try {
       await token.transfer(accounts[3], 78, {from: accounts[1]});
@@ -162,13 +162,6 @@ contract("USD", accounts => {
     })
   }
 
-  it("should burn 10 tokens from a system account (using a system account)", async () => {
-    const balance0 = await usd.balanceOf(system);
-    await usd.burn(system, 10, {from: system});
-    const balance = await usd.balanceOf(system);
-    assert.equal(balance.toNumber()-balance0.toNumber(), -10, "should have burned to tokens");
-  });
-
   it("should return the decimal points for units in the contract", async () => {
     const decimals = await usd.decimals();
     assert.strictEqual(decimals.toNumber(), 18, "decimals do not match");
@@ -223,6 +216,47 @@ contract("USD", accounts => {
     await usd.setController(standard.address, {from: owner});
     const post = await usd.getController();
     assert.strictEqual(post, standard.address, "incorrect post state");
+  });
+
+  it("should be claimable", async () => {
+    await usd.transferOwnership(accounts[1]);
+    const owner0 = await usd.owner();
+    assert.equal(owner0, accounts[0], "not original owner");
+    await usd.claimOwnership({from: accounts[1]});
+    const owner1 = await usd.owner();
+    assert.equal(owner1, accounts[1], "ownership claim failed");
+    await usd.transferOwnership(accounts[0], {from: accounts[1]});
+    await usd.claimOwnership({from: accounts[0]});
+    const owner = await usd.owner();
+    assert.equal(owner, accounts[0], "should be owned by original owner");
+  });
+
+  it("should be able to reclaim ownership of contracts", async () => {
+    const recipient = await AcceptingRecipient.deployed();
+    const owner0 = await recipient.owner();
+    assert.strictEqual(owner0, accounts[0], "incorrect original owner");
+    await recipient.transferOwnership(USD.address, {from: owner0});
+    const owner1 = await recipient.owner();
+    assert.strictEqual(owner1, USD.address, "standard usd should be owner");
+    await usd.reclaimContract(AcceptingRecipient.address);
+    const owner2 = await recipient.owner();
+    assert.strictEqual(owner2, owner0, "must be original owner after reclaiming ownership");
+  });
+
+  it("should be able to recover tokens (ERC20)", async () => {
+    const token = await SimpleToken.deployed();
+    const amount0 = await token.balanceOf(accounts[0]);
+    assert.notEqual(amount0.toNumber(), 0, "owner must have some tokens");
+    const balance0 = await token.balanceOf(USD.address);
+    assert.strictEqual(balance0.toNumber(), 0, "initial balance must be 0");
+    await token.transfer(USD.address, 20, {from: accounts[0]});
+    const balance1 = await token.balanceOf(USD.address);
+    assert.strictEqual(balance1.toNumber(), 20, "ERC20 transfer should succeed");
+    await usd.reclaimToken(token.address);
+    const balance2 = await token.balanceOf(USD.address);
+    assert.strictEqual(balance2.toNumber(), balance0.toNumber(), "mismatch in token before and after");
+    const amount1 = await token.balanceOf(accounts[0]);
+    assert.strictEqual(amount1.toNumber(), amount0.toNumber(), "unable to recover");
   });
 
 });

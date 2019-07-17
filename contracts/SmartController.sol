@@ -60,26 +60,75 @@ contract SmartController is MintableController {
         external
         guarded(caller)
         onlySystemAccount(caller)
-        avoidBlackholes(to)
         returns (uint)
     {
+        avoidBlackholes(to);
         return SmartTokenLib.recover(token, from, to, h, v, r, s);
     }
 
     /**
      * @dev Transfers tokens [ERC20].
+     * The caller, to address and amount are validated before executing method.
      * Prior to transfering tokens the validator needs to approve.
+     * @notice Overrides method in a parent.
      * @param caller Address of the caller passed through the frontend.
      * @param to Recipient address.
      * @param amount Number of tokens to transfer.
      */
     function transfer_withCaller(address caller, address to, uint amount)
         public
+        guarded(caller)
         whenNotPaused
         returns (bool)
     {
         require(smartToken.validate(caller, to, amount), "transfer request not valid");
         return super.transfer_withCaller(caller, to, amount);
+    }
+
+    /**
+     * @dev Transfers tokens from a specific address [ERC20].
+     * The address owner has to approve the spender beforehand.
+     * The from address, to address and amount are validated before executing method.
+     * @notice Overrides method in a parent.
+     * Prior to transfering tokens the validator needs to approve.
+     * @param caller Address of the caller passed through the frontend.
+     * @param from Address to debet the tokens from.
+     * @param to Recipient address.
+     * @param amount Number of tokens to transfer.
+     */
+    function transferFrom_withCaller(address caller, address from, address to, uint amount)
+        public
+        guarded(caller)
+        whenNotPaused
+        returns (bool)
+    {
+        require(smartToken.validate(from, to, amount), "transferFrom request not valid");
+        return super.transferFrom_withCaller(caller, from, to, amount);
+    }
+
+    /**
+     * @dev Transfers tokens and subsequently calls a method on the recipient [ERC677].
+     * If the recipient is a non-contract address this method behaves just like transfer.
+     * The caller, to address and amount are validated before executing method.
+     * @notice Overrides method in a parent.
+     * @param caller Address of the caller passed through the frontend.
+     * @param to Recipient address.
+     * @param amount Number of tokens to transfer.
+     * @param data Additional data passed to the recipient's tokenFallback method.
+     */
+    function transferAndCall_withCaller(
+        address caller,
+        address to,
+        uint256 amount,
+        bytes data
+    )
+        public
+        guarded(caller)
+        whenNotPaused
+        returns (bool)
+    {
+        require(smartToken.validate(caller, to, amount), "transferAndCall request not valid");
+        return super.transferAndCall_withCaller(caller, to, amount, data);
     }
 
     /**
