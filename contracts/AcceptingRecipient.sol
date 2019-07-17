@@ -1,7 +1,7 @@
 pragma solidity 0.4.24;
 
-import "./ITokenRecipient.sol";
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "./ITokenRecipient.sol";
 
 /**
  * @title AcceptingRecipient

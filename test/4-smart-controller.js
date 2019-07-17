@@ -57,13 +57,13 @@ contract('SmartController', (accounts) => {
   });
 
   it("should mint 88000 new tokens", async () => {
-    await controller.mintTo(system, 88000, {from: system});
+    await controller.mintTo_withCaller(system, system, 88000, {from: system});
     const balance = await controller.balanceOf(system)
     assert.equal(balance.valueOf(), 88000, "did not mint 88000 tokens");
   });
 
   it("should transfer 3400 tokens to second account", async () => {
-    await controller.transfer(accounts[1], 3400, {from: system});
+    await controller.transfer_withCaller(system, accounts[1], 3400, {from: system});
     const balance = await controller.balanceOf(accounts[1])
     assert.equal(balance.valueOf(), 3400, "did not transfer 3400 tokens"); 
   });
@@ -71,7 +71,7 @@ contract('SmartController', (accounts) => {
   it("should fail transferring 1840 tokens from a blacklisted account", async () => {
     (await BlacklistValidator.deployed()).ban(accounts[2]);
     try {
-      await controller.transfer(accounts[3], 1840, {from: accounts[2]});
+      await controller.transfer_withCaller(accounts[2], accounts[3], 1840, {from: accounts[2]});
     } catch { 
       return;
     }
@@ -118,13 +118,13 @@ contract('SmartController', (accounts) => {
     await controller.pause();
     const initial = await controller.balanceOf(accounts[3]);
     try {
-      await controller.transfer(accounts[3], 849, {from: system});
+      await controller.transfer_withCaller(system, accounts[3], 849, {from: system});
     } catch { 
     }
     const balance = await controller.balanceOf(accounts[3]);
     assert.strictEqual(balance.toNumber(), initial.toNumber(), "should not have transferred when paused");
     await controller.unpause();
-    await controller.transfer(accounts[3], 849, {from: system});
+    await controller.transfer_withCaller(system, accounts[3], 849, {from: system});
     const post = await controller.balanceOf(accounts[3]);
     assert.strictEqual(post.toNumber(), initial.toNumber() + 849, "unable to transfer when unpaused");
   });
@@ -134,7 +134,7 @@ contract('SmartController', (accounts) => {
     const account = accounts[i++];
     const wallet = wallets[name];
     it(`should be able to recover the balance of a known address to a new address [${name}]`, async () => {
-      await controller.transfer(wallet.address, 13, {from: system});
+      await controller.transfer_withCaller(system, wallet.address, 13, {from: system});
       const sig = wallet.signature.replace(/^0x/, '');
       const r = `0x${sig.slice(0, 64)}`;
       const s = `0x${sig.slice(64, 128)}`;
@@ -144,20 +144,21 @@ contract('SmartController', (accounts) => {
       assert(v == 27 || v == 28);
 
       try {
-        await controller.recover(wallet.address, account, hash, v, r, s, {from: system});
-        const balanceFrom = await controller.balanceOf(wallet.address);
-        assert.equal(balanceFrom.valueOf(), 0, "did not recover 13 tokens");
-        const balanceTo = await controller.balanceOf(account);
-        assert.equal(balanceTo.valueOf(), 13, "did not recover 13 tokens");
+        await controller.recover_withCaller(system, wallet.address, account, hash, v, r, s, {from: system});
       } catch {
         assert.fail(`unable to recover ${name}`);
       }
+
+      const balanceFrom = await controller.balanceOf(wallet.address);
+      assert.equal(balanceFrom.valueOf(), 0, "did not recover 13 tokens");
+      const balanceTo = await controller.balanceOf(account);
+      assert.equal(balanceTo.valueOf(), 13, "did not recover 13 tokens");
     })
   }
 
   it("should fail to recover from a non-system account", async () => {
     const wallet = wallets["trust wallet"];
-    await controller.transfer(wallet.address, 15, {from: system});
+    await controller.transfer_withCaller(system, wallet.address, 15, {from: system});
     const sig = wallet.signature.replace(/^0x/, '');
     const r = `0x${sig.slice(0, 64)}`;
     const s = `0x${sig.slice(64, 128)}`;
@@ -167,7 +168,7 @@ contract('SmartController', (accounts) => {
     assert(v == 27 || v == 28);
 
     try {
-      await controller.recover(wallet.address, accounts[8], hash, v, r, s, {from: owner});
+      await controller.recover_withCaller(owner, wallet.address, accounts[8], hash, v, r, s, {from: owner});
     } catch {
     }
     const balanceFrom = await controller.balanceOf(wallet.address);

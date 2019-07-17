@@ -21,8 +21,8 @@ library TokenStorageLib {
      * @param to Address to increase.
      * @param amount Number of units to add.
      */
-    function addBalance(TokenStorage storage self, address to, uint amount) 
-        internal 
+    function addBalance(TokenStorage storage self, address to, uint amount)
+        internal
     {
         self.totalSupply = self.totalSupply.add(amount);
         self.balances[to] = self.balances[to].add(amount);
@@ -34,8 +34,8 @@ library TokenStorageLib {
      * @param from Address to decrease.
      * @param amount Number of units to subtract.
      */
-    function subBalance(TokenStorage storage self, address from, uint amount) 
-        internal 
+    function subBalance(TokenStorage storage self, address from, uint amount)
+        internal
     {
         self.totalSupply = self.totalSupply.sub(amount);
         self.balances[from] = self.balances[from].sub(amount);
@@ -48,7 +48,7 @@ library TokenStorageLib {
      * @param spender Address of the spender.
      * @param amount Qunatity of allowance.
      */
-    function setAllowed(TokenStorage storage self, address owner, address spender, uint amount) 
+    function setAllowed(TokenStorage storage self, address owner, address spender, uint amount)
         internal
     {
         self.allowed[owner][spender] = amount;
@@ -59,10 +59,10 @@ library TokenStorageLib {
      * @param self Token storage to operate on.
      * @return Total supply.
      */
-    function getSupply(TokenStorage storage self) 
+    function getSupply(TokenStorage storage self)
         internal
-        view 
-        returns (uint) 
+        view
+        returns (uint)
     {
         return self.totalSupply;
     }
@@ -73,10 +73,10 @@ library TokenStorageLib {
      * @param who Address to lookup.
      * @return Number of units.
      */
-    function getBalance(TokenStorage storage self, address who) 
+    function getBalance(TokenStorage storage self, address who)
         internal
-        view 
-        returns (uint) 
+        view
+        returns (uint)
     {
         return self.balances[who];
     }
@@ -88,10 +88,10 @@ library TokenStorageLib {
      * @param spender Address of the spender.
      * @return Number of units.
      */
-    function getAllowed(TokenStorage storage self, address owner, address spender) 
+    function getAllowed(TokenStorage storage self, address owner, address spender)
         internal
         view
-        returns (uint) 
+        returns (uint)
     {
         return self.allowed[owner][spender];
     }

@@ -4,9 +4,9 @@ import "./TokenFrontend.sol";
 
 contract ISK is TokenFrontend {
 
-    constructor() 
+    constructor()
         public
-        TokenFrontend("Monerium ISK emoney", "ISKe", "ISK") 
+        TokenFrontend("Monerium ISK emoney", "ISKe", "ISK")
     { }
 
 }

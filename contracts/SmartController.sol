@@ -47,17 +47,21 @@ contract SmartController is MintableController {
      * the tokens from that address and reissuing to a new address.
      * To recover tokens the contract owner needs to provide a signature
      * proving that the token owner has authorized the owner to do so.
+     * @param caller Address of the caller passed through the frontend.
      * @param from Address to burn tokens from.
      * @param to Address to mint tokens to.
      * @param h Hash which the token owner signed.
      * @param v Signature component.
      * @param r Signature component.
      * @param s Sigature component.
+     * @return Amount recovered.
      */
-    function recover(address from, address to, bytes32 h, uint8 v, bytes32 r, bytes32 s)
+    function recover_withCaller(address caller, address from, address to, bytes32 h, uint8 v, bytes32 r, bytes32 s)
         external
-        onlySystemAccounts
-        returns (bool)
+        guarded(caller)
+        onlySystemAccount(caller)
+        avoidBlackholes(to)
+        returns (uint)
     {
         return SmartTokenLib.recover(token, from, to, h, v, r, s);
     }
@@ -86,6 +90,7 @@ contract SmartController is MintableController {
      * The address owner has to approve the spender beforehand.
      * The from address, to address and amount are validated before executing method.
      * @notice Overrides method in a parent.
+     * Prior to transfering tokens the validator needs to approve.
      * @param caller Address of the caller passed through the frontend.
      * @param from Address to debet the tokens from.
      * @param to Recipient address.
