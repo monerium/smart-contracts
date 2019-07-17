@@ -51,18 +51,6 @@ contract('MintableController', accounts => {
     assert.fail("succeeded", "fail", "minting should fail from non-system account");
   });
 
-  it("should fail to burn 777 new tokens from non-system account", async () => {
-    await controller.addSystemAccount(accounts[8]); 
-    await controller.mintTo_withCaller(accounts[8], accounts[8], 777, {from: accounts[8]});
-    await controller.removeSystemAccount(accounts[8]);
-    try {
-      await controller.burn_withCaller(accounts[8], 777, {from: accounts[8]});
-    } catch { 
-      return;
-    }
-    assert.fail("succeeded", "fail", "burn should fail from non-system account");
-  });
-
   it("should fail to burnFrom 888 new tokens from non-system account", async () => {
     await controller.addSystemAccount(accounts[8]); 
     await controller.mintTo_withCaller(accounts[8], accounts[7], 888, {from: accounts[8]});
@@ -79,35 +67,6 @@ contract('MintableController', accounts => {
     await controller.mintTo_withCaller(system, system, 48000, {from: system});
     const balance = await controller.balanceOf(system);
     assert.equal(balance.valueOf(), 48000, "did not mint 48000 tokens");
-  });
-
-  it("should burn 1700 tokens from a system account (using a system account)", async () => {
-    await controller.burn_withCaller(system, system, 1700, {from: system});
-    const balance = await controller.balanceOf(system);
-    assert.equal(balance.valueOf(), 46300, "remaining tokens should be 46300");
-  });
-
-  it("should fail burning 1800 tokens from a non-system account (using a system account)", async () => {
-    await controller.mintTo_withCaller(system, accounts[4], 1800, {from: system});
-    const initial = await controller.balanceOf(accounts[4]);
-    assert.strictEqual(initial.toNumber(), 1800, "initial tokens incorrect");
-    try {
-      await controller.burn_withCaller(system, accounts[4], 1800, {from: system});
-      assert.fail("burn should fail");
-    } catch {
-    }
-    const balance = await controller.balanceOf(accounts[4]);
-    assert.equal(balance.toNumber(), initial.toNumber(), "balance does not equal initial");
-  });
-
-  it("should burn 1100 tokens from a system account (using a different system account)", async () => {
-    await controller.mintTo_withCaller(system, accounts[5], 1100, {from: system});
-    const initial = await controller.balanceOf(accounts[5]);
-    assert.strictEqual(initial.toNumber(), 1100, "initial tokens incorrect");
-    await controller.addSystemAccount(accounts[5]);
-    await controller.burn_withCaller(system, accounts[5], 1100, {from: system});
-    const balance = await controller.balanceOf(accounts[5]);
-    assert.equal(balance.toNumber(), initial.toNumber()-1100, "did not burn right amount of tokens");
   });
 
   it("should mint 82300 tokens to a non-system address", async () => {

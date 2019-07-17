@@ -162,13 +162,6 @@ contract("USD", accounts => {
     })
   }
 
-  it("should burn 10 tokens from a system account (using a system account)", async () => {
-    const balance0 = await usd.balanceOf(system);
-    await usd.burn(system, 10, {from: system});
-    const balance = await usd.balanceOf(system);
-    assert.equal(balance.toNumber()-balance0.toNumber(), -10, "should have burned to tokens");
-  });
-
   it("should return the decimal points for units in the contract", async () => {
     const decimals = await usd.decimals();
     assert.strictEqual(decimals.toNumber(), 18, "decimals do not match");

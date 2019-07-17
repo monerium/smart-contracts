@@ -147,21 +147,6 @@ contract TokenFrontend is Destructible, Claimable, CanReclaimToken, NoOwner, IER
     }
 
     /**
-     * @dev Burns tokens from the calling system account.
-     * This removes the burned tokens from circulation.
-     * @notice only possible when token owners are system accounts.
-     * @param from Address of the token owner
-     * @param amount Number of tokens to burn.
-     */
-    function burn(address from, uint amount)
-        external
-        returns (bool ok)
-    {
-        ok = controller.burn_withCaller(msg.sender, from, amount);
-        emit Transfer(from, 0x0, amount);
-    }
-
-    /**
      * @dev Burns tokens from token owner.
      * This removfes the burned tokens from circulation.
      * @param from Address of the token owner.

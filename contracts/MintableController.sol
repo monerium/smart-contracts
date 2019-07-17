@@ -54,24 +54,6 @@ contract MintableController is SystemRole, StandardController {
     }
 
     /**
-     * @dev Burns tokens from the calling system account.
-     * This removes the burned tokens from circulation.
-     * @notice only possible when token owners are system accounts.
-     * @param caller Address of the caller passed through the frontend.
-     * @param from Address of the token owner
-     * @param amount Number of tokens to burn.
-     */
-    function burn_withCaller(address caller, address from, uint amount)
-        public
-        guarded(caller)
-        onlySystemAccount(caller)
-        onlySystemAccount(from)
-        returns (bool)
-    {
-        return token.burn(from, amount);
-    }
-
-    /**
      * @dev Burns tokens from token owner.
      * This removfes the burned tokens from circulation.
      * @param caller Address of the caller passed through the frontend.
