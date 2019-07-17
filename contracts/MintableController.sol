@@ -47,9 +47,9 @@ contract MintableController is SystemRole, StandardController {
         public
         guarded(caller)
         onlySystemAccount(caller)
-        avoidBlackholes(to)
         returns (bool)
     {
+        avoidBlackholes(to);
         return token.mint(to, amount);
     }
 
