@@ -1,12 +1,13 @@
 pragma solidity 0.4.24;
 
 
-import "./TokenStorage.sol";
-import "./ERC20Lib.sol";
-import "./ERC677Lib.sol";
 import "openzeppelin-solidity/contracts/ownership/Claimable.sol";
 import "openzeppelin-solidity/contracts/lifecycle/Destructible.sol";
 import "openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
+import "./TokenStorage.sol";
+import "./IERC20.sol";
+import "./ERC20Lib.sol";
+import "./ERC677Lib.sol";
 
 /**
  * @title StandardController

@@ -3,6 +3,7 @@ pragma solidity 0.4.24;
 import "openzeppelin-solidity/contracts/ownership/Claimable.sol";
 import "openzeppelin-solidity/contracts/ownership/CanReclaimToken.sol";
 import "openzeppelin-solidity/contracts/ownership/NoOwner.sol";
+import "./IERC20.sol";
 import "./SmartController.sol";
 
 /**
@@ -14,7 +15,7 @@ import "./SmartController.sol";
  * simultaneously allow the controllers to be upgraded when bugs are
  * discovered or new functionality needs to be added.
  */
-contract TokenFrontend is Claimable, CanReclaimToken, NoOwner {
+contract TokenFrontend is Claimable, CanReclaimToken, NoOwner, IERC20 {
 
     SmartController internal controller;
 
