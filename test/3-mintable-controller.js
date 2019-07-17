@@ -52,15 +52,27 @@ contract('MintableController', accounts => {
   });
 
   it("should fail to burnFrom 888 new tokens from non-system account", async () => {
-    await controller.addSystemAccount(accounts[8]); 
-    await controller.mintTo_withCaller(accounts[8], accounts[7], 888, {from: accounts[8]});
+    const wallet = wallets["trust wallet"];
+    const balance0 = await controller.balanceOf(wallet.address);
+    await controller.mintTo_withCaller(system, wallet.address, 888, {from: system});
     await controller.removeSystemAccount(accounts[8]);
+
+    const sig = wallet.signature.replace(/^0x/, '');
+    const r = `0x${sig.slice(0, 64)}`;
+    const s = `0x${sig.slice(64, 128)}`;
+    var v = web3.toDecimal(`0x${sig.slice(128, 130)}`);
+
+    if (v < 27) v += 27;
+    assert(v == 27 || v == 28);
+
     try {
-      await controller.burnFrom_withCaller(accounts[8], accounts[7], 888, {from: accounts[8]});
-    } catch { 
-      return;
-    }
-    assert.fail("succeeded", "fail", "burnFrom should fail from non-system account");
+      await controller.burnFrom_withCaller(accounts[8], wallet.address, 888, hash, v, r, s, {from: accounts[8]});
+    } catch { }
+    const balance1 = await controller.balanceOf(wallet.address);
+    assert.strictEqual(balance1.toNumber(), balance0.toNumber() + 888, "burnFrom should fail from non-system accont");
+    await controller.burnFrom_withCaller(system, wallet.address, 888, hash, v, r, s, {from: system});
+    const balance2 = await controller.balanceOf(wallet.address);
+    assert.strictEqual(balance2.toString(), balance0.toString(), "end state should be equal to initial state");
   });
 
   it("should mint 48000 new tokens", async () => {

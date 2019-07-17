@@ -80,15 +80,15 @@ contract('SmartController', (accounts) => {
 
   it("should transfer 12 tokens to second account using transferFrom", async () => {
     (await BlacklistValidator.deployed()).unban(accounts[1]);
-    await controller.approve(accounts[2], 20, {from: accounts[1]});
-    await controller.transferFrom(accounts[1], accounts[3], 12, {from: accounts[2]});
+    await controller.approve_withCaller(accounts[1], accounts[2], 20, {from: accounts[1]});
+    await controller.transferFrom_withCaller(accounts[2], accounts[1], accounts[3], 12, {from: accounts[2]});
     const balance = await controller.balanceOf(accounts[3]);
     assert.equal(balance.valueOf(), 12, "did not transfer 12 tokens"); 
   });
 
   it("should fail transferring 22 tokens from a blacklisted account using transferFrom", async () => {
     (await BlacklistValidator.deployed()).ban(accounts[1]);
-    controller.approve(accounts[2], 30, {from: accounts[1]});
+    controller.approve_withCaller(accounts[1], accounts[2], 30, {from: accounts[1]});
     try {
       await controller.transferFrom(accounts[1], accounts[3], 22, {from: accounts[2]});
     } catch { 
@@ -98,16 +98,16 @@ contract('SmartController', (accounts) => {
   });
 
   it("should transfer 34 tokens using transferAndCall", async () => {
-    (await BlacklistValidator.deployed()).unban(accounts[1]);
-    await controller.transferAndCall(accounts[4], 34, "0x123", {from: accounts[1]});
+    await (await BlacklistValidator.deployed()).unban(accounts[1]);
+    await controller.transferAndCall_withCaller(accounts[1], accounts[4], 34, "0x123", {from: accounts[1]});
     const balance = await controller.balanceOf(accounts[4]);
     assert.equal(balance.valueOf(), 34, "did not transfer 34 tokens"); 
   });
 
   it("should fail transferring 4 tokens from a blacklisted account using transferAndCall", async () => {
-    (await BlacklistValidator.deployed()).ban(accounts[1]);
+    await (await BlacklistValidator.deployed()).ban(accounts[1]);
     try {
-      await controller.transferAndCall(accounts[4], 4, "0x234", {from: accounts[1]});
+      await controller.transferAndCall_withCaller(accounts[1], accounts[4], 4, "0x234", {from: accounts[1]});
     } catch {
       return;
     }
