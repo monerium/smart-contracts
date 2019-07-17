@@ -1,9 +1,9 @@
 pragma solidity 0.4.24;
 
-import "./IValidator.sol";
 import "openzeppelin-solidity/contracts/ownership/Claimable.sol";
 import "openzeppelin-solidity/contracts/ownership/NoOwner.sol";
 import "openzeppelin-solidity/contracts/ownership/CanReclaimToken.sol";
+import "./IValidator.sol";
 
 /** 
  * @title ConstantValidator
