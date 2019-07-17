@@ -1,3 +1,4 @@
+const truffleAssert = require('truffle-assertions');
 var SmartController = artifacts.require("./SmartController.sol");
 var BlacklistValidator = artifacts.require("./BlacklistValidator.sol");
 var ConstantValidator = artifacts.require("./ConstantValidator.sol");
@@ -153,7 +154,7 @@ contract('SmartController', (accounts) => {
       assert.equal(balanceFrom.valueOf(), 0, "did not recover 13 tokens");
       const balanceTo = await controller.balanceOf(account);
       assert.equal(balanceTo.valueOf(), 13, "did not recover 13 tokens");
-    })
+    });
   }
 
   it("should fail to recover from a non-system account", async () => {
@@ -175,6 +176,31 @@ contract('SmartController', (accounts) => {
     assert.equal(balanceFrom.toNumber(), 15, "should not recover 15 tokens");
     const balanceTo = await controller.balanceOf(accounts[8]);
     assert.equal(balanceTo.valueOf(), 13, "should still be 13 tokens");
+  });
+
+  it("should fail to recover using an incorrect signature", async () => {
+    const wallet1 = wallets["trust wallet"];
+    const wallet2 = wallets["ledger s nano"];
+    const balance10 = await controller.balanceOf(wallet1.address);
+    const balance20 = await controller.balanceOf(wallet2.address);
+    await controller.mintTo_withCaller(system, wallet1.address, 999, {from: system});
+
+    const sig = wallet1.signature.replace(/^0x/, '');
+    const r = `0x${sig.slice(0, 64)}`;
+    const s = `0x${sig.slice(64, 128)}`;
+    var v = web3.toDecimal(`0x${sig.slice(128, 130)}`);
+
+    if (v < 27) v += 27;
+    assert(v == 27 || v == 28);
+
+    await truffleAssert.reverts(
+      controller.recover_withCaller(system, wallet1.address, wallet2.address, hash, v, 0x0, 0x0, {from: system})
+    );
+
+    const balance11 = await controller.balanceOf(wallet1.address);
+    assert.strictEqual(balance11.toNumber(), balance10.toNumber() + 999, "wallet1 should contain 999 more tokens");
+    const balance21 = await controller.balanceOf(wallet2.address);
+    assert.strictEqual(balance21.toString(), balance20.toString(), "wallet2 end state should equal its initial state");
   });
 
   it("should fail setting a new validator from a non-system account", async () => {

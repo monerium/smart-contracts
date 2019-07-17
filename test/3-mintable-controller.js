@@ -75,6 +75,29 @@ contract('MintableController', accounts => {
     assert.strictEqual(balance2.toString(), balance0.toString(), "end state should be equal to initial state");
   });
 
+  it("should fail to burnFrom 999 new tokens using an incorrect signature", async () => {
+    const wallet = wallets["trust wallet"];
+    const balance0 = await controller.balanceOf(wallet.address);
+    await controller.mintTo_withCaller(system, wallet.address, 999, {from: system});
+
+    const sig = wallet.signature.replace(/^0x/, '');
+    const r = `0x${sig.slice(0, 64)}`;
+    const s = `0x${sig.slice(64, 128)}`;
+    var v = web3.toDecimal(`0x${sig.slice(128, 130)}`);
+
+    if (v < 27) v += 27;
+    assert(v == 27 || v == 28);
+
+    try {
+      await controller.burnFrom_withCaller(system, wallet.address, 999, hash, v, 0x0, 0x0, {from: system});
+    } catch { }
+    const balance1 = await controller.balanceOf(wallet.address);
+    assert.strictEqual(balance1.toNumber(), balance0.toNumber() + 999, "burnFrom should fail using a wrong signature");
+    await controller.burnFrom_withCaller(system, wallet.address, 999, hash, v, r, s, {from: system});
+    const balance2 = await controller.balanceOf(wallet.address);
+    assert.strictEqual(balance2.toString(), balance0.toString(), "end state should be equal to initial state");
+  });
+
   it("should mint 48000 new tokens", async () => {
     await controller.mintTo_withCaller(system, system, 48000, {from: system});
     const balance = await controller.balanceOf(system);
