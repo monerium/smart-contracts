@@ -4,12 +4,18 @@
 
 The [Monerium](https://monerium.com) e-money platform offers programmable fiat money on blockchains, an indispensable building block for the nascent blockchain economy.
 
+## Tokens
+
+| USD                                                                                                                                                                                                                       | ISK                                                                                                                                                                                                                       |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![USD address](/docs/0x7a83d84801fe56570e942f6fef6657f2ae3ebdd6.png)<center><small>[0x7a83d84801fe56570e942f6fef6657f2ae3ebdd6](https://etherscan.io/address/0x7a83d84801fe56570e942f6fef6657f2ae3ebdd6)</small></center> | ![ISK address](/docs/0x6e9e62eacad75e4b130db84f3bcba390dac47944.png)<center><small>[0x6e9e62eacad75e4b130db84f3bcba390dac47944](https://etherscan.io/address/0x6e9e62eacad75e4b130db84f3bcba390dac47944)</small></center> |
+
 ## Token Design
 
 Four cooperating Ethereum smart-contracts are deployed for each e-money currency token that is [ERC20](https://github.com/ethereum/EIPs/issues/20) compliant.
 
 * **Token Frontend**: This contract implements the [ERC20](https://github.com/ethereum/EIPs/issues/20) token standard and provides a permanent Ethereum address for the token system. The contract only exposes the required ERC20 functionality to the user and delegates all of the execution to the controller.
-* **Controller**: The controller is responsible for the business logic. The controllers are further separated by the functionality they provide into; StandardController, MintableController and SmartController. 
+* **Controller**: The controller is responsible for the business logic. The controllers are further separated by the functionality they provide into; StandardController, MintableController and SmartController.
 * **Token Storage**: Storage of e-money token ledger.
 * **Validator**: The validator can be used by the controllers to approve and validate transactions before they are made.
 
@@ -78,7 +84,6 @@ Truffle's ganache simulates full client behavior and makes developing Ethereum a
 
 Development happens on the master branch and we use [Semantic Versioning](http://semver.org) for our tags. The first pre-release version deployed on a non-testrpc blockchain is v0.7.0.
 
-
 ## Deployment
 
 ```sh
@@ -88,23 +93,22 @@ Development happens on the master branch and we use [Semantic Versioning](http:/
 The deployment cycle for beta versions (up to v1.0.0) is as follows. During development the smart contracts are continuously deployed and tested locally on testrpc. A patch version update is deployed on the Monerium testnet, a federated blockchain, run by Monerium. A minor version update is deployed on the Rinkeby testnet.
 
 
-| Contract               | Mainnet																		  | Rinkeby 																	 | Ropsten                                    |
-|------------------------|----------------------------------------------|--------------------------------------------|--------------------------------------------|
-| ERC20Lib               |0xf38a10ee8b591e09208ff3d9b033abfbf5a6bf9c		| 0xc5fe215f75a51026d26c82d9395fd2445773e9ef | 0xe28884ed5bd43e3f9f1dd733d254c9f5c6f983d2 |
-| ERC677Lib              |0x071b13ab779fae6ac1d1beceeccaf7369a251036		| 0x4fa7901ce06da9ceb62245a1f8668e5e53955de9 | 0x95f066a44a8261ff91393664b0e8a19118e63ba3 |
-| ISK                    |0x6e9e62eacad75e4b130db84f3bcba390dac47944		| 0x67b0b35e14702de6ad59fcd54a736af5a4d02786 | 0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd |
-| Migrations             |0x496d5aa262f9f044769caf1a5303c89fb36adeef		| 0x8fbf69c5cfd9d7c22fbd4cac527368c89f7463b1 | 0x39ad1ad871787ba4b3df5b8ac3d81b2c9b7c6290 |
-| MintableTokenLib       |0x82d59b83b00475e009e913a6e470aea1e2dcc451		| 0xd612b0298bc1559c925a037898f984ed0de7c679 | 0xb46605f088fdd4547250351c84500f2925c89a85 |
-| SafeMath               |0x2e7e62e0bea9f9e0d5957550d147bf1dd4580880		| 0xf0f0147ecdc7d97d13a035ae61b57ac3c7032099 | 0x9de2debd521aabdbc48ccd2acea45a7a6b995f55 |
-| SmartController (ISK)  |0x54eb7ed5f98b7f498e3b59de9f2d3774394f42a7		| 0x892b247bfb55e7b3687a8fc5439ccd3b5bed5493 | 0x6196d618d97d01645c1fd03a0748800da16efbf3 |
-| SmartController (USD)  |0xf7958b010226ae8791debfee6df3f20f7a13b623		| 0xc6be039602ca7ef785225340cf271247e300abaf | 0x042b24bb81660cf6b3db649aa0596e69e5174a81 |
-| SmartTokenLib          |0x3ea4e0542ab3220b3c514d041ecea51ca93baa9b		| 0xc40fa2522cd0ac1634c3341d7e64683d0c0150d9 | 0x2d72003cccf633dfd1966df8c5c19129e30cd9fd |
-| Storage (ISK)          |0xd86984389d3b02c46201eb1f1ec07a0f47b403fa		| 0x48b2b9955d6935dcba488ed51c4e63ad799f096b | 0xd3bfe8fcf6926ecf33562667b7882ecc5a62b755 |
-| Storage (USD)          |0xc9ba890b119ed6ebc7fdc1c0613c0d7f4d7307a6		| 0xf1ae3eb708d8263c8b817e2dabe8f9fc0654991b | 0x57f1b40baf4d5708a15fea71e06841897cd2d262 |
-| TokenStorageLib        |0xaa881be95479a669544d44de648562eca10b8762		| 0xd1188031e60c72c48379c7fc0aa609e0bdcd1362 | 0x0121490da48b5fe099be3542176219a2a32ebabd |
-| USD                    |0x7a83d84801fe56570e942f6fef6657f2ae3ebdd6		| 0xe82f47e10979db5a9a9497c84477a0e94d1bc742 | 0x3231cb76718cdef2155fc47b5286d82e6eda273f |
-
-Current version is v1.0.0.
+| Contract              | Mainnet ([v1.0.0](https://github.com/monerium/smart-contracts/releases/tag/v1.0.0)) | Rinkeby ([v1.0.1](https://github.com/monerium/smart-contracts/releases/tag/v1.0.1)) | Ropsten ([v1.0.1](https://github.com/monerium/smart-contracts/releases/tag/v1.0.1)) |
+| --------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| BlacklistValidator    | 0x35f72854df481662365494b5241e0376937e16a5                                          | 0x10ec39f8870b34ff818e15017fd0758291ea4c38                                          | 0x512c7ac91e79abece117e19b78d200bbf8dc5ecc                                          |
+| ERC20Lib              | 0xf38a10ee8b591e09208ff3d9b033abfbf5a6bf9c                                          | 0x127153a40aac811ca169744ab6156222c2667545                                          | 0x912316ca3af0fa83737d7342b4842553571c9cac                                          |
+| ERC677Lib             | 0x071b13ab779fae6ac1d1beceeccaf7369a251036                                          | 0x5b9d0cd7c015d5ccaba3ababb390a431ebeb74e1                                          | 0x4f396a4a92d38110704a29dbc33ab818724c17e1                                          |
+| ISK                   | 0x6e9e62eacad75e4b130db84f3bcba390dac47944                                          | 0xdd6539ac2b758e15b1c40290a5c3a9984d21ee3c                                          | 0xe1d416a18e668a0be12d501391bab7105383b38b                                          |
+| Migrations            | 0x496d5aa262f9f044769caf1a5303c89fb36adeef                                          | 0xf777c8ba93831dc04b43ea87f5f33b7cacc9f7d1                                          | 0x5b9874f68da7c1421704c103965cd92598311ab3                                          |
+| MintableTokenLib      | 0x82d59b83b00475e009e913a6e470aea1e2dcc451                                          | 0x71690fcb58f7e2e92ef0b3b553dc1d112501a1fd                                          | 0x36b9950d1af690a3685e0e5ba05076b6fd04512e                                          |
+| SafeMath              | 0x2e7e62e0bea9f9e0d5957550d147bf1dd4580880                                          | 0xa724ac98d0069f618387e1a9287b6e016579a6e1                                          | 0x2e99f38da8e163598ddd2d9860e09e6fdd2ba67a                                          |
+| SmartController (ISK) | 0x54eb7ed5f98b7f498e3b59de9f2d3774394f42a7                                          | 0x8573a0ac20be38bcb904b81f5ac0156ade4326b0                                          | 0x85c80683e06bdc53339383e91b26f40692a911cf                                          |
+| SmartController (USD) | 0xf7958b010226ae8791debfee6df3f20f7a13b623                                          | 0x775c7f7e44539cabf4ed5f42804aa422265a87ad                                          | 0x5613fd988a46483d8f0dd81145aebc6151f6ff1b                                          |
+| SmartTokenLib         | 0x3ea4e0542ab3220b3c514d041ecea51ca93baa9b                                          | 0x0df88f7b7ec88615be8b15496fe16fbbc1aef20a                                          | 0x0b3d87c1c3cad6a8ce744ba18cb0ae52062ed633                                          |
+| Storage (ISK)         | 0xd86984389d3b02c46201eb1f1ec07a0f47b403fa                                          | 0xaa25e41dfd515c20c871fcee3b57ebc2da207ec4                                          | 0x0407e7de6e1fcedcca99b8c8953f972bd33014d1                                          |
+| Storage (USD)         | 0xc9ba890b119ed6ebc7fdc1c0613c0d7f4d7307a6                                          | 0x8523e538cd91fc5c61594166c542f9733f845cbe                                          | 0x3ce2d1395d2dea91144cc93533f9cf4685231201                                          |
+| TokenStorageLib       | 0xaa881be95479a669544d44de648562eca10b8762                                          | 0x66ac5d0b61a3177bd9229a7b88cfef2eeb66a84c                                          | 0x125159102bf292f6abbb95ccfc29c01e275e2871                                          |
+| USD                   | 0x7a83d84801fe56570e942f6fef6657f2ae3ebdd6                                          | 0xe8daa78c4570d78f2d8a7dd823b391eca2dfd96c                                          | 0xb3dce07230165a13b5b0aeee2ed62834887800c7                                          |
 
 ## Unit tests
 
@@ -115,7 +119,6 @@ The token system ships with JavaScript unit tests.
 ```
 
 ![Unit tests](docs/test-suite.png)
-
 
 ## Code coverage
 
