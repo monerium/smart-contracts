@@ -13,15 +13,15 @@ library ERC20Lib {
     using SafeMath for uint;
 
     /**
-     * @dev Transfers tokens [ERC20]. 
+     * @dev Transfers tokens [ERC20].
      * @param db Token storage to operate on.
      * @param caller Address of the caller passed through the frontend.
      * @param to Recipient address.
      * @param amount Number of tokens to transfer.
      */
-    function transfer(TokenStorage db, address caller, address to, uint amount) 
+    function transfer(TokenStorage db, address caller, address to, uint amount)
         internal
-        returns (bool success) 
+        returns (bool success)
     {
         db.subBalance(caller, amount);
         db.addBalance(to, amount);
@@ -38,14 +38,14 @@ library ERC20Lib {
      * @param amount Number of tokens to transfer.
      */
     function transferFrom(
-        TokenStorage db, 
-        address caller, 
-        address from, 
-        address to, 
+        TokenStorage db,
+        address caller,
+        address from,
+        address to,
         uint amount
-    ) 
+    )
         internal
-        returns (bool success) 
+        returns (bool success)
     {
         uint allowance = db.getAllowed(from, caller);
         db.subBalance(from, amount);
@@ -65,9 +65,9 @@ library ERC20Lib {
      * @param spender The address of the future spender.
      * @param amount The allowance of the spender.
      */
-    function approve(TokenStorage db, address caller, address spender, uint amount) 
+    function approve(TokenStorage db, address caller, address spender, uint amount)
         public
-        returns (bool success) 
+        returns (bool success)
     {
         db.setAllowed(caller, spender, amount);
         return true;
@@ -79,25 +79,25 @@ library ERC20Lib {
      * @param who Address to lookup.
      * @return Balance of address.
      */
-    function balanceOf(TokenStorage db, address who) 
+    function balanceOf(TokenStorage db, address who)
         internal
-        view 
-        returns (uint balance) 
+        view
+        returns (uint balance)
     {
         return db.getBalance(who);
     }
 
-    /** 
-     * @dev Returns the allowance for a spender 
+    /**
+     * @dev Returns the allowance for a spender
      * @param db Token storage to operate on.
      * @param owner The address of the owner of the tokens.
      * @param spender The address of the spender.
      * @return Number of tokens the spender is allowed to spend.
      */
-    function allowance(TokenStorage db, address owner, address spender) 
+    function allowance(TokenStorage db, address owner, address spender)
         internal
-        view 
-        returns (uint remaining) 
+        view
+        returns (uint remaining)
     {
         return db.getAllowed(owner, spender);
     }

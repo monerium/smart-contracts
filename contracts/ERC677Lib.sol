@@ -26,14 +26,14 @@ library ERC677Lib {
      * @param data Additional data passed to the recipient's tokenFallback method.
      */
     function transferAndCall(
-        TokenStorage db, 
-        address caller, 
-        address to, 
-        uint256 amount, 
+        TokenStorage db,
+        address caller,
+        address to,
+        uint256 amount,
         bytes data
-    ) 
+    )
         external
-        returns (bool) 
+        returns (bool)
     {
         assert(db.transfer(caller, to, amount));
         if (to.isContract()) {
@@ -41,6 +41,6 @@ library ERC677Lib {
             assert(recipient.tokenFallback(caller, amount, data));
         }
         return true;
-    }        
+    }
 
 }

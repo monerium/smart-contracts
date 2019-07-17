@@ -82,7 +82,7 @@ contract TokenFrontend is Claimable, CanReclaimToken, NoOwner, IERC20 {
     }
 
     /**
-     * @dev Transfers tokens [ERC20]. 
+     * @dev Transfers tokens [ERC20].
      * @param to Recipient address.
      * @param amount Number of tokens to transfer.
      */
@@ -124,12 +124,80 @@ contract TokenFrontend is Claimable, CanReclaimToken, NoOwner, IERC20 {
      * @param amount Number of tokens to transfer.
      * @param data Additional data passed to the recipient's tokenFallback method.
      */
-    function transferAndCall(address to, uint256 amount, bytes data) 
+    function transferAndCall(address to, uint256 amount, bytes data)
         external
-        returns (bool ok) 
+        returns (bool ok)
     {
         ok = controller.transferAndCall_withCaller(msg.sender, to, amount, data);
         emit Transfer(msg.sender, to, amount, data);
+    }
+
+    /**
+     * @dev Mints new tokens.
+     * @param to Address to credit the tokens.
+     * @param amount Number of tokens to mint.
+     */
+    function mintTo(address to, uint amount)
+        external
+        returns (bool ok)
+    {
+        ok = controller.mintTo_withCaller(msg.sender, to, amount);
+        emit Transfer(0x0, to, amount);
+    }
+
+    /**
+     * @dev Burns tokens from the calling system account.
+     * This removes the burned tokens from circulation.
+     * @notice only possible when token owners are system accounts.
+     * @param from Address of the token owner
+     * @param amount Number of tokens to burn.
+     */
+    function burn(address from, uint amount)
+        external
+        returns (bool ok)
+    {
+        ok = controller.burn_withCaller(msg.sender, from, amount);
+        emit Transfer(from, 0x0, amount);
+    }
+
+    /**
+     * @dev Burns tokens from token owner.
+     * This removfes the burned tokens from circulation.
+     * @param from Address of the token owner.
+     * @param amount Number of tokens to burn.
+     * @param h Hash which the token owner signed.
+     * @param v Signature component.
+     * @param r Signature component.
+     * @param s Sigature component.
+     */
+    function burnFrom(address from, uint amount, bytes32 h, uint8 v, bytes32 r, bytes32 s)
+        external
+        returns (bool ok)
+    {
+        ok = controller.burnFrom_withCaller(msg.sender, from, amount, h, v, r, s);
+        emit Transfer(from, 0x0, amount);
+    }
+
+    /**
+     * @dev Recovers tokens from an address and reissues them to another address.
+     * In case a user loses its private key the tokens can be recovered by burning
+     * the tokens from that address and reissuing to a new address.
+     * To recover tokens the contract owner needs to provide a signature
+     * proving that the token owner has authorized the owner to do so.
+     * @param from Address to burn tokens from.
+     * @param to Address to mint tokens to.
+     * @param h Hash which the token owner signed.
+     * @param v Signature component.
+     * @param r Signature component.
+     * @param s Sigature component.
+     * @return Amount recovered.
+     */
+    function recover(address from, address to, bytes32 h, uint8 v, bytes32 r, bytes32 s)
+        external
+        returns (uint amount)
+    {
+        amount = controller.recover_withCaller(msg.sender, from, to, h ,v, r, s);
+        emit Transfer(from, to, amount);
     }
 
     /**
@@ -157,8 +225,8 @@ contract TokenFrontend is Claimable, CanReclaimToken, NoOwner, IERC20 {
         return controller.balanceOf(who);
     }
 
-    /** 
-     * @dev Returns the allowance for a spender 
+    /**
+     * @dev Returns the allowance for a spender
      * @param owner The address of the owner of the tokens.
      * @param spender The address of the spender.
      * @return Number of tokens the spender is allowed to spend.
@@ -168,7 +236,7 @@ contract TokenFrontend is Claimable, CanReclaimToken, NoOwner, IERC20 {
     }
 
     /**
-     * @dev Returns the number of decimals in one token. 
+     * @dev Returns the number of decimals in one token.
      * @return Number of decimals.
      */
     function decimals() external view returns (uint) {

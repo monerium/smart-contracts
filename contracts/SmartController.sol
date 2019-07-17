@@ -26,7 +26,7 @@ contract SmartController is MintableController {
      */
     constructor(address storage_, address validator, bytes3 ticker_, address frontend_)
         public
-        MintableController(storage_, INITIAL_SUPPLY, frontend_) 
+        MintableController(storage_, INITIAL_SUPPLY, frontend_)
     {
         require(validator != 0x0, "validator cannot be the null address");
         smartToken.setValidator(validator);
@@ -47,48 +47,40 @@ contract SmartController is MintableController {
      * the tokens from that address and reissuing to a new address.
      * To recover tokens the contract owner needs to provide a signature
      * proving that the token owner has authorized the owner to do so.
+     * @param caller Address of the caller passed through the frontend.
      * @param from Address to burn tokens from.
      * @param to Address to mint tokens to.
      * @param h Hash which the token owner signed.
      * @param v Signature component.
      * @param r Signature component.
      * @param s Sigature component.
+     * @return Amount recovered.
      */
-    function recover(address from, address to, bytes32 h, uint8 v, bytes32 r, bytes32 s)
+    function recover_withCaller(address caller, address from, address to, bytes32 h, uint8 v, bytes32 r, bytes32 s)
         external
-        onlySystemAccounts
-        returns (bool)
+        guarded(caller)
+        onlySystemAccount(caller)
+        avoidBlackholes(to)
+        returns (uint)
     {
         return SmartTokenLib.recover(token, from, to, h, v, r, s);
     }
 
     /**
-     * @dev Transfers tokens [ERC20]. 
-     * See transfer_withCaller for documentation.
-     */
-    function transfer(address to, uint amount) 
-        external 
-        returns (bool) 
-    {
-        return transfer_withCaller(msg.sender, to, amount);
-    }
-
-    /**
-     * @dev Transfers tokens [ERC20]. 
+     * @dev Transfers tokens [ERC20].
      * Prior to transfering tokens the validator needs to approve.
      * @param caller Address of the caller passed through the frontend.
      * @param to Recipient address.
      * @param amount Number of tokens to transfer.
      */
-    function transfer_withCaller(address caller, address to, uint amount) 
-        public 
+    function transfer_withCaller(address caller, address to, uint amount)
+        public
         whenNotPaused
-        returns (bool) 
+        returns (bool)
     {
         require(smartToken.validate(caller, to, amount), "transfer request not valid");
         return super.transfer_withCaller(caller, to, amount);
     }
-
 
     /**
      * @dev Gets the current validator.

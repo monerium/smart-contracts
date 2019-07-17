@@ -4,9 +4,9 @@ import "./TokenFrontend.sol";
 
 contract USD is TokenFrontend {
 
-    constructor() 
+    constructor()
         public
-        TokenFrontend("Monerium USD emoney", "USDe", "USD") 
+        TokenFrontend("Monerium USD emoney", "USDe", "USD")
     { }
 
 }

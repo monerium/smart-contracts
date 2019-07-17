@@ -29,7 +29,7 @@ contract BlacklistValidator is IValidator, Claimable, CanReclaimToken, NoOwner {
      * @param adversary Address to add.
      */
     function ban(address adversary) external onlyOwner {
-        blacklist[adversary] = true; 
+        blacklist[adversary] = true;
         emit Ban(adversary);
     }
 
@@ -46,10 +46,10 @@ contract BlacklistValidator is IValidator, Claimable, CanReclaimToken, NoOwner {
      * @dev Validates token transfer.
      * Implements IValidator interface.
      */
-    function validate(address from, address to, uint amount) 
+    function validate(address from, address to, uint amount)
         external
-        returns (bool valid) 
-    { 
+        returns (bool valid)
+    {
         if (blacklist[from]) {
             valid = false;
         } else {
