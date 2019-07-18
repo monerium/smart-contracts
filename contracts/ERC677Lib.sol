@@ -59,7 +59,7 @@ library ERC677Lib {
             ITokenRecipient recipient = ITokenRecipient(to);
             require(
                 recipient.tokenFallback(caller, amount, data),
-                "tokenFallback throws"
+                "token fallback returns false"
             );
         }
         return true;
