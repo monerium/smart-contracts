@@ -36,7 +36,7 @@ library ERC20Lib {
      * @param amount Number of tokens to transfer.
      */
     function transfer(TokenStorage db, address caller, address to, uint amount)
-        internal
+        external
         returns (bool success)
     {
         db.subBalance(caller, amount);
@@ -60,7 +60,7 @@ library ERC20Lib {
         address to,
         uint amount
     )
-        internal
+        external
         returns (bool success)
     {
         uint allowance = db.getAllowed(from, caller);
@@ -96,7 +96,7 @@ library ERC20Lib {
      * @return Balance of address.
      */
     function balanceOf(TokenStorage db, address who)
-        internal
+        external
         view
         returns (uint balance)
     {
@@ -111,7 +111,7 @@ library ERC20Lib {
      * @return Number of tokens the spender is allowed to spend.
      */
     function allowance(TokenStorage db, address owner, address spender)
-        internal
+        external
         view
         returns (uint remaining)
     {

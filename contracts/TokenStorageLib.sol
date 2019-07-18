@@ -38,7 +38,7 @@ library TokenStorageLib {
      * @param amount Number of units to add.
      */
     function addBalance(TokenStorage storage self, address to, uint amount)
-        internal
+        external
     {
         self.totalSupply = self.totalSupply.add(amount);
         self.balances[to] = self.balances[to].add(amount);
@@ -51,7 +51,7 @@ library TokenStorageLib {
      * @param amount Number of units to subtract.
      */
     function subBalance(TokenStorage storage self, address from, uint amount)
-        internal
+        external
     {
         self.totalSupply = self.totalSupply.sub(amount);
         self.balances[from] = self.balances[from].sub(amount);
@@ -65,7 +65,7 @@ library TokenStorageLib {
      * @param amount Qunatity of allowance.
      */
     function setAllowed(TokenStorage storage self, address owner, address spender, uint amount)
-        internal
+        external
     {
         self.allowed[owner][spender] = amount;
     }
@@ -76,7 +76,7 @@ library TokenStorageLib {
      * @return Total supply.
      */
     function getSupply(TokenStorage storage self)
-        internal
+        external
         view
         returns (uint)
     {
@@ -90,7 +90,7 @@ library TokenStorageLib {
      * @return Number of units.
      */
     function getBalance(TokenStorage storage self, address who)
-        internal
+        external
         view
         returns (uint)
     {
@@ -105,7 +105,7 @@ library TokenStorageLib {
      * @return Number of units.
      */
     function getAllowed(TokenStorage storage self, address owner, address spender)
-        internal
+        external
         view
         returns (uint)
     {

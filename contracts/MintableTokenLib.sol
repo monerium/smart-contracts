@@ -42,7 +42,7 @@ library MintableTokenLib {
         address to,
         uint amount
     )
-        internal
+        external
         returns (bool)
     {
         db.addBalance(to, amount);
@@ -60,7 +60,7 @@ library MintableTokenLib {
         address from,
         uint amount
     )
-        internal
+        public
         returns (bool)
     {
         db.subBalance(from, amount);
@@ -88,7 +88,7 @@ library MintableTokenLib {
         bytes32 r,
         bytes32 s
     )
-        internal
+        external
         returns (bool)
     {
         require(
