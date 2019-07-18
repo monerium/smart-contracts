@@ -1,3 +1,4 @@
+var truffleAssert = require("truffle-assertions");
 var MintableController = artifacts.require("./MintableController.sol");
 var EthUtil = require("ethereumjs-util");
 
@@ -43,12 +44,9 @@ contract('MintableController', accounts => {
   });
 
   it("should fail to mint 666 new tokens from non-system account", async () => {
-    try {
-      await controller.mintTo_withCaller(accounts[0], accounts[0], 666, {from: accounts[0]});
-    } catch { 
-      return;
-    }
-    assert.fail("succeeded", "fail", "minting should fail from non-system account");
+    await truffleAssert.reverts(
+      controller.mintTo_withCaller(accounts[0], accounts[0], 666, {from: accounts[0]})
+    );
   });
 
   it("should fail to burnFrom 888 new tokens from non-system account", async () => {
@@ -65,9 +63,9 @@ contract('MintableController', accounts => {
     if (v < 27) v += 27;
     assert(v == 27 || v == 28);
 
-    try {
-      await controller.burnFrom_withCaller(accounts[8], wallet.address, 888, hash, v, r, s, {from: accounts[8]});
-    } catch { }
+    await truffleAssert.reverts(
+      controller.burnFrom_withCaller(accounts[8], wallet.address, 888, hash, v, r, s, {from: accounts[8]})
+    );
     const balance1 = await controller.balanceOf(wallet.address);
     assert.strictEqual(balance1.toNumber(), balance0.toNumber() + 888, "burnFrom should fail from non-system accont");
     await controller.burnFrom_withCaller(system, wallet.address, 888, hash, v, r, s, {from: system});
@@ -88,9 +86,9 @@ contract('MintableController', accounts => {
     if (v < 27) v += 27;
     assert(v == 27 || v == 28);
 
-    try {
-      await controller.burnFrom_withCaller(system, wallet.address, 999, hash, v, 0x0, 0x0, {from: system});
-    } catch { }
+    await truffleAssert.reverts(
+      controller.burnFrom_withCaller(system, wallet.address, 999, hash, v, 0x0, 0x0, {from: system})
+    );
     const balance1 = await controller.balanceOf(wallet.address);
     assert.strictEqual(balance1.toNumber(), balance0.toNumber() + 999, "burnFrom should fail using a wrong signature");
     await controller.burnFrom_withCaller(system, wallet.address, 999, hash, v, r, s, {from: system});
@@ -132,24 +130,18 @@ contract('MintableController', accounts => {
   }
 
   it("should fail adding system account from a non-owner address", async () => {
-    try {
-      await controller.addSystemAccount(accounts[6], {from: accounts[5]});
-    } catch { 
-      return;
-    }
-    assert.fail("succeeded", "fail", "adding system account should fail from non-owner account");
+    await truffleAssert.reverts(
+      controller.addSystemAccount(accounts[6], {from: accounts[5]})
+    );
   });
 
   it("should fail removing system account from a non-owner address", async () => {
     await controller.addSystemAccount(accounts[6], {from: owner});
     const success = await controller.isSystemAccount(accounts[6]);
     assert.strictEqual(success, true, "unable to add system account");
-    try {
-      await controller.removeSystemAccount(accounts[6], {from: accounts[5]});
-    } catch { 
-      return;
-    }
-    assert.fail("succeeded", "fail", "removing system account should fail from non-owner account");
+    await truffleAssert.reverts(
+      controller.removeSystemAccount(accounts[6], {from: accounts[5]})
+    );
   });
 
   it("should succeed in adding system account from an owner address", async () => {

@@ -1,3 +1,4 @@
+var truffleAssert = require("truffle-assertions");
 var TokenStorage = artifacts.require("./TokenStorage.sol");
 var AcceptingRecipient = artifacts.require("./AcceptingRecipient.sol");
 var SimpleToken = artifacts.require("./SimpleToken.sol");
@@ -42,12 +43,9 @@ contract("TokenStorage", accounts => {
   });
 
   it("should fail when minting from a non-owner account", async () => {
-    try {
-      await storage.addBalance(accounts[3], 1000000, {from: accounts[4]});
-    } catch { 
-      return;
-    }
-    assert.fail("succeeded", "fail", "minting was supposed to fail");
+    await truffleAssert.reverts(
+      storage.addBalance(accounts[3], 1000000, {from: accounts[4]})
+    );
   });
 
   it("should be able to reclaim ownership of contracts", async () => {
@@ -60,25 +58,6 @@ contract("TokenStorage", accounts => {
     await storage.reclaimContract(AcceptingRecipient.address);
     const owner2 = await recipient.owner();
     assert.strictEqual(owner2, owner0, "must be original owner after reclaiming ownership");
-  });
-
-  it("should not be allowed to receive ether", async () => {
-    try {
-    await web3.eth.sendTransaction({to: TokenStorage.address, from: accounts[0], value: 10});
-    } catch {
-      return;
-    }
-    assert.fail("succeeded", "fail", "transfer and call was supposed to fail");
-  });
-
-  it("should not be allowed to receive tokens (ERC223, ERC677)", async () => {
-    const controller = await StandardController.deployed();
-    try {
-      await controller.transferAndCall(TokenStorage.address, 223, 0x0);
-    } catch {
-      return;
-    }
-    assert.fail("succeeded", "fail", "transfer and call was supposed to fail");
   });
 
   it("should be able to recover tokens (ERC20)", async () => {

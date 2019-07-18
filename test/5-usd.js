@@ -1,3 +1,4 @@
+var truffleAssert = require('truffle-assertions');
 var USD = artifacts.require("./USD.sol");
 var SmartController = artifacts.require("./SmartController.sol");
 var StandardController = artifacts.require("./StandardController.sol");
@@ -70,13 +71,10 @@ contract("USD", accounts => {
   });
 
   it("should fail transferring 78 tokens from a blacklisted account", async () => {
-    (await BlacklistValidator.deployed()).ban(accounts[1]);
-    try {
-      await token.transfer(accounts[3], 78, {from: accounts[1]});
-    } catch {
-      return;
-    }
-    assert.fail("succeeded", "fail", "transfer was supposed to fail");
+    await (await BlacklistValidator.deployed()).ban(accounts[1]);
+    await truffleAssert.reverts(
+      usd.transfer(accounts[3], 78, {from: accounts[1]})
+    );
   });
 
   it("should succeed transferring to and calling a contract which implements token fallback method by accepting", async () => {
@@ -88,20 +86,18 @@ contract("USD", accounts => {
 
   it("should fail transferring to and calling a contract which implements token fallback method by rejecting", async () => {
     const recipient = await RejectingRecipient.deployed();
-    try {
-      await usd.transferAndCall(recipient.address, 3, "");
-    } catch {
-    }
+    await truffleAssert.reverts(
+      usd.transferAndCall(recipient.address, 3, "")
+    );
     const balance = await usd.balanceOf(recipient.address);
     assert.strictEqual(balance.toNumber(), 0, "balance mismatch for recipient");
   });
 
   it("should fail transferring to and calling a contract which does not implements token fallback method", async () => {
     const recipient = await SimpleToken.deployed();
-    try {
-      await usd.transferAndCall(recipient.address, 3, "");
-    } catch {
-    }
+    await truffleAssert.reverts(
+      usd.transferAndCall(recipient.address, 3, "")
+    );
     const balance = await usd.balanceOf(recipient.address);
     assert.strictEqual(balance.toNumber(), 0, "balance mismatch for recipient");
   });
@@ -169,20 +165,18 @@ contract("USD", accounts => {
 
   it("should fail to set the controller to 0x0", async () => {
     const initial = await usd.getController();
-    try {
-      await usd.setController(0x0);
-    } catch {
-    }
+    await truffleAssert.reverts(
+      usd.setController(0x0)
+    );
     const post = await usd.getController();
     assert.strictEqual(post, initial, "controller should not change");
   });
 
   it("should fail to set the controller to a non null address from a non-owner", async () => {
     const initial = await usd.getController();
-    try {
-      await usd.setController(0x0, {from: accounts[5]});
-    } catch {
-    }
+    await truffleAssert.reverts(
+      usd.setController(0x0, {from: accounts[5]})
+    );
     const post = await usd.getController();
     assert.strictEqual(post, initial, "controller should not change");
   });
@@ -191,10 +185,9 @@ contract("USD", accounts => {
     const initial = await usd.getController();
     const standard = await StandardController.deployed();
     assert.notEqual(standard.address, initial, "invalid initial controller");
-    try {
-      await usd.setController(standard.address, {from: owner});
-    } catch {
-    }
+    await truffleAssert.reverts(
+      usd.setController(standard.address, {from: owner})
+    );
     const post = await usd.getController();
     assert.strictEqual(post, initial, "controller should not change");
   });
@@ -202,10 +195,9 @@ contract("USD", accounts => {
   it("should fail setting the controller to a non null address not pointing back", async () => {
     const initial = await usd.getController();
     const standard = await ConstantSmartController.deployed();
-    try {
-    await usd.setController(standard.address, {from: owner});
-    } catch {
-    }
+    await truffleAssert.reverts(
+      usd.setController(standard.address, {from: owner})
+    );
     const post = await usd.getController();
     assert.strictEqual(post, initial, "incorrect post state");
   });

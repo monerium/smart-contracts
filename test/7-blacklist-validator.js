@@ -1,5 +1,6 @@
-const BlacklistValidator = artifacts.require("./BlacklistValidator.sol");
-const AcceptingRecipient = artifacts.require("./AcceptingRecipient.sol");
+var truffleAssert = require('truffle-assertions');
+var BlacklistValidator = artifacts.require("./BlacklistValidator.sol");
+var AcceptingRecipient = artifacts.require("./AcceptingRecipient.sol");
 var SimpleToken = artifacts.require("./SimpleToken.sol");
 var StandardController = artifacts.require("./StandardController.sol");
 
@@ -27,24 +28,18 @@ contract("BlacklistValidator", accounts => {
   });
 
   it("should fail banning account from a non-owner address", async () => {
-    try {
-      await validator.ban(accounts[6], {from: accounts[5]});
-    } catch { 
-      return;
-    }
-    assert.fail("succeeded", "fail", "banning account should fail from non-owner account");
+    await truffleAssert.reverts(
+      validator.ban(accounts[6], {from: accounts[5]})
+    );
   });
 
   it("should fail unbanning account from a non-owner address", async () => {
     await validator.ban(accounts[6], {from: owner});
     const success = await validator.blacklist(accounts[6]);
     assert.strictEqual(success, true, "unable to ban account");
-    try {
-      await validator.unban(accounts[6], {from: accounts[5]});
-    } catch { 
-      return;
-    }
-    assert.fail("succeeded", "fail", "unbanning account should fail from non-owner account");
+    await truffleAssert.reverts(
+      validator.unban(accounts[6], {from: accounts[5]})
+    );
   });
 
   it("should not validate from a banned account", async () => {
@@ -63,25 +58,6 @@ contract("BlacklistValidator", accounts => {
     await validator.reclaimContract(AcceptingRecipient.address);
     const owner2 = await recipient.owner();
     assert.strictEqual(owner2, owner0, "must be original owner after reclaiming ownership");
-  });
-
-  it("should not be allowed to receive ether", async () => {
-    try {
-    await web3.eth.sendTransaction({to: BlacklistValidator.address, from: owner, value: 10});
-    } catch {
-      return;
-    }
-    assert.fail("succeeded", "fail", "transfer and call was supposed to fail");
-  });
-
-  it("should not be allowed to receive tokens (ERC223, ERC677)", async () => {
-    const controller = await StandardController.deployed();
-    try {
-      await controller.transferAndCall(BlacklistValidator.address, 223, 0x0);
-    } catch {
-      return;
-    }
-    assert.fail("succeeded", "fail", "transfer and call was supposed to fail");
   });
 
   it("should be able to recover tokens (ERC20)", async () => {

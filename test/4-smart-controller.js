@@ -1,4 +1,4 @@
-const truffleAssert = require('truffle-assertions');
+var truffleAssert = require('truffle-assertions');
 var SmartController = artifacts.require("./SmartController.sol");
 var BlacklistValidator = artifacts.require("./BlacklistValidator.sol");
 var ConstantValidator = artifacts.require("./ConstantValidator.sol");
@@ -37,12 +37,9 @@ contract('SmartController', (accounts) => {
   });
 
   it("should fail to construct if validator is the null address", async () => {
-    try {
-      await SmartController.new("0x", "0x", "000");
-    } catch {
-      return;
-    }
-    assert.fail("succeeded", "fail", "constructor was supposed to fail");
+    await truffleAssert.reverts(
+      SmartController.new("0x0", "0x0", "000", "0x0")
+    );
   });
 
   it("should construct if validator is a non-null address", async () => {
@@ -71,12 +68,9 @@ contract('SmartController', (accounts) => {
 
   it("should fail transferring 1840 tokens from a blacklisted account", async () => {
     (await BlacklistValidator.deployed()).ban(accounts[2]);
-    try {
-      await controller.transfer_withCaller(accounts[2], accounts[3], 1840, {from: accounts[2]});
-    } catch { 
-      return;
-    }
-    assert.fail("succeeded", "fail", "transfer was supposed to fail");
+    await truffleAssert.reverts(
+      controller.transfer_withCaller(accounts[2], accounts[3], 1840, {from: accounts[2]})
+    );
   });
 
   it("should transfer 12 tokens to second account using transferFrom", async () => {
@@ -90,12 +84,9 @@ contract('SmartController', (accounts) => {
   it("should fail transferring 22 tokens from a blacklisted account using transferFrom", async () => {
     (await BlacklistValidator.deployed()).ban(accounts[1]);
     controller.approve_withCaller(accounts[1], accounts[2], 30, {from: accounts[1]});
-    try {
-      await controller.transferFrom(accounts[1], accounts[3], 22, {from: accounts[2]});
-    } catch { 
-      return;
-    }
-    assert.fail("succeeded", "fail", "transferFrom was supposed to fail");
+    await truffleAssert.reverts(
+      controller.transferFrom_withCaller(accounts[2], accounts[1], accounts[3], 22, {from: accounts[2]})
+    );
   });
 
   it("should transfer 34 tokens using transferAndCall", async () => {
@@ -107,12 +98,9 @@ contract('SmartController', (accounts) => {
 
   it("should fail transferring 4 tokens from a blacklisted account using transferAndCall", async () => {
     await (await BlacklistValidator.deployed()).ban(accounts[1]);
-    try {
-      await controller.transferAndCall_withCaller(accounts[1], accounts[4], 4, "0x234", {from: accounts[1]});
-    } catch {
-      return;
-    }
-    assert.fail("succeeded", "fail", "transferAndCall was supposed to fail");
+    await truffleAssert.reverts(
+      controller.transferAndCall_withCaller(accounts[1], accounts[4], 4, "0x234", {from: accounts[1]})
+    );
   });
 
   it("should fail to transfer 849 tokens when paused", async () => {
@@ -207,14 +195,11 @@ contract('SmartController', (accounts) => {
     const initial = await controller.getValidator();
     const validator = await ConstantValidator.deployed();
     assert.notEqual(validator.address, initial, "initial validator should not be constant validator");
-    try {
-      await controller.setValidator(validator.address, {from: accounts[6]});
-    } catch {
-      return;
-    }
+    await truffleAssert.reverts(
+      controller.setValidator(validator.address, {from: accounts[6]})
+    );
     const post = await controller.getValidator();
     assert.strictEqual(post, initial, "validator should not have changed");
-    assert.fail("succeeded", "fail", "setting validator was supposed to fail");
   });
 
   it("should succeed setting new validator from a system account", async () => {

@@ -1,3 +1,4 @@
+var truffleAssert = require('truffle-assertions');
 var ISK = artifacts.require("./ISK.sol");
 var AcceptingRecipient = artifacts.require("./AcceptingRecipient.sol");
 var SimpleToken = artifacts.require("./SimpleToken.sol");
@@ -28,25 +29,6 @@ contract("ISK", accounts => {
     await isk.reclaimContract(AcceptingRecipient.address);
     const owner2 = await recipient.owner();
     assert.strictEqual(owner2, owner0, "must be original owner after reclaiming ownership");
-  });
-
-  it("should not be allowed to receive ether", async () => {
-    try {
-    await web3.eth.sendTransaction({to: ISK.address, from: accounts[0], value: 10});
-    } catch {
-      return;
-    }
-    assert.fail("succeeded", "fail", "transfer and call was supposed to fail");
-  });
-
-  it("should not be allowed to receive tokens (ERC223, ERC677)", async () => {
-    const controller = await SmartController.deployed();
-    try {
-      await controller.transferAndCall(ISK.address, 223, 0x0);
-    } catch {
-      return;
-    }
-    assert.fail("succeeded", "fail", "transfer and call was supposed to fail");
   });
 
   it("should be able to recover tokens (ERC20)", async () => {
