@@ -16,16 +16,16 @@
 
 pragma solidity 0.4.24;
 
-import "./ITokenRecipient.sol";
+import "./IERC677Recipient.sol";
 
 /**
  * @title RejectingRecipient
  * @dev [ERC677]-compatible contract.
  * The contract rejects token ownership.
  */
-contract RejectingRecipient is ITokenRecipient {
+contract RejectingRecipient is IERC677Recipient {
 
-    function tokenFallback(address, uint256, bytes) external returns (bool) {
+    function onTokenTransfer(address, uint256, bytes) external returns (bool) {
         return false;
     }
 

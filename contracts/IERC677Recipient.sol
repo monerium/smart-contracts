@@ -17,18 +17,18 @@
 pragma solidity 0.4.24;
 
 /**
- * @title ITokenRecipient
- * @dev Contracts implementing this interface can participate in [ERC223 and ERC677].
+ * @title IERC677Recipient
+ * @dev Contracts implementing this interface can participate in [ERC677].
  */
-interface ITokenRecipient {
+interface IERC677Recipient {
 
     /**
-     * @dev Receives notification from [ERC223 and ERC677] transferAndCall.
+     * @dev Receives notification from [ERC677] transferAndCall.
      * @param from Sender address.
      * @param amount Number of tokens.
      * @param data Additional data.
      */
-    function tokenFallback(address from, uint256 amount, bytes data) external returns (bool);
+    function onTokenTransfer(address from, uint256 amount, bytes data) external returns (bool);
 
 }
 

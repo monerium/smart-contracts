@@ -17,7 +17,7 @@
 pragma solidity 0.4.24;
 
 import "openzeppelin-solidity/contracts/AddressUtils.sol";
-import "./ITokenRecipient.sol";
+import "./IERC677Recipient.sol";
 import "./TokenStorage.sol";
 import "./ERC20Lib.sol";
 
@@ -56,10 +56,10 @@ library ERC677Lib {
             "unable to transfer"
         );
         if (to.isContract()) {
-            ITokenRecipient recipient = ITokenRecipient(to);
+            IERC677Recipient recipient = IERC677Recipient(to);
             require(
-                recipient.tokenFallback(caller, amount, data),
-                "token fallback returns false"
+                recipient.onTokenTransfer(caller, amount, data),
+                "token handler returns false"
             );
         }
         return true;
