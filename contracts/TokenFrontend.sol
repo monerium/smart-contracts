@@ -146,6 +146,7 @@ contract TokenFrontend is Destructible, Claimable, CanReclaimToken, NoOwner, IER
         returns (bool ok)
     {
         ok = controller.transferAndCall_withCaller(msg.sender, to, amount, data);
+        emit Transfer(msg.sender, to, amount);
         emit Transfer(msg.sender, to, amount, data);
     }
 

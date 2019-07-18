@@ -71,7 +71,7 @@ contract BlacklistValidator is IValidator, Claimable, CanReclaimToken, NoOwner {
         } else {
             valid = true;
         }
-        emit Decision(from, to, valid, amount);
+        emit Decision(from, to, amount, valid);
     }
 
 }

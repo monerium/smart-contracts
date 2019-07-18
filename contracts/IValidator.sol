@@ -26,10 +26,10 @@ interface IValidator {
      * @dev Emitted when a validator makes a decision.
      * @param from Sender address.
      * @param to Recipient address.
-     * @param valid True if transfer approved, false if rejected.
      * @param amount Number of tokens.
+     * @param valid True if transfer approved, false if rejected.
      */
-    event Decision(address indexed from, address indexed to, bool valid, uint amount);
+    event Decision(address indexed from, address indexed to, uint amount, bool valid);
 
     /**
      * @dev Validates token transfer.
