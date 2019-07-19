@@ -1,3 +1,4 @@
+var truffleAssert = require('truffle-assertions');
 var StandardController = artifacts.require("./StandardController.sol");
 var TokenStorage = artifacts.require("./TokenStorage.sol");
 var AcceptingRecipient = artifacts.require("./AcceptingRecipient.sol");
@@ -66,71 +67,44 @@ contract('StandardController', accounts => {
   });
 
   it("should avoid blackholes [0x0]", async () => {
-    try {
-      await controller.transfer_withCaller(accounts[0], 0x0, 1);
-    } catch {
-      return;
-    }
-    assert.fail("succeeded", "fail", "transfer and call was supposed to fail");
+    await truffleAssert.reverts(
+      controller.transfer_withCaller(accounts[0], 0x0, 1)
+    );
   });
 
   it("should avoid blackholes [controller]", async () => {
-    try {
-      await controller.transfer_withCaller(accounts[0], StandardController.address, 2);
-    } catch {
-      return;
-    }
-    assert.fail("succeeded", "fail", "transfer and call was supposed to fail");
+    await truffleAssert.reverts(
+      controller.transfer_withCaller(accounts[0], StandardController.address, 2)
+    );
   });
 
   it("should avoid blackholes [storage]", async () => {
     const storage = await controller.getStorage();
-    try {
-      await controller.transfer(storage, 3);
-    } catch {
-      return;
-    }
-    assert.fail("succeeded", "fail", "transfer and call was supposed to fail");
+    await truffleAssert.reverts(
+      controller.transfer_withCaller(accounts[0], storage, 3)
+    );
   });
 
   it("should avoid blackholes [frontend]", async () => {
     const frontend = await controller.getFrontend();
-    try {
-      await controller.transfer_withCaller(accounts[0], frontend, 4);
-    } catch {
-      return;
-    }
-    assert.fail("succeeded", "fail", "transfer and call was supposed to fail");
+    await truffleAssert.reverts(
+      controller.transfer_withCaller(accounts[0], frontend, 4)
+    );
   });
 
   it("should be pausable", async () => {
     await controller.pause({from: accounts[0]});
-    try {
-      await controller.transfer_withCaller(accounts[1], accounts[2], 5, {from: accounts[1]});
-    } catch {
-      await controller.unpause({from: accounts[0]});
-      await controller.transfer_withCaller(accounts[1], accounts[2], 5, {from: accounts[1]});
-      return;
-    }
-    assert.fail("succeeded", "fail", "transfer and call was supposed to fail");
-  });
-
-  it("should not be allowed to receive ether", async () => {
-    try {
-    await web3.eth.sendTransaction({to: StandardController.address, from: accounts[0], value: 10});
-    } catch {
-      return;
-    }
-    assert.fail("succeeded", "fail", "transfer and call was supposed to fail");
+    await truffleAssert.reverts(
+      controller.transfer_withCaller(accounts[1], accounts[2], 5, {from: accounts[1]})
+    );
+    await controller.unpause({from: accounts[0]});
+    await controller.transfer_withCaller(accounts[1], accounts[2], 5, {from: accounts[1]});
   });
 
   it("should not be allowed to receive tokens (ERC223, ERC677)", async () => {
-    try {
-      await controller.transferAndCall_withCaller(accounts[0], StandardController.address, 223, 0x0);
-    } catch {
-      return;
-    }
-    assert.fail("succeeded", "fail", "transfer and call was supposed to fail");
+    await truffleAssert.reverts(
+      controller.transferAndCall_withCaller(accounts[0], StandardController.address, 223, 0x0)
+    );
   });
 
   it("should be able to change ownership of its storage", async () => {
@@ -151,10 +125,9 @@ contract('StandardController', accounts => {
     const initial = await controller.getStorage();
     const storage = await TokenStorage.deployed();
     assert.notEqual(storage.address, initial, "initial storage should not be a newly instantiated storage");
-    try {
-      await controller.setStorage(storage.address, {from: accounts[7]});
-    } catch {
-    }
+    await truffleAssert.reverts(
+      controller.setStorage(storage.address, {from: accounts[7]})
+    );
     const post = await controller.getStorage();
     assert.strictEqual(post, initial, "storage should not change");
   });
@@ -172,10 +145,9 @@ contract('StandardController', accounts => {
     const initial = await controller.getFrontend();
     const frontend = await USD.deployed();
     assert.notEqual(frontend.address, initial, "initial frontend should not be a newly instantiated frontend");
-    try {
-      await controller.setFrontend(frontend.address, {from: accounts[9]});
-    } catch {
-    }
+    await truffleAssert.reverts(
+      controller.setFrontend(frontend.address, {from: accounts[9]})
+    );
     const post = await controller.getFrontend();
     assert.strictEqual(post, initial, "frontend should not change");
   });
