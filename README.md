@@ -2,7 +2,7 @@
 
 ![GitHub](https://img.shields.io/github/license/monerium/smart-contracts.svg)
 ![GitHub release](https://img.shields.io/github/release/monerium/smart-contracts.svg)
-[![Build Status](https://travis-ci.com/monerium/smart-contracts.svg?label=dev&branch=feature%2Ftravis-ci)](https://travis-ci.com/monerium/smart-contracts)
+[![Build Status](https://travis-ci.com/monerium/smart-contracts.svg)](https://travis-ci.com/monerium/smart-contracts)
 
 The [Monerium](https://monerium.com) e-money platform offers programmable fiat money on blockchains, an indispensable building block for the nascent blockchain economy.
 
