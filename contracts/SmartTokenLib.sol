@@ -54,7 +54,7 @@ library SmartTokenLib {
      * @param validator Address of validator.
      */
     function setValidator(SmartStorage storage self, address validator)
-        internal
+        external
     {
         emit Validator(self.validator, validator);
         self.validator = IValidator(validator);
@@ -71,7 +71,7 @@ library SmartTokenLib {
      * @param amount Number of tokens.
      */
     function validate(SmartStorage storage self, address from, address to, uint amount)
-        internal
+        external
         returns (bool valid)
     {
         return self.validator.validate(from, to, amount);
@@ -100,7 +100,7 @@ library SmartTokenLib {
         bytes32 r,
         bytes32 s
     )
-        internal
+        external
         returns (uint)
     {
         require(
