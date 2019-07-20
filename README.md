@@ -10,7 +10,7 @@ The [Monerium](https://monerium.com) e-money platform offers programmable fiat m
 
 |                                                                                                   USD                                                                                                   |                                                                                                   ISK                                                                                                   |
 | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| ![USD address](docs/0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52.png)<small>[0x7a83d84801fe56570e942f6fef6657f2ae3ebdd6](https://etherscan.io/address/0x7a83d84801fe56570e942f6fef6657f2ae3ebdd6)</small> | ![ISK address](docs/0xc642549743a93674cf38d6431f75d6443f88e3e2.png)<small>[0x6e9e62eacad75e4b130db84f3bcba390dac47944](https://etherscan.io/address/0x6e9e62eacad75e4b130db84f3bcba390dac47944)</small> |
+| ![USD address](docs/0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52.png)<small>[0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52](https://etherscan.io/address/0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52)</small> | ![ISK address](docs/0xc642549743a93674cf38d6431f75d6443f88e3e2.png)<small>[0xc642549743a93674cf38d6431f75d6443f88e3e2](https://etherscan.io/address/0xc642549743a93674cf38d6431f75d6443f88e3e2)</small> |
 
 ## Token Design
 
