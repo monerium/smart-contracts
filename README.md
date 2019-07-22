@@ -120,8 +120,6 @@ The token system ships with JavaScript unit tests.
 # make test
 ```
 
-![Unit tests](docs/test-suite.png)
-
 ## Code coverage
 
 Code coverage for the token system can be checked with [solidity-coverage](https://github.com/sc-forks/solidity-coverage).
