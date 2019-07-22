@@ -1,4 +1,3 @@
-// artifacts
 var BlacklistValidator = artifacts.require("./BlacklistValidator.sol");
 var SmartController = artifacts.require("./SmartController.sol");
 var ISK = artifacts.require("./ISK.sol");
@@ -8,14 +7,14 @@ var SmartTokenLib = artifacts.require("./SmartTokenLib.sol");
 var ERC20Lib = artifacts.require("./ERC20Lib.sol");
 var ERC677Lib = artifacts.require("./ERC677Lib.sol");
 
-module.exports = function(deployer, network) {
+module.exports = function (deployer, network) {
 
   deployer.link(SmartTokenLib, SmartController);
   deployer.link(ERC20Lib, SmartController);
   deployer.link(ERC677Lib, SmartController);
   deployer.link(MintableTokenLib, SmartController);
 
-  return deployer.deploy(ISK).then(frontend => 
+  return deployer.deploy(ISK).then(frontend =>
     deployer.deploy(SmartController, 0x0, BlacklistValidator.address, "ISK", frontend.address).then(controller => {
       frontend.setController(controller.address);
       if (network.startsWith('poa'))

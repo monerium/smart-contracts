@@ -1,4 +1,3 @@
-// artifacts
 var ConstantSmartController = artifacts.require("./ConstantSmartController.sol");
 var TokenStorage = artifacts.require("./TokenStorage.sol");
 var SmartTokenLib = artifacts.require("./SmartTokenLib.sol");
@@ -8,7 +7,7 @@ var MintableTokenLib = artifacts.require("./MintableTokenLib.sol");
 var ERC20Lib = artifacts.require("./ERC20Lib.sol");
 var ERC677Lib = artifacts.require("./ERC677Lib.sol");
 
-module.exports = function(deployer, network) {
+module.exports = function (deployer, network) {
 
   if (network.startsWith('develop') == false) return;
 
