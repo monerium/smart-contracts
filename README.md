@@ -8,9 +8,9 @@ The [Monerium](https://monerium.com) e-money platform offers programmable fiat m
 
 ## Tokens
 
-|                                                                                                   USD                                                                                                   |                                                                                                   ISK                                                                                                   |
-| :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| ![USD address](docs/0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52.png)<small>[0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52](https://etherscan.io/address/0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52)</small> | ![ISK address](docs/0xc642549743a93674cf38d6431f75d6443f88e3e2.png)<small>[0xc642549743a93674cf38d6431f75d6443f88e3e2](https://etherscan.io/address/0xc642549743a93674cf38d6431f75d6443f88e3e2)</small> |
+|                                                                                                                                                  USD                                                                                                                                                   |                                                                                                                                                  ISK                                                                                                                                                   |
+| :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| <small><a href="https://etherscan.io/token/0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52">![USD address](docs/0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52.png)0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52</a><br /><a href="https://manager.ens.domains/name/usd.monerium.eth">usd.monerium.eth</a></small> | <small><a href="https://etherscan.io/token/0xc642549743a93674cf38d6431f75d6443f88e3e2">![ISK address](docs/0xc642549743a93674cf38d6431f75d6443f88e3e2.png)0xc642549743a93674cf38d6431f75d6443f88e3e2</a><br /><a href="https://manager.ens.domains/name/isk.monerium.eth">isk.monerium.eth</a></small> |
 
 ## Token Design
 
@@ -92,15 +92,12 @@ Development happens on the master branch and we use [Semantic Versioning](http:/
 # npx truffle migrate [--network <name>]
 ```
 
-The deployment cycle for beta versions (up to v1.0.0) is as follows. During development the smart contracts are continuously deployed and tested locally on testrpc. A patch version update is deployed on the Monerium testnet, a federated blockchain, run by Monerium. A minor version update is deployed on the Rinkeby testnet.
-
-
 | Contract              | Mainnet ([v1.0.2](https://github.com/monerium/smart-contracts/releases/tag/v1.0.2)) | Rinkeby ([v1.0.2](https://github.com/monerium/smart-contracts/releases/tag/v1.0.2)) | Ropsten ([v1.0.2](https://github.com/monerium/smart-contracts/releases/tag/v1.0.2)) |
 | --------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
 | BlacklistValidator    | 0x774681a648125d46f35017cf6cec43a41857254e                                          | 0x71db9342ab4fe41bb1f3f74f944cbebb2719f138                                          | 0xf83482dd764551e464bb4f621a3599bfe763d69a                                          |
 | ERC20Lib              | 0x57724f65b3f914de7820c6f76b2099fa3a90f509                                          | 0xcfcc3ce5b2a8794d067497cd0c69219b182f959b                                          | 0x5f45aa0b2fafa8b6ddb98ad0e9f4e4d8a6157d5a                                          |
 | ERC677Lib             | 0x0d43c529aab2a3c1bca65827eb5136c3276f0820                                          | 0x2d4131724cdcc99806c1cba41f1974681a379cd7                                          | 0x77a7dd0ee4f3e424163dce5f67072baf11eafc3c                                          |
-| ISK                   | 0xc642549743a93674cf38d6431f75d6443f88e3e2                                          | 0x0c9d7a0d8bf4bc9d15f577bbf650ebc8044a71db                                          | 0x80b02ef56cbbc542f0ce89ad1d2a680244da9a63                                          |
+| **ISK**               | 0xc642549743a93674cf38d6431f75d6443f88e3e2                                          | 0x0c9d7a0d8bf4bc9d15f577bbf650ebc8044a71db                                          | 0x80b02ef56cbbc542f0ce89ad1d2a680244da9a63                                          |
 | Migrations            | 0x1faa6f84d5cf021a9c3d12d05fad2c31645f02cc                                          | 0x6215a2a0bfea76bb60bbd8115c8330a8c0f22620                                          | 0xd4aea361eb988a260d3c272a6c355528714b99da                                          |
 | MintableTokenLib      | 0x3fd2c5067da1f41cf16d8a0230efacbb7369d53f                                          | 0xbe78ec9ae729f89b526d86b1628b8d3f90e9ba84                                          | 0x6afd70e54a3644197e76be4d57e23f5841f7344c                                          |
 | SafeMath              | 0x6c91954e794f17ae65a3b9a9102c1d39b3b9e6be                                          | 0x91e8a58d073dcd2433a5f99f35fa20d7fc7dc5bb                                          | 0xef38de31fbd8ae845ca48a3372150eb6dec715e9                                          |
@@ -110,7 +107,14 @@ The deployment cycle for beta versions (up to v1.0.0) is as follows. During deve
 | storage (isk)         | 0x060bf08d6da61c2107178b10549fedb7fb5f58bd                                          | 0x4e3244ff304ee4ec33b5c06cfa793aa8de8e2efe                                          | 0xd621914541dc08be2fa6dd46dcbac62b031b25d9                                          |
 | storage (usd)         | 0xc3c6e46b8d6d1b2716a890a2e949a9facf2f76ec                                          | 0xc67ad12d1af21b94b6d9ab602e4c05df2f78286f                                          | 0x710b7d8bba9c1b3d121f884f8da5933c33adb118                                          |
 | TokenStorageLib       | 0x13e6574730e4ae1b425967db30e9d5dd5bcdde06                                          | 0xdba76f85c41b69c90c4c6335d37237b69b2d396f                                          | 0x8432d58ec5c6c16679de298db186b988d1130353                                          |
-| USD                   | 0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52                                          | 0x09c0a236e1227500f495cb0731c4af69b49639a5                                          | 0x3781dcdd60e006e33b664dce0d6be934f0a139c8                                          |
+| **USD**               | 0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52                                          | 0x09c0a236e1227500f495cb0731c4af69b49639a5                                          | 0x3781dcdd60e006e33b664dce0d6be934f0a139c8                                          |
+
+The token addresses can be resolved using ENS in compatible wallets.
+
+| Contract | Mainnet                                                               | Rinkeby       |
+| -------- | --------------------------------------------------------------------- | ------------- |
+| ISK      | [isk.monerium.eth](https://manager.ens.domains/name/isk.monerium.eth) | monerium.test |
+| USD      | [usd.monerium.eth](https://manager.ens.domains/name/usd.monerium.eth) |               |
 
 ## Unit tests
 
