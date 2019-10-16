@@ -16,6 +16,7 @@
 
 pragma solidity 0.4.24;
 
+import "openzeppelin-solidity/contracts/ownership/CanReclaimToken.sol";
 import "./IERC677Recipient.sol";
 
 /**
@@ -23,7 +24,7 @@ import "./IERC677Recipient.sol";
  * @dev [ERC677]-compatible contract.
  * The contract rejects token ownership.
  */
-contract RejectingRecipient is IERC677Recipient {
+contract RejectingRecipient is CanReclaimToken, IERC677Recipient {
 
     function onTokenTransfer(address, uint256, bytes) external returns (bool) {
         return false;
