@@ -12,7 +12,9 @@ jobs:
       script: make compile
     - stage: "Migrate"
       before_script: npx ganache-cli -p 9545 start > /dev/null &
-      script: npx truffle migrate --reset --network development
+      script: 
+        - sleep 5
+        - npx truffle migrate --reset --network development
     - stage: "Tests"
       before_script: npx ganache-cli -p 9545 start > /dev/null &
       script: npx truffle test --network development
