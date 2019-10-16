@@ -3,6 +3,7 @@ var SmartController = artifacts.require("./SmartController.sol");
 var USD = artifacts.require("./USD.sol");
 
 var MintableTokenLib = artifacts.require("./MintableTokenLib.sol");
+var TokenStorageLib = artifacts.require("./TokenStorageLib.sol");
 var SmartTokenLib = artifacts.require("./SmartTokenLib.sol");
 var ERC20Lib = artifacts.require("./ERC20Lib.sol");
 var ERC677Lib = artifacts.require("./ERC677Lib.sol");
@@ -10,6 +11,7 @@ var ERC677Lib = artifacts.require("./ERC677Lib.sol");
 module.exports = function(deployer, network) {
 
   deployer.link(SmartTokenLib, SmartController);
+  deployer.link(TokenStorageLib, SmartController);
   deployer.link(ERC20Lib, SmartController);
   deployer.link(ERC677Lib, SmartController);
   deployer.link(MintableTokenLib, SmartController);
