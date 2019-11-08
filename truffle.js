@@ -1,3 +1,7 @@
+// require("@babel/polyfill");
+require("babel-polyfill");
+// require("regenerator-runtime");
+// import "regenerator-runtime";
 result = require('dotenv').config();
 if (result.error) console.log(result.error.toString())
 const Web3 = require('web3');
@@ -6,12 +10,15 @@ const WalletProvider = require('truffle-hdwallet-provider');
 const bip39 = require('bip39');
 const Wallet = require('ethereumjs-wallet');
 const HDKey = require('ethereumjs-wallet/hdkey');
+const LedgerWalletProvider = require('truffle-ledger-provider');
 
 const testkey = process.env['TESTKEY'];
 const key = process.env['KEY'];
 const api = process.env['API'];
 const url = process.env['URL'];
 const mnemonic = process.env['MNEMONIC'];
+const ledger = process.env['LEDGER'];
+const networkId = process.env['NETWORK_ID'];
 
 var address;
 var walletProvider;
@@ -46,8 +53,20 @@ if (key != undefined) {
 	if (url == undefined) die('URL not set')
   const wallet = Wallet.fromPrivateKey(Buffer.from(testkey, 'hex'));
   const walletAddress = wallet.getAddressString();
-  const address = walletAddress;
+  address = walletAddress;
   walletProvider = () => new WalletProvider(testkey, `${url}/v3/${api}`, 0);
+} else if (ledger != undefined) {
+	if (api == undefined) die('API not set')
+	if (url == undefined) die('URL not set')
+	if (networkId == undefined) die('NETWORK_ID not set')
+  const ledgerOptions = {
+    networkId: networkId, 
+    path: "44'/60'/0'/0/0", // ledger default derivation path
+    askConfirm: false,
+    accountsLength: 1,
+    accountsOffset: 0
+  };
+  walletProvider = new LedgerWalletProvider(ledgerOptions, `${url}/v3/${api}`, true);
 }
 
 // if this is a function return a wallet provider truffle will reinstantiate
@@ -94,6 +113,13 @@ module.exports = {
 			from: address,
 			gasPrice: web3.utils.toWei('41', 'gwei'), // average gas price on rinkeby
 		},
+    kovan: {
+			provider: walletProvider,
+			network_id: 42,
+			gas: 4600000,       // balance between out of gas errors and block gas limit errors
+			from: address,
+			gasPrice: web3.utils.toWei('41', 'gwei'), // average gas price on rinkeby
+    },
 		mainnet: {
 			provider: () => walletProvider(),
 			network_id: 1,
