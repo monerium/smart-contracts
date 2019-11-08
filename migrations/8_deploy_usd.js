@@ -18,9 +18,9 @@ module.exports = function(deployer, network) {
 
   return deployer.deploy(USD).then(frontend => 
     deployer.deploy(SmartController, 0x0, BlacklistValidator.address, "USD", frontend.address).then(controller => {
-      frontend.setController(controller.address);
       if (network.startsWith('poa'))
         controller.addSystemAccount('0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb');
+      return frontend.setController(controller.address);
     }));
 
 };
