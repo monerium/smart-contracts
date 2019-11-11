@@ -97,7 +97,7 @@ module.exports = {
       from: address,
 			gas: 6800000,       // balance between out of gas errors and block gas limit errors
 			gasPrice: web3.utils.toWei('41', 'gwei'), // average gas price on rinkeby
-			provider: () => walletProvider(),
+			provider: walletProvider,
 			// optional config values:
 			// gas
 			// gasPrice
@@ -106,7 +106,7 @@ module.exports = {
 			//          - if specified, host and port are ignored.
 		},
 		ropsten: {
-			provider: () => walletProvider(),
+			provider: walletProvider,
 			network_id: 3,
 			// gas: 4600000,
 			gas: 6800000,       // balance between out of gas errors and block gas limit errors
@@ -121,7 +121,7 @@ module.exports = {
 			gasPrice: web3.utils.toWei('41', 'gwei'), // average gas price on rinkeby
     },
 		mainnet: {
-			provider: () => walletProvider(),
+			provider: walletProvider,
 			network_id: 1,
 			// gas: 4600000,
 			gas: 6800000,       // balance between out of gas errors and block gas limit errors
