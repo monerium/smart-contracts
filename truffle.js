@@ -129,4 +129,10 @@ module.exports = {
 			gasPrice: web3.utils.toWei('41', 'gwei'), // average gas price on rinkeby
 		},
   },
+  solc: {
+    optimizer: {
+      enabled: true,
+      runs: 1000,
+    }
+  }
 }
