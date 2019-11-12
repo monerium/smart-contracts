@@ -103,6 +103,8 @@ The token addresses can be resolved using ENS in compatible wallets.
 
 | Contract | Mainnet                                                               | Rinkeby       |
 | -------- | --------------------------------------------------------------------- | ------------- |
+| EUR      | [eur.monerium.eth](https://manager.ens.domains/name/eur.monerium.eth) |               |
+| GBP      | [gbp.monerium.eth](https://manager.ens.domains/name/gbp.monerium.eth) |               |
 | ISK      | [isk.monerium.eth](https://manager.ens.domains/name/isk.monerium.eth) | monerium.test |
 | USD      | [usd.monerium.eth](https://manager.ens.domains/name/usd.monerium.eth) |               |
 
