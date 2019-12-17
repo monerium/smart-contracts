@@ -8,10 +8,5 @@ before_install:
   - yarn install
 jobs:
   include:
-    - stage: "Tests"
-      before_script: npx ganache-cli -p 9545 start > /dev/null &
-      script: 
-        - sleep 20
-        - npx truffle test --network development
     - stage: "Coverage"
       script: make coverage
