@@ -16,7 +16,9 @@
 
 pragma solidity 0.4.24;
 
-contract Migrations {
+import "openzeppelin-solidity/contracts/ownership/Claimable.sol";
+
+contract Migrations is Claimable {
 
     address public owner;
     uint public last_completed_migration;
