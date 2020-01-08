@@ -20,22 +20,17 @@ import "openzeppelin-solidity/contracts/ownership/Claimable.sol";
 
 contract Migrations is Claimable {
 
-    address public owner;
     uint public last_completed_migration;
-
-    modifier restricted() {
-        if (msg.sender == owner) _;
-    }
 
     constructor() public {
         owner = msg.sender;
     }
 
-    function setCompleted(uint completed) external restricted {
+    function setCompleted(uint completed) external onlyOwner {
         last_completed_migration = completed;
     }
 
-    function upgrade(address new_address) external restricted {
+    function upgrade(address new_address) external onlyOwner {
         Migrations upgraded = Migrations(new_address);
         upgraded.setCompleted(last_completed_migration);
     }
