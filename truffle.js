@@ -60,13 +60,13 @@ if (key != undefined) {
 	if (url == undefined) die('URL not set')
 	if (networkId == undefined) die('NETWORK_ID not set')
   const ledgerOptions = {
-    networkId: networkId, 
+    networkId: networkId,
     path: "44'/60'/0'/0/0", // ledger default derivation path
     askConfirm: false,
     accountsLength: 1,
     accountsOffset: 0
   };
-  walletProvider = new LedgerWalletProvider(ledgerOptions, `${url}/v3/${api}`, true);
+  walletProvider = new LedgerWalletProvider(ledgerOptions, `${url}/v3/${api}`, false);
 }
 
 // if this is a function return a wallet provider truffle will reinstantiate
@@ -126,7 +126,7 @@ module.exports = {
 			// gas: 4600000,
 			gas: 6800000,       // balance between out of gas errors and block gas limit errors
 			from: address,
-			gasPrice: web3.utils.toWei('41', 'gwei'), // average gas price on rinkeby
+			gasPrice: web3.utils.toWei('15', 'gwei'), // average gas price on rinkeby
 		},
   },
   solc: {
