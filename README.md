@@ -4,19 +4,135 @@
 ![GitHub release](https://img.shields.io/github/release/monerium/smart-contracts.svg)
 [![Build Status](https://travis-ci.com/monerium/smart-contracts.svg)](https://travis-ci.com/monerium/smart-contracts)
 
-The [Monerium](https://monerium.com) e-money platform offers programmable fiat money on blockchains, an indispensable building block for the nascent blockchain economy.
+The [Monerium](https://monerium.com) e-money offers programmable fiat money on blockchains, an indispensable building block for the nascent blockchain economy.
+
+Monerium EMI is an Electronic Money Institution, currently the only financial entity licenced to issue e-money on blockchains. 
+Electronic money (e-money) has been recognized in the European Economic Area (EEA) as a digital alternative to cash since 2000 when the first e-money Directive was introduced. Monerium e-money is 1:1 backed in fully segregated, unencumbered, high-quality liquid assets and unconditionally redeemable on demand. [Read more about e-money here](https://monerium.com/monerium/2019/06/28/e-money-the-digital-alternative-to-cash.html).
 
 ## Tokens
 
-|                                                                                                                         EUR                                                                                                                          |                                                                                                                     GBP                                                                                                                      |                                                                                                                             ISK                                                                                                                              |                                                                                                                             USD                                                                                                                              |
-| :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| <small><a href="https://etherscan.io/token/0x3231cb76718cdef2155fc47b5286d82e6eda273f">![EUR](docs/0x3231cb76718cdef2155fc47b5286d82e6eda273f.png)</a><br /><a href="https://manager.ens.domains/name/eur.monerium.eth">eur.monerium.eth</a></small> | <small><a href="https://etherscan.io/token/0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd">![GBP](docs/0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd.png)</a><br /><a href="https://manager.ens.domains/name/gbp.monerium.eth">gbp.monerium.eth</a> | <small><a href="https://etherscan.io/token/0xc642549743a93674cf38d6431f75d6443f88e3e2">![ISK address](docs/0xc642549743a93674cf38d6431f75d6443f88e3e2.png)</a><br /><a href="https://manager.ens.domains/name/isk.monerium.eth">isk.monerium.eth</a></small> | <small><a href="https://etherscan.io/token/0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52">![USD address](docs/0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52.png)</a><br /><a href="https://manager.ens.domains/name/usd.monerium.eth">usd.monerium.eth</a></small> |
+Monerium e-money tokens [v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3) are live on Ethereum mainnet and is [ERC20](https://eips.ethereum.org/EIPS/eip-20) and [ERC677](https://github.com/ethereum/EIPs/issues/677) compliant.
+
+### Euro / EUR
+
+| Field | Value |
+| ------------- | ------------- |
+| Name | Monerium EUR emoney |
+| Contract address  | [0x3231cb76718cdef2155fc47b5286d82e6eda273f](https://etherscan.io/token/0x3231cb76718cdef2155fc47b5286d82e6eda273f)  |
+| ENS domain | eur.monerium.eth |
+| Symbol | EURe |
+| Ticker | EUR |
+| Decimals | 18 |
+| QR code  | ![EUR](docs/0x3231cb76718cdef2155fc47b5286d82e6eda273f.png)  |
+| Logo | ![EUR](assets/tokens/eur/logo.png)  |
+
+### Sterling / GBP
+
+| Field | Value |
+| ------------- | ------------- |
+| Name | Monerium GBP emoney |
+| Contract address  | [0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd](https://etherscan.io/token/0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd)  |
+| ENS domain | gbp.monerium.eth |
+| Symbol | GBPe |
+| Ticker | GBP |
+| Decimals | 18 |
+| QR code  | ![GBP](docs/0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd.png)  |
+| Logo | ![GBP](assets/tokens/gbp/logo.png)  |
+
+### US Dollar / USD
+
+| Field | Value |
+| ------------- | ------------- |
+| Name | Monerium USD emoney |
+| Contract address  | [0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52](https://etherscan.io/token/0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52)  |
+| ENS domain | usd.monerium.eth |
+| Symbol | USDe |
+| Ticker | USD |
+| Decimals | 18 |
+| QR code  | ![USD](docs/0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52.png)  |
+| Logo | ![USD](assets/tokens/usd/logo.png)  |
+
+### Icelandic krona / ISK
+
+| Field | Value |
+| ------------- | ------------- |
+| Name | Monerium ISK emoney |
+| Contract address  | [0xc642549743a93674cf38d6431f75d6443f88e3e2](https://etherscan.io/token/0xc642549743a93674cf38d6431f75d6443f88e3e2)  |
+| ENS domain | isk.monerium.eth |
+| Symbol | ISKe |
+| Ticker | ISK |
+| Decimals | 18 |
+| QR code  | ![ISK](docs/0xc642549743a93674cf38d6431f75d6443f88e3e2.png)  |
+| Logo | ![ISK](assets/tokens/isk/logo.png)  |
+
+
+## Test tokens
+
+For the innovators, product builders, and other curious minds we've opened up a sandboxed version of our system that is connected to the Rinkeby test network. 
+Play around with our money in a safe environment to understand how this fits into your platform. [Go to sandbox](https://sandbox.monerium.dev/).
+
+Please fill out the "Partner with Monerium" form on [monerium.com](https://monerium.com) to get test money for the Ropsten or Kovan test networks.
+
+**Contract addresses for the test networks:**
+
+| Token | Rinkeby ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) | Ropsten ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) | Kovan ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) |
+| -------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| EUR      | 0x25c13fc529dc4afe4d488bd1f2ee5e1ec4918e0b                                          | 0x0ae91c2b9e31e92871129117d908b0963c054048                                          | 0x9b8fd8fcfaa2438d11e7ed77d5afb6c2e1044b37                                        |
+| GBP      | 0x01df10e345d0364d3a5b8422a66af6305803bd1e                                          | 0xd9979346224e7b147caddf399b56357e20d3e67c                                          | 0xe28884ed5bd43e3f9f1dd733d254c9f5c6f983d2                                        |
+| ISK      | 0x0c9d7a0d8bf4bc9d15f577bbf650ebc8044a71db                                          | 0x80b02ef56cbbc542f0ce89ad1d2a680244da9a63                                          | 0x39ad1ad871787ba4b3df5b8ac3d81b2c9b7c6290                                        |
+| USD      | 0x09c0a236e1227500f495cb0731c4af69b49639a5                                          | 0x3781dcdd60e006e33b664dce0d6be934f0a139c8                                          | 0x57724f65b3f914de7820c6f76b2099fa3a90f509                                        |
+
+
+## Using Monerium money / Token integration
+
+We at [Monerium](https://monerium.com) er really exited to talk to all developers and builders that want to use money in their applications.
+Go to [monerium.com](https://monerium.com) and fill out the "Partner with Monerium" form and our expert staff
+will be available to help you every step of the way, from implementation to ongoing operations.
+ 
+Each token has the following [ERC20](https://eips.ethereum.org/EIPS/eip-20) and [ERC677](https://github.com/ethereum/EIPs/issues/677) methods available to integrate with your application.
+
+```sol
+contract Euro {
+
+  // Transfers tokens [ERC20].
+  transfer(to, amount)
+
+  // Transfers tokens from a specific address [ERC20].
+  transferFrom(from, to, amount)
+
+  // Approves a spender [ERC20].
+  approve(spender, amount)
+
+  // Transfers tokens and subsequently calls a method
+  // on the recipient [ERC677].
+  transferAndCall(to, amount, data)
+
+  // Returns the total supply.
+  totalSupply()
+
+  // Returns the number tokens associated with an address.
+  balanceOf(who)
+
+  // Returns the allowance for a spender
+  allowance(owner, spender)
+}
+
+```
+
+### [ERC20](https://eips.ethereum.org/EIPS/eip-20) / Approve and transfer from
+
+The user gives your smart contract the right to take the money by itself from their address using the `approve` method.
+Once approved, your contract can call the `transferFrom` method in the Monerium contract and transfer money from the address.
+
+### [ERC677](https://github.com/ethereum/EIPs/issues/677) / Transfer and call
+
+`transferAndCall` transfers money and calls the receiving contract's `onTokenTransfer` method with additional data and triggers an event Transfer.
 
 ## Token Design
 
-Four cooperating Ethereum smart-contracts are deployed for each e-money currency token that is [ERC20](https://github.com/ethereum/EIPs/issues/20) compliant.
+Four cooperating Ethereum smart-contracts are deployed for each e-money currency token that is [ERC20](https://eips.ethereum.org/EIPS/eip-20) compliant.
 
-* **Token Frontend**: This contract implements the [ERC20](https://github.com/ethereum/EIPs/issues/20) token standard and provides a permanent Ethereum address for the token system. The contract only exposes the required ERC20 functionality to the user and delegates all of the execution to the controller.
+* **Token Frontend**: This contract implements the [ERC20](https://eips.ethereum.org/EIPS/eip-20) token standard and provides a permanent Ethereum address for the token system. The contract only exposes the required ERC20 functionality to the user and delegates all of the execution to the controller.
 * **Controller**: The controller is responsible for the business logic. The controllers are further separated by the functionality they provide into; StandardController, MintableController and SmartController.
 * **Token Storage**: Storage of e-money token ledger.
 * **Validator**: The validator can be used by the controllers to approve and validate transactions before they are made.
@@ -91,22 +207,6 @@ Development happens on the master branch and we use [Semantic Versioning](http:/
 ```sh
 # npx truffle migrate [--network <name>]
 ```
-
-| Contract | Mainnet ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) | Rinkeby ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) | Ropsten ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) | Kovan ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) |
-| -------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| EUR      | 0x3231cb76718cdef2155fc47b5286d82e6eda273f                                          | 0x25c13fc529dc4afe4d488bd1f2ee5e1ec4918e0b                                          | 0x0ae91c2b9e31e92871129117d908b0963c054048                                          | 0x9b8fd8fcfaa2438d11e7ed77d5afb6c2e1044b37                                        |
-| GBP      | 0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd                                          | 0x01df10e345d0364d3a5b8422a66af6305803bd1e                                          | 0xd9979346224e7b147caddf399b56357e20d3e67c                                          | 0xe28884ed5bd43e3f9f1dd733d254c9f5c6f983d2                                        |
-| ISK      | 0xc642549743a93674cf38d6431f75d6443f88e3e2                                          | 0x0c9d7a0d8bf4bc9d15f577bbf650ebc8044a71db                                          | 0x80b02ef56cbbc542f0ce89ad1d2a680244da9a63                                          | 0x39ad1ad871787ba4b3df5b8ac3d81b2c9b7c6290                                        |
-| USD      | 0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52                                          | 0x09c0a236e1227500f495cb0731c4af69b49639a5                                          | 0x3781dcdd60e006e33b664dce0d6be934f0a139c8                                          | 0x57724f65b3f914de7820c6f76b2099fa3a90f509                                        |
-
-The token addresses can be resolved using ENS in compatible wallets.
-
-| Contract | Mainnet                                                               | Rinkeby       |
-| -------- | --------------------------------------------------------------------- | ------------- |
-| EUR      | [eur.monerium.eth](https://manager.ens.domains/name/eur.monerium.eth) |               |
-| GBP      | [gbp.monerium.eth](https://manager.ens.domains/name/gbp.monerium.eth) |               |
-| ISK      | [isk.monerium.eth](https://manager.ens.domains/name/isk.monerium.eth) | monerium.test |
-| USD      | [usd.monerium.eth](https://manager.ens.domains/name/usd.monerium.eth) |               |
 
 ## Unit tests
 
