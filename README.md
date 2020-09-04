@@ -89,7 +89,7 @@ will be available to help you every step of the way, from implementation to ongo
  
 Each token has the following [ERC20](https://eips.ethereum.org/EIPS/eip-20) and [ERC677](https://github.com/ethereum/EIPs/issues/677) methods available to integrate with your application.
 
-```sol
+```js
 contract Euro {
 
   // Transfers tokens [ERC20].
