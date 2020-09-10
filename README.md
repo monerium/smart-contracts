@@ -32,7 +32,7 @@ Monerium e-money tokens [v1.0.3](https://github.com/monerium/smart-contracts/rel
 ### Sterling / GBP
 
 | Field | Value |
-| --- | :-: |
+| --- | --- |
 | Name | Monerium GBP emoney |
 | Contract address  | [0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd](https://etherscan.io/token/0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd)  |
 | ENS domain | gbp.monerium.eth |
@@ -45,7 +45,7 @@ Monerium e-money tokens [v1.0.3](https://github.com/monerium/smart-contracts/rel
 ### US Dollar / USD
 
 | Field | Value |
-| --- | :-: |
+| --- | --- |
 | Name | Monerium USD emoney |
 | Contract address  | [0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52](https://etherscan.io/token/0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52)  |
 | ENS domain | usd.monerium.eth |
@@ -58,7 +58,7 @@ Monerium e-money tokens [v1.0.3](https://github.com/monerium/smart-contracts/rel
 ### Icelandic krona / ISK
 
 | Field | Value |
-| --- | :-: |
+| --- | --- |
 | Name | Monerium ISK emoney |
 | Contract address  | [0xc642549743a93674cf38d6431f75d6443f88e3e2](https://etherscan.io/token/0xc642549743a93674cf38d6431f75d6443f88e3e2)  |
 | ENS domain | isk.monerium.eth |
