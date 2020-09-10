@@ -6,8 +6,11 @@
 
 The [Monerium](https://monerium.com) e-money offers programmable fiat money on blockchains, an indispensable building block for the nascent blockchain economy.
 
-Monerium EMI is an Electronic Money Institution, currently the only financial entity licenced to issue e-money on blockchains. 
-Electronic money (e-money) has been recognized in the European Economic Area (EEA) as a digital alternative to cash since 2000 when the first e-money Directive was introduced. Monerium e-money is 1:1 backed in fully segregated, unencumbered, high-quality liquid assets and unconditionally redeemable on demand. [Read more about e-money here](https://monerium.com/monerium/2019/06/28/e-money-the-digital-alternative-to-cash.html).
+Monerium EMI is an Electronic Money Institution, currently the only financial entity licensed to issue e-money on blockchains.
+Electronic money (e-money) has been recognized in the European Economic Area (EEA) as a digital alternative to cash since 2000
+when the first e-money Directive was introduced. Monerium e-money is 1:1 backed in fully segregated, unencumbered, high-quality
+liquid assets and unconditionally redeemable on demand.
+Read more about e-money [here](https://monerium.com/monerium/2019/06/28/e-money-the-digital-alternative-to-cash.html).
 
 ## Tokens
 
@@ -16,62 +19,62 @@ Monerium e-money tokens [v1.0.3](https://github.com/monerium/smart-contracts/rel
 ### Euro / EUR
 
 | Field | Value |
-| ------------- | ------------- |
+| --- | --- |
 | Name | Monerium EUR emoney |
 | Contract address  | [0x3231cb76718cdef2155fc47b5286d82e6eda273f](https://etherscan.io/token/0x3231cb76718cdef2155fc47b5286d82e6eda273f)  |
 | ENS domain | eur.monerium.eth |
 | Symbol | EURe |
 | Ticker | EUR |
 | Decimals | 18 |
-| QR code  | ![EUR](docs/0x3231cb76718cdef2155fc47b5286d82e6eda273f.png)  |
-| Logo | ![EUR](assets/tokens/eur/logo.png)  |
+| QR code  | <img src="docs/0x3231cb76718cdef2155fc47b5286d82e6eda273f.png" height="128" />  |
+| Logo | <img src="assets/tokens/eur/logo.png" height="128" />  |
 
 ### Sterling / GBP
 
 | Field | Value |
-| ------------- | ------------- |
+| --- | :-: |
 | Name | Monerium GBP emoney |
 | Contract address  | [0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd](https://etherscan.io/token/0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd)  |
 | ENS domain | gbp.monerium.eth |
 | Symbol | GBPe |
 | Ticker | GBP |
 | Decimals | 18 |
-| QR code  | ![GBP](docs/0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd.png)  |
-| Logo | ![GBP](assets/tokens/gbp/logo.png)  |
+| QR code  | <img src="docs/0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd.png" height="128" />  |
+| Logo | <img src="assets/tokens/gbp/logo.png" height="128" />  |
 
 ### US Dollar / USD
 
 | Field | Value |
-| ------------- | ------------- |
+| --- | :-: |
 | Name | Monerium USD emoney |
 | Contract address  | [0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52](https://etherscan.io/token/0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52)  |
 | ENS domain | usd.monerium.eth |
 | Symbol | USDe |
 | Ticker | USD |
 | Decimals | 18 |
-| QR code  | ![USD](docs/0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52.png)  |
-| Logo | ![USD](assets/tokens/usd/logo.png)  |
+| QR code  | <img src="docs/0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52.png" height="128" />  |
+| Logo | <img src="assets/tokens/usd/logo.png" height="128" />  |
 
 ### Icelandic krona / ISK
 
 | Field | Value |
-| ------------- | ------------- |
+| --- | :-: |
 | Name | Monerium ISK emoney |
 | Contract address  | [0xc642549743a93674cf38d6431f75d6443f88e3e2](https://etherscan.io/token/0xc642549743a93674cf38d6431f75d6443f88e3e2)  |
 | ENS domain | isk.monerium.eth |
 | Symbol | ISKe |
 | Ticker | ISK |
 | Decimals | 18 |
-| QR code  | ![ISK](docs/0xc642549743a93674cf38d6431f75d6443f88e3e2.png)  |
-| Logo | ![ISK](assets/tokens/isk/logo.png)  |
-
+| QR code  | <img src="docs/0xc642549743a93674cf38d6431f75d6443f88e3e2.png" height="128" />  |
+| Logo | <img src="assets/tokens/isk/logo.png" height="128" />  |
 
 ## Test tokens
 
-For the innovators, product builders, and other curious minds we've opened up a sandboxed version of our system that is connected to the Rinkeby test network. 
-Play around with our money in a safe environment to understand how this fits into your platform. [Go to sandbox](https://sandbox.monerium.dev/).
+For the innovators, product builders, and other curious minds we've opened up a sandboxed version of our system that is
+connected to the Rinkeby test network. Play around with our money in a safe environment to understand how this fits into
+your platform. [Go to sandbox](https://sandbox.monerium.dev/).
 
-Please fill out the "Partner with Monerium" form on [monerium.com](https://monerium.com) to get test money for the Ropsten or Kovan test networks.
+Please fill out the "Partner with Monerium" form on [monerium.com](https://monerium.com/#partners) to get test money for the Ropsten or Kovan test networks.
 
 **Contract addresses for the test networks:**
 
@@ -83,8 +86,8 @@ Please fill out the "Partner with Monerium" form on [monerium.com](https://moner
 
 ## Using Monerium money / Token integration
 
-We at [Monerium](https://monerium.com) er really exited to talk to all developers and builders that want to use money in their applications.
-Go to [monerium.com](https://monerium.com) and fill out the "Partner with Monerium" form and our expert staff
+We at [Monerium](https://monerium.com) are really excited to talk to all developers and builders that want to use money in their applications.
+Go to [monerium.com](https://monerium.com/#partners) and fill out the "Partner with Monerium" form and our expert staff
 will be available to help you every step of the way, from implementation to ongoing operations.
  
 Each token has the following [ERC20](https://eips.ethereum.org/EIPS/eip-20) and [ERC677](https://github.com/ethereum/EIPs/issues/677) methods available to integrate with your application.
@@ -111,7 +114,7 @@ contract Euro {
   // Returns the number tokens associated with an address.
   balanceOf(who)
 
-  // Returns the allowance for a spender
+  // Returns the allowance for a spender.
   allowance(owner, spender)
 }
 
