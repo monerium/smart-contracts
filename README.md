@@ -27,7 +27,7 @@ Monerium e-money tokens [v1.0.3](https://github.com/monerium/smart-contracts/rel
 | Ticker | EUR |
 | Decimals | 18 |
 | QR code  | <img src="docs/0x3231cb76718cdef2155fc47b5286d82e6eda273f.png" height="128" />  |
-| Logo | <img src="assets/tokens/eur/logo.png" height="128" />  |
+| Logo | <img src="assets/tokens/eur/eur.logo.png" height="128" /><br />[png](assets/tokens/gbp/gbp.logo.png) / [vector](assets/tokens/gbp/gbp.logo.svg)  |
 
 ### Sterling / GBP
 
@@ -40,7 +40,7 @@ Monerium e-money tokens [v1.0.3](https://github.com/monerium/smart-contracts/rel
 | Ticker | GBP |
 | Decimals | 18 |
 | QR code  | <img src="docs/0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd.png" height="128" />  |
-| Logo | <img src="assets/tokens/gbp/logo.png" height="128" />  |
+| Logo | <img src="assets/tokens/gbp/gbp.logo.png" height="128" /><br />[png](assets/tokens/gbp/gbp.logo.png) / [vector](assets/tokens/gbp/gbp.logo.svg)  |
 
 ### US Dollar / USD
 
@@ -53,7 +53,7 @@ Monerium e-money tokens [v1.0.3](https://github.com/monerium/smart-contracts/rel
 | Ticker | USD |
 | Decimals | 18 |
 | QR code  | <img src="docs/0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52.png" height="128" />  |
-| Logo | <img src="assets/tokens/usd/logo.png" height="128" />  |
+| Logo | <img src="assets/tokens/usd/usd.logo.png" height="128" /><br />[png](assets/tokens/usd/usd.logo.png) / [vector](assets/tokens/usd/usd.logo.svg)  |
 
 ### Icelandic krona / ISK
 
@@ -66,7 +66,7 @@ Monerium e-money tokens [v1.0.3](https://github.com/monerium/smart-contracts/rel
 | Ticker | ISK |
 | Decimals | 18 |
 | QR code  | <img src="docs/0xc642549743a93674cf38d6431f75d6443f88e3e2.png" height="128" />  |
-| Logo | <img src="assets/tokens/isk/logo.png" height="128" />  |
+| Logo | <img src="assets/tokens/isk/isk.logo.png" height="128" /><br />[png](assets/tokens/isk/isk.logo.png) / [vector](assets/tokens/isk/isk.logo.svg)  |
 
 ## Test tokens
 
