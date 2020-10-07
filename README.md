@@ -27,7 +27,7 @@ Monerium e-money tokens [v1.0.3](https://github.com/monerium/smart-contracts/rel
 | Ticker | EUR |
 | Decimals | 18 |
 | QR code  | <img src="docs/0x3231cb76718cdef2155fc47b5286d82e6eda273f.png" height="128" />  |
-| Logo | <img src="assets/tokens/eur/eur.logo.png" height="128" /><br />[png](assets/tokens/gbp/gbp.logo.png) / [vector](assets/tokens/gbp/gbp.logo.svg)  |
+| Logo | <img src="assets/tokens/eur/eur.logo.png" height="128" /><br />[png](assets/tokens/eur/eur.logo.png) / [vector](assets/tokens/eur/eur.logo.svg)  |
 
 ### Sterling / GBP
 
