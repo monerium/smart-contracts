@@ -27,7 +27,7 @@ Monerium e-money tokens [v1.0.3](https://github.com/monerium/smart-contracts/rel
 | Ticker | EUR |
 | Decimals | 18 |
 | QR code  | <img src="docs/0x3231cb76718cdef2155fc47b5286d82e6eda273f.png" height="128" />  |
-| Logo | <img src="assets/tokens/eur/eur.logo.png" height="128" /><br />[png](assets/tokens/eur/eur.logo.png) / [vector](assets/tokens/eur/eur.logo.svg)  |
+| Logo | <img src="assets/tokens/eur/eur.png" height="128" /><br />[png](assets/tokens/eur/eur.png) / [vector](assets/tokens/eur/eur.svg)  |
 
 ### Sterling / GBP
 
@@ -40,7 +40,7 @@ Monerium e-money tokens [v1.0.3](https://github.com/monerium/smart-contracts/rel
 | Ticker | GBP |
 | Decimals | 18 |
 | QR code  | <img src="docs/0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd.png" height="128" />  |
-| Logo | <img src="assets/tokens/gbp/gbp.logo.png" height="128" /><br />[png](assets/tokens/gbp/gbp.logo.png) / [vector](assets/tokens/gbp/gbp.logo.svg)  |
+| Logo | <img src="assets/tokens/gbp/gbp.png" height="128" /><br />[png](assets/tokens/gbp/gbp.png) / [vector](assets/tokens/gbp/gbp.svg)  |
 
 ### US Dollar / USD
 
@@ -53,7 +53,7 @@ Monerium e-money tokens [v1.0.3](https://github.com/monerium/smart-contracts/rel
 | Ticker | USD |
 | Decimals | 18 |
 | QR code  | <img src="docs/0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52.png" height="128" />  |
-| Logo | <img src="assets/tokens/usd/usd.logo.png" height="128" /><br />[png](assets/tokens/usd/usd.logo.png) / [vector](assets/tokens/usd/usd.logo.svg)  |
+| Logo | <img src="assets/tokens/usd/usd.png" height="128" /><br />[png](assets/tokens/usd/usd.png) / [vector](assets/tokens/usd/usd.svg)  |
 
 ### Icelandic krona / ISK
 
@@ -66,7 +66,7 @@ Monerium e-money tokens [v1.0.3](https://github.com/monerium/smart-contracts/rel
 | Ticker | ISK |
 | Decimals | 18 |
 | QR code  | <img src="docs/0xc642549743a93674cf38d6431f75d6443f88e3e2.png" height="128" />  |
-| Logo | <img src="assets/tokens/isk/isk.logo.png" height="128" /><br />[png](assets/tokens/isk/isk.logo.png) / [vector](assets/tokens/isk/isk.logo.svg)  |
+| Logo | <img src="assets/tokens/isk/isk.png" height="128" /><br />[png](assets/tokens/isk/isk.png) / [vector](assets/tokens/isk/isk.svg)  |
 
 ## Test tokens
 
@@ -78,12 +78,12 @@ Please fill out the "Partner with Monerium" form on [monerium.com](https://moner
 
 **Contract addresses for the test networks:**
 
-| Token    | Rinkeby ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) | Ropsten ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) | Kovan ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3))   |
-| -------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| EUR      | 0x25c13fc529dc4afe4d488bd1f2ee5e1ec4918e0b                                          | 0x0ae91c2b9e31e92871129117d908b0963c054048                                          | 0x9b8fd8fcfaa2438d11e7ed77d5afb6c2e1044b37                                          |
-| GBP      | 0x01df10e345d0364d3a5b8422a66af6305803bd1e                                          | 0xd9979346224e7b147caddf399b56357e20d3e67c                                          | 0xe28884ed5bd43e3f9f1dd733d254c9f5c6f983d2                                          |
-| ISK      | 0x0c9d7a0d8bf4bc9d15f577bbf650ebc8044a71db                                          | 0x80b02ef56cbbc542f0ce89ad1d2a680244da9a63                                          | 0x39ad1ad871787ba4b3df5b8ac3d81b2c9b7c6290                                          |
-| USD      | 0x09c0a236e1227500f495cb0731c4af69b49639a5                                          | 0x3781dcdd60e006e33b664dce0d6be934f0a139c8                                          | 0x57724f65b3f914de7820c6f76b2099fa3a90f509                                          |
+| Token    | Logo | Rinkeby ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) | Ropsten ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) | Kovan ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3))   |
+| -------- | --- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| EUR | <img src="assets/tokens/eur/eur.test.png" height="64" width="64" /><br />[png](assets/tokens/eur/eur.test.png) / [vector](assets/tokens/eur/eur.test.svg) | 0x25c13fc529dc4afe4d488bd1f2ee5e1ec4918e0b | 0x0ae91c2b9e31e92871129117d908b0963c054048 | 0x9b8fd8fcfaa2438d11e7ed77d5afb6c2e1044b37 |
+| GBP | <img src="assets/tokens/gbp/gbp.test.png" height="64" width="64" /><br />[png](assets/tokens/gbp/gbp.test.png) / [vector](assets/tokens/gbp/gbp.test.svg) | 0x01df10e345d0364d3a5b8422a66af6305803bd1e | 0xd9979346224e7b147caddf399b56357e20d3e67c | 0xe28884ed5bd43e3f9f1dd733d254c9f5c6f983d2 |
+| ISK | <img src="assets/tokens/isk/isk.test.png" height="64" width="64" /><br />[png](assets/tokens/isk/isk.test.png) / [vector](assets/tokens/isk/isk.test.svg) | 0x0c9d7a0d8bf4bc9d15f577bbf650ebc8044a71db | 0x80b02ef56cbbc542f0ce89ad1d2a680244da9a63 | 0x39ad1ad871787ba4b3df5b8ac3d81b2c9b7c6290 |
+| USD | <img src="assets/tokens/usd/usd.test.png" height="64" width="64" /><br />[png](assets/tokens/usd/usd.test.png) / [vector](assets/tokens/usd/usd.test.svg) | 0x09c0a236e1227500f495cb0731c4af69b49639a5 | 0x3781dcdd60e006e33b664dce0d6be934f0a139c8 | 0x57724f65b3f914de7820c6f76b2099fa3a90f509 |
 
 ## Using Monerium money / Token integration
 
