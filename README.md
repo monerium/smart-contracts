@@ -78,7 +78,7 @@ Please fill out the "Partner with Monerium" form on [monerium.com](https://moner
 
 **Contract addresses for the test networks:**
 
-| Token | Rinkeby ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) | Ropsten ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) | Kovan ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3))   |
+| Test token | Rinkeby ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) | Ropsten ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) | Kovan ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3))   |
 | --- | --- |  --- |  --- | 
 | EUR | 0x25c13fc529dc4afe4d488bd1f2ee5e1ec4918e0b | 0x0ae91c2b9e31e92871129117d908b0963c054048 | 0x9b8fd8fcfaa2438d11e7ed77d5afb6c2e1044b37 |
 | GBP | 0x01df10e345d0364d3a5b8422a66af6305803bd1e | 0xd9979346224e7b147caddf399b56357e20d3e67c | 0xe28884ed5bd43e3f9f1dd733d254c9f5c6f983d2 |
