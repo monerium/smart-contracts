@@ -8,5 +8,5 @@
 cid=$1
 
 cat monerium.tokenlist.json \
-  | jq ".tokens = (.tokens|map(.logoURI = (.logoURI|split(\"/\")|.[2]=\"$cid\"|join(\"/\"))))" \
+  | jq ".tokens = (.tokens|map(.logoURI = (.logoURI|split(\"/\")|.[2]=\"$cid\"|join(\"/\"))))|.version.patch+=1" \
   | sponge monerium.tokenlist.json
