@@ -19,6 +19,7 @@ const url = process.env['URL'];
 const mnemonic = process.env['MNEMONIC'];
 const ledger = process.env['LEDGER'];
 const networkId = process.env['NETWORK_ID'];
+const poahost = process.env['POA_HOST'];
 
 var address;
 var walletProvider;
@@ -82,7 +83,7 @@ module.exports = {
 			network_id: "*" // Match any network id
 		},
 		poa: {
-			host: "localhost",
+			host: poahost != undefined ? poahost : "localhost",
 			port: 8545,
 			network_id: 100
 		},
