@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: apache-2.0 */
 /**
  * Copyright 2019 Monerium ehf.
  *
@@ -14,11 +15,12 @@
  * limitations under the License.
  */
 
-pragma solidity 0.4.24;
+pragma solidity 0.8.11;
 
-import "openzeppelin-solidity/contracts/ownership/Claimable.sol";
-import "openzeppelin-solidity/contracts/ownership/CanReclaimToken.sol";
-import "openzeppelin-solidity/contracts/ownership/NoOwner.sol";
+/* import "openzeppelin-solidity/contracts/ownership/Claimable.sol"; */
+/* import "openzeppelin-solidity/contracts/ownership/CanReclaimToken.sol"; */
+/* import "openzeppelin-solidity/contracts/ownership/NoOwner.sol"; */
+
 import "./TokenStorageLib.sol";
 
 /**
@@ -27,7 +29,7 @@ import "./TokenStorageLib.sol";
  * The storage is implemented in a separate contract to maintain state
  * between token upgrades.
  */
-contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
+contract TokenStorage /* is  Claimable, CanReclaimToken, NoOwner */ {
 
     using TokenStorageLib for TokenStorageLib.TokenStorage;
 
@@ -38,7 +40,7 @@ contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
      * @param to Address to increase.
      * @param amount Number of units to add.
      */
-    function addBalance(address to, uint amount) external onlyOwner {
+    function addBalance(address to, uint amount) external /* onlyOwner */ { //onlyOwner from depricated Inheritence
         tokenStorage.addBalance(to, amount);
     }
 
@@ -47,7 +49,7 @@ contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
      * @param from Address to decrease.
      * @param amount Number of units to subtract.
      */
-    function subBalance(address from, uint amount) external onlyOwner {
+    function subBalance(address from, uint amount) external /* onlyOwner */ { //onlyOwner from depricated Inheritence
         tokenStorage.subBalance(from, amount);
     }
 
@@ -57,7 +59,7 @@ contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
      * @param spender Address of the spender.
      * @param amount Qunatity of allowance.
      */
-    function setAllowed(address owner, address spender, uint amount) external onlyOwner {
+    function setAllowed(address owner, address spender, uint amount) external /* onlyOwner */ { //onlyOwner from depricated Inheritence
         tokenStorage.setAllowed(owner, spender, amount);
     }
 

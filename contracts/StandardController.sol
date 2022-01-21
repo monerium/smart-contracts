@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: apache-2.0 */
 /**
  * Copyright 2019 Monerium ehf.
  *
@@ -14,11 +15,11 @@
  * limitations under the License.
  */
 
-pragma solidity 0.4.24;
+pragma solidity 0.8.11;
 
-import "openzeppelin-solidity/contracts/ownership/Claimable.sol";
-import "openzeppelin-solidity/contracts/lifecycle/Destructible.sol";
-import "openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
+//import "openzeppelin-solidity/contracts/ownership/Claimable.sol";
+//import "openzeppelin-solidity/contracts/lifecycle/Destructible.sol";
+//import "openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 import "./TokenStorage.sol";
 import "./IERC20.sol";
 import "./ERC20Lib.sol";
@@ -30,7 +31,7 @@ import "./ERC677Lib.sol";
  * to their respective library implementations.
  * The controller is primarily intended to be interacted with via a token frontend.
  */
-contract StandardController is Pausable, Destructible, Claimable {
+contract StandardController /*is Pausable, Destructible, Claimable */ {
 
     using ERC20Lib for TokenStorage;
     using ERC677Lib for TokenStorage;
@@ -76,12 +77,12 @@ contract StandardController is Pausable, Destructible, Claimable {
      * @param initialSupply The amount of tokens to mint upon creation.
      * @param frontend_ Address of the authorized frontend.
      */
-    constructor(address storage_, uint initialSupply, address frontend_) public {
+    constructor(address storage_, uint initialSupply, address frontend_) /* public */ {
         require(
-            storage_ == 0x0 || initialSupply == 0,
+                storage_ == address(0x0) || initialSupply == 0,
             "either a token storage must be initialized or no initial supply"
         );
-        if (storage_ == 0x0) {
+        if (storage_ == address(0x0)) {
             token = new TokenStorage();
             token.addBalance(msg.sender, initialSupply);
         } else {
@@ -95,7 +96,7 @@ contract StandardController is Pausable, Destructible, Claimable {
      * @param to The address of the intended recipient.
      */
     function avoidBlackholes(address to) internal view {
-        require(to != 0x0, "must not send to 0x0");
+        require(to != address(0x0), "must not send to 0x0");
         require(to != address(this), "must not send to controller");
         require(to != address(token), "must not send to token storage");
         require(to != frontend, "must not send to frontend");
@@ -121,7 +122,7 @@ contract StandardController is Pausable, Destructible, Claimable {
      * @dev Sets a new frontend.
      * @param frontend_ Address of the new frontend.
      */
-    function setFrontend(address frontend_) public onlyOwner {
+    function setFrontend(address frontend_) public /* onlyOwner */ { //onlyOwner from depricated Inheritence
         emit Frontend(frontend, frontend_);
         frontend = frontend_;
     }
@@ -130,7 +131,7 @@ contract StandardController is Pausable, Destructible, Claimable {
      * @dev Sets a new storage.
      * @param storage_ Address of the new storage.
      */
-    function setStorage(address storage_) external onlyOwner {
+    function setStorage(address storage_) external /* onlyOwner */ { //onlyOwner from depricated Inheritence
         emit Storage(address(token), storage_);
         token = TokenStorage(storage_);
     }
@@ -139,15 +140,15 @@ contract StandardController is Pausable, Destructible, Claimable {
      * @dev Transfers the ownership of the storage.
      * @param newOwner Address of the new storage owner.
      */
-    function transferStorageOwnership(address newOwner) public onlyOwner {
-        token.transferOwnership(newOwner);
+    function transferStorageOwnership(address newOwner) public /* onlyOwner */ { //onlyOwner from depricated Inheritence
+      //token.transferOwnership(newOwner); //transferOwnership from depricated Inheritence
     }
 
     /**
      * @dev Claims the ownership of the storage.
      */
-    function claimStorageOwnership() public onlyOwner {
-        token.claimOwnership();
+    function claimStorageOwnership() public /* onlyOwner */ { //onlyOwner from depricated Inheritence
+      //token.claimOwnership(); //claimOwnership from depricated Inheritence
     }
 
     /**
@@ -158,8 +159,9 @@ contract StandardController is Pausable, Destructible, Claimable {
      */
     function transfer_withCaller(address caller, address to, uint amount)
         public
+        virtual
         guarded(caller)
-        whenNotPaused
+        /* whenNotPaused */ // whenNotPaused from depricated Inheritence
         returns (bool ok)
     {
         avoidBlackholes(to);
@@ -176,8 +178,9 @@ contract StandardController is Pausable, Destructible, Claimable {
      */
     function transferFrom_withCaller(address caller, address from, address to, uint amount)
         public
+        virtual
         guarded(caller)
-        whenNotPaused
+        /* whenNotPaused */ // whenNotPaused from depricated Inheritence
         returns (bool ok)
     {
         avoidBlackholes(to);
@@ -197,7 +200,7 @@ contract StandardController is Pausable, Destructible, Claimable {
     function approve_withCaller(address caller, address spender, uint amount)
         public
         guarded(caller)
-        whenNotPaused
+        /* whenNotPaused */ // whenNotPaused from depricated Inheritence
         returns (bool ok)
     {
         return token.approve(caller, spender, amount);
@@ -215,11 +218,12 @@ contract StandardController is Pausable, Destructible, Claimable {
         address caller,
         address to,
         uint256 amount,
-        bytes data
+        bytes calldata data
     )
         public
+        virtual
         guarded(caller)
-        whenNotPaused
+        /* whenNotPaused */ // whenNotPaused from depricated Inheritence
         returns (bool ok)
     {
         avoidBlackholes(to);

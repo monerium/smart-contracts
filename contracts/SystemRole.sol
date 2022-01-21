@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: apache-2.0 */
 /**
  * Copyright 2019 Monerium ehf.
  *
@@ -14,20 +15,79 @@
  * limitations under the License.
  */
 
-pragma solidity 0.4.24;
+pragma solidity 0.8.11;
 
-import "openzeppelin-solidity/contracts/access/rbac/Roles.sol";
+//import "openzeppelin-solidity/contracts/access/rbac/Roles.sol";
+//import "@openzeppelin/contracts/access/Roles.sol";
+
+/**
+ * This has been pasted here to enable compilation
+ * before futher talk about re-implementation.
+ *
+ * @title Roles
+ * @author Francisco Giordano (@frangio)
+ * @dev Library for managing addresses assigned to a Role.
+ * See RBAC.sol for example usage.
+ */
+library Roles {
+  struct Role {
+    mapping (address => bool) bearer;
+  }
+
+  /**
+   * @dev give an address access to this role
+   */
+  function add(Role storage _role, address _addr)
+    internal
+  {
+    _role.bearer[_addr] = true;
+  }
+
+  /**
+   * @dev remove an address' access to this role
+   */
+  function remove(Role storage _role, address _addr)
+    internal
+  {
+    _role.bearer[_addr] = false;
+  }
+
+  /**
+   * @dev check if an address has this role
+   * // reverts
+   */
+  function check(Role storage _role, address _addr)
+    internal
+    view
+  {
+    require(has(_role, _addr));
+  }
+
+  /**
+   * @dev check if an address has this role
+   * @return bool
+   */
+  function has(Role storage _role, address _addr)
+    internal
+    view
+    returns (bool)
+  {
+    return _role.bearer[_addr];
+  }
+}
+
 
 /**
  * @title SystemRole
  * @dev SystemRole accounts have been approved to perform operational actions (e.g. mint and burn).
  * @notice addSystemAccount and removeSystemAccount are unprotected by default, i.e. anyone can call them.
  * @notice Contracts inheriting SystemRole *should* authorize the caller by overriding them.
+ * @notice The contract is an abstract contract.
  */
-contract SystemRole {
+abstract contract SystemRole {
 
-    using Roles for Roles.Role;
-    Roles.Role private systemAccounts;
+  using Roles for Roles.Role;
+  Roles.Role private systemAccounts;
 
     /**
      * @dev Emitted when system account is added.
@@ -65,7 +125,7 @@ contract SystemRole {
      * @dev System Role constructor.
      * @notice The contract is an abstract contract as a result of the internal modifier.
      */
-    constructor() internal {}
+    //constructor() internal {}
 
     /**
      * @dev Checks whether an address is a system account.
@@ -80,7 +140,7 @@ contract SystemRole {
      * @dev Assigns the system role to an account.
      * @notice This method is unprotected and should be authorized in the child contract.
      */
-    function addSystemAccount(address account) public {
+    function addSystemAccount(address account) public virtual {
         systemAccounts.add(account);
         emit SystemAccountAdded(account);
     }
@@ -89,7 +149,7 @@ contract SystemRole {
      * @dev Removes the system role from an account.
      * @notice This method is unprotected and should be authorized in the child contract.
      */
-    function removeSystemAccount(address account) public {
+    function removeSystemAccount(address account) public virtual {
         systemAccounts.remove(account);
         emit SystemAccountRemoved(account);
     }

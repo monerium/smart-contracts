@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: apache-2.0 */
 /**
  * Copyright 2019 Monerium ehf.
  *
@@ -14,12 +15,12 @@
  * limitations under the License.
  */
 
-pragma solidity 0.4.24;
+pragma solidity 0.8.11;
 
-import "openzeppelin-solidity/contracts/ownership/Claimable.sol";
-import "openzeppelin-solidity/contracts/ownership/CanReclaimToken.sol";
-import "openzeppelin-solidity/contracts/ownership/NoOwner.sol";
-import "openzeppelin-solidity/contracts/lifecycle/Destructible.sol";
+//import "openzeppelin-solidity/contracts/ownership/Claimable.sol";
+//import "openzeppelin-solidity/contracts/ownership/CanReclaimToken.sol";
+//import "openzeppelin-solidity/contracts/ownership/NoOwner.sol";
+//import "openzeppelin-solidity/contracts/lifecycle/Destructible.sol";
 import "./IERC20.sol";
 import "./SmartController.sol";
 
@@ -32,7 +33,7 @@ import "./SmartController.sol";
  * simultaneously allow the controllers to be upgraded when bugs are
  * discovered or new functionality needs to be added.
  */
-contract TokenFrontend is Destructible, Claimable, CanReclaimToken, NoOwner, IERC20 {
+abstract contract TokenFrontend is /*Destructible, Claimable, CanReclaimToken, NoOwner,*/IERC20 {
 
     SmartController internal controller;
 
@@ -46,7 +47,7 @@ contract TokenFrontend is Destructible, Claimable, CanReclaimToken, NoOwner, IER
      * @param to Recipient address.
      * @param amount Number of tokens transferred.
      */
-    event Transfer(address indexed from, address indexed to, uint amount);
+    //event Transfer(address indexed from, address indexed to, uint amount);
 
     /**
      * @dev Emitted when tokens are transferred.
@@ -63,7 +64,7 @@ contract TokenFrontend is Destructible, Claimable, CanReclaimToken, NoOwner, IER
      * @param spender The address of the future spender.
      * @param amount The allowance of the spender.
      */
-    event Approval(address indexed owner, address indexed spender, uint amount);
+    //event Approval(address indexed owner, address indexed spender, uint amount);
 
     /**
      * @dev Emitted when updating the controller.
@@ -80,7 +81,7 @@ contract TokenFrontend is Destructible, Claimable, CanReclaimToken, NoOwner, IER
      * @param symbol_ Token symbol.
      * @param ticker_ 3 letter currency ticker.
      */
-    constructor(string name_, string symbol_, bytes3 ticker_) internal {
+    constructor(string memory name_, string memory symbol_, bytes3 ticker_) /*internal*/{
         name = name_;
         symbol = symbol_;
         ticker = ticker_;
@@ -90,9 +91,9 @@ contract TokenFrontend is Destructible, Claimable, CanReclaimToken, NoOwner, IER
      * @dev Sets a new controller.
      * @param address_ Address of the controller.
      */
-    function setController(address address_) external onlyOwner {
-        require(address_ != 0x0, "controller address cannot be the null address");
-        emit Controller(ticker, controller, address_);
+    function setController(address address_) external /* onlyOwner */ { //onlyOwner from depricated Inheritence
+        require(address_ != address(0x0), "controller address cannot be the null address");
+        emit Controller(ticker, address(controller), address_);
         controller = SmartController(address_);
         require(controller.getFrontend() == address(this), "controller frontend does not point back");
         require(controller.ticker() == ticker, "ticker does not match controller ticket");
@@ -141,7 +142,7 @@ contract TokenFrontend is Destructible, Claimable, CanReclaimToken, NoOwner, IER
      * @param amount Number of tokens to transfer.
      * @param data Additional data passed to the recipient's tokenFallback method.
      */
-    function transferAndCall(address to, uint256 amount, bytes data)
+    function transferAndCall(address to, uint256 amount, bytes calldata data)
         external
         returns (bool ok)
     {
@@ -160,7 +161,7 @@ contract TokenFrontend is Destructible, Claimable, CanReclaimToken, NoOwner, IER
         returns (bool ok)
     {
         ok = controller.mintTo_withCaller(msg.sender, to, amount);
-        emit Transfer(0x0, to, amount);
+        emit Transfer(address(0x0), to, amount);
     }
 
     /**
@@ -178,7 +179,7 @@ contract TokenFrontend is Destructible, Claimable, CanReclaimToken, NoOwner, IER
         returns (bool ok)
     {
         ok = controller.burnFrom_withCaller(msg.sender, from, amount, h, v, r, s);
-        emit Transfer(from, 0x0, amount);
+        emit Transfer(from, address(0x0), amount);
     }
 
     /**
@@ -193,7 +194,7 @@ contract TokenFrontend is Destructible, Claimable, CanReclaimToken, NoOwner, IER
      * @param v Signature component.
      * @param r Signature component.
      * @param s Sigature component.
-     * @return Amount recovered.
+     * @return amount Amount recovered.
      */
     function recover(address from, address to, bytes32 h, uint8 v, bytes32 r, bytes32 s)
         external

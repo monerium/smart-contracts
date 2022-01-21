@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: apache-2.0 */
 /**
  * Copyright 2019 Monerium ehf.
  *
@@ -14,18 +15,18 @@
  * limitations under the License.
  */
 
-pragma solidity 0.4.24;
+pragma solidity 0.8.11;
 
-import "openzeppelin-solidity/contracts/ownership/Claimable.sol";
-import "openzeppelin-solidity/contracts/ownership/NoOwner.sol";
-import "openzeppelin-solidity/contracts/ownership/CanReclaimToken.sol";
+//import "openzeppelin-solidity/contracts/ownership/Claimable.sol";
+//import "openzeppelin-solidity/contracts/ownership/NoOwner.sol";
+//import "openzeppelin-solidity/contracts/ownership/CanReclaimToken.sol";
 import "./IValidator.sol";
 
 /**
  * @title ConstantValidator
  * @dev Constantly validates token transfers based on the constructor value.
  */
-contract ConstantValidator is IValidator, Claimable, CanReclaimToken, NoOwner {
+contract ConstantValidator /*is IValidator, Claimable, CanReclaimToken, NoOwner*/ {
 
     bool internal valid;
 
@@ -33,7 +34,7 @@ contract ConstantValidator is IValidator, Claimable, CanReclaimToken, NoOwner {
      * @dev Contract constructor.
      * @param valid_ Always return this value when validating.
      */
-    constructor(bool valid_) public {
+    constructor(bool valid_) {
         valid = valid_;
     }
 

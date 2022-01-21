@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: apache-2.0 */
 /**
  * Copyright 2019 Monerium ehf.
  *
@@ -14,7 +15,7 @@
  * limitations under the License.
  */
 
-pragma solidity 0.4.24;
+pragma solidity 0.8.11;
 
 import "./StandardController.sol";
 import "./MintableTokenLib.sol";
@@ -35,21 +36,21 @@ contract MintableController is SystemRole, StandardController {
      * @param frontend_ Address of the authorized frontend.
      */
     constructor(address storage_, uint initialSupply, address frontend_)
-        public
+        /* public */
         StandardController(storage_, initialSupply, frontend_)
     { }
 
     /**
      * @dev Assigns the system role to an account.
      */
-    function addSystemAccount(address account) public onlyOwner {
+    function addSystemAccount(address account) public override/* onlyOwner */ { //onlyOwner from depricated Inheritence
         super.addSystemAccount(account);
     }
 
     /**
      * @dev Removes the system role from an account.
      */
-    function removeSystemAccount(address account) public onlyOwner {
+    function removeSystemAccount(address account) public override /* onlyOwner */ { //onlyOwner from depricated Inheritence
         super.removeSystemAccount(account);
     }
 

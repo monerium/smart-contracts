@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: apache-2.0 */
 /**
  * Copyright 2019 Monerium ehf.
  *
@@ -14,17 +15,17 @@
  * limitations under the License.
  */
 
-pragma solidity 0.4.24;
+pragma solidity 0.8.11;
 
-import "openzeppelin-solidity/contracts/ownership/Claimable.sol";
-import "openzeppelin-solidity/contracts/ownership/NoOwner.sol";
+//import "openzeppelin-solidity/contracts/ownership/Claimable.sol";
+//import "openzeppelin-solidity/contracts/ownership/NoOwner.sol";
 import "./IValidator.sol";
 
 /**
  * @title BlacklistValidator
  * @dev Implements a validator which rejects transfers to blacklisted addresses.
  */
-contract BlacklistValidator is IValidator, Claimable, CanReclaimToken, NoOwner {
+contract BlacklistValidator is IValidator/*, Claimable, CanReclaimToken, NoOwner */ {
 
     mapping (address => bool) public blacklist;
 
@@ -44,7 +45,7 @@ contract BlacklistValidator is IValidator, Claimable, CanReclaimToken, NoOwner {
      * @dev Adds an address to the blacklist.
      * @param adversary Address to add.
      */
-    function ban(address adversary) external onlyOwner {
+    function ban(address adversary) external /* onlyOwner */ { //onlyOwner from depricated Inheritence
         blacklist[adversary] = true;
         emit Ban(adversary);
     }
@@ -53,7 +54,7 @@ contract BlacklistValidator is IValidator, Claimable, CanReclaimToken, NoOwner {
      * @dev Removes an address from the blacklist.
      * @param friend Address to remove.
      */
-    function unban(address friend) external onlyOwner {
+    function unban(address friend) external /* onlyOwner */ { //onlyOwner from depricated Inheritence
         blacklist[friend] = false;
         emit Unban(friend);
     }
