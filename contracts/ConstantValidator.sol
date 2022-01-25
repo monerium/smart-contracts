@@ -42,7 +42,7 @@ contract ConstantValidator /*is IValidator, Claimable, CanReclaimToken, NoOwner*
      * @dev Validates token transfer.
      * Implements IValidator interface.
      */
-    function validate(address, address, uint) external returns (bool) {
+    function validate(address, address, uint) external view returns (bool) {
         return valid;
     }
 
