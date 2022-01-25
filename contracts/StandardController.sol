@@ -18,8 +18,12 @@
 pragma solidity 0.8.11;
 
 //import "openzeppelin-solidity/contracts/ownership/Claimable.sol";
+
 //import "openzeppelin-solidity/contracts/lifecycle/Destructible.sol";
+
 //import "openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
+
 import "./TokenStorage.sol";
 import "./IERC20.sol";
 import "./ERC20Lib.sol";
@@ -31,7 +35,7 @@ import "./ERC677Lib.sol";
  * to their respective library implementations.
  * The controller is primarily intended to be interacted with via a token frontend.
  */
-contract StandardController /*is Pausable, Destructible, Claimable */ {
+contract StandardController is Pausable/*, Destructible, Claimable */ {
 
     using ERC20Lib for TokenStorage;
     using ERC677Lib for TokenStorage;
