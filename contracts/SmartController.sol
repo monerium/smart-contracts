@@ -95,7 +95,7 @@ contract SmartController is MintableController {
         public
         override
         guarded(caller)
-        /* whenNotPaused */ // whenNotPaused from depricated Inheritence
+        whenNotPaused
         returns (bool)
     {
         require(smartToken.validate(caller, to, amount), "transfer request not valid");
@@ -117,7 +117,7 @@ contract SmartController is MintableController {
         public
         override
         guarded(caller)
-        /* whenNotPaused */ // whenNotPaused from depricated Inheritence
+        whenNotPaused
         returns (bool)
     {
         require(smartToken.validate(from, to, amount), "transferFrom request not valid");
@@ -143,7 +143,7 @@ contract SmartController is MintableController {
         public
         override
         guarded(caller)
-        /* whenNotPaused */ // whenNotPaused from depricated Inheritence
+        whenNotPaused
         returns (bool)
     {
         require(smartToken.validate(caller, to, amount), "transferAndCall request not valid");

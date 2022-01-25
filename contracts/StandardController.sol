@@ -165,7 +165,7 @@ contract StandardController is Pausable/*, Destructible, Claimable */ {
         public
         virtual
         guarded(caller)
-        /* whenNotPaused */ // whenNotPaused from depricated Inheritence
+        whenNotPaused
         returns (bool ok)
     {
         avoidBlackholes(to);
@@ -184,7 +184,7 @@ contract StandardController is Pausable/*, Destructible, Claimable */ {
         public
         virtual
         guarded(caller)
-        /* whenNotPaused */ // whenNotPaused from depricated Inheritence
+        whenNotPaused
         returns (bool ok)
     {
         avoidBlackholes(to);
@@ -204,7 +204,7 @@ contract StandardController is Pausable/*, Destructible, Claimable */ {
     function approve_withCaller(address caller, address spender, uint amount)
         public
         guarded(caller)
-        /* whenNotPaused */ // whenNotPaused from depricated Inheritence
+        whenNotPaused
         returns (bool ok)
     {
         return token.approve(caller, spender, amount);
@@ -227,7 +227,7 @@ contract StandardController is Pausable/*, Destructible, Claimable */ {
         public
         virtual
         guarded(caller)
-        /* whenNotPaused */ // whenNotPaused from depricated Inheritence
+        whenNotPaused
         returns (bool ok)
     {
         avoidBlackholes(to);
