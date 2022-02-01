@@ -20,6 +20,7 @@ const mnemonic = process.env['MNEMONIC'];
 const ledger = process.env['LEDGER'];
 const networkId = process.env['NETWORK_ID'];
 const poahost = process.env['POA_HOST'];
+const poaport = process.env['POA_PORT'];
 
 var address;
 var walletProvider;
@@ -84,7 +85,7 @@ module.exports = {
 		},
 		poa: {
 			host: poahost != undefined ? poahost : "localhost",
-			port: 8545,
+			port: poaport != undefined ? poaport : 8545,
 			network_id: 100
 		},
 		monerium: {
