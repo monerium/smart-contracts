@@ -17,30 +17,25 @@
 
 pragma solidity 0.8.11;
 
-//import "openzeppelin-solidity/contracts/ownership/Claimable.sol";
-//import "openzeppelin-solidity/contracts/ownership/NoOwner.sol";
-//import "openzeppelin-solidity/contracts/ownership/CanReclaimToken.sol";
+import "./ownership/Claimable.sol";
+import "./ownership/NoOwner.sol";
+import "./ownership/CanReclaimToken.sol";
 import "./IValidator.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
 
 /**
  * @title ConstantValidator
  * @dev Constantly validates token transfers based on the constructor value.
  */
-contract ConstantValidator is IValidator, AccessControl /* Claimable, CanReclaimToken, NoOwner*/ {
-  bytes32 public constant OWNER_ROLE = keccak256("OWNER_ROLE");
+contract ConstantValidator is IValidator, Claimable, CanReclaimToken, NoOwner {
+
     bool internal valid;
 
     /**
      * @dev Contract constructor.
-     * Set initials roles.
      * @param valid_ Always return this value when validating.
      */
     constructor(bool valid_) {
         valid = valid_;
-        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        _setupRole(OWNER_ROLE, msg.sender);
-        _setRoleAdmin(OWNER_ROLE, OWNER_ROLE);
     }
 
     /**
@@ -51,4 +46,11 @@ contract ConstantValidator is IValidator, AccessControl /* Claimable, CanReclaim
         return valid;
     }
 
+    /**
+     * @dev Explicit override of transferOwnership from Claimable and Ownable
+     * @param newOwner Address to transfer ownership to.
+     */
+    function transferOwnership(address newOwner) public override(Claimable, Ownable){
+      Claimable.transferOwnership(newOwner);
+    }
 }

@@ -17,7 +17,7 @@
 
 pragma solidity 0.8.11;
 
-//import "openzeppelin-solidity/contracts/ownership/CanReclaimToken.sol";
+import "./ownership/CanReclaimToken.sol";
 import "./IERC677Recipient.sol";
 
 /**
@@ -25,7 +25,7 @@ import "./IERC677Recipient.sol";
  * @dev [ERC677]-compatible contract.
  * The contract accepts token ownership and stores data in public member variables.
  */
-contract AcceptingRecipient is /* CanReclaimToken, */ IERC677Recipient {
+contract AcceptingRecipient is CanReclaimToken, IERC677Recipient {
 
     address public from;
     uint256 public amount;
@@ -39,4 +39,3 @@ contract AcceptingRecipient is /* CanReclaimToken, */ IERC677Recipient {
     }
 
 }
-

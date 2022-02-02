@@ -15,34 +15,25 @@
  * limitations under the License.
  */
 
-pragma solidity 0.8.11;
+pragma solidity ^0.8.0;
 
-//import "openzeppelin-solidity/contracts/ownership/Claimable.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
+import "./ownership/Claimable.sol";
 
-contract Migrations is AccessControl /* Claimable */ {
-  bytes32 public constant OWNER_ROLE = keccak256("OWNER_ROLE");
-  uint public last_completed_migration;
+contract Migrations is  Claimable {
 
-  /**
-   * @dev Set initials roles.
-   */
-  constructor(){
-    _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
-    _setupRole(OWNER_ROLE, msg.sender);
-    _setRoleAdmin(OWNER_ROLE, OWNER_ROLE);
-    //owner = msg.sender; // owner from depricated Inheritence
-  }
+    uint public last_completed_migration;
 
-  function setCompleted(uint completed) external /* onlyOwner */ { // onlyOwner from depricated Inheritence
-    require(hasRole(OWNER_ROLE, msg.sender), "Caller is not an Owner");
-    last_completed_migration = completed;
-  }
+    constructor(){
+      owner = msg.sender;
+    }
 
-  function upgrade(address new_address) external /* onlyOwner */ { // onlyOwner from depricated Inheritence
-    require(hasRole(OWNER_ROLE, msg.sender), "Caller is not an Owner");
-    Migrations upgraded = Migrations(new_address);
-    upgraded.setCompleted(last_completed_migration);
-  }
+    function setCompleted(uint completed) external onlyOwner  {
+        last_completed_migration = completed;
+    }
+
+    function upgrade(address new_address) external onlyOwner {
+        Migrations upgraded = Migrations(new_address);
+        upgraded.setCompleted(last_completed_migration);
+    }
 
 }

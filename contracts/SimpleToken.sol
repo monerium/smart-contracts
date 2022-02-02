@@ -17,15 +17,8 @@
 
 pragma solidity 0.8.11;
 
-//import "openzeppelin-solidity/contracts/token/ERC20/BasicToken.sol";
+import "./token/ERC20/ERC20Basic.sol";
 
-
-abstract contract ERC20Basic {
-  function totalSupply() public view virtual returns (uint256);
-  function balanceOf(address _who) public view virtual returns (uint256);
-  function transfer(address _to, uint256 _value) public virtual returns (bool);
-  event Transfer(address indexed from, address indexed to, uint256 value);
-}
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 /**
  * @title Basic token
