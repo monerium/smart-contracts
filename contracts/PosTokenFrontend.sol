@@ -22,21 +22,23 @@ import "./ownership/CanReclaimToken.sol";
 import "./ownership/NoOwner.sol";
 import "./IERC20.sol";
 import "./SmartController.sol";
-import "./IPosRootToken.sol";
+import "./IPosChildToken.sol";
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
 /**
- * @title TokenFrontend
+ * @title PosTokenFrontend
+ * @notice This contract is to be deployed on Matic Polygon network.
  * @dev This contract implements a token forwarder.
  * The token frontend is [ERC20 and ERC677] compliant and forwards
  * standard methods to a controller. The primary function is to allow
  * for a statically deployed contract for users to interact with while
  * simultaneously allow the controllers to be upgraded when bugs are
  * discovered or new functionality needs to be added.
+ * This token implement function for the Matic Polygon Brige.
  */
-abstract contract TokenFrontend is Claimable, CanReclaimToken, NoOwner, IERC20, IPosRootToken, AccessControl {
-  bytes32 public constant PREDICATE_ROLE = keccak256("PREDICATE_ROLE");
+abstract contract PosTokenFrontend is AccessControl, Claimable, CanReclaimToken, NoOwner, IERC20, IPosChildToken {
+  bytes32 public constant DEPOSITOR_ROLE = keccak256("DEPOSITOR_ROLE");
 
   SmartController internal controller;
 
@@ -68,11 +70,12 @@ abstract contract TokenFrontend is Claimable, CanReclaimToken, NoOwner, IERC20, 
    * @param symbol_ Token symbol.
    * @param ticker_ 3 letter currency ticker.
    */
-  constructor(string memory name_, string memory symbol_, bytes3 ticker_){
+  constructor(string memory name_, string memory symbol_, bytes3 ticker_, address childChainManager_){
     name = name_;
     symbol = symbol_;
     ticker = ticker_;
     _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+    _setupRole(DEPOSITOR_ROLE, childChainManager_);
   }
 
   /**
@@ -150,25 +153,6 @@ abstract contract TokenFrontend is Claimable, CanReclaimToken, NoOwner, IERC20, 
   {
     ok = controller.mintTo_withCaller(msg.sender, to, amount);
     emit Transfer(address(0x0), to, amount);
-  }
-
-  /**
-   * @notice Polygon Bridge Mechanism. Called when token is withdrawn from child chain.
-   * @dev Should be callable only by Matic's Predicate contract.
-   * Should handle deposit by minting the required amount for user.
-   * @param to Address to credit the tokens.
-   * @param amount Number of tokens to mint.
-   */
-  function mint(address to, uint amount)
-    override
-    external
-    returns (bool ok)
-  {
-    require(hasRole(PREDICATE_ROLE, msg.sender), "caller is not PREDICATE");
-    ok = controller.mintTo_withCaller(msg.sender, to, amount);
-    emit Transfer(address(0x0), to, amount);
-    // We could create a new event for this purpose.
-    // Minting new token and Receiving some already minted is not the same.
   }
 
   /**
@@ -261,4 +245,33 @@ abstract contract TokenFrontend is Claimable, CanReclaimToken, NoOwner, IERC20, 
   function transferOwnership(address newOwner) public override(Claimable, Ownable){
     Claimable.transferOwnership(newOwner);
   }
+
+  /**
+   * @notice Polygon Bridge Mechanism. Called when token is deposited on root chain
+   * @dev Should be callable only by ChildChainManager
+   * Should handle deposit by minting the required amount for user
+   * @param user user address for whom deposit is being done
+   * @param depositData abi encoded amount
+   */
+  function deposit(address user, bytes calldata depositData)
+    override
+    external
+  {
+    require(hasRole(DEPOSITOR_ROLE, msg.sender), "caller is not a DEPOSITOR");
+    uint256 amount = abi.decode(depositData, (uint256));
+    this.mintTo(user, amount);
+  }
+
+  /**
+   * @notice Polygon Bridge Mechanism. Called when user wants to withdraw tokens back to root chain
+   * @dev Should burn user's tokens. This transaction will be verified when exiting on root chain
+   * @param amount amount of tokens to withdraw
+   */
+  function withdraw(uint256 amount)
+    override
+    external
+  {
+    //burnFrom(_msgSender(), amount); This is what supposed to be done. We should either adapt our burnFrom or create a special case in our controller.
+  }
+
 }
