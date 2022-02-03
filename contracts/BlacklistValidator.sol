@@ -46,7 +46,7 @@ contract BlacklistValidator is IValidator, Claimable, CanReclaimToken, NoOwner {
      * @dev Adds an address to the blacklist.
      * @param adversary Address to add.
      */
-    function ban(address adversary) external onlyOwner  {
+    function ban(address adversary) external onlyOwner {
         blacklist[adversary] = true;
         emit Ban(adversary);
     }

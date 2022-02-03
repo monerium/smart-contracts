@@ -27,7 +27,7 @@ contract Migrations is  Claimable {
       owner = msg.sender;
     }
 
-    function setCompleted(uint completed) external onlyOwner  {
+    function setCompleted(uint completed) external onlyOwner {
         last_completed_migration = completed;
     }
 

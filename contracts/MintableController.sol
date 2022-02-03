@@ -36,21 +36,20 @@ contract MintableController is SystemRole, StandardController {
      * @param frontend_ Address of the authorized frontend.
      */
     constructor(address storage_, uint initialSupply, address frontend_)
-        /* public */
         StandardController(storage_, initialSupply, frontend_)
     { }
 
     /**
      * @dev Assigns the system role to an account.
      */
-    function addSystemAccount(address account) public override/* onlyOwner */ { //onlyOwner from depricated Inheritence
+    function addSystemAccount(address account) public override {
         super.addSystemAccount(account);
     }
 
     /**
      * @dev Removes the system role from an account.
      */
-    function removeSystemAccount(address account) public override /* onlyOwner */ { //onlyOwner from depricated Inheritence
+    function removeSystemAccount(address account) public override {
         super.removeSystemAccount(account);
     }
 

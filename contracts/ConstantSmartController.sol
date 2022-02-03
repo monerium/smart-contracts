@@ -32,7 +32,6 @@ contract ConstantSmartController is SmartController {
      * @param ticker 3 letter currency ticker.
      */
     constructor(address storage_, bytes3 ticker)
-        /* public */
       SmartController(storage_, address(new ConstantValidator(false)), ticker, address(0x0))
     { }
 
