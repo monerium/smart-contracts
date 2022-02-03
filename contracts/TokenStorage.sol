@@ -29,7 +29,7 @@ import "./TokenStorageLib.sol";
  * The storage is implemented in a separate contract to maintain state
  * between token upgrades.
  */
-contract TokenStorage is  Claimable, CanReclaimToken, NoOwner {
+contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
 
     using TokenStorageLib for TokenStorageLib.TokenStorage;
 

@@ -3,7 +3,6 @@ pragma solidity ^0.8.0;
 
 import "./CanReclaimToken.sol";
 
-
 /**
  * @title Contracts that should not own Tokens
  * @author Remco Bloemen <remco@2π.com>
