@@ -23,7 +23,6 @@ import "./ownership/NoOwner.sol";
 import "./IERC20.sol";
 import "./SmartController.sol";
 import "./IPosRootToken.sol";
-
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
 /**
@@ -68,7 +67,7 @@ abstract contract TokenFrontend is Claimable, CanReclaimToken, NoOwner, IERC20, 
    * @param symbol_ Token symbol.
    * @param ticker_ 3 letter currency ticker.
    */
-  constructor(string memory name_, string memory symbol_, bytes3 ticker_){
+  constructor(string memory name_, string memory symbol_, bytes3 ticker_) {
     name = name_;
     symbol = symbol_;
     ticker = ticker_;
@@ -258,7 +257,7 @@ abstract contract TokenFrontend is Claimable, CanReclaimToken, NoOwner, IERC20, 
    * @dev Explicit override of transferOwnership from Claimable and Ownable
    * @param newOwner Address to transfer ownership to.
    */
-  function transferOwnership(address newOwner) public override(Claimable, Ownable){
+  function transferOwnership(address newOwner) public override(Claimable, Ownable) {
     Claimable.transferOwnership(newOwner);
   }
 }

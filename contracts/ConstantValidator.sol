@@ -50,7 +50,7 @@ contract ConstantValidator is IValidator, Claimable, CanReclaimToken, NoOwner {
      * @dev Explicit override of transferOwnership from Claimable and Ownable
      * @param newOwner Address to transfer ownership to.
      */
-    function transferOwnership(address newOwner) public override(Claimable, Ownable){
+    function transferOwnership(address newOwner) public override(Claimable, Ownable) {
       Claimable.transferOwnership(newOwner);
     }
 }
