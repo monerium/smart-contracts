@@ -55,7 +55,7 @@ contract BlacklistValidator is IValidator, Claimable, CanReclaimToken, NoOwner {
      * @dev Removes an address from the blacklist.
      * @param friend Address to remove.
      */
-    function unban(address friend) external {
+    function unban(address friend) external onlyOwner {
         blacklist[friend] = false;
         emit Unban(friend);
     }
@@ -80,7 +80,7 @@ contract BlacklistValidator is IValidator, Claimable, CanReclaimToken, NoOwner {
      * @dev Explicit override of transferOwnership from Claimable and Ownable
      * @param newOwner Address to transfer ownership to.
      */
-    function transferOwnership(address newOwner) public override(Claimable, Ownable){
+    function transferOwnership(address newOwner) public override(Claimable, Ownable) {
       Claimable.transferOwnership(newOwner);
     }
 }

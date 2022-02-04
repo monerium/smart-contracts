@@ -42,14 +42,14 @@ contract MintableController is SystemRole, StandardController {
     /**
      * @dev Assigns the system role to an account.
      */
-    function addSystemAccount(address account) public override {
+    function addSystemAccount(address account) public override onlyOwner {
         super.addSystemAccount(account);
     }
 
     /**
      * @dev Removes the system role from an account.
      */
-    function removeSystemAccount(address account) public override {
+    function removeSystemAccount(address account) public override onlyOwner {
         super.removeSystemAccount(account);
     }
 
