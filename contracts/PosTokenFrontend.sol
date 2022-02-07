@@ -27,7 +27,7 @@ import "./IPosChildToken.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
 /**
- * @title PosTokenFrontend
+ * @title PolygonPosTokenFrontend
  * @notice This contract is to be deployed on Matic Polygon network.
  * @dev This contract implements a token forwarder.
  * The token frontend is [ERC20 and ERC677] compliant and forwards
@@ -37,7 +37,7 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
  * discovered or new functionality needs to be added.
  * This token implement function for the Matic Polygon Brige.
  */
-abstract contract PosTokenFrontend is AccessControl, Claimable, CanReclaimToken, NoOwner, IERC20, IPosChildToken {
+abstract contract PolygonPosTokenFrontend is AccessControl, Claimable, CanReclaimToken, NoOwner, IERC20, IPosChildToken {
   bytes32 public constant DEPOSITOR_ROLE = keccak256("DEPOSITOR_ROLE");
 
   SmartController internal controller;
