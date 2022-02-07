@@ -271,7 +271,6 @@ abstract contract PolygonPosTokenFrontend is AccessControl, Claimable, CanReclai
     override
     external
   {
-    //burnFrom(_msgSender(), amount); This is what supposed to be done. We should either adapt our burnFrom or create a special case in our controller.
+    ok = controller.burnFrom(msg.sender, amount);
   }
-
 }

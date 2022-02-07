@@ -71,7 +71,7 @@ contract MintableController is SystemRole, StandardController {
 
     /**
      * @dev Burns tokens from token owner.
-     * This removfes the burned tokens from circulation.
+     * This removes the burned tokens from circulation.
      * @param caller Address of the caller passed through the frontend.
      * @param from Address of the token owner.
      * @param amount Number of tokens to burn.
@@ -87,6 +87,21 @@ contract MintableController is SystemRole, StandardController {
         returns (bool)
     {
         return token.burn(from, amount, h, v, r, s);
+    }
+
+    /**
+     * @dev Burns tokens from token owner.
+     * This removes the burned tokens from circulation.
+     * @param caller Address of the caller passed through the frontend.
+     * @param from Address of the token owner.
+     * @param amount Number of tokens to burn.
+     */
+    function burnFrom( address from, uint amount)
+        public
+      //onlySomething ?
+        returns (bool)
+    {
+        return token.burn(from, amount);
     }
 
 }
