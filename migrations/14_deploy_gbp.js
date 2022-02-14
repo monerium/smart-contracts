@@ -17,7 +17,7 @@ module.exports = function(deployer, network) {
   deployer.link(MintableTokenLib, SmartController);
 
   return deployer.deploy(GBP).then(frontend => 
-    deployer.deploy(SmartController, 0x0, BlacklistValidator.address, "GBP", frontend.address).then(controller => {
+    deployer.deploy(SmartController, '0x0000000000000000000000000000000000000000', BlacklistValidator.address, web3.utils.asciiToHex("GBP"), frontend.address).then(controller => {
       if (network.startsWith('poa'))
         controller.addSystemAccount('0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb');
       return frontend.setController(controller.address);
