@@ -271,6 +271,6 @@ abstract contract PolygonPosTokenFrontend is AccessControl, Claimable, CanReclai
     override
     external
   {
-    ok = controller.burnFrom(msg.sender, amount);
+    controller.burnFrom(msg.sender, amount);
   }
 }
