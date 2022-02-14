@@ -22,7 +22,7 @@ import "./ownership/CanReclaimToken.sol";
 import "./ownership/NoOwner.sol";
 import "./IERC20.sol";
 import "./SmartController.sol";
-import "./IPosChildToken.sol";
+import "./IPolygonPosChildToken.sol";
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
@@ -37,7 +37,7 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
  * discovered or new functionality needs to be added.
  * This token implement function for the Matic Polygon Brige.
  */
-abstract contract PolygonPosTokenFrontend is AccessControl, Claimable, CanReclaimToken, NoOwner, IERC20, IPosChildToken {
+abstract contract PolygonPosTokenFrontend is AccessControl, Claimable, CanReclaimToken, NoOwner, IERC20, IPolygonPosChildToken {
   bytes32 public constant DEPOSITOR_ROLE = keccak256("DEPOSITOR_ROLE");
 
   SmartController internal controller;

@@ -22,7 +22,7 @@ import "./ownership/CanReclaimToken.sol";
 import "./ownership/NoOwner.sol";
 import "./IERC20.sol";
 import "./SmartController.sol";
-import "./IPosRootToken.sol";
+import "./IPolygonPosRootToken.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
 /**
@@ -34,7 +34,7 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
  * simultaneously allow the controllers to be upgraded when bugs are
  * discovered or new functionality needs to be added.
  */
-abstract contract TokenFrontend is Claimable, CanReclaimToken, NoOwner, IERC20, IPosRootToken, AccessControl {
+abstract contract TokenFrontend is Claimable, CanReclaimToken, NoOwner, IERC20, IPolygonPosRootToken, AccessControl {
   bytes32 public constant PREDICATE_ROLE = keccak256("PREDICATE_ROLE");
 
   SmartController internal controller;
