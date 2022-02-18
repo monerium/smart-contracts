@@ -103,6 +103,13 @@ module.exports = {
       from: address,
       gasPrice: web3.utils.toWei('41', 'gwei'),
     },
+    goerli: {
+      provider: walletProvider,
+      network_id: 5,
+      gas: 4465030,
+      from: address,
+      gasPrice: web3.utils.toWei('10', 'gwei'),
+    }
     mainnet: {
       provider: walletProvider,
       network_id: 1,
