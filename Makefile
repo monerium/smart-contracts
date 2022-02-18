@@ -41,3 +41,7 @@ poa-test: compile poa-migrate
 .PHONY: rinkeby-migrate
 rinkeby-migrate:
 	npx truffle migrate --network rinkeby
+
+.PHONY: goerli-migrate
+goerli-migrate:
+	npx truffle migrate --network goerli
