@@ -36,7 +36,8 @@ if (key != undefined) {
   if (api == undefined) die('API not set')
   if (url == undefined) die('URL not set')
   // address = `0x808b6dB94ce973Bab908450E764Db7405A533FAa`;
-  address = `0xe90319CBACc28aA19c12A7225322Ce64e5701D56`;
+  //address = `0xe90319CBACc28aA19c12A7225322Ce64e5701D56`;
+  address = "0x798728D5410aB4FB49d2C277A49baC5048aB43ca";
 
   if (!bip39.validateMnemonic(mnemonic)) die(`${mnemonic} not valid`);
   var wallet = ethers.Wallet.fromMnemonic(mnemonic);
@@ -109,6 +110,21 @@ module.exports = {
       gas: 4465030,
       from: address,
       gasPrice: web3.utils.toWei('10', 'gwei'),
+      skipDryRun: true
+    },
+    polygon_pos_mainnet: {
+      provider: walletProvider,
+      network_id: 137,
+      confirmation: 2,
+      timeoutBlocks: 200,
+      chainId: 137,
+    },
+    polygon_pos_mumbai: {
+      provider: walletProvider,
+      network_id: 80001,
+      confirmation: 2,
+      timeoutBlocks: 200,
+      chainId: 80001,
     },
     mainnet: {
       provider: walletProvider,

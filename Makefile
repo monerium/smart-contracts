@@ -11,7 +11,7 @@ clean:
 	$(RM) -rf build
 
 .PHONY: migrate
-migrate: 
+migrate:
 	npx truffle migrate --reset
 
 .PHONY: test
@@ -19,7 +19,7 @@ test: compile migrate
 	npx truffle test
 
 .PHONY: coverage
-coverage: 
+coverage:
 	npx solidity-coverage
 
 .PHONY: slither
@@ -45,3 +45,11 @@ rinkeby-migrate:
 .PHONY: goerli-migrate
 goerli-migrate:
 	npx truffle migrate --network goerli
+
+.PHONY: polygon-pos-mumbai-migrate
+polygon-pos-mumbai-migrate:
+	npx truffle migrate --network polygon_pos_mumbai
+
+.PHONY: polygon-pos-mainnet-migrate
+polygon-pos-mainnet-migrate:
+	npx truffle migrate --network polygon_pos_mainnet
