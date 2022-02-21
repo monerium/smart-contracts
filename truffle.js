@@ -15,6 +15,8 @@ const mnemonic = process.env['MNEMONIC'];
 const ledger = process.env['LEDGER'];
 const networkId = process.env['NETWORK_ID'];
 const poahost = process.env['POA_HOST'];
+const polygonscanAPI = process.env['POLYGONSCAN_API'];
+const etherscanAPI = process.env['ETHERSCAN_API'];
 
 var address;
 var walletProvider;
@@ -146,5 +148,14 @@ module.exports = {
         }
       }
     }
+  },
+
+  plugins: [
+    'truffle-plugin-verify'
+  ],
+
+  api_keys: {
+    etherscan: etherscanAPI,
+    polygonscan: polygonscanAPI
   }
 };
