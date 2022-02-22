@@ -272,5 +272,6 @@ abstract contract PolygonPosTokenFrontend is AccessControl, Claimable, CanReclai
     external
   {
     controller.burnFrom(msg.sender, amount);
+    emit Transfer(msg.sender, address(0x0), amount);
   }
 }
