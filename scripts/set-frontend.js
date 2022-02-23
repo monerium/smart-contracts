@@ -13,7 +13,7 @@ module.exports = async function(exit) {
   console.log(`controller ${controller}, frontend ${frontend}`);
 
   try {
-    const standard = StandardController.at(controller);
+    const standard = await StandardController.at(controller);
     const tx = await standard.setFrontend(frontend);
     console.log(tx);
     exit(0);
