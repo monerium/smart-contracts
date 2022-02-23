@@ -164,10 +164,7 @@ abstract contract TokenFrontend is Claimable, CanReclaimToken, NoOwner, IERC20, 
     returns (bool ok)
   {
     require(hasRole(PREDICATE_ROLE, msg.sender), "caller is not PREDICATE");
-    ok = controller.mintTo_withCaller(msg.sender, to, amount);
-    emit Transfer(address(0x0), to, amount);
-    // We could create a new event for this purpose.
-    // Minting new token and Receiving some already minted is not the same.
+    ok = this.mintTo(to, amount);
   }
 
   /**
