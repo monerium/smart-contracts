@@ -58,7 +58,7 @@ contract('MintableController', accounts => {
     const sig = wallet.signature.replace(/^0x/, '');
     const r = `0x${sig.slice(0, 64)}`;
     const s = `0x${sig.slice(64, 128)}`;
-    var v = web3.toDecimal(`0x${sig.slice(128, 130)}`);
+    var v = web3.utils.hexToNumber(`0x${sig.slice(128, 130)}`);
 
     if (v < 27) v += 27;
     assert(v == 27 || v == 28);
@@ -81,7 +81,7 @@ contract('MintableController', accounts => {
     const sig = wallet.signature.replace(/^0x/, '');
     const r = `0x${sig.slice(0, 64)}`;
     const s = `0x${sig.slice(64, 128)}`;
-    var v = web3.toDecimal(`0x${sig.slice(128, 130)}`);
+    var v = web3.utils.hexToNumber(`0x${sig.slice(128, 130)}`);
 
     if (v < 27) v += 27;
     assert(v == 27 || v == 28);
@@ -118,7 +118,7 @@ contract('MintableController', accounts => {
       const sig = wallet.signature.replace(/^0x/, '');
       const r = `0x${sig.slice(0, 64)}`;
       const s = `0x${sig.slice(64, 128)}`;
-      var v = web3.toDecimal(`0x${sig.slice(128, 130)}`);
+      var v = web3.utils.hexToNumber(`0x${sig.slice(128, 130)}`);
 
       if (v < 27) v += 27;
       assert(v == 27 || v == 28);

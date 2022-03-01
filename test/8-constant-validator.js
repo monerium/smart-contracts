@@ -4,6 +4,8 @@ var AcceptingRecipient = artifacts.require("./AcceptingRecipient.sol");
 var SimpleToken = artifacts.require("./SimpleToken.sol");
 var StandardController = artifacts.require("./StandardController.sol");
 
+const AddressZero = "0x0000000000000000000000000000000000000000";
+
 contract("ConstantValidator", accounts => {
 
   if (web3.version.network <= 100) return;
@@ -17,7 +19,7 @@ contract("ConstantValidator", accounts => {
 
   it("should validate (from 0x0, to 0x0, amount 0)", async () => {
     // unable to check return value since the method is non-pure because it emits an event.
-    await validator.validate(0x0, 0x0, 0); 
+    await validator.validate(AddressZero, AddressZero, 0); 
   });
 
   it("should be able to reclaim ownership of contracts", async () => {

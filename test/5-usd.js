@@ -8,6 +8,7 @@ var AcceptingRecipient = artifacts.require("./AcceptingRecipient");
 var RejectingRecipient = artifacts.require("./RejectingRecipient");
 var SimpleToken = artifacts.require("./SimpleToken.sol");
 
+const AddressZero = "0x0000000000000000000000000000000000000000";
 const hash = `0xa1de988600a42c4b4ab089b619297c17d53cffae5d5120d82d8a92d0bb3b78f2`;
 const wallets = {
   "trust wallet": {
@@ -79,7 +80,7 @@ contract("USD", accounts => {
 
   it("should succeed transferring to and calling a contract which implements token fallback method by accepting", async () => {
     const recipient = await AcceptingRecipient.deployed();
-    await usd.transferAndCall(recipient.address, 3, "");
+    await usd.transferAndCall(recipient.address, 3, "0x0");
     const balance = await usd.balanceOf(recipient.address);
     assert.strictEqual(balance.toNumber(), 3, "balance mismatch for recipient");
   });
@@ -87,7 +88,7 @@ contract("USD", accounts => {
   it("should fail transferring to and calling a contract which implements token fallback method by rejecting", async () => {
     const recipient = await RejectingRecipient.deployed();
     await truffleAssert.reverts(
-      usd.transferAndCall(recipient.address, 3, "")
+      usd.transferAndCall(recipient.address, 3, "0x0")
     );
     const balance = await usd.balanceOf(recipient.address);
     assert.strictEqual(balance.toNumber(), 0, "balance mismatch for recipient");
@@ -96,7 +97,7 @@ contract("USD", accounts => {
   it("should fail transferring to and calling a contract which does not implements token fallback method", async () => {
     const recipient = await SimpleToken.deployed();
     await truffleAssert.reverts(
-      usd.transferAndCall(recipient.address, 3, "")
+      usd.transferAndCall(recipient.address, 3, "0x0")
     );
     const balance = await usd.balanceOf(recipient.address);
     assert.strictEqual(balance.toNumber(), 0, "balance mismatch for recipient");
@@ -104,7 +105,7 @@ contract("USD", accounts => {
 
   it("should succeed transferring to and calling a non-contract", async () => {
     const account = accounts[7];
-    await usd.transferAndCall(account, 3, "");
+    await usd.transferAndCall(account, 3, "0x0");
     const balance = await usd.balanceOf(account);
     assert.strictEqual(balance.toNumber(), 3, "balance mismatch for account");
   });
@@ -119,7 +120,7 @@ contract("USD", accounts => {
       const sig = wallet.signature.replace(/^0x/, '');
       const r = `0x${sig.slice(0, 64)}`;
       const s = `0x${sig.slice(64, 128)}`;
-      var v = web3.toDecimal(`0x${sig.slice(128, 130)}`);
+      var v = web3.utils.hexToNumber(`0x${sig.slice(128, 130)}`);
 
       if (v < 27) v += 27;
       assert(v == 27 || v == 28);
@@ -140,7 +141,7 @@ contract("USD", accounts => {
       const sig = wallet.signature.replace(/^0x/, '');
       const r = `0x${sig.slice(0, 64)}`;
       const s = `0x${sig.slice(64, 128)}`;
-      var v = web3.toDecimal(`0x${sig.slice(128, 130)}`);
+      var v = web3.utils.hexToNumber(`0x${sig.slice(128, 130)}`);
 
       if (v < 27) v += 27;
       assert(v == 27 || v == 28);
@@ -166,7 +167,7 @@ contract("USD", accounts => {
   it("should fail to set the controller to 0x0", async () => {
     const initial = await usd.getController();
     await truffleAssert.reverts(
-      usd.setController(0x0)
+      usd.setController(AddressZero)
     );
     const post = await usd.getController();
     assert.strictEqual(post, initial, "controller should not change");
@@ -175,7 +176,7 @@ contract("USD", accounts => {
   it("should fail to set the controller to a non null address from a non-owner", async () => {
     const initial = await usd.getController();
     await truffleAssert.reverts(
-      usd.setController(0x0, {from: accounts[5]})
+      usd.setController(AddressZero, {from: accounts[5]})
     );
     const post = await usd.getController();
     assert.strictEqual(post, initial, "controller should not change");

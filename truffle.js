@@ -157,5 +157,10 @@ module.exports = {
   api_keys: {
     etherscan: etherscanAPI,
     polygonscan: polygonscanAPI
+  },
+
+  mocha: {
+    reporter: 'eth-gas-reporter'
   }
+
 };

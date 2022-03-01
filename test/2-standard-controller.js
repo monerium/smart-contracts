@@ -7,6 +7,8 @@ var SimpleToken = artifacts.require("./SimpleToken.sol");
 var TokenStorage = artifacts.require("./TokenStorage.sol");
 var USD = artifacts.require("./USD.sol");
 
+const AddressZero = "0x0000000000000000000000000000000000000000";
+
 contract('StandardController', accounts => {
 
   if (web3.version.network <= 100) return;
@@ -68,7 +70,7 @@ contract('StandardController', accounts => {
 
   it("should avoid blackholes [0x0]", async () => {
     await truffleAssert.reverts(
-      controller.transfer_withCaller(accounts[0], 0x0, 1)
+      controller.transfer_withCaller(accounts[0], AddressZero, 1)
     );
   });
 
@@ -103,13 +105,13 @@ contract('StandardController', accounts => {
 
   it("should not be allowed to receive tokens (ERC223, ERC677)", async () => {
     await truffleAssert.reverts(
-      controller.transferAndCall_withCaller(accounts[0], StandardController.address, 223, 0x0)
+      controller.transferAndCall_withCaller(accounts[0], StandardController.address, 223, AddressZero)
     );
   });
 
   it("should be able to change ownership of its storage", async () => {
-    const storage = TokenStorage.at(await controller.getStorage());
-    const owner0 = await storage.owner();
+    const storage = await TokenStorage.at(await controller.getStorage());
+    const owner0 =  await storage.owner();
     assert.strictEqual(owner0, controller.address, "incorrect original owner");
     await controller.transferStorageOwnership(accounts[0]);
     await storage.claimOwnership({from: accounts[0]})
@@ -159,20 +161,6 @@ contract('StandardController', accounts => {
     await controller.setFrontend(frontend.address, {from: owner});
     const post = await controller.getFrontend();
     assert.strictEqual(post, frontend.address, "frontend did not change");
-  });
-
-  it("should be destructible", async () => {
-    const initial = await controller.owner();
-    assert.notEqual(initial, "0x", "contract should be owned by someone");
-    assert.strictEqual(initial, owner);
-    await controller.destroy();
-    let owner0;
-    try {
-      owner0 = await controller.owner()
-    } catch {
-      return;
-    }
-    assert.strictEqual(owner0, "0x", "after destroying contract it should be ownerless");
   });
 
 });

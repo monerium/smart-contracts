@@ -3,6 +3,7 @@ var SmartController = artifacts.require("./SmartController.sol");
 var BlacklistValidator = artifacts.require("./BlacklistValidator.sol");
 var ConstantValidator = artifacts.require("./ConstantValidator.sol");
 
+const AddressZero = "0x0000000000000000000000000000000000000000";
 const hash = `0xa1de988600a42c4b4ab089b619297c17d53cffae5d5120d82d8a92d0bb3b78f2`;
 const wallets = {
   "trust wallet": {
@@ -38,13 +39,13 @@ contract('SmartController', (accounts) => {
 
   it("should fail to construct if validator is the null address", async () => {
     await truffleAssert.reverts(
-      SmartController.new("0x0", "0x0", "000", "0x0")
+      SmartController.new(AddressZero, AddressZero, "0x000", AddressZero)
     );
   });
 
   it("should construct if validator is a non-null address", async () => {
     const validator = await BlacklistValidator.deployed();
-    const smart = await SmartController.new("0x0", validator.address, "000", "0x0");
+    const smart = await SmartController.new(AddressZero, validator.address, "0x000", AddressZero);
     const initial = await smart.getValidator();
     assert.strictEqual(initial, validator.address, "validator should be set");
   });
@@ -127,7 +128,7 @@ contract('SmartController', (accounts) => {
       const sig = wallet.signature.replace(/^0x/, '');
       const r = `0x${sig.slice(0, 64)}`;
       const s = `0x${sig.slice(64, 128)}`;
-      var v = web3.toDecimal(`0x${sig.slice(128, 130)}`);
+      var v = web3.utils.hexToNumber(`0x${sig.slice(128, 130)}`);
 
       if (v < 27) v += 27;
       assert(v == 27 || v == 28);
@@ -151,7 +152,7 @@ contract('SmartController', (accounts) => {
     const sig = wallet.signature.replace(/^0x/, '');
     const r = `0x${sig.slice(0, 64)}`;
     const s = `0x${sig.slice(64, 128)}`;
-    var v = web3.toDecimal(`0x${sig.slice(128, 130)}`);
+    var v = web3.utils.hexToNumber(`0x${sig.slice(128, 130)}`);
 
     if (v < 27) v += 27;
     assert(v == 27 || v == 28);
@@ -176,13 +177,13 @@ contract('SmartController', (accounts) => {
     const sig = wallet1.signature.replace(/^0x/, '');
     const r = `0x${sig.slice(0, 64)}`;
     const s = `0x${sig.slice(64, 128)}`;
-    var v = web3.toDecimal(`0x${sig.slice(128, 130)}`);
+    var v = web3.utils.hexToNumber(`0x${sig.slice(128, 130)}`);
 
     if (v < 27) v += 27;
     assert(v == 27 || v == 28);
 
     await truffleAssert.reverts(
-      controller.recover_withCaller(system, wallet1.address, wallet2.address, hash, v, 0x0, 0x0, {from: system})
+      controller.recover_withCaller(system, wallet1.address, wallet2.address, hash, v, AddressZero, AddressZero, {from: system})
     );
 
     const balance11 = await controller.balanceOf(wallet1.address);
