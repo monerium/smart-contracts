@@ -1,5 +1,10 @@
-result = require('dotenv').config();
-if (result.error) console.log(result.error.toString())
+const fs = require('fs');
+if (fs.existsSync('.env')) {
+  result = require('dotenv').config();
+  if (result.error) {
+    console.log(result.error.toString())
+  }
+}
 const Web3 = require('web3');
 const web3 = new Web3();
 const WalletProvider = require('@truffle/hdwallet-provider');
