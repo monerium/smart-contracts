@@ -44,8 +44,15 @@ contract("BlacklistValidator", accounts => {
 
   it("should not validate from a banned account", async () => {
     await validator.ban(accounts[8]);
-    // unable to check return value since the method is non-pure because it emits an event.
-    await validator.validate(accounts[8], accounts[8], 0); 
+    // we read the logs args to get the return value since the method is non-pure because it emits an event.
+    const valid = await validator.validate(accounts[8], accounts[8], 0);
+    assert.strictEqual(valid.logs[0].args['3'], false, "banned account is not valid");
+  });
+
+  it("should validate from a non-banned account", async () => {
+    // we read the logs args to get the return value since the method is non-pure because it emits an event.
+    const valid = await validator.validate(accounts[7], accounts[7], 0);
+    assert.strictEqual(valid.logs[0].args['3'], true, "unbanned account is valid");
   });
 
   it("should be able to reclaim ownership of contracts", async () => {
