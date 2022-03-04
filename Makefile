@@ -20,7 +20,7 @@ test: compile migrate
 
 .PHONY: coverage
 coverage:
-	npx solidity-coverage
+	npx truffle run coverage
 
 .PHONY: slither
 slither:
