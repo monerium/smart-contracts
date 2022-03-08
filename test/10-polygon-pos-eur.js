@@ -65,17 +65,4 @@ contract("PolygonPosEUR", accounts => {
     assert.strictEqual(balanceBefore.toNumber() - 100, balanceAfter.toNumber(), "should be equal if withdraw succeded");
   })
 
-  it("should be able to transfer ownership", async () => {
-    const owner0 = await ppeur.owner();
-    assert.strictEqual(owner0, owner, "incorrect original owner");
-
-    await ppeur.transferOwnership(accounts[8], {from: owner0});
-    const owner1 = await ppeur.owner();
-    assert.strictEqual(owner1, owner0, "must be original owner before claiming ownership");
-
-    await ppeur.claimOwnership({from: accounts[8]});
-    const owner2 = await ppeur.owner();
-    assert.strictEqual(owner2, accounts[8], "must be new owner address after claiming ownership");
-  });
-
 });
