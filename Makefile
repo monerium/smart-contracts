@@ -20,7 +20,7 @@ test: compile migrate
 
 .PHONY: coverage
 coverage:
-	npx truffle run coverage
+	npx truffle run coverage --network poa
 
 .PHONY: slither
 slither:
