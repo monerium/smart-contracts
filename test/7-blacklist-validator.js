@@ -55,18 +55,6 @@ contract("BlacklistValidator", accounts => {
     assert.strictEqual(valid.logs[0].args['3'], true, "unbanned account is valid");
   });
 
-  it("should be able to reclaim ownership of contracts", async () => {
-    const recipient = await AcceptingRecipient.deployed();
-    const owner0 = await recipient.owner();
-    assert.strictEqual(owner0, owner, "incorrect original owner");
-    await recipient.transferOwnership(BlacklistValidator.address, {from: owner0});
-    const owner1 = await recipient.owner();
-    assert.strictEqual(owner1, BlacklistValidator.address, "standard controller should be owner");
-    await validator.reclaimContract(AcceptingRecipient.address);
-    const owner2 = await recipient.owner();
-    assert.strictEqual(owner2, owner0, "must be original owner after reclaiming ownership");
-  });
-
   it("should be able to recover tokens (ERC20)", async () => {
     const token = await SimpleToken.deployed();
     const amount0 = await token.balanceOf(owner);
@@ -81,6 +69,31 @@ contract("BlacklistValidator", accounts => {
     assert.strictEqual(balance2.toNumber(), balance0.toNumber(), "mismatch in token before and after");
     const amount1 = await token.balanceOf(owner);
     assert.strictEqual(amount1.toNumber(), amount0.toNumber(), "unable to recover");
+  });
+
+  it("should be able to reclaim ownership of contracts", async () => {
+    const recipient = await AcceptingRecipient.deployed();
+    const owner0 = await recipient.owner();
+    assert.strictEqual(owner0, owner, "incorrect original owner");
+    await recipient.transferOwnership(BlacklistValidator.address, {from: owner0});
+    const owner1 = await recipient.owner();
+    assert.strictEqual(owner1, BlacklistValidator.address, "standard controller should be owner");
+    await validator.reclaimContract(AcceptingRecipient.address);
+    const owner2 = await recipient.owner();
+    assert.strictEqual(owner2, owner0, "must be original owner after reclaiming ownership");
+  });
+
+  it("should be able to transfer ownership", async () => {
+    const owner0 = await validator.owner();
+    assert.strictEqual(owner0, owner, "incorrect original owner");
+
+    await validator.transferOwnership(accounts[8], {from: owner0});
+    const owner1 = await validator.owner();
+    assert.strictEqual(owner1, owner0, "must be original owner before claiming ownership");
+
+    await validator.claimOwnership({from: accounts[8]});
+    const owner2 = await validator.owner();
+    assert.strictEqual(owner2, accounts[8], "must be new owner address after claiming ownership");
   });
 
 })

@@ -76,4 +76,17 @@ contract("TokenStorage", accounts => {
     assert.strictEqual(amount1.toNumber(), amount0.toNumber(), "unable to recover");
   });
 
+  it("should be able to transfer ownership", async () => {
+    const owner0 = await storage.owner();
+    assert.strictEqual(owner0, accounts[0], "incorrect original owner");
+
+    await storage.transferOwnership(accounts[8], {from: owner0});
+    const owner1 = await storage.owner();
+    assert.strictEqual(owner1, owner0, "must be original owner before claiming ownership");
+
+    await storage.claimOwnership({from: accounts[8]});
+    const owner2 = await storage.owner();
+    assert.strictEqual(owner2, accounts[8], "must be new owner address after claiming ownership");
+  });
+
 });

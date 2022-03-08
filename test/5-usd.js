@@ -252,4 +252,26 @@ contract("USD", accounts => {
     assert.strictEqual(amount1.toNumber(), amount0.toNumber(), "unable to recover");
   });
 
+  it("shouldn't be able to mint without predicate role", async () => {
+    await truffleAssert.reverts(
+      usd.mint(accounts[0], 100,{from: accounts[0]})
+    );
+  });
+  
+  it("should be able to mint with predicate role", async () => {
+    const PREDICATE_ROLE = "0x12ff340d0cd9c652c747ca35727e68c547d0f0bfa7758d2e77f75acef481b4f2";
+    await usd.grantRole(PREDICATE_ROLE, accounts[0]);
+    const isPredicate = await usd.hasRole(PREDICATE_ROLE, accounts[0]);
+    assert.strictEqual(isPredicate, true, "should be able to set predicate role");
+
+    const controller = await SmartController.at(await usd.getController());
+    await controller.addSystemAccount(USD.address);
+    const isSystem = await controller.isSystemAccount(USD.address);
+    assert.strictEqual(isSystem, true, "USD should be system account");
+
+    const balanceBefore = await usd.balanceOf(accounts[0]);
+    await usd.mint(accounts[0], 100, {from: accounts[0]});
+    const balanceAfter = await usd.balanceOf(accounts[0]);
+    assert.strictEqual(balanceBefore.toNumber() + 100, balanceAfter.toNumber(), "should be equal if mint succeded");
+  });
 });

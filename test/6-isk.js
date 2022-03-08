@@ -48,4 +48,3 @@ contract("ISK", accounts => {
   });
 
 });
-
