@@ -4,14 +4,18 @@ var AcceptingRecipient = artifacts.require("./AcceptingRecipient.sol");
 var SimpleToken = artifacts.require("./SimpleToken.sol");
 var StandardController = artifacts.require("./StandardController.sol");
 
+var TokenStorageLib = artifacts.require("./TokenStorageLib.sol");
+
 contract("TokenStorage", accounts => {
 
   if (web3.version.network <= 100) return;
 
   let storage;
 
-  beforeEach("setup storage", async () => { 
-    storage = await TokenStorage.deployed(); 
+  before("setup storage", async () => {
+    tokenStorageLib = await TokenStorageLib.new();
+    await TokenStorage.link("TokenStorageLib", tokenStorageLib.address);
+    storage = await TokenStorage.new();
   });
 
   it("should not have initial supply", async () => {
@@ -49,28 +53,28 @@ contract("TokenStorage", accounts => {
   });
 
   it("should be able to reclaim ownership of contracts", async () => {
-    const recipient = await AcceptingRecipient.deployed()
+    const recipient = await AcceptingRecipient.new()
     const owner0 = await recipient.owner();
     assert.strictEqual(owner0, accounts[0], "incorrect original owner");
     await recipient.transferOwnership(storage.address, {from: owner0});
     const owner1 = await recipient.owner();
-    assert.strictEqual(owner1, TokenStorage.address, "standard controller should be owner");
-    await storage.reclaimContract(AcceptingRecipient.address);
+    assert.strictEqual(owner1, storage.address, "standard controller should be owner");
+    await storage.reclaimContract(recipient.address);
     const owner2 = await recipient.owner();
     assert.strictEqual(owner2, owner0, "must be original owner after reclaiming ownership");
   });
 
   it("should be able to recover tokens (ERC20)", async () => {
-    const token = await SimpleToken.deployed();
+    const token = await SimpleToken.new();
     const amount0 = await token.balanceOf(accounts[0]);
     assert.notEqual(amount0.toNumber(), 0, "owner must have some tokens");
-    const balance0 = await token.balanceOf(TokenStorage.address);
+    const balance0 = await token.balanceOf(storage.address);
     assert.strictEqual(balance0.toNumber(), 0, "initial balance must be 0");
-    await token.transfer(TokenStorage.address, 20, {from: accounts[0]});
-    const balance1 = await token.balanceOf(TokenStorage.address);
+    await token.transfer(storage.address, 20, {from: accounts[0]});
+    const balance1 = await token.balanceOf(storage.address);
     assert.strictEqual(balance1.toNumber(), 20, "ERC20 transfer should succeed");
     await storage.reclaimToken(token.address);
-    const balance2 = await token.balanceOf(TokenStorage.address);
+    const balance2 = await token.balanceOf(storage.address);
     assert.strictEqual(balance2.toNumber(), balance0.toNumber(), "mismatch in token before and after");
     const amount1 = await token.balanceOf(accounts[0]);
     assert.strictEqual(amount1.toNumber(), amount0.toNumber(), "unable to recover");
