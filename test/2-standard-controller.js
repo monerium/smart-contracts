@@ -36,6 +36,15 @@ contract('StandardController', accounts => {
     controller = await StandardController.new(AddressZero, 50000, frontend.address);
   });
 
+
+  it("should construct with TokenStorage as constructor", async () => {
+    storage = await TokenStorage.new();
+    controller2 = await StandardController.new(storage.address, 0, AddressZero);
+
+    controllerStorage = await controller2.getStorage();
+    assert.equal(storage.address, controllerStorage, "The controller's storage isn't the same as given in construction's argument")
+  });
+
   it("should have a total supply of 50000 tokens", async () => {
     const supply = await controller.totalSupply();
     assert.equal(supply.valueOf(), 50000, "The total supply isn't 50000");
