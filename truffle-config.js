@@ -125,6 +125,7 @@ module.exports = {
       confirmation: 2,
       timeoutBlocks: 200,
       chainId: 137,
+      gas: 4465030,
     },
     polygon_pos_mumbai: {
       provider: walletProvider,
@@ -132,6 +133,8 @@ module.exports = {
       confirmation: 2,
       timeoutBlocks: 200,
       chainId: 80001,
+      gas: 4465030,
+      gasPrice: web3.utils.toWei('41', 'gwei'),
     },
     mainnet: {
       provider: walletProvider,
