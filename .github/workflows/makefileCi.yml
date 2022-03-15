@@ -1,4 +1,4 @@
-name: Makefile Test CI
+name: Makefile CI
 
 on: [push]
 
@@ -6,11 +6,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-  steps:
-#  - uses: actions/checkout@v2
+    steps:
+    - uses: actions/checkout@v2
 
-  - name: Install dependencies
-    run: yarn install
+    - name: Install dependencies
+      run: yarn install
 
-  - name: Run test
-    run: make test
+    - name: Run test
+      run: make test
