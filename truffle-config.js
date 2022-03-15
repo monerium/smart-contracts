@@ -85,7 +85,7 @@ module.exports = {
       network_id: 100
     },
     monerium: {
-      host: "e.monerium.com", 
+      host: "e.monerium.com",
       port: 8549,
       network_id: 2000,   // monerium testnet
       from: "0x253c61c9e3d1aa594761f7ef3f7cbe7a5151f9fd"
@@ -169,7 +169,10 @@ module.exports = {
   },
 
   mocha: {
-    reporter: 'eth-gas-reporter'
+    reporter: 'eth-gas-reporter',
+    reporterOptions: {
+      excludeContracts: ['Migrations']
+    }
   }
 
 };
