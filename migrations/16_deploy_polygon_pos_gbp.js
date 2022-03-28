@@ -1,9 +1,6 @@
 var BlacklistValidator = artifacts.require("./BlacklistValidator.sol");
 var SmartController = artifacts.require("./SmartController.sol");
-var PolygonPosEUR = artifacts.require("./PolygonPosEUR.sol");
 var PolygonPosGBP = artifacts.require("PolygonPosGBP");
-var PolygonPosISK = artifacts.require("PolygonPosISK");
-var PolygonPosUSD = artifacts.require("PolygonPosUSD");
 var MintableTokenLib = artifacts.require("./MintableTokenLib.sol");
 var TokenStorageLib = artifacts.require("./TokenStorageLib.sol");
 var SmartTokenLib = artifacts.require("./SmartTokenLib.sol");
@@ -28,13 +25,6 @@ module.exports = function(deployer, network) {
     deployer.link(ERC677Lib, SmartController);
     deployer.link(MintableTokenLib, SmartController);
 
-    deployer.deploy(PolygonPosEUR, childChainManagerProxy).then(frontend =>
-      deployer.deploy(SmartController, '0x0000000000000000000000000000000000000000', BlacklistValidator.address, web3.utils.asciiToHex("EUR"), frontend.address).then(controller => {
-        if (network.startsWith('poa'))
-          controller.addSystemAccount('0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb');
-        return frontend.setController(controller.address);
-    }));
-
     deployer.deploy(PolygonPosGBP, childChainManagerProxy).then(frontend =>
       deployer.deploy(SmartController, '0x0000000000000000000000000000000000000000', BlacklistValidator.address, web3.utils.asciiToHex("GBP"), frontend.address).then(controller => {
         if (network.startsWith('poa'))
@@ -42,18 +32,5 @@ module.exports = function(deployer, network) {
         return frontend.setController(controller.address);
     }));
 
-    deployer.deploy(PolygonPosISK, childChainManagerProxy).then(frontend =>
-      deployer.deploy(SmartController, '0x0000000000000000000000000000000000000000', BlacklistValidator.address, web3.utils.asciiToHex("ISK"), frontend.address).then(controller => {
-        if (network.startsWith('poa'))
-          controller.addSystemAccount('0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb');
-        return frontend.setController(controller.address);
-    }));
-
-    deployer.deploy(PolygonPosUSD, childChainManagerProxy).then(frontend =>
-      deployer.deploy(SmartController, '0x0000000000000000000000000000000000000000', BlacklistValidator.address, web3.utils.asciiToHex("USD"), frontend.address).then(controller => {
-        if (network.startsWith('poa'))
-          controller.addSystemAccount('0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb');
-        return frontend.setController(controller.address);
-    }));
   }
 };
