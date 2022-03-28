@@ -10,7 +10,6 @@ const web3 = new Web3();
 const WalletProvider = require('@truffle/hdwallet-provider');
 const bip39 = require('bip39');
 const ethers = require('ethers');
-const LedgerWalletProvider = require('@umaprotocol/truffle-ledger-provider');
 
 const testkey = process.env['TESTKEY'];
 const key = process.env['KEY'];
@@ -69,7 +68,6 @@ if (key != undefined) {
     accountsLength: 1,
     accountsOffset: 0
   };
-  walletProvider = new LedgerWalletProvider(ledgerOptions, `${url}/v3/${api}`, false);
 }
 
 module.exports = {
@@ -126,6 +124,16 @@ module.exports = {
       timeoutBlocks: 200,
       chainId: 137,
       gas: 4465030,
+    },
+    dashboard: {
+      network_id: 137,
+      confirmation: 2,
+      from: "0xA176a20E3698bAa36Ea09E4499e407e7dbFdfa0c",
+      timeoutBlocks: 200,
+      chainId: 137,
+      gas: 4465030,
+      maxPriorityFeePerGas: web3.utils.toWei('40', 'gwei'),
+      maxFee: web3.utils.toWei('41'),
     },
     polygon_pos_mumbai: {
       provider: walletProvider,

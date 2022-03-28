@@ -21,7 +21,7 @@ module.exports = function(deployer, network) {
   else
     childChainManagerProxy = ChildChainManagerProxyMainnet;
   // Only to be deployed on polygon's networks or local chain.
-  if (network.startsWith('polygon') || network.startsWith('poa') || network.startsWith('monerium')){
+  if (network.startsWith('polygon') || network.startsWith('poa') || network.startsWith('monerium') || network.startsWith('dashboard')) {
     deployer.link(SmartTokenLib, SmartController);
     deployer.link(TokenStorageLib, SmartController);
     deployer.link(ERC20Lib, SmartController);
