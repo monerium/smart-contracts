@@ -88,8 +88,384 @@
       "type": "function"
     }
   ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.11+commit.d7f03943\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"payable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"}],\"name\":\"OwnershipRenounced\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"stateMutability\":\"nonpayable\",\"type\":\"fallback\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"reclaimEther\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"author\":\"Remco Bloemen <remco@2\\u03c0.com>\",\"details\":\"This tries to block incoming ether to prevent accidental loss of Ether. Should Ether end up in the contract, it will allow the owner to reclaim this Ether.\",\"kind\":\"dev\",\"methods\":{\"constructor\":{\"details\":\"Constructor that rejects incoming Ether The `payable` flag is added so we can access `msg.value` without compiler warning. If we leave out payable, then Solidity will allow inheriting contracts to implement a payable constructor. By doing it this way we prevent a payable constructor from working. Alternatively we could use assembly to access msg.value.\"},\"reclaimEther()\":{\"details\":\"Transfer all Ether held by the contract to the owner.\"},\"renounceOwnership()\":{\"details\":\"Allows the current owner to relinquish control of the contract.\"},\"transferOwnership(address)\":{\"details\":\"Allows the current owner to transfer control of the contract to a newOwner.\",\"params\":{\"_newOwner\":\"The address to transfer ownership to.\"}}},\"title\":\"Contracts that should not own Ether\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"renounceOwnership()\":{\"notice\":\"Renouncing to ownership will leave the contract without an owner. It will not be possible to call the functions with the `onlyOwner` modifier anymore.\"}},\"notice\":\"Ether can still be sent to this contract by: calling functions labeled `payable` `selfdestruct(contract_address)` mining directly to the contract address\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/ownership/HasNoEther.sol\":\"HasNoEther\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":1000},\"remappings\":[]},\"sources\":{\"project:/contracts/ownership/HasNoEther.sol\":{\"keccak256\":\"0x40c5b0c6c8d908bc764cdcce514c824ce842411f43180111de7d0a75e6ae553e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://de45edfc949d8922e1c9f07af298c29edabeb26454d8a2eb093a81b32474d610\",\"dweb:/ipfs/QmZyqeY8y8h6XQ23h2rzpr6bVEa7FCCCu7XwTa8fcJc4cY\"]},\"project:/contracts/ownership/Ownable.sol\":{\"keccak256\":\"0x0041c7f55b3f5b57b5fd6d3eec14573596c5f0d59ce8802e08dae01ed6ff7603\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://21935211244e684ccbbd0858a4e2194a41c1b3bb36760bbbe4be4b11a63dd4cb\",\"dweb:/ipfs/Qmbw5C8ZJgA4jRPVP3rqohQb7f72YtUGgBg4eMqX3u56Rv\"]}},\"version\":1}",
   "bytecode": "0x608060405260008054600160a060020a03191633179055341561002157600080fd5b610311806100306000396000f3006080604052600436106100615763ffffffff7c0100000000000000000000000000000000000000000000000000000000600035041663715018a681146100705780638da5cb5b146100875780639f727c27146100c5578063f2fde38b146100da575b34801561006d57600080fd5b50005b34801561007c57600080fd5b50610085610108565b005b34801561009357600080fd5b5061009c61018e565b6040805173ffffffffffffffffffffffffffffffffffffffff9092168252519081900360200190f35b3480156100d157600080fd5b506100856101aa565b3480156100e657600080fd5b5061008573ffffffffffffffffffffffffffffffffffffffff60043516610219565b60005473ffffffffffffffffffffffffffffffffffffffff16331461012c57600080fd5b6000805460405173ffffffffffffffffffffffffffffffffffffffff909116917ff8df31144d9c2f0f6b59d69b8b98abd5459d07f2742c4df920b25aae33c6482091a26000805473ffffffffffffffffffffffffffffffffffffffff19169055565b60005473ffffffffffffffffffffffffffffffffffffffff1681565b60005473ffffffffffffffffffffffffffffffffffffffff1633146101ce57600080fd5b6000805460405173ffffffffffffffffffffffffffffffffffffffff90911691303180156108fc02929091818181858888f19350505050158015610216573d6000803e3d6000fd5b50565b60005473ffffffffffffffffffffffffffffffffffffffff16331461023d57600080fd5b6102168173ffffffffffffffffffffffffffffffffffffffff8116151561026357600080fd5b6000805460405173ffffffffffffffffffffffffffffffffffffffff808516939216917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a36000805473ffffffffffffffffffffffffffffffffffffffff191673ffffffffffffffffffffffffffffffffffffffff929092169190911790555600a165627a7a72305820f564211e77fa7e88804189472febe8cbd8534dffc01b91983d27cfbfa7c937e20029",
   "deployedBytecode": "0x6080604052600436106100615763ffffffff7c0100000000000000000000000000000000000000000000000000000000600035041663715018a681146100705780638da5cb5b146100875780639f727c27146100c5578063f2fde38b146100da575b34801561006d57600080fd5b50005b34801561007c57600080fd5b50610085610108565b005b34801561009357600080fd5b5061009c61018e565b6040805173ffffffffffffffffffffffffffffffffffffffff9092168252519081900360200190f35b3480156100d157600080fd5b506100856101aa565b3480156100e657600080fd5b5061008573ffffffffffffffffffffffffffffffffffffffff60043516610219565b60005473ffffffffffffffffffffffffffffffffffffffff16331461012c57600080fd5b6000805460405173ffffffffffffffffffffffffffffffffffffffff909116917ff8df31144d9c2f0f6b59d69b8b98abd5459d07f2742c4df920b25aae33c6482091a26000805473ffffffffffffffffffffffffffffffffffffffff19169055565b60005473ffffffffffffffffffffffffffffffffffffffff1681565b60005473ffffffffffffffffffffffffffffffffffffffff1633146101ce57600080fd5b6000805460405173ffffffffffffffffffffffffffffffffffffffff90911691303180156108fc02929091818181858888f19350505050158015610216573d6000803e3d6000fd5b50565b60005473ffffffffffffffffffffffffffffffffffffffff16331461023d57600080fd5b6102168173ffffffffffffffffffffffffffffffffffffffff8116151561026357600080fd5b6000805460405173ffffffffffffffffffffffffffffffffffffffff808516939216917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a36000805473ffffffffffffffffffffffffffffffffffffffff191673ffffffffffffffffffffffffffffffffffffffff929092169190911790555600a165627a7a72305820f564211e77fa7e88804189472febe8cbd8534dffc01b91983d27cfbfa7c937e20029",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [
+    {
+      "ast": {
+        "nodeType": "YulBlock",
+        "src": "0:556:54",
+        "statements": [
+          {
+            "nodeType": "YulBlock",
+            "src": "6:3:54",
+            "statements": []
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "115:125:54",
+              "statements": [
+                {
+                  "nodeType": "YulAssignment",
+                  "src": "125:26:54",
+                  "value": {
+                    "arguments": [
+                      {
+                        "name": "headStart",
+                        "nodeType": "YulIdentifier",
+                        "src": "137:9:54"
+                      },
+                      {
+                        "kind": "number",
+                        "nodeType": "YulLiteral",
+                        "src": "148:2:54",
+                        "type": "",
+                        "value": "32"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "add",
+                      "nodeType": "YulIdentifier",
+                      "src": "133:3:54"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "133:18:54"
+                  },
+                  "variableNames": [
+                    {
+                      "name": "tail",
+                      "nodeType": "YulIdentifier",
+                      "src": "125:4:54"
+                    }
+                  ]
+                },
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "name": "headStart",
+                        "nodeType": "YulIdentifier",
+                        "src": "167:9:54"
+                      },
+                      {
+                        "arguments": [
+                          {
+                            "name": "value0",
+                            "nodeType": "YulIdentifier",
+                            "src": "182:6:54"
+                          },
+                          {
+                            "kind": "number",
+                            "nodeType": "YulLiteral",
+                            "src": "190:42:54",
+                            "type": "",
+                            "value": "0xffffffffffffffffffffffffffffffffffffffff"
+                          }
+                        ],
+                        "functionName": {
+                          "name": "and",
+                          "nodeType": "YulIdentifier",
+                          "src": "178:3:54"
+                        },
+                        "nodeType": "YulFunctionCall",
+                        "src": "178:55:54"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "mstore",
+                      "nodeType": "YulIdentifier",
+                      "src": "160:6:54"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "160:74:54"
+                  },
+                  "nodeType": "YulExpressionStatement",
+                  "src": "160:74:54"
+                }
+              ]
+            },
+            "name": "abi_encode_tuple_t_address__to_t_address__fromStack_reversed",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "headStart",
+                "nodeType": "YulTypedName",
+                "src": "84:9:54",
+                "type": ""
+              },
+              {
+                "name": "value0",
+                "nodeType": "YulTypedName",
+                "src": "95:6:54",
+                "type": ""
+              }
+            ],
+            "returnVariables": [
+              {
+                "name": "tail",
+                "nodeType": "YulTypedName",
+                "src": "106:4:54",
+                "type": ""
+              }
+            ],
+            "src": "14:226:54"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "315:239:54",
+              "statements": [
+                {
+                  "body": {
+                    "nodeType": "YulBlock",
+                    "src": "361:16:54",
+                    "statements": [
+                      {
+                        "expression": {
+                          "arguments": [
+                            {
+                              "kind": "number",
+                              "nodeType": "YulLiteral",
+                              "src": "370:1:54",
+                              "type": "",
+                              "value": "0"
+                            },
+                            {
+                              "kind": "number",
+                              "nodeType": "YulLiteral",
+                              "src": "373:1:54",
+                              "type": "",
+                              "value": "0"
+                            }
+                          ],
+                          "functionName": {
+                            "name": "revert",
+                            "nodeType": "YulIdentifier",
+                            "src": "363:6:54"
+                          },
+                          "nodeType": "YulFunctionCall",
+                          "src": "363:12:54"
+                        },
+                        "nodeType": "YulExpressionStatement",
+                        "src": "363:12:54"
+                      }
+                    ]
+                  },
+                  "condition": {
+                    "arguments": [
+                      {
+                        "arguments": [
+                          {
+                            "name": "dataEnd",
+                            "nodeType": "YulIdentifier",
+                            "src": "336:7:54"
+                          },
+                          {
+                            "name": "headStart",
+                            "nodeType": "YulIdentifier",
+                            "src": "345:9:54"
+                          }
+                        ],
+                        "functionName": {
+                          "name": "sub",
+                          "nodeType": "YulIdentifier",
+                          "src": "332:3:54"
+                        },
+                        "nodeType": "YulFunctionCall",
+                        "src": "332:23:54"
+                      },
+                      {
+                        "kind": "number",
+                        "nodeType": "YulLiteral",
+                        "src": "357:2:54",
+                        "type": "",
+                        "value": "32"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "slt",
+                      "nodeType": "YulIdentifier",
+                      "src": "328:3:54"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "328:32:54"
+                  },
+                  "nodeType": "YulIf",
+                  "src": "325:52:54"
+                },
+                {
+                  "nodeType": "YulVariableDeclaration",
+                  "src": "386:36:54",
+                  "value": {
+                    "arguments": [
+                      {
+                        "name": "headStart",
+                        "nodeType": "YulIdentifier",
+                        "src": "412:9:54"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "calldataload",
+                      "nodeType": "YulIdentifier",
+                      "src": "399:12:54"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "399:23:54"
+                  },
+                  "variables": [
+                    {
+                      "name": "value",
+                      "nodeType": "YulTypedName",
+                      "src": "390:5:54",
+                      "type": ""
+                    }
+                  ]
+                },
+                {
+                  "body": {
+                    "nodeType": "YulBlock",
+                    "src": "508:16:54",
+                    "statements": [
+                      {
+                        "expression": {
+                          "arguments": [
+                            {
+                              "kind": "number",
+                              "nodeType": "YulLiteral",
+                              "src": "517:1:54",
+                              "type": "",
+                              "value": "0"
+                            },
+                            {
+                              "kind": "number",
+                              "nodeType": "YulLiteral",
+                              "src": "520:1:54",
+                              "type": "",
+                              "value": "0"
+                            }
+                          ],
+                          "functionName": {
+                            "name": "revert",
+                            "nodeType": "YulIdentifier",
+                            "src": "510:6:54"
+                          },
+                          "nodeType": "YulFunctionCall",
+                          "src": "510:12:54"
+                        },
+                        "nodeType": "YulExpressionStatement",
+                        "src": "510:12:54"
+                      }
+                    ]
+                  },
+                  "condition": {
+                    "arguments": [
+                      {
+                        "arguments": [
+                          {
+                            "name": "value",
+                            "nodeType": "YulIdentifier",
+                            "src": "444:5:54"
+                          },
+                          {
+                            "arguments": [
+                              {
+                                "name": "value",
+                                "nodeType": "YulIdentifier",
+                                "src": "455:5:54"
+                              },
+                              {
+                                "kind": "number",
+                                "nodeType": "YulLiteral",
+                                "src": "462:42:54",
+                                "type": "",
+                                "value": "0xffffffffffffffffffffffffffffffffffffffff"
+                              }
+                            ],
+                            "functionName": {
+                              "name": "and",
+                              "nodeType": "YulIdentifier",
+                              "src": "451:3:54"
+                            },
+                            "nodeType": "YulFunctionCall",
+                            "src": "451:54:54"
+                          }
+                        ],
+                        "functionName": {
+                          "name": "eq",
+                          "nodeType": "YulIdentifier",
+                          "src": "441:2:54"
+                        },
+                        "nodeType": "YulFunctionCall",
+                        "src": "441:65:54"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "iszero",
+                      "nodeType": "YulIdentifier",
+                      "src": "434:6:54"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "434:73:54"
+                  },
+                  "nodeType": "YulIf",
+                  "src": "431:93:54"
+                },
+                {
+                  "nodeType": "YulAssignment",
+                  "src": "533:15:54",
+                  "value": {
+                    "name": "value",
+                    "nodeType": "YulIdentifier",
+                    "src": "543:5:54"
+                  },
+                  "variableNames": [
+                    {
+                      "name": "value0",
+                      "nodeType": "YulIdentifier",
+                      "src": "533:6:54"
+                    }
+                  ]
+                }
+              ]
+            },
+            "name": "abi_decode_tuple_t_address",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "headStart",
+                "nodeType": "YulTypedName",
+                "src": "281:9:54",
+                "type": ""
+              },
+              {
+                "name": "dataEnd",
+                "nodeType": "YulTypedName",
+                "src": "292:7:54",
+                "type": ""
+              }
+            ],
+            "returnVariables": [
+              {
+                "name": "value0",
+                "nodeType": "YulTypedName",
+                "src": "304:6:54",
+                "type": ""
+              }
+            ],
+            "src": "245:309:54"
+          }
+        ]
+      },
+      "contents": "{\n    { }\n    function abi_encode_tuple_t_address__to_t_address__fromStack_reversed(headStart, value0) -> tail\n    {\n        tail := add(headStart, 32)\n        mstore(headStart, and(value0, 0xffffffffffffffffffffffffffffffffffffffff))\n    }\n    function abi_decode_tuple_t_address(headStart, dataEnd) -> value0\n    {\n        if slt(sub(dataEnd, headStart), 32) { revert(0, 0) }\n        let value := calldataload(headStart)\n        if iszero(eq(value, and(value, 0xffffffffffffffffffffffffffffffffffffffff))) { revert(0, 0) }\n        value0 := value\n    }\n}",
+      "id": 54,
+      "language": "Yul",
+      "name": "#utility.yul"
+    }
+  ],
   "sourceMap": "488:794:33:-;;;567:5:36;:18;;-1:-1:-1;;;;;;567:18:36;575:10;567:18;;;958:9:33;:14;950:23;;;;;;488:794;;;;;;",
   "deployedSourceMap": "488:794:33:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;488:794:33;;1001:111:36;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1001:111:36;;;;;;238:20;;8:9:-1;5:2;;;30:1;27;20:12;5:2;238:20:36;;;;;;;;;;;;;;;;;;;;;;;1189:91:33;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1189:91:33;;;;1274:103:36;;8:9:-1;5:2;;;30:1;27;20:12;5:2;-1:-1;1274:103:36;;;;;;;1001:111;719:5;;;;705:10;:19;697:28;;;;;;1077:5;;;1058:25;;1077:5;;;;;1058:25;;;1105:1;1089:18;;-1:-1:-1;;1089:18:36;;;1001:111::o;238:20::-;;;;;;:::o;1189:91:33:-;719:5:36;;;;705:10;:19;697:28;;;;;;1238:5:33;;;:37;;:5;;;;;1261:4;1253:21;1238:37;;;;;1253:21;;1238:37;:5;:37;1253:21;1238:5;:37;;;;;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;1238:37:33;1189:91::o;1274:103:36:-;719:5;;;;705:10;:19;697:28;;;;;;1343:29;1362:9;1582:23;;;;;1574:32;;;;;;1638:5;;;1617:38;;;;;;;1638:5;;;1617:38;;;1661:5;:17;;-1:-1:-1;;1661:17:36;;;;;;;;;;;;1512:171::o",
   "source": "pragma solidity ^0.4.24;\n\nimport \"./Ownable.sol\";\n\n\n/**\n * @title Contracts that should not own Ether\n * @author Remco Bloemen <remco@2π.com>\n * @dev This tries to block incoming ether to prevent accidental loss of Ether. Should Ether end up\n * in the contract, it will allow the owner to reclaim this Ether.\n * @notice Ether can still be sent to this contract by:\n * calling functions labeled `payable`\n * `selfdestruct(contract_address)`\n * mining directly to the contract address\n */\ncontract HasNoEther is Ownable {\n\n  /**\n  * @dev Constructor that rejects incoming Ether\n  * The `payable` flag is added so we can access `msg.value` without compiler warning. If we\n  * leave out payable, then Solidity will allow inheriting contracts to implement a payable\n  * constructor. By doing it this way we prevent a payable constructor from working. Alternatively\n  * we could use assembly to access msg.value.\n  */\n  constructor() public payable {\n    require(msg.value == 0);\n  }\n\n  /**\n   * @dev Disallows direct send by setting a default function without the `payable` flag.\n   */\n  function() external {\n  }\n\n  /**\n   * @dev Transfer all Ether held by the contract to the owner.\n   */\n  function reclaimEther() external onlyOwner {\n    owner.transfer(address(this).balance);\n  }\n}\n",
@@ -99,9 +475,13 @@
     "exportedSymbols": {
       "HasNoEther": [
         2822
+      ],
+      "Ownable": [
+        4589
       ]
     },
     "id": 2823,
+    "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
@@ -531,9 +911,13 @@
     "exportedSymbols": {
       "HasNoEther": [
         2822
+      ],
+      "Ownable": [
+        4589
       ]
     },
     "id": 2823,
+    "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
@@ -964,5 +1348,39 @@
   },
   "networks": {},
   "schemaVersion": "2.0.1",
-  "updatedAt": "2020-01-08T13:39:11.497Z"
+  "updatedAt": "2020-01-08T13:39:11.497Z",
+  "devdoc": {
+    "author": "Remco Bloemen <remco@2π.com>",
+    "details": "This tries to block incoming ether to prevent accidental loss of Ether. Should Ether end up in the contract, it will allow the owner to reclaim this Ether.",
+    "kind": "dev",
+    "methods": {
+      "constructor": {
+        "details": "Constructor that rejects incoming Ether The `payable` flag is added so we can access `msg.value` without compiler warning. If we leave out payable, then Solidity will allow inheriting contracts to implement a payable constructor. By doing it this way we prevent a payable constructor from working. Alternatively we could use assembly to access msg.value."
+      },
+      "reclaimEther()": {
+        "details": "Transfer all Ether held by the contract to the owner."
+      },
+      "renounceOwnership()": {
+        "details": "Allows the current owner to relinquish control of the contract."
+      },
+      "transferOwnership(address)": {
+        "details": "Allows the current owner to transfer control of the contract to a newOwner.",
+        "params": {
+          "_newOwner": "The address to transfer ownership to."
+        }
+      }
+    },
+    "title": "Contracts that should not own Ether",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {
+      "renounceOwnership()": {
+        "notice": "Renouncing to ownership will leave the contract without an owner. It will not be possible to call the functions with the `onlyOwner` modifier anymore."
+      }
+    },
+    "notice": "Ether can still be sent to this contract by: calling functions labeled `payable` `selfdestruct(contract_address)` mining directly to the contract address",
+    "version": 1
+  }
 }

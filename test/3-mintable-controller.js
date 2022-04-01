@@ -2,6 +2,13 @@ var truffleAssert = require("truffle-assertions");
 var MintableController = artifacts.require("./MintableController.sol");
 var EthUtil = require("ethereumjs-util");
 
+var ERC20Lib = artifacts.require("./ERC20Lib.sol");
+var ERC677Lib = artifacts.require("./ERC677Lib.sol");
+var MintableTokenLib = artifacts.require("./MintableTokenLib.sol");
+var TokenStorageLib = artifacts.require("./TokenStorageLib.sol");
+
+const AddressZero = "0x0000000000000000000000000000000000000000";
+
 const hash = `0xa1de988600a42c4b4ab089b619297c17d53cffae5d5120d82d8a92d0bb3b78f2`;
 const wallets = {
   "trust wallet": {
@@ -30,8 +37,18 @@ contract('MintableController', accounts => {
   const system = accounts[9];
   let controller;
 
-  beforeEach("setup mintable controller", async () => { 
-    controller = await MintableController.deployed();
+  before("setup mintable controller", async () => { 
+    // Link
+    tokenStorageLib = await TokenStorageLib.new();
+    erc20Lib = await ERC20Lib.new();
+    erc677Lib = await ERC677Lib.new();
+    mintableTokenLib = await MintableTokenLib.new();
+    await MintableController.link("TokenStorageLib", tokenStorageLib.address);
+    await MintableController.link("ERC20Lib", erc20Lib.address);
+    await MintableController.link("ERC677Lib", erc677Lib.address);
+    await MintableController.link("MintableTokenLib", mintableTokenLib.address);
+    // Deploy
+    controller = await MintableController.new(AddressZero, 0, AddressZero);
     await controller.addSystemAccount(system);
   });
 
@@ -58,7 +75,7 @@ contract('MintableController', accounts => {
     const sig = wallet.signature.replace(/^0x/, '');
     const r = `0x${sig.slice(0, 64)}`;
     const s = `0x${sig.slice(64, 128)}`;
-    var v = web3.toDecimal(`0x${sig.slice(128, 130)}`);
+    var v = web3.utils.hexToNumber(`0x${sig.slice(128, 130)}`);
 
     if (v < 27) v += 27;
     assert(v == 27 || v == 28);
@@ -81,13 +98,13 @@ contract('MintableController', accounts => {
     const sig = wallet.signature.replace(/^0x/, '');
     const r = `0x${sig.slice(0, 64)}`;
     const s = `0x${sig.slice(64, 128)}`;
-    var v = web3.toDecimal(`0x${sig.slice(128, 130)}`);
+    var v = web3.utils.hexToNumber(`0x${sig.slice(128, 130)}`);
 
     if (v < 27) v += 27;
     assert(v == 27 || v == 28);
 
     await truffleAssert.reverts(
-      controller.burnFrom_withCaller(system, wallet.address, 999, hash, v, 0x0, 0x0, {from: system})
+      controller.burnFrom_withCaller(system, wallet.address, 999, hash, v, AddressZero, AddressZero, {from: system})
     );
     const balance1 = await controller.balanceOf(wallet.address);
     assert.strictEqual(balance1.toNumber(), balance0.toNumber() + 999, "burnFrom should fail using a wrong signature");
@@ -118,7 +135,7 @@ contract('MintableController', accounts => {
       const sig = wallet.signature.replace(/^0x/, '');
       const r = `0x${sig.slice(0, 64)}`;
       const s = `0x${sig.slice(64, 128)}`;
-      var v = web3.toDecimal(`0x${sig.slice(128, 130)}`);
+      var v = web3.utils.hexToNumber(`0x${sig.slice(128, 130)}`);
 
       if (v < 27) v += 27;
       assert(v == 27 || v == 28);

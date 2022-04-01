@@ -257,4 +257,19 @@ contract StandardController is Pausable, Claimable {
     return token.allowance(owner, spender);
   }
 
+  /**
+   * @dev Pause the function protected by Pausable modifier.
+   */
+  function pause() public onlyOwner
+  {
+    _pause();
+  }
+
+  /**
+   * @dev Unpause the function protected by Pausable modifier.
+   */
+  function unpause() public onlyOwner
+  {
+    _unpause();
+  }
 }

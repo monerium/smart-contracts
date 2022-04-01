@@ -15,6 +15,6 @@ module.exports = function (deployer, network) {
   deployer.link(ERC20Lib, SmartController);
   deployer.link(ERC677Lib, SmartController);
   deployer.link(MintableTokenLib, SmartController);
-  deployer.deploy(SmartController, 0x0, BlacklistValidator.address, "USD", 0x0);
+  deployer.deploy(SmartController, '0x0000000000000000000000000000000000000000', BlacklistValidator.address, web3.utils.asciiToHex("USD"), '0x0000000000000000000000000000000000000000');
 
 };
