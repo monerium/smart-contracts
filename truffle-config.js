@@ -41,9 +41,7 @@ if (key != undefined) {
 } else if (mnemonic != undefined) {
   if (api == undefined) die('API not set')
   if (url == undefined) die('URL not set')
-  // address = `0x808b6dB94ce973Bab908450E764Db7405A533FAa`;
-  //address = `0xe90319CBACc28aA19c12A7225322Ce64e5701D56`;
-  address = "0x798728D5410aB4FB49d2C277A49baC5048aB43ca";
+  address = `0xe90319CBACc28aA19c12A7225322Ce64e5701D56`;
 
   if (!bip39.validateMnemonic(mnemonic)) die(`${mnemonic} not valid`);
   var wallet = ethers.Wallet.fromMnemonic(mnemonic);
@@ -57,17 +55,6 @@ if (key != undefined) {
   const walletAddress = wallet.address;
   address = walletAddress;
   walletProvider = () => new WalletProvider(testkey, `${url}/v3/${api}`, 0);
-}  else if (ledger != undefined) {
-  if (api == undefined) die('API not set')
-  if (url == undefined) die('URL not set')
-  if (networkId == undefined) die('NETWORK_ID not set')
-  const ledgerOptions = {
-    networkId: networkId,
-    path: "44'/60'/0'/0/0", // ledger default derivation path
-    askConfirm: false,
-    accountsLength: 1,
-    accountsOffset: 0
-  };
 }
 
 module.exports = {
@@ -128,7 +115,6 @@ module.exports = {
     dashboard: {
       network_id: 137,
       confirmation: 2,
-      from: "0xA176a20E3698bAa36Ea09E4499e407e7dbFdfa0c",
       timeoutBlocks: 200,
       chainId: 137,
       gas: 4465030,
