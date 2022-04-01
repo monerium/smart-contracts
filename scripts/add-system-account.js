@@ -1,9 +1,10 @@
 var SmartController = artifacts.require("./SmartController.sol");
+var TokenFrontend = artifacts.require("./TokenFrontend.sol");
 
 module.exports = async function(exit) {
 
   if (process.argv.length < 6) {
-    console.log(`Usage: ${process.argv.join(" ")} <smart-controller> <account>`)
+    console.log(`Usage: ${process.argv.join(" ")} <token> <account>`)
     exit(1);
   }
 
@@ -13,7 +14,10 @@ module.exports = async function(exit) {
   console.log(`adding ${account}`);
 
   try {
-    const controller = await SmartController.at(address);
+    const token = await TokenFrontend.at(address);
+    const x = await token.getController();
+    console.log(`token: ${address}, controller: ${x}`);
+    const controller = await SmartController.at(x);
     const tx = await controller.addSystemAccount(account);
     console.log(tx);
     exit(0);

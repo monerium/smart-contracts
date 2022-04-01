@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: apache-2.0 */
 /**
  * Copyright 2019 Monerium ehf.
  *
@@ -14,14 +15,13 @@
  * limitations under the License.
  */
 
-pragma solidity 0.4.24;
+pragma solidity 0.8.11;
 
 import "./TokenFrontend.sol";
 
 contract ISK is TokenFrontend {
 
     constructor()
-        public
         TokenFrontend("Monerium ISK emoney", "ISKe", "ISK")
     { }
 

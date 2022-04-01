@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: apache-2.0 */
 /**
  * Copyright 2019 Monerium ehf.
  *
@@ -14,26 +15,23 @@
  * limitations under the License.
  */
 
-pragma solidity 0.4.24;
+pragma solidity ^0.8.0;
 
-contract Migrations {
+import "./ownership/Claimable.sol";
 
-    address public owner;
+contract Migrations is  Claimable {
+
     uint public last_completed_migration;
 
-    modifier restricted() {
-        if (msg.sender == owner) _;
+    constructor(){
+      owner = msg.sender;
     }
 
-    constructor() public {
-        owner = msg.sender;
-    }
-
-    function setCompleted(uint completed) external restricted {
+    function setCompleted(uint completed) external onlyOwner {
         last_completed_migration = completed;
     }
 
-    function upgrade(address new_address) external restricted {
+    function upgrade(address new_address) external onlyOwner {
         Migrations upgraded = Migrations(new_address);
         upgraded.setCompleted(last_completed_migration);
     }

@@ -7,6 +7,14 @@ var SimpleToken = artifacts.require("./SimpleToken.sol");
 var TokenStorage = artifacts.require("./TokenStorage.sol");
 var USD = artifacts.require("./USD.sol");
 
+var MintableTokenLib = artifacts.require("./MintableTokenLib.sol");
+var SmartTokenLib = artifacts.require("./SmartTokenLib.sol");
+var TokenStorageLib = artifacts.require("./TokenStorageLib.sol");
+var ERC20Lib = artifacts.require("./ERC20Lib.sol");
+var ERC677Lib = artifacts.require("./ERC677Lib.sol");
+
+const AddressZero = "0x0000000000000000000000000000000000000000";
+
 contract('StandardController', accounts => {
 
   if (web3.version.network <= 100) return;
@@ -14,8 +22,27 @@ contract('StandardController', accounts => {
   const owner = accounts[0];
   let controller;
 
-  beforeEach("setup standard controller", async () => { 
-    controller = await StandardController.deployed();
+  before("setup standard controller", async () => {
+    // Link
+    tokenStorageLib = await TokenStorageLib.new();
+    erc20Lib = await ERC20Lib.new();
+    erc677Lib = await ERC677Lib.new();
+    await StandardController.link("TokenStorageLib", tokenStorageLib.address);
+    await StandardController.link("ERC20Lib", erc20Lib.address);
+    await StandardController.link("ERC677Lib", erc677Lib.address);
+    await TokenStorage.link("TokenStorageLib", TokenStorageLib.address);
+    // Deploy
+    frontend = await USD.new();
+    controller = await StandardController.new(AddressZero, 50000, frontend.address);
+  });
+
+
+  it("should construct with TokenStorage as constructor", async () => {
+    storage = await TokenStorage.new();
+    controller2 = await StandardController.new(storage.address, 0, AddressZero);
+
+    controllerStorage = await controller2.getStorage();
+    assert.equal(storage.address, controllerStorage, "The controller's storage isn't the same as given in construction's argument")
   });
 
   it("should have a total supply of 50000 tokens", async () => {
@@ -47,8 +74,8 @@ contract('StandardController', accounts => {
   });
 
   it("should transfer 456 to an accepting contract", async () => {
-    await controller.transferAndCall_withCaller(accounts[3], AcceptingRecipient.address, 456, 0x10, {from: accounts[3]});
-    const recipient = await AcceptingRecipient.deployed();
+    const recipient = await AcceptingRecipient.new();
+    await controller.transferAndCall_withCaller(accounts[3], recipient.address, 456, 0x10, {from: accounts[3]});
     const from = await recipient.from();
     assert.equal(from, accounts[3], "from address not stored in recipient");
     const amount = await recipient.amount();
@@ -68,13 +95,13 @@ contract('StandardController', accounts => {
 
   it("should avoid blackholes [0x0]", async () => {
     await truffleAssert.reverts(
-      controller.transfer_withCaller(accounts[0], 0x0, 1)
+      controller.transfer_withCaller(accounts[0], AddressZero, 1)
     );
   });
 
   it("should avoid blackholes [controller]", async () => {
     await truffleAssert.reverts(
-      controller.transfer_withCaller(accounts[0], StandardController.address, 2)
+      controller.transfer_withCaller(accounts[0], controller.address, 2)
     );
   });
 
@@ -103,13 +130,13 @@ contract('StandardController', accounts => {
 
   it("should not be allowed to receive tokens (ERC223, ERC677)", async () => {
     await truffleAssert.reverts(
-      controller.transferAndCall_withCaller(accounts[0], StandardController.address, 223, 0x0)
+      controller.transferAndCall_withCaller(accounts[0], controller.address, 223, AddressZero)
     );
   });
 
   it("should be able to change ownership of its storage", async () => {
-    const storage = TokenStorage.at(await controller.getStorage());
-    const owner0 = await storage.owner();
+    const storage = await TokenStorage.at(await controller.getStorage());
+    const owner0 =  await storage.owner();
     assert.strictEqual(owner0, controller.address, "incorrect original owner");
     await controller.transferStorageOwnership(accounts[0]);
     await storage.claimOwnership({from: accounts[0]})
@@ -123,7 +150,7 @@ contract('StandardController', accounts => {
 
   it("should fail to set a new storage from a non-owner account", async () => {
     const initial = await controller.getStorage();
-    const storage = await TokenStorage.deployed();
+    const storage = await TokenStorage.new();
     assert.notEqual(storage.address, initial, "initial storage should not be a newly instantiated storage");
     await truffleAssert.reverts(
       controller.setStorage(storage.address, {from: accounts[7]})
@@ -134,7 +161,7 @@ contract('StandardController', accounts => {
 
   it("should be able to set a new storage from an owner account", async () => {
     const initial = await controller.getStorage();
-    const storage = await TokenStorage.deployed();
+    const storage = await TokenStorage.new();
     assert.notEqual(storage.address, initial, "initial storage should not be a newly instantiated storage");
     await controller.setStorage(storage.address, {from: owner});
     const post = await controller.getStorage();
@@ -143,7 +170,7 @@ contract('StandardController', accounts => {
 
   it("should fail to set the frontend as a non-owner", async () => {
     const initial = await controller.getFrontend();
-    const frontend = await USD.deployed();
+    const frontend = await USD.new();
     assert.notEqual(frontend.address, initial, "initial frontend should not be a newly instantiated frontend");
     await truffleAssert.reverts(
       controller.setFrontend(frontend.address, {from: accounts[9]})
@@ -154,25 +181,11 @@ contract('StandardController', accounts => {
 
   it("should be able to set the frontend as an owner", async () => {
     const initial = await controller.getFrontend();
-    const frontend = await USD.deployed();
+    const frontend = await USD.new();
     assert.notEqual(frontend.address, initial, "initial frontend should not be a newly instantiated frontend");
     await controller.setFrontend(frontend.address, {from: owner});
     const post = await controller.getFrontend();
     assert.strictEqual(post, frontend.address, "frontend did not change");
-  });
-
-  it("should be destructible", async () => {
-    const initial = await controller.owner();
-    assert.notEqual(initial, "0x", "contract should be owned by someone");
-    assert.strictEqual(initial, owner);
-    await controller.destroy();
-    let owner0;
-    try {
-      owner0 = await controller.owner()
-    } catch {
-      return;
-    }
-    assert.strictEqual(owner0, "0x", "after destroying contract it should be ownerless");
   });
 
 });

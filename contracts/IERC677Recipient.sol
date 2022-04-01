@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: apache-2.0 */
 /**
  * Copyright 2019 Monerium ehf.
  *
@@ -14,7 +15,7 @@
  * limitations under the License.
  */
 
-pragma solidity 0.4.24;
+pragma solidity 0.8.11;
 
 /**
  * @title IERC677Recipient
@@ -28,8 +29,6 @@ interface IERC677Recipient {
      * @param amount Number of tokens.
      * @param data Additional data.
      */
-    function onTokenTransfer(address from, uint256 amount, bytes data) external returns (bool);
+    function onTokenTransfer(address from, uint256 amount, bytes calldata data) external returns (bool);
 
 }
-
-

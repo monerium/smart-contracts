@@ -2,15 +2,20 @@
 
 ![GitHub](https://img.shields.io/github/license/monerium/smart-contracts.svg)
 ![GitHub release](https://img.shields.io/github/release/monerium/smart-contracts.svg)
-[![Build Status](https://travis-ci.com/monerium/smart-contracts.svg)](https://travis-ci.com/monerium/smart-contracts)
+[![Build Status](https://github.com/monerium/smart-contracts-private/actions/workflows/tests.yml/badge.svg)](https://github.com/monerium/smart-contracts-private/actions/workflows/tests.yml)
 
 The [Monerium](https://monerium.com) e-money platform offers programmable fiat money on blockchains, an indispensable building block for the nascent blockchain economy.
 
 ## Tokens
+### Ethereum
+| EUR | GBP | ISK | USD |
+| :----: | :----: | :----: | :----: |
+| <small><a href="https://etherscan.io/token/0x3231cb76718cdef2155fc47b5286d82e6eda273f">![EUR](docs/qr-eth-eur.png)</a><br /><a href="https://app.ens.domains/name/eur.monerium.eth">eur.monerium.eth</a></small> | <small><a href="https://etherscan.io/token/0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd">![GBP](docs/qr-eth-gbp.png)</a><br /><a href="https://app.ens.domains/name/gbp.monerium.eth">gbp.monerium.eth</a> | <small><a href="https://etherscan.io/token/0xc642549743a93674cf38d6431f75d6443f88e3e2">![ISK address](docs/qr-eth-isk.png)</a><br /><a href="https://app.ens.domains/name/isk.monerium.eth">isk.monerium.eth</a></small> | <small><a href="https://etherscan.io/token/0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52">![USD address](docs/qr-eth-usd.png)</a><br /><a href="https://app.ens.domains/name/usd.monerium.eth">usd.monerium.eth</a></small> |
+### Polygon Pos
+| EUR | GBP | ISK | USD |
+| :----: | :----: | :----: | :----: |
+| <small><a href="https://polygonscan.com/token/0x18ec0A6E18E5bc3784fDd3a3634b31245ab704F6">![EUR](docs/QR-POLY-EUR.png)</a><br /><a href="https://polygonscan.com/token/0x18ec0A6E18E5bc3784fDd3a3634b31245ab704F6">Polygon.Pos.EUR</a></small> | <small><a href="https://polygonscan.com/token/0x75792CBDb361d80ba89271a079EfeE62c29FA324">![GBP](docs/QR-POLY-GBP.png)</a><br /><a href="https://polygonscan.com/token/0x75792CBDb361d80ba89271a079EfeE62c29FA324">Polygon.Pos.GBP</a> | <small><a href="https://polygonscan.com/token/0xf1bBf27A9D659D326efBfa5D284EBaeFB803983D">![ISK address](docs/QR-POLY-ISK.png)</a><br /><a href="https://polygonscan.com/token/0xf1bBf27A9D659D326efBfa5D284EBaeFB803983D">Polygon.Pos.ISK</a></small> | <small><a href="https://polygonscan.com/token/0x64E97c1a6535afD4a313eF46F88A64a34250B719">![USD address](docs/QR-POLY-USD.png)</a><br /><a href="https://polygonscan.com/token/0x64E97c1a6535afD4a313eF46F88A64a34250B719">Polygon.Pos.USD</a></small> |
 
-|                                                                                                   USD                                                                                                   |                                                                                                   ISK                                                                                                   |
-| :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| ![USD address](docs/0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52.png)<small>[0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52](https://etherscan.io/address/0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52)</small> | ![ISK address](docs/0xc642549743a93674cf38d6431f75d6443f88e3e2.png)<small>[0xc642549743a93674cf38d6431f75d6443f88e3e2](https://etherscan.io/address/0xc642549743a93674cf38d6431f75d6443f88e3e2)</small> |
 
 ## Token Design
 
@@ -92,25 +97,21 @@ Development happens on the master branch and we use [Semantic Versioning](http:/
 # npx truffle migrate [--network <name>]
 ```
 
-The deployment cycle for beta versions (up to v1.0.0) is as follows. During development the smart contracts are continuously deployed and tested locally on testrpc. A patch version update is deployed on the Monerium testnet, a federated blockchain, run by Monerium. A minor version update is deployed on the Rinkeby testnet.
+| Contract | Mainnet ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) | Polygon-Pos ([v1.10.0](https://github.com/monerium/smart-contracts/releases/tag/v1.10.0)) | Ropsten ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) | Kovan ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) | Rinkeby ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) |
+| --- | --- | --- | --- | --- | --- |
+| EUR      | 0x3231cb76718cdef2155fc47b5286d82e6eda273f | 0x18ec0A6E18E5bc3784fDd3a3634b31245ab704F6  | 0x0ae91c2b9e31e92871129117d908b0963c054048        | 0x9b8fd8fcfaa2438d11e7ed77d5afb6c2e1044b37 | 0x25c13fc529dc4afe4d488bd1f2ee5e1ec4918e0b |
+| GBP      | 0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd | 0x75792CBDb361d80ba89271a079EfeE62c29FA324  | 0xd9979346224e7b147caddf399b56357e20d3e67c        | 0xe28884ed5bd43e3f9f1dd733d254c9f5c6f983d2 | 0x01df10e345d0364d3a5b8422a66af6305803bd1e |
+| ISK      | 0xc642549743a93674cf38d6431f75d6443f88e3e2 | 0xf1bBf27A9D659D326efBfa5D284EBaeFB803983D  | 0x80b02ef56cbbc542f0ce89ad1d2a680244da9a63        | 0x39ad1ad871787ba4b3df5b8ac3d81b2c9b7c6290 | 0x0c9d7a0d8bf4bc9d15f577bbf650ebc8044a71db |
+| USD      | 0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52 | 0x64E97c1a6535afD4a313eF46F88A64a34250B719  | 0x3781dcdd60e006e33b664dce0d6be934f0a139c8        | 0x57724f65b3f914de7820c6f76b2099fa3a90f509 | 0x09c0a236e1227500f495cb0731c4af69b49639a5 |
 
+The token addresses can be resolved using ENS in compatible wallets.
 
-| Contract              | Mainnet ([v1.0.0](https://github.com/monerium/smart-contracts/releases/tag/v1.0.0)) | Rinkeby ([v1.0.2](https://github.com/monerium/smart-contracts/releases/tag/v1.0.2)) | Ropsten ([v1.0.2](https://github.com/monerium/smart-contracts/releases/tag/v1.0.2)) |
-| --------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| BlacklistValidator    | 0x35f72854df481662365494b5241e0376937e16a5                                          | 0x71db9342ab4fe41bb1f3f74f944cbebb2719f138                                          | 0xf83482dd764551e464bb4f621a3599bfe763d69a                                          |
-| ERC20Lib              | 0xf38a10ee8b591e09208ff3d9b033abfbf5a6bf9c                                          | 0xcfcc3ce5b2a8794d067497cd0c69219b182f959b                                          | 0x5f45aa0b2fafa8b6ddb98ad0e9f4e4d8a6157d5a                                          |
-| ERC677Lib             | 0x071b13ab779fae6ac1d1beceeccaf7369a251036                                          | 0x2d4131724cdcc99806c1cba41f1974681a379cd7                                          | 0x77a7dd0ee4f3e424163dce5f67072baf11eafc3c                                          |
-| ISK                   | 0x6e9e62eacad75e4b130db84f3bcba390dac47944                                          | 0x0c9d7a0d8bf4bc9d15f577bbf650ebc8044a71db                                          | 0x80b02ef56cbbc542f0ce89ad1d2a680244da9a63                                          |
-| Migrations            | 0x496d5aa262f9f044769caf1a5303c89fb36adeef                                          | 0x6215a2a0bfea76bb60bbd8115c8330a8c0f22620                                          | 0xd4aea361eb988a260d3c272a6c355528714b99da                                          |
-| MintableTokenLib      | 0x82d59b83b00475e009e913a6e470aea1e2dcc451                                          | 0xbe78ec9ae729f89b526d86b1628b8d3f90e9ba84                                          | 0x6afd70e54a3644197e76be4d57e23f5841f7344c                                          |
-| SafeMath              | 0x2e7e62e0bea9f9e0d5957550d147bf1dd4580880                                          | 0x91e8a58d073dcd2433a5f99f35fa20d7fc7dc5bb                                          | 0xef38de31fbd8ae845ca48a3372150eb6dec715e9                                          |
-| SmartController (ISK) | 0x54eb7ed5f98b7f498e3b59de9f2d3774394f42a7                                          | 0xc1aab70bc27987f3941192e78684e125a677f3df                                          | 0x098cad026024f323cf379c994550bc3fbd246a01                                          |
-| SmartController (USD) | 0xf7958b010226ae8791debfee6df3f20f7a13b623                                          | 0x45139e04aff96e722879d49a32a9655b02c449e2                                          | 0xc6af8a2a969bcd086a505ed1995179605bcbc930                                          |
-| SmartTokenLib         | 0x3ea4e0542ab3220b3c514d041ecea51ca93baa9b                                          | 0x1531d4e573ec48f1fa61ed74b5a5594f5c39e8ed                                          | 0xc2e2547e7848fcb5fd7f98bd3ac9e3bba97b238a                                          |
-| Storage (ISK)         | 0xd86984389d3b02c46201eb1f1ec07a0f47b403fa                                          | 0x4e3244ff304ee4ec33b5c06cfa793aa8de8e2efe                                          | 0xd621914541dc08be2fa6dd46dcbac62b031b25d9                                          |
-| Storage (USD)         | 0xc9ba890b119ed6ebc7fdc1c0613c0d7f4d7307a6                                          | 0xc67ad12d1af21b94b6d9ab602e4c05df2f78286f                                          | 0x710b7d8bba9c1b3d121f884f8da5933c33adb118                                          |
-| TokenStorageLib       | 0xaa881be95479a669544d44de648562eca10b8762                                          | 0xdba76f85c41b69c90c4c6335d37237b69b2d396f                                          | 0x8432d58ec5c6c16679de298db186b988d1130353                                          |
-| USD                   | 0x7a83d84801fe56570e942f6fef6657f2ae3ebdd6                                          | 0x09c0a236e1227500f495cb0731c4af69b49639a5                                          | 0x3781dcdd60e006e33b664dce0d6be934f0a139c8                                          |
+| Contract | Mainnet                                                               | Rinkeby       |
+| -------- | --------------------------------------------------------------------- | ------------- |
+| EUR      | [eur.monerium.eth](https://manager.ens.domains/name/eur.monerium.eth) |               |
+| GBP      | [gbp.monerium.eth](https://manager.ens.domains/name/gbp.monerium.eth) |               |
+| ISK      | [isk.monerium.eth](https://manager.ens.domains/name/isk.monerium.eth) | monerium.test |
+| USD      | [usd.monerium.eth](https://manager.ens.domains/name/usd.monerium.eth) |               |
 
 ## Unit tests
 
@@ -119,8 +120,6 @@ The token system ships with JavaScript unit tests.
 ```sh
 # make test
 ```
-
-![Unit tests](docs/test-suite.png)
 
 ## Code coverage
 

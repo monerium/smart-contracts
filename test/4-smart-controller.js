@@ -3,10 +3,17 @@ var SmartController = artifacts.require("./SmartController.sol");
 var BlacklistValidator = artifacts.require("./BlacklistValidator.sol");
 var ConstantValidator = artifacts.require("./ConstantValidator.sol");
 
+var ERC20Lib = artifacts.require("./ERC20Lib.sol");
+var ERC677Lib = artifacts.require("./ERC677Lib.sol");
+var MintableTokenLib = artifacts.require("./MintableTokenLib.sol");
+var TokenStorageLib = artifacts.require("./TokenStorageLib.sol");
+var SmartTokenLib = artifacts.require("./SmartTokenLib.sol");
+
+const AddressZero = "0x0000000000000000000000000000000000000000";
 const hash = `0xa1de988600a42c4b4ab089b619297c17d53cffae5d5120d82d8a92d0bb3b78f2`;
 const wallets = {
   "trust wallet": {
-    address: `0xB0A6Ed7Fa5C6C5cc507840924591C1494eF47D04`, 
+    address: `0xB0A6Ed7Fa5C6C5cc507840924591C1494eF47D04`,
     signature: `0xb5354ef622856f2acd9926752828d609b74471fa349891c70ec4512da5b7b8695418c39d82057dc09c480e8e65c5362327e882033e670e24b6a701983d93e18e1c`,
   },
   "ledger s nano": {
@@ -28,30 +35,42 @@ contract('SmartController', (accounts) => {
   const owner = accounts[0];
   const system = accounts[9];
   let controller;
-
-  beforeEach("setup smart controller", async () => { 
-    controller = await SmartController.deployed();
-    const validator = await BlacklistValidator.deployed();
+  let validator;
+  before("setup smart controller", async () => {
+    // Link
+    tokenStorageLib = await TokenStorageLib.new();
+    erc20Lib = await ERC20Lib.new();
+    erc677Lib = await ERC677Lib.new();
+    mintableTokenLib = await MintableTokenLib.new();
+    smartTokenLib = await SmartTokenLib.new();
+    await SmartController.link("TokenStorageLib", tokenStorageLib.address);
+    await SmartController.link("ERC20Lib", erc20Lib.address);
+    await SmartController.link("ERC677Lib", erc677Lib.address);
+    await SmartController.link("MintableTokenLib", mintableTokenLib.address);
+    await SmartController.link("SmartTokenLib", smartTokenLib.address);
+    // Deploy
+    validator = await BlacklistValidator.new();
+    controller = await SmartController.new(AddressZero, validator.address, web3.utils.asciiToHex("USD"), AddressZero);
     await controller.addSystemAccount(system);
     await controller.setValidator(validator.address, {from: system});
   });
 
   it("should fail to construct if validator is the null address", async () => {
-    await truffleAssert.reverts(
-      SmartController.new("0x0", "0x0", "000", "0x0")
+    await truffleAssert.fails(
+      SmartController.new(AddressZero, AddressZero, "0x000", AddressZero)
     );
   });
 
   it("should construct if validator is a non-null address", async () => {
-    const validator = await BlacklistValidator.deployed();
-    const smart = await SmartController.new("0x0", validator.address, "000", "0x0");
+    const validator2 = await BlacklistValidator.new();
+    const smart = await SmartController.new(AddressZero, validator2.address, "0x000", AddressZero);
     const initial = await smart.getValidator();
-    assert.strictEqual(initial, validator.address, "validator should be set");
+    assert.strictEqual(initial, validator2.address, "validator should be set");
   });
 
   it("should start with zero tokens", async () => {
     const supply = await controller.totalSupply();
-    assert.equal(supply.valueOf(), 0, "initial supply is not 0");  
+    assert.equal(supply.valueOf(), 0, "initial supply is not 0");
   });
 
   it("should mint 88000 new tokens", async () => {
@@ -63,26 +82,26 @@ contract('SmartController', (accounts) => {
   it("should transfer 3400 tokens to second account", async () => {
     await controller.transfer_withCaller(system, accounts[1], 3400, {from: system});
     const balance = await controller.balanceOf(accounts[1])
-    assert.equal(balance.valueOf(), 3400, "did not transfer 3400 tokens"); 
+    assert.equal(balance.valueOf(), 3400, "did not transfer 3400 tokens");
   });
 
   it("should fail transferring 1840 tokens from a blacklisted account", async () => {
-    (await BlacklistValidator.deployed()).ban(accounts[2]);
+    await validator.ban(accounts[2]);
     await truffleAssert.reverts(
       controller.transfer_withCaller(accounts[2], accounts[3], 1840, {from: accounts[2]})
     );
   });
 
   it("should transfer 12 tokens to second account using transferFrom", async () => {
-    (await BlacklistValidator.deployed()).unban(accounts[1]);
+    await validator.unban(accounts[1]);
     await controller.approve_withCaller(accounts[1], accounts[2], 20, {from: accounts[1]});
     await controller.transferFrom_withCaller(accounts[2], accounts[1], accounts[3], 12, {from: accounts[2]});
     const balance = await controller.balanceOf(accounts[3]);
-    assert.equal(balance.valueOf(), 12, "did not transfer 12 tokens"); 
+    assert.equal(balance.valueOf(), 12, "did not transfer 12 tokens");
   });
 
   it("should fail transferring 22 tokens from a blacklisted account using transferFrom", async () => {
-    (await BlacklistValidator.deployed()).ban(accounts[1]);
+    await validator.ban(accounts[1]);
     controller.approve_withCaller(accounts[1], accounts[2], 30, {from: accounts[1]});
     await truffleAssert.reverts(
       controller.transferFrom_withCaller(accounts[2], accounts[1], accounts[3], 22, {from: accounts[2]})
@@ -90,14 +109,14 @@ contract('SmartController', (accounts) => {
   });
 
   it("should transfer 34 tokens using transferAndCall", async () => {
-    await (await BlacklistValidator.deployed()).unban(accounts[1]);
+    await validator.unban(accounts[1]);
     await controller.transferAndCall_withCaller(accounts[1], accounts[4], 34, "0x123", {from: accounts[1]});
     const balance = await controller.balanceOf(accounts[4]);
-    assert.equal(balance.valueOf(), 34, "did not transfer 34 tokens"); 
+    assert.equal(balance.valueOf(), 34, "did not transfer 34 tokens");
   });
 
   it("should fail transferring 4 tokens from a blacklisted account using transferAndCall", async () => {
-    await (await BlacklistValidator.deployed()).ban(accounts[1]);
+    await validator.ban(accounts[1]);
     await truffleAssert.reverts(
       controller.transferAndCall_withCaller(accounts[1], accounts[4], 4, "0x234", {from: accounts[1]})
     );
@@ -108,7 +127,7 @@ contract('SmartController', (accounts) => {
     const initial = await controller.balanceOf(accounts[3]);
     try {
       await controller.transfer_withCaller(system, accounts[3], 849, {from: system});
-    } catch { 
+    } catch {
     }
     const balance = await controller.balanceOf(accounts[3]);
     assert.strictEqual(balance.toNumber(), initial.toNumber(), "should not have transferred when paused");
@@ -127,7 +146,7 @@ contract('SmartController', (accounts) => {
       const sig = wallet.signature.replace(/^0x/, '');
       const r = `0x${sig.slice(0, 64)}`;
       const s = `0x${sig.slice(64, 128)}`;
-      var v = web3.toDecimal(`0x${sig.slice(128, 130)}`);
+      var v = web3.utils.hexToNumber(`0x${sig.slice(128, 130)}`);
 
       if (v < 27) v += 27;
       assert(v == 27 || v == 28);
@@ -151,7 +170,7 @@ contract('SmartController', (accounts) => {
     const sig = wallet.signature.replace(/^0x/, '');
     const r = `0x${sig.slice(0, 64)}`;
     const s = `0x${sig.slice(64, 128)}`;
-    var v = web3.toDecimal(`0x${sig.slice(128, 130)}`);
+    var v = web3.utils.hexToNumber(`0x${sig.slice(128, 130)}`);
 
     if (v < 27) v += 27;
     assert(v == 27 || v == 28);
@@ -176,13 +195,13 @@ contract('SmartController', (accounts) => {
     const sig = wallet1.signature.replace(/^0x/, '');
     const r = `0x${sig.slice(0, 64)}`;
     const s = `0x${sig.slice(64, 128)}`;
-    var v = web3.toDecimal(`0x${sig.slice(128, 130)}`);
+    var v = web3.utils.hexToNumber(`0x${sig.slice(128, 130)}`);
 
     if (v < 27) v += 27;
     assert(v == 27 || v == 28);
 
     await truffleAssert.reverts(
-      controller.recover_withCaller(system, wallet1.address, wallet2.address, hash, v, 0x0, 0x0, {from: system})
+      controller.recover_withCaller(system, wallet1.address, wallet2.address, hash, v, AddressZero, AddressZero, {from: system})
     );
 
     const balance11 = await controller.balanceOf(wallet1.address);
@@ -193,10 +212,10 @@ contract('SmartController', (accounts) => {
 
   it("should fail setting a new validator from a non-system account", async () => {
     const initial = await controller.getValidator();
-    const validator = await ConstantValidator.deployed();
-    assert.notEqual(validator.address, initial, "initial validator should not be constant validator");
+    const constantValidator = await ConstantValidator.new(true);
+    assert.notEqual(constantValidator.address, initial, "initial validator should not be constant validator");
     await truffleAssert.reverts(
-      controller.setValidator(validator.address, {from: accounts[6]})
+      controller.setValidator(constantValidator.address, {from: accounts[6]})
     );
     const post = await controller.getValidator();
     assert.strictEqual(post, initial, "validator should not have changed");
@@ -204,11 +223,11 @@ contract('SmartController', (accounts) => {
 
   it("should succeed setting new validator from a system account", async () => {
     const initial = await controller.getValidator();
-    const validator = await ConstantValidator.deployed();
-    assert.notEqual(validator.address, initial, "initial validator should not be constant validator");
-    await controller.setValidator(validator.address, {from: system});
+    const constantValidator = await ConstantValidator.new(true);
+    assert.notEqual(constantValidator.address, initial, "initial validator should not be constant validator");
+    await controller.setValidator(constantValidator.address, {from: system});
     const post = await controller.getValidator();
-    assert.strictEqual(post, validator.address, "validator should be set to constant validator");
+    assert.strictEqual(post, constantValidator.address, "validator should be set to constant validator");
   });
 
 });
