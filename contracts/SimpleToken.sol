@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: apache-2.0 */
 /**
  * Copyright 2019 Monerium ehf.
  *
@@ -14,17 +15,16 @@
  * limitations under the License.
  */
 
-pragma solidity 0.4.24;
+pragma solidity 0.8.11;
 
-import "openzeppelin-solidity/contracts/token/ERC20/BasicToken.sol";
+import "./token/ERC20/BasicToken.sol";
 
 /**
  * @title SimpleToken
  * @dev This simple [ERC20] compatible token is used in the test suite.
  */
 contract SimpleToken is BasicToken {
-
-    constructor() public {
+    constructor() {
         totalSupply_ = 10000000;
         balances[msg.sender] = totalSupply_;
     }

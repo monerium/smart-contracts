@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: apache-2.0 */
 /**
  * Copyright 2019 Monerium ehf.
  *
@@ -14,9 +15,9 @@
  * limitations under the License.
  */
 
-pragma solidity 0.4.24;
+pragma solidity 0.8.11;
 
-import "openzeppelin-solidity/contracts/ownership/CanReclaimToken.sol";
+import "./ownership/CanReclaimToken.sol";
 import "./IERC677Recipient.sol";
 
 /**
@@ -30,7 +31,7 @@ contract AcceptingRecipient is CanReclaimToken, IERC677Recipient {
     uint256 public amount;
     bytes public data;
 
-    function onTokenTransfer(address from_, uint256 amount_, bytes data_) external returns (bool) {
+    function onTokenTransfer(address from_, uint256 amount_, bytes calldata data_) external returns (bool) {
         from = from_;
         amount = amount_;
         data = data_;
@@ -38,4 +39,3 @@ contract AcceptingRecipient is CanReclaimToken, IERC677Recipient {
     }
 
 }
-

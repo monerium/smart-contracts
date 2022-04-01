@@ -1,0 +1,45 @@
+name: tests
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup NodeJS 16
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16.x
+    - name: Show NodeJS version
+      run: node -v
+
+    - name: Install dependencies
+      run: yarn install
+
+    - name: Run test
+      run: make ci-test
+
+  notify:
+    name: Notify Slack on failure
+    needs: [test]
+    if: ${{ failure() }}
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: envsubst
+      uses: mshick/fast-envsubst@v1
+      with:
+        in-file: .github/slack/failed.json
+        out-file: payload.json
+
+    - name: Send slack message
+      env:
+        TOKEN: ${{ secrets.SLACK_TOKEN }}
+      run: |
+        curl -H "Authorization: Bearer $TOKEN" -H "Content-type: application/json" -d @payload.json -XPOST https://slack.com/api/chat.postMessage

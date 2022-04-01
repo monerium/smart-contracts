@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: apache-2.0 */
 /**
  * Copyright 2019 Monerium ehf.
  *
@@ -14,7 +15,7 @@
  * limitations under the License.
  */
 
-pragma solidity 0.4.24;
+pragma solidity 0.8.11;
 
 import "./ConstantValidator.sol";
 import "./SmartController.sol";
@@ -31,8 +32,7 @@ contract ConstantSmartController is SmartController {
      * @param ticker 3 letter currency ticker.
      */
     constructor(address storage_, bytes3 ticker)
-        public
-        SmartController(storage_, new ConstantValidator(false), ticker, 0x0)
+      SmartController(storage_, address(new ConstantValidator(false)), ticker, address(0x0))
     { }
 
 }

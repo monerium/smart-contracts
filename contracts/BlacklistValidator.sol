@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: apache-2.0 */
 /**
  * Copyright 2019 Monerium ehf.
  *
@@ -14,10 +15,11 @@
  * limitations under the License.
  */
 
-pragma solidity 0.4.24;
+pragma solidity ^0.8.11;
 
-import "openzeppelin-solidity/contracts/ownership/Claimable.sol";
-import "openzeppelin-solidity/contracts/ownership/NoOwner.sol";
+import "./ownership/Claimable.sol";
+import "./ownership/NoOwner.sol";
+import "./ownership/CanReclaimToken.sol";
 import "./IValidator.sol";
 
 /**
@@ -74,4 +76,11 @@ contract BlacklistValidator is IValidator, Claimable, CanReclaimToken, NoOwner {
         emit Decision(from, to, amount, valid);
     }
 
+    /**
+     * @dev Explicit override of transferOwnership from Claimable and Ownable
+     * @param newOwner Address to transfer ownership to.
+     */
+    function transferOwnership(address newOwner) public override(Claimable, Ownable) {
+      Claimable.transferOwnership(newOwner);
+    }
 }

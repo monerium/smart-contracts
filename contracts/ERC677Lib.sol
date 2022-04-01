@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: apache-2.0 */
 /**
  * Copyright 2019 Monerium ehf.
  *
@@ -14,9 +15,9 @@
  * limitations under the License.
  */
 
-pragma solidity 0.4.24;
+pragma solidity 0.8.11;
 
-import "openzeppelin-solidity/contracts/AddressUtils.sol";
+import "@openzeppelin/contracts/utils/Address.sol";
 import "./IERC677Recipient.sol";
 import "./TokenStorage.sol";
 import "./ERC20Lib.sol";
@@ -29,7 +30,7 @@ import "./ERC20Lib.sol";
 library ERC677Lib {
 
     using ERC20Lib for TokenStorage;
-    using AddressUtils for address;
+    using Address for address;
 
     /**
      * @dev Transfers tokens and subsequently calls a method on the recipient [ERC677].
@@ -46,7 +47,7 @@ library ERC677Lib {
         address caller,
         address to,
         uint256 amount,
-        bytes data
+        bytes calldata data
     )
         external
         returns (bool)
