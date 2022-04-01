@@ -1,0 +1,30 @@
+{
+  "channel": "${SLACK_CHANNEL}",
+  "blocks": [
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": ":red_circle: *${GITHUB_WORKFLOW} failed*"
+      }
+    },
+
+    {
+      "type": "context",
+      "elements": [
+        {
+          "type": "mrkdwn",
+          "text": "*Started by:* ${GITHUB_ACTOR}"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*Commit:* ${GITHUB_REF} @ ${GITHUB_SHA}"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*Details at:* ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+        }
+      ]
+    }
+  ]
+}

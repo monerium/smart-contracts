@@ -79,8 +79,12 @@
       "type": "function"
     }
   ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.11+commit.d7f03943\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"SystemAccountAdded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"SystemAccountRemoved\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"addSystemAccount\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"isSystemAccount\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"removeSystemAccount\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"SystemRole accounts have been approved to perform operational actions (e.g. mint and burn).\",\"events\":{\"SystemAccountAdded(address)\":{\"details\":\"Emitted when system account is added.\",\"params\":{\"account\":\"is a new system account.\"}},\"SystemAccountRemoved(address)\":{\"details\":\"Emitted when system account is removed.\",\"params\":{\"account\":\"is the old system account.\"}}},\"kind\":\"dev\",\"methods\":{\"addSystemAccount(address)\":{\"details\":\"Assigns the system role to an account.\"},\"isSystemAccount(address)\":{\"details\":\"Checks whether an address is a system account.\",\"params\":{\"account\":\"the address to check.\"},\"returns\":{\"_0\":\"true if system account.\"}},\"removeSystemAccount(address)\":{\"details\":\"Removes the system role from an account.\"}},\"title\":\"SystemRole\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"addSystemAccount(address)\":{\"notice\":\"This method is unprotected and should be authorized in the child contract.\"},\"removeSystemAccount(address)\":{\"notice\":\"This method is unprotected and should be authorized in the child contract.\"}},\"notice\":\"addSystemAccount and removeSystemAccount are unprotected by default, i.e. anyone can call them.Contracts inheriting SystemRole *should* authorize the caller by overriding them.The contract is an abstract contract.\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/SystemRole.sol\":\"SystemRole\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":1000},\"remappings\":[]},\"sources\":{\"project:/contracts/SystemRole.sol\":{\"keccak256\":\"0x55d75112c6757c80f49a9ef128c8241d3598c162009cc4c3507e95bfeda02d1f\",\"license\":\"apache-2.0\",\"urls\":[\"bzz-raw://2df1d5ca53df6220d3d74174cf3b746b00b82e3156a06ea8046ed4cdf199403a\",\"dweb:/ipfs/QmcUkDfRopEHSoqta6NYXEQ64c65ypyN1encv3qd2aBSiy\"]},\"project:/contracts/ownership/Roles.sol\":{\"keccak256\":\"0x89d1a1e096dc468402c9620a2fe77208bae7be639f1c15175eff82128d066a4e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://51094d4a9c419154eaa3ddff3c674969c51683b799f8e06ddee31bfb0f74f8d2\",\"dweb:/ipfs/Qmb6hDjtfVvHcWYoF5SZ5HUQ3pRhtgz1DTRMaCDLuYqR92\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "/**\n * Copyright 2019 Monerium ehf.\n *\n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n *\n *     http://www.apache.org/licenses/LICENSE-2.0\n *\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an \"AS IS\" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\n\npragma solidity 0.4.24;\n\nimport \"openzeppelin-solidity/contracts/access/rbac/Roles.sol\";\n\n/**\n * @title SystemRole\n * @dev SystemRole accounts have been approved to perform operational actions (e.g. mint and burn).\n * @notice addSystemAccount and removeSystemAccount are unprotected by default, i.e. anyone can call them.\n * @notice Contracts inheriting SystemRole *should* authorize the caller by overriding them.\n */\ncontract SystemRole {\n\n    using Roles for Roles.Role;\n    Roles.Role private systemAccounts;\n\n    /**\n     * @dev Emitted when system account is added.\n     * @param account is a new system account.\n     */\n    event SystemAccountAdded(address indexed account);\n\n    /**\n     * @dev Emitted when system account is removed.\n     * @param account is the old system account.\n     */\n    event SystemAccountRemoved(address indexed account);\n\n    /**\n     * @dev Modifier which prevents non-system accounts from calling protected functions.\n     */\n    modifier onlySystemAccounts() {\n        require(isSystemAccount(msg.sender));\n        _;\n    }\n\n    /**\n     * @dev Modifier which prevents non-system accounts from being passed to the guard.\n     * @param account The account to check.\n     */\n    modifier onlySystemAccount(address account) {\n        require(\n            isSystemAccount(account),\n            \"must be a system account\"\n        );\n        _;\n    }\n\n    /**\n     * @dev System Role constructor.\n     * @notice The contract is an abstract contract as a result of the internal modifier.\n     */\n    constructor() internal {}\n\n    /**\n     * @dev Checks whether an address is a system account.\n     * @param account the address to check.\n     * @return true if system account.\n     */\n    function isSystemAccount(address account) public view returns (bool) {\n        return systemAccounts.has(account);\n    }\n\n    /**\n     * @dev Assigns the system role to an account.\n     * @notice This method is unprotected and should be authorized in the child contract.\n     */\n    function addSystemAccount(address account) public {\n        systemAccounts.add(account);\n        emit SystemAccountAdded(account);\n    }\n\n    /**\n     * @dev Removes the system role from an account.\n     * @notice This method is unprotected and should be authorized in the child contract.\n     */\n    function removeSystemAccount(address account) public {\n        systemAccounts.remove(account);\n        emit SystemAccountRemoved(account);\n    }\n\n}\n",
@@ -88,11 +92,15 @@
   "ast": {
     "absolutePath": "/Users/gislik/Code/smart-contracts/contracts/SystemRole.sol",
     "exportedSymbols": {
+      "Roles": [
+        4668
+      ],
       "SystemRole": [
         1711
       ]
     },
     "id": 1712,
+    "license": "apache-2.0",
     "nodeType": "SourceUnit",
     "nodes": [
       {
@@ -1149,11 +1157,15 @@
   "legacyAST": {
     "absolutePath": "/Users/gislik/Code/smart-contracts/contracts/SystemRole.sol",
     "exportedSymbols": {
+      "Roles": [
+        4668
+      ],
       "SystemRole": [
         1711
       ]
     },
     "id": 1712,
+    "license": "apache-2.0",
     "nodeType": "SourceUnit",
     "nodes": [
       {
@@ -2213,5 +2225,55 @@
   },
   "networks": {},
   "schemaVersion": "2.0.1",
-  "updatedAt": "2020-01-08T13:39:11.526Z"
+  "updatedAt": "2020-01-08T13:39:11.526Z",
+  "devdoc": {
+    "details": "SystemRole accounts have been approved to perform operational actions (e.g. mint and burn).",
+    "events": {
+      "SystemAccountAdded(address)": {
+        "details": "Emitted when system account is added.",
+        "params": {
+          "account": "is a new system account."
+        }
+      },
+      "SystemAccountRemoved(address)": {
+        "details": "Emitted when system account is removed.",
+        "params": {
+          "account": "is the old system account."
+        }
+      }
+    },
+    "kind": "dev",
+    "methods": {
+      "addSystemAccount(address)": {
+        "details": "Assigns the system role to an account."
+      },
+      "isSystemAccount(address)": {
+        "details": "Checks whether an address is a system account.",
+        "params": {
+          "account": "the address to check."
+        },
+        "returns": {
+          "_0": "true if system account."
+        }
+      },
+      "removeSystemAccount(address)": {
+        "details": "Removes the system role from an account."
+      }
+    },
+    "title": "SystemRole",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {
+      "addSystemAccount(address)": {
+        "notice": "This method is unprotected and should be authorized in the child contract."
+      },
+      "removeSystemAccount(address)": {
+        "notice": "This method is unprotected and should be authorized in the child contract."
+      }
+    },
+    "notice": "addSystemAccount and removeSystemAccount are unprotected by default, i.e. anyone can call them.Contracts inheriting SystemRole *should* authorize the caller by overriding them.The contract is an abstract contract.",
+    "version": 1
+  }
 }

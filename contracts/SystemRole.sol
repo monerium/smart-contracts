@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: apache-2.0 */
 /**
  * Copyright 2019 Monerium ehf.
  *
@@ -14,20 +15,21 @@
  * limitations under the License.
  */
 
-pragma solidity 0.4.24;
+pragma solidity ^0.8.11;
 
-import "openzeppelin-solidity/contracts/access/rbac/Roles.sol";
+import "./ownership/Roles.sol";
 
 /**
  * @title SystemRole
  * @dev SystemRole accounts have been approved to perform operational actions (e.g. mint and burn).
  * @notice addSystemAccount and removeSystemAccount are unprotected by default, i.e. anyone can call them.
  * @notice Contracts inheriting SystemRole *should* authorize the caller by overriding them.
+ * @notice The contract is an abstract contract.
  */
-contract SystemRole {
+abstract contract SystemRole {
 
-    using Roles for Roles.Role;
-    Roles.Role private systemAccounts;
+  using Roles for Roles.Role;
+  Roles.Role private systemAccounts;
 
     /**
      * @dev Emitted when system account is added.
@@ -62,12 +64,6 @@ contract SystemRole {
     }
 
     /**
-     * @dev System Role constructor.
-     * @notice The contract is an abstract contract as a result of the internal modifier.
-     */
-    constructor() internal {}
-
-    /**
      * @dev Checks whether an address is a system account.
      * @param account the address to check.
      * @return true if system account.
@@ -80,7 +76,7 @@ contract SystemRole {
      * @dev Assigns the system role to an account.
      * @notice This method is unprotected and should be authorized in the child contract.
      */
-    function addSystemAccount(address account) public {
+    function addSystemAccount(address account) public virtual {
         systemAccounts.add(account);
         emit SystemAccountAdded(account);
     }
@@ -89,7 +85,7 @@ contract SystemRole {
      * @dev Removes the system role from an account.
      * @notice This method is unprotected and should be authorized in the child contract.
      */
-    function removeSystemAccount(address account) public {
+    function removeSystemAccount(address account) public virtual {
         systemAccounts.remove(account);
         emit SystemAccountRemoved(account);
     }
