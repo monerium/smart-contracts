@@ -1,5 +1,6 @@
+/* SPDX-License-Identifier: apache-2.0 */
 /**
- * Copyright 2019 Monerium ehf.
+ * Copyright 2022 Monerium ehf.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +15,16 @@
  * limitations under the License.
  */
 
-pragma solidity 0.4.24;
+pragma solidity ^0.8.0;
 
-import "openzeppelin-solidity/contracts/ownership/Claimable.sol";
+import "./ownership/Claimable.sol";
 
-contract Migrations is Claimable {
+contract Migrations is  Claimable {
 
     uint public last_completed_migration;
 
-    constructor() public {
-        owner = msg.sender;
+    constructor(){
+      owner = msg.sender;
     }
 
     function setCompleted(uint completed) external onlyOwner {

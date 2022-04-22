@@ -1,5 +1,6 @@
+/* SPDX-License-Identifier: apache-2.0 */
 /**
- * Copyright 2019 Monerium ehf.
+ * Copyright 2022 Monerium ehf.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +15,9 @@
  * limitations under the License.
  */
 
-pragma solidity 0.4.24;
+pragma solidity 0.8.11;
 
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./TokenStorage.sol";
 
 /**
@@ -63,10 +64,10 @@ library ERC20Lib {
         external
         returns (bool success)
     {
-        uint allowance = db.getAllowed(from, caller);
+        uint allowance_ = db.getAllowed(from, caller);
         db.subBalance(from, amount);
         db.addBalance(to, amount);
-        db.setAllowed(from, caller, allowance.sub(amount));
+        db.setAllowed(from, caller, allowance_.sub(amount));
         return true;
     }
 
@@ -93,7 +94,7 @@ library ERC20Lib {
      * @dev Returns the number tokens associated with an address.
      * @param db Token storage to operate on.
      * @param who Address to lookup.
-     * @return Balance of address.
+     * @return balance Balance of address.
      */
     function balanceOf(TokenStorage db, address who)
         external
@@ -108,7 +109,7 @@ library ERC20Lib {
      * @param db Token storage to operate on.
      * @param owner The address of the owner of the tokens.
      * @param spender The address of the spender.
-     * @return Number of tokens the spender is allowed to spend.
+     * @return remaining Number of tokens the spender is allowed to spend.
      */
     function allowance(TokenStorage db, address owner, address spender)
         external

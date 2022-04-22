@@ -1,5 +1,6 @@
+/* SPDX-License-Identifier: apache-2.0 */
 /**
- * Copyright 2019 Monerium ehf.
+ * Copyright 2022 Monerium ehf.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +15,11 @@
  * limitations under the License.
  */
 
-pragma solidity 0.4.24;
+pragma solidity 0.8.11;
 
-import "openzeppelin-solidity/contracts/ownership/Claimable.sol";
-import "openzeppelin-solidity/contracts/ownership/NoOwner.sol";
-import "openzeppelin-solidity/contracts/ownership/CanReclaimToken.sol";
+import "./ownership/Claimable.sol";
+import "./ownership/NoOwner.sol";
+import "./ownership/CanReclaimToken.sol";
 import "./IValidator.sol";
 
 /**
@@ -33,7 +34,7 @@ contract ConstantValidator is IValidator, Claimable, CanReclaimToken, NoOwner {
      * @dev Contract constructor.
      * @param valid_ Always return this value when validating.
      */
-    constructor(bool valid_) public {
+    constructor(bool valid_) {
         valid = valid_;
     }
 
@@ -41,8 +42,15 @@ contract ConstantValidator is IValidator, Claimable, CanReclaimToken, NoOwner {
      * @dev Validates token transfer.
      * Implements IValidator interface.
      */
-    function validate(address, address, uint) external returns (bool) {
+    function validate(address, address, uint) external view returns (bool) {
         return valid;
     }
 
+    /**
+     * @dev Explicit override of transferOwnership from Claimable and Ownable
+     * @param newOwner Address to transfer ownership to.
+     */
+    function transferOwnership(address newOwner) public override(Claimable, Ownable) {
+      Claimable.transferOwnership(newOwner);
+    }
 }

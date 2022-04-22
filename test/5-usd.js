@@ -8,6 +8,13 @@ var AcceptingRecipient = artifacts.require("./AcceptingRecipient");
 var RejectingRecipient = artifacts.require("./RejectingRecipient");
 var SimpleToken = artifacts.require("./SimpleToken.sol");
 
+var MintableTokenLib = artifacts.require("./MintableTokenLib.sol");
+var SmartTokenLib = artifacts.require("./SmartTokenLib.sol");
+var TokenStorageLib = artifacts.require("./TokenStorageLib.sol");
+var ERC20Lib = artifacts.require("./ERC20Lib.sol");
+var ERC677Lib = artifacts.require("./ERC677Lib.sol");
+
+const AddressZero = "0x0000000000000000000000000000000000000000";
 const hash = `0xa1de988600a42c4b4ab089b619297c17d53cffae5d5120d82d8a92d0bb3b78f2`;
 const wallets = {
   "trust wallet": {
@@ -32,17 +39,42 @@ contract("USD", accounts => {
 
   const owner = accounts[0];
   const system = accounts[9];
+  let validator
   let usd;
 
-  beforeEach("setup usd", async () => { 
-    usd = await USD.deployed();
-    const controller = await SmartController.at(await usd.getController());
+  before("setup usd", async () => {
+    // Link
+    mintableTokenLib = await MintableTokenLib.new();
+    smartTokenLib = await SmartTokenLib.new();
+    tokenStorageLib = await TokenStorageLib.new();
+    erc20Lib = await ERC20Lib.new();
+    erc677Lib = await ERC677Lib.new();
+    await SmartController.link("MintableTokenLib", mintableTokenLib.address);
+    await SmartController.link("SmartTokenLib", smartTokenLib.address);
+    await SmartController.link("TokenStorageLib", tokenStorageLib.address);
+    await SmartController.link("ERC20Lib", erc20Lib.address);
+    await SmartController.link("ERC677Lib", erc677Lib.address);
+
+    await StandardController.link("TokenStorageLib", tokenStorageLib.address);
+    await StandardController.link("ERC20Lib", erc20Lib.address);
+    await StandardController.link("ERC677Lib", erc677Lib.address);
+
+    await ConstantSmartController.link("MintableTokenLib", mintableTokenLib.address);
+    await ConstantSmartController.link("SmartTokenLib", smartTokenLib.address);
+    await ConstantSmartController.link("TokenStorageLib", tokenStorageLib.address);
+    await ConstantSmartController.link("ERC20Lib", erc20Lib.address);
+    await ConstantSmartController.link("ERC677Lib", erc677Lib.address);
+    // Deploy
+    usd = await USD.new();
+    validator = await BlacklistValidator.new();
+    const controller = await SmartController.new(AddressZero, validator.address, web3.utils.asciiToHex("USD"), usd.address);
+    await usd.setController(controller.address);
     await controller.addSystemAccount(system);
   });
 
   it("should start with zero tokens", async () => {
     const supply = await usd.totalSupply()
-    assert.equal(supply.valueOf(), 0, "initial supply is not 0");  
+    assert.equal(supply.valueOf(), 0, "initial supply is not 0");
   });
 
   it("should mint 74000 new tokens", async () => {
@@ -71,32 +103,32 @@ contract("USD", accounts => {
   });
 
   it("should fail transferring 78 tokens from a blacklisted account", async () => {
-    await (await BlacklistValidator.deployed()).ban(accounts[1]);
+    await validator.ban(accounts[1]);
     await truffleAssert.reverts(
       usd.transfer(accounts[3], 78, {from: accounts[1]})
     );
   });
 
   it("should succeed transferring to and calling a contract which implements token fallback method by accepting", async () => {
-    const recipient = await AcceptingRecipient.deployed();
-    await usd.transferAndCall(recipient.address, 3, "");
+    const recipient = await AcceptingRecipient.new();
+    await usd.transferAndCall(recipient.address, 3, "0x0");
     const balance = await usd.balanceOf(recipient.address);
     assert.strictEqual(balance.toNumber(), 3, "balance mismatch for recipient");
   });
 
   it("should fail transferring to and calling a contract which implements token fallback method by rejecting", async () => {
-    const recipient = await RejectingRecipient.deployed();
+    const recipient = await RejectingRecipient.new();
     await truffleAssert.reverts(
-      usd.transferAndCall(recipient.address, 3, "")
+      usd.transferAndCall(recipient.address, 3, "0x0")
     );
     const balance = await usd.balanceOf(recipient.address);
     assert.strictEqual(balance.toNumber(), 0, "balance mismatch for recipient");
   });
 
   it("should fail transferring to and calling a contract which does not implements token fallback method", async () => {
-    const recipient = await SimpleToken.deployed();
+    const recipient = await SimpleToken.new();
     await truffleAssert.reverts(
-      usd.transferAndCall(recipient.address, 3, "")
+      usd.transferAndCall(recipient.address, 3, "0x0")
     );
     const balance = await usd.balanceOf(recipient.address);
     assert.strictEqual(balance.toNumber(), 0, "balance mismatch for recipient");
@@ -104,7 +136,7 @@ contract("USD", accounts => {
 
   it("should succeed transferring to and calling a non-contract", async () => {
     const account = accounts[7];
-    await usd.transferAndCall(account, 3, "");
+    await usd.transferAndCall(account, 3, "0x0");
     const balance = await usd.balanceOf(account);
     assert.strictEqual(balance.toNumber(), 3, "balance mismatch for account");
   });
@@ -119,7 +151,7 @@ contract("USD", accounts => {
       const sig = wallet.signature.replace(/^0x/, '');
       const r = `0x${sig.slice(0, 64)}`;
       const s = `0x${sig.slice(64, 128)}`;
-      var v = web3.toDecimal(`0x${sig.slice(128, 130)}`);
+      var v = web3.utils.hexToNumber(`0x${sig.slice(128, 130)}`);
 
       if (v < 27) v += 27;
       assert(v == 27 || v == 28);
@@ -140,7 +172,7 @@ contract("USD", accounts => {
       const sig = wallet.signature.replace(/^0x/, '');
       const r = `0x${sig.slice(0, 64)}`;
       const s = `0x${sig.slice(64, 128)}`;
-      var v = web3.toDecimal(`0x${sig.slice(128, 130)}`);
+      var v = web3.utils.hexToNumber(`0x${sig.slice(128, 130)}`);
 
       if (v < 27) v += 27;
       assert(v == 27 || v == 28);
@@ -166,7 +198,7 @@ contract("USD", accounts => {
   it("should fail to set the controller to 0x0", async () => {
     const initial = await usd.getController();
     await truffleAssert.reverts(
-      usd.setController(0x0)
+      usd.setController(AddressZero)
     );
     const post = await usd.getController();
     assert.strictEqual(post, initial, "controller should not change");
@@ -175,7 +207,7 @@ contract("USD", accounts => {
   it("should fail to set the controller to a non null address from a non-owner", async () => {
     const initial = await usd.getController();
     await truffleAssert.reverts(
-      usd.setController(0x0, {from: accounts[5]})
+      usd.setController(AddressZero, {from: accounts[5]})
     );
     const post = await usd.getController();
     assert.strictEqual(post, initial, "controller should not change");
@@ -183,7 +215,7 @@ contract("USD", accounts => {
 
   it("should fail to set the controller to a controller with different ticker", async () => {
     const initial = await usd.getController();
-    const standard = await StandardController.deployed();
+    const standard = await StandardController.new(AddressZero, 50000, AddressZero);
     assert.notEqual(standard.address, initial, "invalid initial controller");
     await truffleAssert.reverts(
       usd.setController(standard.address, {from: owner})
@@ -194,7 +226,7 @@ contract("USD", accounts => {
 
   it("should fail setting the controller to a non null address not pointing back", async () => {
     const initial = await usd.getController();
-    const standard = await ConstantSmartController.deployed();
+    const standard = await ConstantSmartController.new(AddressZero, web3.utils.asciiToHex("USD"));
     await truffleAssert.reverts(
       usd.setController(standard.address, {from: owner})
     );
@@ -203,7 +235,7 @@ contract("USD", accounts => {
   });
 
   it("should succeed setting the controller to a non null address pointing back", async () => {
-    const standard = await ConstantSmartController.deployed();
+    const standard = await ConstantSmartController.new(AddressZero, web3.utils.asciiToHex("USD"));
     await standard.setFrontend(usd.address, {from: owner});
     await usd.setController(standard.address, {from: owner});
     const post = await usd.getController();
@@ -224,31 +256,53 @@ contract("USD", accounts => {
   });
 
   it("should be able to reclaim ownership of contracts", async () => {
-    const recipient = await AcceptingRecipient.deployed();
+    const recipient = await AcceptingRecipient.new();
     const owner0 = await recipient.owner();
     assert.strictEqual(owner0, accounts[0], "incorrect original owner");
-    await recipient.transferOwnership(USD.address, {from: owner0});
+    await recipient.transferOwnership(usd.address, {from: owner0});
     const owner1 = await recipient.owner();
-    assert.strictEqual(owner1, USD.address, "standard usd should be owner");
-    await usd.reclaimContract(AcceptingRecipient.address);
+    assert.strictEqual(owner1, usd.address, "standard usd should be owner");
+    await usd.reclaimContract(recipient.address);
     const owner2 = await recipient.owner();
     assert.strictEqual(owner2, owner0, "must be original owner after reclaiming ownership");
   });
 
   it("should be able to recover tokens (ERC20)", async () => {
-    const token = await SimpleToken.deployed();
+    const token = await SimpleToken.new();
     const amount0 = await token.balanceOf(accounts[0]);
     assert.notEqual(amount0.toNumber(), 0, "owner must have some tokens");
-    const balance0 = await token.balanceOf(USD.address);
+    const balance0 = await token.balanceOf(usd.address);
     assert.strictEqual(balance0.toNumber(), 0, "initial balance must be 0");
-    await token.transfer(USD.address, 20, {from: accounts[0]});
-    const balance1 = await token.balanceOf(USD.address);
+    await token.transfer(usd.address, 20, {from: accounts[0]});
+    const balance1 = await token.balanceOf(usd.address);
     assert.strictEqual(balance1.toNumber(), 20, "ERC20 transfer should succeed");
     await usd.reclaimToken(token.address);
-    const balance2 = await token.balanceOf(USD.address);
+    const balance2 = await token.balanceOf(usd.address);
     assert.strictEqual(balance2.toNumber(), balance0.toNumber(), "mismatch in token before and after");
     const amount1 = await token.balanceOf(accounts[0]);
     assert.strictEqual(amount1.toNumber(), amount0.toNumber(), "unable to recover");
   });
 
+  it("shouldn't be able to mint without predicate role", async () => {
+    await truffleAssert.reverts(
+      usd.mint(accounts[0], 100,{from: accounts[0]})
+    );
+  });
+
+  it("should be able to mint with predicate role", async () => {
+    const PREDICATE_ROLE = "0x12ff340d0cd9c652c747ca35727e68c547d0f0bfa7758d2e77f75acef481b4f2";
+    await usd.grantRole(PREDICATE_ROLE, accounts[0]);
+    const isPredicate = await usd.hasRole(PREDICATE_ROLE, accounts[0]);
+    assert.strictEqual(isPredicate, true, "should be able to set predicate role");
+
+    const controller = await SmartController.at(await usd.getController());
+    await controller.addSystemAccount(usd.address);
+    const isSystem = await controller.isSystemAccount(usd.address);
+    assert.strictEqual(isSystem, true, "USD should be system account");
+
+    const balanceBefore = await usd.balanceOf(accounts[0]);
+    await usd.mint(accounts[0], 100, {from: accounts[0]});
+    const balanceAfter = await usd.balanceOf(accounts[0]);
+    assert.strictEqual(balanceBefore.toNumber() + 100, balanceAfter.toNumber(), "should be equal if mint succeded");
+  });
 });

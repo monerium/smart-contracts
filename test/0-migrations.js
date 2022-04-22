@@ -5,8 +5,8 @@ contract("Migrations", accounts => {
 
   let migrations;
 
-  beforeEach("setup storage", async () => { 
-    migrations = await Migrations.deployed(); 
+  before("setup migration", async () => {
+    migrations = await Migrations.new();
   });
 
   it("should initially be owned by first account", async () => {

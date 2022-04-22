@@ -1,5 +1,6 @@
+/* SPDX-License-Identifier: apache-2.0 */
 /**
- * Copyright 2019 Monerium ehf.
+ * Copyright 2022 Monerium ehf.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +15,7 @@
  * limitations under the License.
  */
 
-pragma solidity 0.4.24;
+pragma solidity 0.8.11;
 
 import "./SmartTokenLib.sol";
 import "./MintableController.sol";
@@ -41,10 +42,9 @@ contract SmartController is MintableController {
      * @param frontend_ Address of the authorized frontend.
      */
     constructor(address storage_, address validator, bytes3 ticker_, address frontend_)
-        public
         MintableController(storage_, INITIAL_SUPPLY, frontend_)
     {
-        require(validator != 0x0, "validator cannot be the null address");
+        require(validator != address(0x0), "validator cannot be the null address");
         smartToken.setValidator(validator);
         ticker = ticker_;
     }
@@ -93,6 +93,7 @@ contract SmartController is MintableController {
      */
     function transfer_withCaller(address caller, address to, uint amount)
         public
+        override
         guarded(caller)
         whenNotPaused
         returns (bool)
@@ -114,6 +115,7 @@ contract SmartController is MintableController {
      */
     function transferFrom_withCaller(address caller, address from, address to, uint amount)
         public
+        override
         guarded(caller)
         whenNotPaused
         returns (bool)
@@ -136,9 +138,10 @@ contract SmartController is MintableController {
         address caller,
         address to,
         uint256 amount,
-        bytes data
+        bytes calldata data
     )
         public
+        override
         guarded(caller)
         whenNotPaused
         returns (bool)

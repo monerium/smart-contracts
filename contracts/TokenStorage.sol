@@ -1,5 +1,6 @@
+/* SPDX-License-Identifier: apache-2.0 */
 /**
- * Copyright 2019 Monerium ehf.
+ * Copyright 2022 Monerium ehf.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +15,11 @@
  * limitations under the License.
  */
 
-pragma solidity 0.4.24;
+pragma solidity 0.8.11;
 
-import "openzeppelin-solidity/contracts/ownership/Claimable.sol";
-import "openzeppelin-solidity/contracts/ownership/CanReclaimToken.sol";
-import "openzeppelin-solidity/contracts/ownership/NoOwner.sol";
+import "./ownership/Claimable.sol";
+import "./ownership/CanReclaimToken.sol";
+import "./ownership/NoOwner.sol";
 import "./TokenStorageLib.sol";
 
 /**
@@ -92,4 +93,11 @@ contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
         return tokenStorage.getAllowed(owner, spender);
     }
 
+    /**
+     * @dev Explicit override of transferOwnership from Claimable and Ownable
+     * @param newOwner Address to transfer ownership to.
+     */
+    function transferOwnership(address newOwner) public override(Claimable, Ownable){
+      Claimable.transferOwnership(newOwner);
+    }
 }
