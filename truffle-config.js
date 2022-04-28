@@ -33,8 +33,10 @@ function die(s) {
 if (key != undefined) {
   if (api == undefined) die('API not set')
   if (url == undefined) die('URL not set')
-  address = `0xb912740f1389fa0c99965fcda9039b9e5638e5f7`;
-  const wallet = ethers.Wallet(Buffer.from(key, 'hex'));
+  //address = `0xb912740f1389fa0c99965fcda9039b9e5638e5f7`;
+  address = `0xf0Fd46173272f9FC46C7703Fa4c96Ab8B4FFF667`;
+
+  const wallet = new ethers.Wallet(Buffer.from(key, 'hex'));
   const walletAddress = wallet.address;
   if (walletAddress != address) die(`Key address ${walletAddress} does not match ${address}`);
   walletProvider = () => new WalletProvider(key, `${url}/v3/${api}`, 0);
