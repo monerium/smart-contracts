@@ -2,16 +2,11 @@
   "contractName": "SystemRole",
   "abi": [
     {
-      "inputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "constructor"
-    },
-    {
       "anonymous": false,
       "inputs": [
         {
           "indexed": true,
+          "internalType": "address",
           "name": "account",
           "type": "address"
         }
@@ -24,6 +19,7 @@
       "inputs": [
         {
           "indexed": true,
+          "internalType": "address",
           "name": "account",
           "type": "address"
         }
@@ -32,9 +28,9 @@
       "type": "event"
     },
     {
-      "constant": true,
       "inputs": [
         {
+          "internalType": "address",
           "name": "account",
           "type": "address"
         }
@@ -42,39 +38,37 @@
       "name": "isSystemAccount",
       "outputs": [
         {
+          "internalType": "bool",
           "name": "",
           "type": "bool"
         }
       ],
-      "payable": false,
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "constant": false,
       "inputs": [
         {
+          "internalType": "address",
           "name": "account",
           "type": "address"
         }
       ],
       "name": "addSystemAccount",
       "outputs": [],
-      "payable": false,
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
-      "constant": false,
       "inputs": [
         {
+          "internalType": "address",
           "name": "account",
           "type": "address"
         }
       ],
       "name": "removeSystemAccount",
       "outputs": [],
-      "payable": false,
       "stateMutability": "nonpayable",
       "type": "function"
     }
@@ -90,128 +84,152 @@
   "source": "/**\n * Copyright 2022 Monerium ehf.\n *\n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n *\n *     http://www.apache.org/licenses/LICENSE-2.0\n *\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an \"AS IS\" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\n\npragma solidity 0.4.24;\n\nimport \"openzeppelin-solidity/contracts/access/rbac/Roles.sol\";\n\n/**\n * @title SystemRole\n * @dev SystemRole accounts have been approved to perform operational actions (e.g. mint and burn).\n * @notice addSystemAccount and removeSystemAccount are unprotected by default, i.e. anyone can call them.\n * @notice Contracts inheriting SystemRole *should* authorize the caller by overriding them.\n */\ncontract SystemRole {\n\n    using Roles for Roles.Role;\n    Roles.Role private systemAccounts;\n\n    /**\n     * @dev Emitted when system account is added.\n     * @param account is a new system account.\n     */\n    event SystemAccountAdded(address indexed account);\n\n    /**\n     * @dev Emitted when system account is removed.\n     * @param account is the old system account.\n     */\n    event SystemAccountRemoved(address indexed account);\n\n    /**\n     * @dev Modifier which prevents non-system accounts from calling protected functions.\n     */\n    modifier onlySystemAccounts() {\n        require(isSystemAccount(msg.sender));\n        _;\n    }\n\n    /**\n     * @dev Modifier which prevents non-system accounts from being passed to the guard.\n     * @param account The account to check.\n     */\n    modifier onlySystemAccount(address account) {\n        require(\n            isSystemAccount(account),\n            \"must be a system account\"\n        );\n        _;\n    }\n\n    /**\n     * @dev System Role constructor.\n     * @notice The contract is an abstract contract as a result of the internal modifier.\n     */\n    constructor() internal {}\n\n    /**\n     * @dev Checks whether an address is a system account.\n     * @param account the address to check.\n     * @return true if system account.\n     */\n    function isSystemAccount(address account) public view returns (bool) {\n        return systemAccounts.has(account);\n    }\n\n    /**\n     * @dev Assigns the system role to an account.\n     * @notice This method is unprotected and should be authorized in the child contract.\n     */\n    function addSystemAccount(address account) public {\n        systemAccounts.add(account);\n        emit SystemAccountAdded(account);\n    }\n\n    /**\n     * @dev Removes the system role from an account.\n     * @notice This method is unprotected and should be authorized in the child contract.\n     */\n    function removeSystemAccount(address account) public {\n        systemAccounts.remove(account);\n        emit SystemAccountRemoved(account);\n    }\n\n}\n",
   "sourcePath": "/Users/gislik/Code/smart-contracts/contracts/SystemRole.sol",
   "ast": {
-    "absolutePath": "/Users/gislik/Code/smart-contracts/contracts/SystemRole.sol",
+    "absolutePath": "project:/contracts/SystemRole.sol",
     "exportedSymbols": {
       "Roles": [
         4668
       ],
       "SystemRole": [
-        1711
+        3480
       ]
     },
-    "id": 1712,
+    "id": 3481,
     "license": "apache-2.0",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 1623,
+        "id": 3386,
         "literals": [
           "solidity",
-          "0.4",
-          ".24"
+          "^",
+          "0.8",
+          ".11"
         ],
         "nodeType": "PragmaDirective",
-        "src": "599:23:20"
+        "src": "641:24:36"
       },
       {
-        "absolutePath": "openzeppelin-solidity/contracts/access/rbac/Roles.sol",
-        "file": "openzeppelin-solidity/contracts/access/rbac/Roles.sol",
-        "id": 1624,
+        "absolutePath": "project:/contracts/ownership/Roles.sol",
+        "file": "./ownership/Roles.sol",
+        "id": 3387,
+        "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
-        "scope": 1712,
-        "sourceUnit": 2494,
-        "src": "624:63:20",
+        "scope": 3481,
+        "sourceUnit": 4669,
+        "src": "667:31:36",
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
+        "abstract": true,
         "baseContracts": [],
+        "canonicalName": "SystemRole",
         "contractDependencies": [],
         "contractKind": "contract",
-        "documentation": "@title SystemRole\n@dev SystemRole accounts have been approved to perform operational actions (e.g. mint and burn).\n@notice addSystemAccount and removeSystemAccount are unprotected by default, i.e. anyone can call them.\n@notice Contracts inheriting SystemRole *should* authorize the caller by overriding them.",
+        "documentation": {
+          "id": 3388,
+          "nodeType": "StructuredDocumentation",
+          "src": "700:377:36",
+          "text": " @title SystemRole\n @dev SystemRole accounts have been approved to perform operational actions (e.g. mint and burn).\n @notice addSystemAccount and removeSystemAccount are unprotected by default, i.e. anyone can call them.\n @notice Contracts inheriting SystemRole *should* authorize the caller by overriding them.\n @notice The contract is an abstract contract."
+        },
         "fullyImplemented": true,
-        "id": 1711,
+        "id": 3480,
         "linearizedBaseContracts": [
-          1711
+          3480
         ],
         "name": "SystemRole",
+        "nameLocation": "1096:10:36",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
-            "id": 1627,
+            "id": 3392,
             "libraryName": {
-              "contractScope": null,
-              "id": 1625,
+              "id": 3389,
               "name": "Roles",
-              "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 2493,
-              "src": "1051:5:20",
-              "typeDescriptions": {
-                "typeIdentifier": "t_contract$_Roles_$2493",
-                "typeString": "library Roles"
-              }
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 4668,
+              "src": "1118:5:36"
             },
             "nodeType": "UsingForDirective",
-            "src": "1045:27:20",
+            "src": "1112:27:36",
             "typeName": {
-              "contractScope": null,
-              "id": 1626,
-              "name": "Roles.Role",
+              "id": 3391,
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 2430,
-              "src": "1061:10:20",
+              "pathNode": {
+                "id": 3390,
+                "name": "Roles.Role",
+                "nodeType": "IdentifierPath",
+                "referencedDeclaration": 4597,
+                "src": "1128:10:36"
+              },
+              "referencedDeclaration": 4597,
+              "src": "1128:10:36",
               "typeDescriptions": {
-                "typeIdentifier": "t_struct$_Role_$2430_storage_ptr",
+                "typeIdentifier": "t_struct$_Role_$4597_storage_ptr",
                 "typeString": "struct Roles.Role"
               }
             }
           },
           {
             "constant": false,
-            "id": 1629,
+            "id": 3395,
+            "mutability": "mutable",
             "name": "systemAccounts",
+            "nameLocation": "1161:14:36",
             "nodeType": "VariableDeclaration",
-            "scope": 1711,
-            "src": "1077:33:20",
+            "scope": 3480,
+            "src": "1142:33:36",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_struct$_Role_$2430_storage",
+              "typeIdentifier": "t_struct$_Role_$4597_storage",
               "typeString": "struct Roles.Role"
             },
             "typeName": {
-              "contractScope": null,
-              "id": 1628,
-              "name": "Roles.Role",
+              "id": 3394,
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 2430,
-              "src": "1077:10:20",
+              "pathNode": {
+                "id": 3393,
+                "name": "Roles.Role",
+                "nodeType": "IdentifierPath",
+                "referencedDeclaration": 4597,
+                "src": "1142:10:36"
+              },
+              "referencedDeclaration": 4597,
+              "src": "1142:10:36",
               "typeDescriptions": {
-                "typeIdentifier": "t_struct$_Role_$2430_storage_ptr",
+                "typeIdentifier": "t_struct$_Role_$4597_storage_ptr",
                 "typeString": "struct Roles.Role"
               }
             },
-            "value": null,
             "visibility": "private"
           },
           {
             "anonymous": false,
-            "documentation": "@dev Emitted when system account is added.\n@param account is a new system account.",
-            "id": 1633,
+            "documentation": {
+              "id": 3396,
+              "nodeType": "StructuredDocumentation",
+              "src": "1182:108:36",
+              "text": " @dev Emitted when system account is added.\n @param account is a new system account."
+            },
+            "id": 3400,
             "name": "SystemAccountAdded",
+            "nameLocation": "1301:18:36",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 1632,
+              "id": 3399,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1631,
+                  "id": 3398,
                   "indexed": true,
+                  "mutability": "mutable",
                   "name": "account",
+                  "nameLocation": "1336:7:36",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1633,
-                  "src": "1255:23:20",
+                  "scope": 3400,
+                  "src": "1320:23:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -219,41 +237,49 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1630,
+                    "id": 3397,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1255:7:20",
+                    "src": "1320:7:36",
+                    "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "value": null,
                   "visibility": "internal"
                 }
               ],
-              "src": "1254:25:20"
+              "src": "1319:25:36"
             },
-            "src": "1230:50:20"
+            "src": "1295:50:36"
           },
           {
             "anonymous": false,
-            "documentation": "@dev Emitted when system account is removed.\n@param account is the old system account.",
-            "id": 1637,
+            "documentation": {
+              "id": 3401,
+              "nodeType": "StructuredDocumentation",
+              "src": "1351:112:36",
+              "text": " @dev Emitted when system account is removed.\n @param account is the old system account."
+            },
+            "id": 3405,
             "name": "SystemAccountRemoved",
+            "nameLocation": "1474:20:36",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 1636,
+              "id": 3404,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1635,
+                  "id": 3403,
                   "indexed": true,
+                  "mutability": "mutable",
                   "name": "account",
+                  "nameLocation": "1511:7:36",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1637,
-                  "src": "1430:23:20",
+                  "scope": 3405,
+                  "src": "1495:23:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -261,60 +287,55 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1634,
+                    "id": 3402,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1430:7:20",
+                    "src": "1495:7:36",
+                    "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "value": null,
                   "visibility": "internal"
                 }
               ],
-              "src": "1429:25:20"
+              "src": "1494:25:36"
             },
-            "src": "1403:52:20"
+            "src": "1468:52:36"
           },
           {
             "body": {
-              "id": 1647,
+              "id": 3416,
               "nodeType": "Block",
-              "src": "1597:64:20",
+              "src": "1662:64:36",
               "statements": [
                 {
                   "expression": {
-                    "argumentTypes": null,
                     "arguments": [
                       {
-                        "argumentTypes": null,
                         "arguments": [
                           {
-                            "argumentTypes": null,
                             "expression": {
-                              "argumentTypes": null,
-                              "id": 1641,
+                              "id": 3410,
                               "name": "msg",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 3193,
-                              "src": "1631:3:20",
+                              "referencedDeclaration": 4294967281,
+                              "src": "1696:3:36",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_magic_message",
                                 "typeString": "msg"
                               }
                             },
-                            "id": 1642,
+                            "id": 3411,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
                             "lValueRequested": false,
                             "memberName": "sender",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": null,
-                            "src": "1631:10:20",
+                            "src": "1696:10:36",
                             "typeDescriptions": {
                               "typeIdentifier": "t_address",
                               "typeString": "address"
@@ -328,18 +349,18 @@
                               "typeString": "address"
                             }
                           ],
-                          "id": 1640,
+                          "id": 3409,
                           "name": "isSystemAccount",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 1678,
-                          "src": "1615:15:20",
+                          "referencedDeclaration": 3445,
+                          "src": "1680:15:36",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_internal_view$_t_address_$returns$_t_bool_$",
                             "typeString": "function (address) view returns (bool)"
                           }
                         },
-                        "id": 1643,
+                        "id": 3412,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -347,7 +368,8 @@
                         "lValueRequested": false,
                         "names": [],
                         "nodeType": "FunctionCall",
-                        "src": "1615:27:20",
+                        "src": "1680:27:36",
+                        "tryCall": false,
                         "typeDescriptions": {
                           "typeIdentifier": "t_bool",
                           "typeString": "bool"
@@ -361,21 +383,21 @@
                           "typeString": "bool"
                         }
                       ],
-                      "id": 1639,
+                      "id": 3408,
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        3196,
-                        3197
+                        4294967278,
+                        4294967278
                       ],
-                      "referencedDeclaration": 3196,
-                      "src": "1607:7:20",
+                      "referencedDeclaration": 4294967278,
+                      "src": "1672:7:36",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
                         "typeString": "function (bool) pure"
                       }
                     },
-                    "id": 1644,
+                    "id": 3413,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -383,57 +405,62 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "1607:36:20",
+                    "src": "1672:36:36",
+                    "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1645,
+                  "id": 3414,
                   "nodeType": "ExpressionStatement",
-                  "src": "1607:36:20"
+                  "src": "1672:36:36"
                 },
                 {
-                  "id": 1646,
+                  "id": 3415,
                   "nodeType": "PlaceholderStatement",
-                  "src": "1653:1:20"
+                  "src": "1718:1:36"
                 }
               ]
             },
-            "documentation": "@dev Modifier which prevents non-system accounts from calling protected functions.",
-            "id": 1648,
+            "documentation": {
+              "id": 3406,
+              "nodeType": "StructuredDocumentation",
+              "src": "1526:101:36",
+              "text": " @dev Modifier which prevents non-system accounts from calling protected functions."
+            },
+            "id": 3417,
             "name": "onlySystemAccounts",
+            "nameLocation": "1641:18:36",
             "nodeType": "ModifierDefinition",
             "parameters": {
-              "id": 1638,
+              "id": 3407,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1594:2:20"
+              "src": "1659:2:36"
             },
-            "src": "1567:94:20",
+            "src": "1632:94:36",
+            "virtual": false,
             "visibility": "internal"
           },
           {
             "body": {
-              "id": 1660,
+              "id": 3430,
               "nodeType": "Block",
-              "src": "1859:123:20",
+              "src": "1924:123:36",
               "statements": [
                 {
                   "expression": {
-                    "argumentTypes": null,
                     "arguments": [
                       {
-                        "argumentTypes": null,
                         "arguments": [
                           {
-                            "argumentTypes": null,
-                            "id": 1654,
+                            "id": 3424,
                             "name": "account",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 1650,
-                            "src": "1906:7:20",
+                            "referencedDeclaration": 3420,
+                            "src": "1971:7:36",
                             "typeDescriptions": {
                               "typeIdentifier": "t_address",
                               "typeString": "address"
@@ -447,18 +474,18 @@
                               "typeString": "address"
                             }
                           ],
-                          "id": 1653,
+                          "id": 3423,
                           "name": "isSystemAccount",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 1678,
-                          "src": "1890:15:20",
+                          "referencedDeclaration": 3445,
+                          "src": "1955:15:36",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_internal_view$_t_address_$returns$_t_bool_$",
                             "typeString": "function (address) view returns (bool)"
                           }
                         },
-                        "id": 1655,
+                        "id": 3425,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -466,24 +493,23 @@
                         "lValueRequested": false,
                         "names": [],
                         "nodeType": "FunctionCall",
-                        "src": "1890:24:20",
+                        "src": "1955:24:36",
+                        "tryCall": false,
                         "typeDescriptions": {
                           "typeIdentifier": "t_bool",
                           "typeString": "bool"
                         }
                       },
                       {
-                        "argumentTypes": null,
                         "hexValue": "6d75737420626520612073797374656d206163636f756e74",
-                        "id": 1656,
+                        "id": 3426,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
                         "kind": "string",
                         "lValueRequested": false,
                         "nodeType": "Literal",
-                        "src": "1928:26:20",
-                        "subdenomination": null,
+                        "src": "1993:26:36",
                         "typeDescriptions": {
                           "typeIdentifier": "t_stringliteral_4398881ecaa35d312088d2e886dcb45f1b8c9a172c724d24786ea6ddbb5d8428",
                           "typeString": "literal_string \"must be a system account\""
@@ -502,21 +528,21 @@
                           "typeString": "literal_string \"must be a system account\""
                         }
                       ],
-                      "id": 1652,
+                      "id": 3422,
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        3196,
-                        3197
+                        4294967278,
+                        4294967278
                       ],
-                      "referencedDeclaration": 3197,
-                      "src": "1869:7:20",
+                      "referencedDeclaration": 4294967278,
+                      "src": "1934:7:36",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
                         "typeString": "function (bool,string memory) pure"
                       }
                     },
-                    "id": 1657,
+                    "id": 3427,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -524,38 +550,47 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "1869:95:20",
+                    "src": "1934:95:36",
+                    "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1658,
+                  "id": 3428,
                   "nodeType": "ExpressionStatement",
-                  "src": "1869:95:20"
+                  "src": "1934:95:36"
                 },
                 {
-                  "id": 1659,
+                  "id": 3429,
                   "nodeType": "PlaceholderStatement",
-                  "src": "1974:1:20"
+                  "src": "2039:1:36"
                 }
               ]
             },
-            "documentation": "@dev Modifier which prevents non-system accounts from being passed to the guard.\n@param account The account to check.",
-            "id": 1661,
+            "documentation": {
+              "id": 3418,
+              "nodeType": "StructuredDocumentation",
+              "src": "1732:143:36",
+              "text": " @dev Modifier which prevents non-system accounts from being passed to the guard.\n @param account The account to check."
+            },
+            "id": 3431,
             "name": "onlySystemAccount",
+            "nameLocation": "1889:17:36",
             "nodeType": "ModifierDefinition",
             "parameters": {
-              "id": 1651,
+              "id": 3421,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1650,
+                  "id": 3420,
+                  "mutability": "mutable",
                   "name": "account",
+                  "nameLocation": "1915:7:36",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1661,
-                  "src": "1842:15:20",
+                  "scope": 3431,
+                  "src": "1907:15:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -563,76 +598,41 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1649,
+                    "id": 3419,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1842:7:20",
+                    "src": "1907:7:36",
+                    "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "value": null,
                   "visibility": "internal"
                 }
               ],
-              "src": "1841:17:20"
+              "src": "1906:17:36"
             },
-            "src": "1815:167:20",
+            "src": "1880:167:36",
+            "virtual": false,
             "visibility": "internal"
           },
           {
             "body": {
-              "id": 1664,
+              "id": 3444,
               "nodeType": "Block",
-              "src": "2154:2:20",
-              "statements": []
-            },
-            "documentation": "@dev System Role constructor.\n@notice The contract is an abstract contract as a result of the internal modifier.",
-            "id": 1665,
-            "implemented": true,
-            "isConstructor": true,
-            "isDeclaredConst": false,
-            "modifiers": [],
-            "name": "",
-            "nodeType": "FunctionDefinition",
-            "parameters": {
-              "id": 1662,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "2142:2:20"
-            },
-            "payable": false,
-            "returnParameters": {
-              "id": 1663,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "2154:0:20"
-            },
-            "scope": 1711,
-            "src": "2131:25:20",
-            "stateMutability": "nonpayable",
-            "superFunction": null,
-            "visibility": "internal"
-          },
-          {
-            "body": {
-              "id": 1677,
-              "nodeType": "Block",
-              "src": "2389:51:20",
+              "src": "2280:51:36",
               "statements": [
                 {
                   "expression": {
-                    "argumentTypes": null,
                     "arguments": [
                       {
-                        "argumentTypes": null,
-                        "id": 1674,
+                        "id": 3441,
                         "name": "account",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1667,
-                        "src": "2425:7:20",
+                        "referencedDeclaration": 3434,
+                        "src": "2316:7:36",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
                           "typeString": "address"
@@ -647,33 +647,32 @@
                         }
                       ],
                       "expression": {
-                        "argumentTypes": null,
-                        "id": 1672,
+                        "id": 3439,
                         "name": "systemAccounts",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1629,
-                        "src": "2406:14:20",
+                        "referencedDeclaration": 3395,
+                        "src": "2297:14:36",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_Role_$2430_storage",
+                          "typeIdentifier": "t_struct$_Role_$4597_storage",
                           "typeString": "struct Roles.Role storage ref"
                         }
                       },
-                      "id": 1673,
+                      "id": 3440,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
                       "lValueRequested": false,
                       "memberName": "has",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 2492,
-                      "src": "2406:18:20",
+                      "referencedDeclaration": 4667,
+                      "src": "2297:18:36",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_function_internal_view$_t_struct$_Role_$2430_storage_ptr_$_t_address_$returns$_t_bool_$bound_to$_t_struct$_Role_$2430_storage_ptr_$",
+                        "typeIdentifier": "t_function_internal_view$_t_struct$_Role_$4597_storage_ptr_$_t_address_$returns$_t_bool_$bound_to$_t_struct$_Role_$4597_storage_ptr_$",
                         "typeString": "function (struct Roles.Role storage pointer,address) view returns (bool)"
                       }
                     },
-                    "id": 1675,
+                    "id": 3442,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -681,38 +680,47 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "2406:27:20",
+                    "src": "2297:27:36",
+                    "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
                     }
                   },
-                  "functionReturnParameters": 1671,
-                  "id": 1676,
+                  "functionReturnParameters": 3438,
+                  "id": 3443,
                   "nodeType": "Return",
-                  "src": "2399:34:20"
+                  "src": "2290:34:36"
                 }
               ]
             },
-            "documentation": "@dev Checks whether an address is a system account.\n@param account the address to check.\n@return true if system account.",
-            "id": 1678,
+            "documentation": {
+              "id": 3432,
+              "nodeType": "StructuredDocumentation",
+              "src": "2053:153:36",
+              "text": " @dev Checks whether an address is a system account.\n @param account the address to check.\n @return true if system account."
+            },
+            "functionSelector": "326ecb05",
+            "id": 3445,
             "implemented": true,
-            "isConstructor": false,
-            "isDeclaredConst": true,
+            "kind": "function",
             "modifiers": [],
             "name": "isSystemAccount",
+            "nameLocation": "2220:15:36",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1668,
+              "id": 3435,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1667,
+                  "id": 3434,
+                  "mutability": "mutable",
                   "name": "account",
+                  "nameLocation": "2244:7:36",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1678,
-                  "src": "2345:15:20",
+                  "scope": 3445,
+                  "src": "2236:15:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -720,33 +728,34 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1666,
+                    "id": 3433,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2345:7:20",
+                    "src": "2236:7:36",
+                    "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "value": null,
                   "visibility": "internal"
                 }
               ],
-              "src": "2344:17:20"
+              "src": "2235:17:36"
             },
-            "payable": false,
             "returnParameters": {
-              "id": 1671,
+              "id": 3438,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1670,
+                  "id": 3437,
+                  "mutability": "mutable",
                   "name": "",
+                  "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1678,
-                  "src": "2383:4:20",
+                  "scope": 3445,
+                  "src": "2274:4:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -754,45 +763,42 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 1669,
+                    "id": 3436,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2383:4:20",
+                    "src": "2274:4:36",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
                     }
                   },
-                  "value": null,
                   "visibility": "internal"
                 }
               ],
-              "src": "2382:6:20"
+              "src": "2273:6:36"
             },
-            "scope": 1711,
-            "src": "2320:120:20",
+            "scope": 3480,
+            "src": "2211:120:36",
             "stateMutability": "view",
-            "superFunction": null,
+            "virtual": false,
             "visibility": "public"
           },
           {
             "body": {
-              "id": 1693,
+              "id": 3461,
               "nodeType": "Block",
-              "src": "2653:86:20",
+              "src": "2552:86:36",
               "statements": [
                 {
                   "expression": {
-                    "argumentTypes": null,
                     "arguments": [
                       {
-                        "argumentTypes": null,
-                        "id": 1686,
+                        "id": 3454,
                         "name": "account",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1680,
-                        "src": "2682:7:20",
+                        "referencedDeclaration": 3448,
+                        "src": "2581:7:36",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
                           "typeString": "address"
@@ -807,33 +813,32 @@
                         }
                       ],
                       "expression": {
-                        "argumentTypes": null,
-                        "id": 1683,
+                        "id": 3451,
                         "name": "systemAccounts",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1629,
-                        "src": "2663:14:20",
+                        "referencedDeclaration": 3395,
+                        "src": "2562:14:36",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_Role_$2430_storage",
+                          "typeIdentifier": "t_struct$_Role_$4597_storage",
                           "typeString": "struct Roles.Role storage ref"
                         }
                       },
-                      "id": 1685,
+                      "id": 3453,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
                       "lValueRequested": false,
                       "memberName": "add",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 2446,
-                      "src": "2663:18:20",
+                      "referencedDeclaration": 4615,
+                      "src": "2562:18:36",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_function_internal_nonpayable$_t_struct$_Role_$2430_storage_ptr_$_t_address_$returns$__$bound_to$_t_struct$_Role_$2430_storage_ptr_$",
+                        "typeIdentifier": "t_function_internal_nonpayable$_t_struct$_Role_$4597_storage_ptr_$_t_address_$returns$__$bound_to$_t_struct$_Role_$4597_storage_ptr_$",
                         "typeString": "function (struct Roles.Role storage pointer,address)"
                       }
                     },
-                    "id": 1687,
+                    "id": 3455,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -841,28 +846,27 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "2663:27:20",
+                    "src": "2562:27:36",
+                    "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1688,
+                  "id": 3456,
                   "nodeType": "ExpressionStatement",
-                  "src": "2663:27:20"
+                  "src": "2562:27:36"
                 },
                 {
                   "eventCall": {
-                    "argumentTypes": null,
                     "arguments": [
                       {
-                        "argumentTypes": null,
-                        "id": 1690,
+                        "id": 3458,
                         "name": "account",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1680,
-                        "src": "2724:7:20",
+                        "referencedDeclaration": 3448,
+                        "src": "2623:7:36",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
                           "typeString": "address"
@@ -876,18 +880,18 @@
                           "typeString": "address"
                         }
                       ],
-                      "id": 1689,
+                      "id": 3457,
                       "name": "SystemAccountAdded",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1633,
-                      "src": "2705:18:20",
+                      "referencedDeclaration": 3400,
+                      "src": "2604:18:36",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_event_nonpayable$_t_address_$returns$__$",
                         "typeString": "function (address)"
                       }
                     },
-                    "id": 1691,
+                    "id": 3459,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -895,37 +899,46 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "2705:27:20",
+                    "src": "2604:27:36",
+                    "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1692,
+                  "id": 3460,
                   "nodeType": "EmitStatement",
-                  "src": "2700:32:20"
+                  "src": "2599:32:36"
                 }
               ]
             },
-            "documentation": "@dev Assigns the system role to an account.\n@notice This method is unprotected and should be authorized in the child contract.",
-            "id": 1694,
+            "documentation": {
+              "id": 3446,
+              "nodeType": "StructuredDocumentation",
+              "src": "2337:152:36",
+              "text": " @dev Assigns the system role to an account.\n @notice This method is unprotected and should be authorized in the child contract."
+            },
+            "functionSelector": "a84c56d0",
+            "id": 3462,
             "implemented": true,
-            "isConstructor": false,
-            "isDeclaredConst": false,
+            "kind": "function",
             "modifiers": [],
             "name": "addSystemAccount",
+            "nameLocation": "2503:16:36",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1681,
+              "id": 3449,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1680,
+                  "id": 3448,
+                  "mutability": "mutable",
                   "name": "account",
+                  "nameLocation": "2528:7:36",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1694,
-                  "src": "2629:15:20",
+                  "scope": 3462,
+                  "src": "2520:15:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -933,52 +946,49 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1679,
+                    "id": 3447,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2629:7:20",
+                    "src": "2520:7:36",
+                    "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "value": null,
                   "visibility": "internal"
                 }
               ],
-              "src": "2628:17:20"
+              "src": "2519:17:36"
             },
-            "payable": false,
             "returnParameters": {
-              "id": 1682,
+              "id": 3450,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2653:0:20"
+              "src": "2552:0:36"
             },
-            "scope": 1711,
-            "src": "2603:136:20",
+            "scope": 3480,
+            "src": "2494:144:36",
             "stateMutability": "nonpayable",
-            "superFunction": null,
+            "virtual": true,
             "visibility": "public"
           },
           {
             "body": {
-              "id": 1709,
+              "id": 3478,
               "nodeType": "Block",
-              "src": "2957:91:20",
+              "src": "2864:91:36",
               "statements": [
                 {
                   "expression": {
-                    "argumentTypes": null,
                     "arguments": [
                       {
-                        "argumentTypes": null,
-                        "id": 1702,
+                        "id": 3471,
                         "name": "account",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1696,
-                        "src": "2989:7:20",
+                        "referencedDeclaration": 3465,
+                        "src": "2896:7:36",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
                           "typeString": "address"
@@ -993,33 +1003,32 @@
                         }
                       ],
                       "expression": {
-                        "argumentTypes": null,
-                        "id": 1699,
+                        "id": 3468,
                         "name": "systemAccounts",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1629,
-                        "src": "2967:14:20",
+                        "referencedDeclaration": 3395,
+                        "src": "2874:14:36",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_Role_$2430_storage",
+                          "typeIdentifier": "t_struct$_Role_$4597_storage",
                           "typeString": "struct Roles.Role storage ref"
                         }
                       },
-                      "id": 1701,
+                      "id": 3470,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
                       "lValueRequested": false,
                       "memberName": "remove",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 2462,
-                      "src": "2967:21:20",
+                      "referencedDeclaration": 4633,
+                      "src": "2874:21:36",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_function_internal_nonpayable$_t_struct$_Role_$2430_storage_ptr_$_t_address_$returns$__$bound_to$_t_struct$_Role_$2430_storage_ptr_$",
+                        "typeIdentifier": "t_function_internal_nonpayable$_t_struct$_Role_$4597_storage_ptr_$_t_address_$returns$__$bound_to$_t_struct$_Role_$4597_storage_ptr_$",
                         "typeString": "function (struct Roles.Role storage pointer,address)"
                       }
                     },
-                    "id": 1703,
+                    "id": 3472,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1027,28 +1036,27 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "2967:30:20",
+                    "src": "2874:30:36",
+                    "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1704,
+                  "id": 3473,
                   "nodeType": "ExpressionStatement",
-                  "src": "2967:30:20"
+                  "src": "2874:30:36"
                 },
                 {
                   "eventCall": {
-                    "argumentTypes": null,
                     "arguments": [
                       {
-                        "argumentTypes": null,
-                        "id": 1706,
+                        "id": 3475,
                         "name": "account",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1696,
-                        "src": "3033:7:20",
+                        "referencedDeclaration": 3465,
+                        "src": "2940:7:36",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
                           "typeString": "address"
@@ -1062,18 +1070,18 @@
                           "typeString": "address"
                         }
                       ],
-                      "id": 1705,
+                      "id": 3474,
                       "name": "SystemAccountRemoved",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1637,
-                      "src": "3012:20:20",
+                      "referencedDeclaration": 3405,
+                      "src": "2919:20:36",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_event_nonpayable$_t_address_$returns$__$",
                         "typeString": "function (address)"
                       }
                     },
-                    "id": 1707,
+                    "id": 3476,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1081,37 +1089,46 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "3012:29:20",
+                    "src": "2919:29:36",
+                    "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1708,
+                  "id": 3477,
                   "nodeType": "EmitStatement",
-                  "src": "3007:34:20"
+                  "src": "2914:34:36"
                 }
               ]
             },
-            "documentation": "@dev Removes the system role from an account.\n@notice This method is unprotected and should be authorized in the child contract.",
-            "id": 1710,
+            "documentation": {
+              "id": 3463,
+              "nodeType": "StructuredDocumentation",
+              "src": "2644:154:36",
+              "text": " @dev Removes the system role from an account.\n @notice This method is unprotected and should be authorized in the child contract."
+            },
+            "functionSelector": "ebbc3d46",
+            "id": 3479,
             "implemented": true,
-            "isConstructor": false,
-            "isDeclaredConst": false,
+            "kind": "function",
             "modifiers": [],
             "name": "removeSystemAccount",
+            "nameLocation": "2812:19:36",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1697,
+              "id": 3466,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1696,
+                  "id": 3465,
+                  "mutability": "mutable",
                   "name": "account",
+                  "nameLocation": "2840:7:36",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1710,
-                  "src": "2933:15:20",
+                  "scope": 3479,
+                  "src": "2832:15:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1119,164 +1136,188 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1695,
+                    "id": 3464,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2933:7:20",
+                    "src": "2832:7:36",
+                    "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "value": null,
                   "visibility": "internal"
                 }
               ],
-              "src": "2932:17:20"
+              "src": "2831:17:36"
             },
-            "payable": false,
             "returnParameters": {
-              "id": 1698,
+              "id": 3467,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2957:0:20"
+              "src": "2864:0:36"
             },
-            "scope": 1711,
-            "src": "2904:144:20",
+            "scope": 3480,
+            "src": "2803:152:36",
             "stateMutability": "nonpayable",
-            "superFunction": null,
+            "virtual": true,
             "visibility": "public"
           }
         ],
-        "scope": 1712,
-        "src": "1018:2033:20"
+        "scope": 3481,
+        "src": "1078:1880:36",
+        "usedErrors": []
       }
     ],
-    "src": "599:2453:20"
+    "src": "641:2318:36"
   },
   "legacyAST": {
-    "absolutePath": "/Users/gislik/Code/smart-contracts/contracts/SystemRole.sol",
+    "absolutePath": "project:/contracts/SystemRole.sol",
     "exportedSymbols": {
       "Roles": [
         4668
       ],
       "SystemRole": [
-        1711
+        3480
       ]
     },
-    "id": 1712,
+    "id": 3481,
     "license": "apache-2.0",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 1623,
+        "id": 3386,
         "literals": [
           "solidity",
-          "0.4",
-          ".24"
+          "^",
+          "0.8",
+          ".11"
         ],
         "nodeType": "PragmaDirective",
-        "src": "599:23:20"
+        "src": "641:24:36"
       },
       {
-        "absolutePath": "openzeppelin-solidity/contracts/access/rbac/Roles.sol",
-        "file": "openzeppelin-solidity/contracts/access/rbac/Roles.sol",
-        "id": 1624,
+        "absolutePath": "project:/contracts/ownership/Roles.sol",
+        "file": "./ownership/Roles.sol",
+        "id": 3387,
+        "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
-        "scope": 1712,
-        "sourceUnit": 2494,
-        "src": "624:63:20",
+        "scope": 3481,
+        "sourceUnit": 4669,
+        "src": "667:31:36",
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
+        "abstract": true,
         "baseContracts": [],
+        "canonicalName": "SystemRole",
         "contractDependencies": [],
         "contractKind": "contract",
-        "documentation": "@title SystemRole\n@dev SystemRole accounts have been approved to perform operational actions (e.g. mint and burn).\n@notice addSystemAccount and removeSystemAccount are unprotected by default, i.e. anyone can call them.\n@notice Contracts inheriting SystemRole *should* authorize the caller by overriding them.",
+        "documentation": {
+          "id": 3388,
+          "nodeType": "StructuredDocumentation",
+          "src": "700:377:36",
+          "text": " @title SystemRole\n @dev SystemRole accounts have been approved to perform operational actions (e.g. mint and burn).\n @notice addSystemAccount and removeSystemAccount are unprotected by default, i.e. anyone can call them.\n @notice Contracts inheriting SystemRole *should* authorize the caller by overriding them.\n @notice The contract is an abstract contract."
+        },
         "fullyImplemented": true,
-        "id": 1711,
+        "id": 3480,
         "linearizedBaseContracts": [
-          1711
+          3480
         ],
         "name": "SystemRole",
+        "nameLocation": "1096:10:36",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
-            "id": 1627,
+            "id": 3392,
             "libraryName": {
-              "contractScope": null,
-              "id": 1625,
+              "id": 3389,
               "name": "Roles",
-              "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 2493,
-              "src": "1051:5:20",
-              "typeDescriptions": {
-                "typeIdentifier": "t_contract$_Roles_$2493",
-                "typeString": "library Roles"
-              }
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 4668,
+              "src": "1118:5:36"
             },
             "nodeType": "UsingForDirective",
-            "src": "1045:27:20",
+            "src": "1112:27:36",
             "typeName": {
-              "contractScope": null,
-              "id": 1626,
-              "name": "Roles.Role",
+              "id": 3391,
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 2430,
-              "src": "1061:10:20",
+              "pathNode": {
+                "id": 3390,
+                "name": "Roles.Role",
+                "nodeType": "IdentifierPath",
+                "referencedDeclaration": 4597,
+                "src": "1128:10:36"
+              },
+              "referencedDeclaration": 4597,
+              "src": "1128:10:36",
               "typeDescriptions": {
-                "typeIdentifier": "t_struct$_Role_$2430_storage_ptr",
+                "typeIdentifier": "t_struct$_Role_$4597_storage_ptr",
                 "typeString": "struct Roles.Role"
               }
             }
           },
           {
             "constant": false,
-            "id": 1629,
+            "id": 3395,
+            "mutability": "mutable",
             "name": "systemAccounts",
+            "nameLocation": "1161:14:36",
             "nodeType": "VariableDeclaration",
-            "scope": 1711,
-            "src": "1077:33:20",
+            "scope": 3480,
+            "src": "1142:33:36",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_struct$_Role_$2430_storage",
+              "typeIdentifier": "t_struct$_Role_$4597_storage",
               "typeString": "struct Roles.Role"
             },
             "typeName": {
-              "contractScope": null,
-              "id": 1628,
-              "name": "Roles.Role",
+              "id": 3394,
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 2430,
-              "src": "1077:10:20",
+              "pathNode": {
+                "id": 3393,
+                "name": "Roles.Role",
+                "nodeType": "IdentifierPath",
+                "referencedDeclaration": 4597,
+                "src": "1142:10:36"
+              },
+              "referencedDeclaration": 4597,
+              "src": "1142:10:36",
               "typeDescriptions": {
-                "typeIdentifier": "t_struct$_Role_$2430_storage_ptr",
+                "typeIdentifier": "t_struct$_Role_$4597_storage_ptr",
                 "typeString": "struct Roles.Role"
               }
             },
-            "value": null,
             "visibility": "private"
           },
           {
             "anonymous": false,
-            "documentation": "@dev Emitted when system account is added.\n@param account is a new system account.",
-            "id": 1633,
+            "documentation": {
+              "id": 3396,
+              "nodeType": "StructuredDocumentation",
+              "src": "1182:108:36",
+              "text": " @dev Emitted when system account is added.\n @param account is a new system account."
+            },
+            "id": 3400,
             "name": "SystemAccountAdded",
+            "nameLocation": "1301:18:36",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 1632,
+              "id": 3399,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1631,
+                  "id": 3398,
                   "indexed": true,
+                  "mutability": "mutable",
                   "name": "account",
+                  "nameLocation": "1336:7:36",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1633,
-                  "src": "1255:23:20",
+                  "scope": 3400,
+                  "src": "1320:23:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1284,41 +1325,49 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1630,
+                    "id": 3397,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1255:7:20",
+                    "src": "1320:7:36",
+                    "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "value": null,
                   "visibility": "internal"
                 }
               ],
-              "src": "1254:25:20"
+              "src": "1319:25:36"
             },
-            "src": "1230:50:20"
+            "src": "1295:50:36"
           },
           {
             "anonymous": false,
-            "documentation": "@dev Emitted when system account is removed.\n@param account is the old system account.",
-            "id": 1637,
+            "documentation": {
+              "id": 3401,
+              "nodeType": "StructuredDocumentation",
+              "src": "1351:112:36",
+              "text": " @dev Emitted when system account is removed.\n @param account is the old system account."
+            },
+            "id": 3405,
             "name": "SystemAccountRemoved",
+            "nameLocation": "1474:20:36",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 1636,
+              "id": 3404,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1635,
+                  "id": 3403,
                   "indexed": true,
+                  "mutability": "mutable",
                   "name": "account",
+                  "nameLocation": "1511:7:36",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1637,
-                  "src": "1430:23:20",
+                  "scope": 3405,
+                  "src": "1495:23:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1326,60 +1375,55 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1634,
+                    "id": 3402,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1430:7:20",
+                    "src": "1495:7:36",
+                    "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "value": null,
                   "visibility": "internal"
                 }
               ],
-              "src": "1429:25:20"
+              "src": "1494:25:36"
             },
-            "src": "1403:52:20"
+            "src": "1468:52:36"
           },
           {
             "body": {
-              "id": 1647,
+              "id": 3416,
               "nodeType": "Block",
-              "src": "1597:64:20",
+              "src": "1662:64:36",
               "statements": [
                 {
                   "expression": {
-                    "argumentTypes": null,
                     "arguments": [
                       {
-                        "argumentTypes": null,
                         "arguments": [
                           {
-                            "argumentTypes": null,
                             "expression": {
-                              "argumentTypes": null,
-                              "id": 1641,
+                              "id": 3410,
                               "name": "msg",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 3193,
-                              "src": "1631:3:20",
+                              "referencedDeclaration": 4294967281,
+                              "src": "1696:3:36",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_magic_message",
                                 "typeString": "msg"
                               }
                             },
-                            "id": 1642,
+                            "id": 3411,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
                             "lValueRequested": false,
                             "memberName": "sender",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": null,
-                            "src": "1631:10:20",
+                            "src": "1696:10:36",
                             "typeDescriptions": {
                               "typeIdentifier": "t_address",
                               "typeString": "address"
@@ -1393,18 +1437,18 @@
                               "typeString": "address"
                             }
                           ],
-                          "id": 1640,
+                          "id": 3409,
                           "name": "isSystemAccount",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 1678,
-                          "src": "1615:15:20",
+                          "referencedDeclaration": 3445,
+                          "src": "1680:15:36",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_internal_view$_t_address_$returns$_t_bool_$",
                             "typeString": "function (address) view returns (bool)"
                           }
                         },
-                        "id": 1643,
+                        "id": 3412,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -1412,7 +1456,8 @@
                         "lValueRequested": false,
                         "names": [],
                         "nodeType": "FunctionCall",
-                        "src": "1615:27:20",
+                        "src": "1680:27:36",
+                        "tryCall": false,
                         "typeDescriptions": {
                           "typeIdentifier": "t_bool",
                           "typeString": "bool"
@@ -1426,21 +1471,21 @@
                           "typeString": "bool"
                         }
                       ],
-                      "id": 1639,
+                      "id": 3408,
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        3196,
-                        3197
+                        4294967278,
+                        4294967278
                       ],
-                      "referencedDeclaration": 3196,
-                      "src": "1607:7:20",
+                      "referencedDeclaration": 4294967278,
+                      "src": "1672:7:36",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
                         "typeString": "function (bool) pure"
                       }
                     },
-                    "id": 1644,
+                    "id": 3413,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1448,57 +1493,62 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "1607:36:20",
+                    "src": "1672:36:36",
+                    "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1645,
+                  "id": 3414,
                   "nodeType": "ExpressionStatement",
-                  "src": "1607:36:20"
+                  "src": "1672:36:36"
                 },
                 {
-                  "id": 1646,
+                  "id": 3415,
                   "nodeType": "PlaceholderStatement",
-                  "src": "1653:1:20"
+                  "src": "1718:1:36"
                 }
               ]
             },
-            "documentation": "@dev Modifier which prevents non-system accounts from calling protected functions.",
-            "id": 1648,
+            "documentation": {
+              "id": 3406,
+              "nodeType": "StructuredDocumentation",
+              "src": "1526:101:36",
+              "text": " @dev Modifier which prevents non-system accounts from calling protected functions."
+            },
+            "id": 3417,
             "name": "onlySystemAccounts",
+            "nameLocation": "1641:18:36",
             "nodeType": "ModifierDefinition",
             "parameters": {
-              "id": 1638,
+              "id": 3407,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1594:2:20"
+              "src": "1659:2:36"
             },
-            "src": "1567:94:20",
+            "src": "1632:94:36",
+            "virtual": false,
             "visibility": "internal"
           },
           {
             "body": {
-              "id": 1660,
+              "id": 3430,
               "nodeType": "Block",
-              "src": "1859:123:20",
+              "src": "1924:123:36",
               "statements": [
                 {
                   "expression": {
-                    "argumentTypes": null,
                     "arguments": [
                       {
-                        "argumentTypes": null,
                         "arguments": [
                           {
-                            "argumentTypes": null,
-                            "id": 1654,
+                            "id": 3424,
                             "name": "account",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 1650,
-                            "src": "1906:7:20",
+                            "referencedDeclaration": 3420,
+                            "src": "1971:7:36",
                             "typeDescriptions": {
                               "typeIdentifier": "t_address",
                               "typeString": "address"
@@ -1512,18 +1562,18 @@
                               "typeString": "address"
                             }
                           ],
-                          "id": 1653,
+                          "id": 3423,
                           "name": "isSystemAccount",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 1678,
-                          "src": "1890:15:20",
+                          "referencedDeclaration": 3445,
+                          "src": "1955:15:36",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_internal_view$_t_address_$returns$_t_bool_$",
                             "typeString": "function (address) view returns (bool)"
                           }
                         },
-                        "id": 1655,
+                        "id": 3425,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -1531,24 +1581,23 @@
                         "lValueRequested": false,
                         "names": [],
                         "nodeType": "FunctionCall",
-                        "src": "1890:24:20",
+                        "src": "1955:24:36",
+                        "tryCall": false,
                         "typeDescriptions": {
                           "typeIdentifier": "t_bool",
                           "typeString": "bool"
                         }
                       },
                       {
-                        "argumentTypes": null,
                         "hexValue": "6d75737420626520612073797374656d206163636f756e74",
-                        "id": 1656,
+                        "id": 3426,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
                         "kind": "string",
                         "lValueRequested": false,
                         "nodeType": "Literal",
-                        "src": "1928:26:20",
-                        "subdenomination": null,
+                        "src": "1993:26:36",
                         "typeDescriptions": {
                           "typeIdentifier": "t_stringliteral_4398881ecaa35d312088d2e886dcb45f1b8c9a172c724d24786ea6ddbb5d8428",
                           "typeString": "literal_string \"must be a system account\""
@@ -1567,21 +1616,21 @@
                           "typeString": "literal_string \"must be a system account\""
                         }
                       ],
-                      "id": 1652,
+                      "id": 3422,
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        3196,
-                        3197
+                        4294967278,
+                        4294967278
                       ],
-                      "referencedDeclaration": 3197,
-                      "src": "1869:7:20",
+                      "referencedDeclaration": 4294967278,
+                      "src": "1934:7:36",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
                         "typeString": "function (bool,string memory) pure"
                       }
                     },
-                    "id": 1657,
+                    "id": 3427,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1589,38 +1638,47 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "1869:95:20",
+                    "src": "1934:95:36",
+                    "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1658,
+                  "id": 3428,
                   "nodeType": "ExpressionStatement",
-                  "src": "1869:95:20"
+                  "src": "1934:95:36"
                 },
                 {
-                  "id": 1659,
+                  "id": 3429,
                   "nodeType": "PlaceholderStatement",
-                  "src": "1974:1:20"
+                  "src": "2039:1:36"
                 }
               ]
             },
-            "documentation": "@dev Modifier which prevents non-system accounts from being passed to the guard.\n@param account The account to check.",
-            "id": 1661,
+            "documentation": {
+              "id": 3418,
+              "nodeType": "StructuredDocumentation",
+              "src": "1732:143:36",
+              "text": " @dev Modifier which prevents non-system accounts from being passed to the guard.\n @param account The account to check."
+            },
+            "id": 3431,
             "name": "onlySystemAccount",
+            "nameLocation": "1889:17:36",
             "nodeType": "ModifierDefinition",
             "parameters": {
-              "id": 1651,
+              "id": 3421,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1650,
+                  "id": 3420,
+                  "mutability": "mutable",
                   "name": "account",
+                  "nameLocation": "1915:7:36",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1661,
-                  "src": "1842:15:20",
+                  "scope": 3431,
+                  "src": "1907:15:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1628,76 +1686,41 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1649,
+                    "id": 3419,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1842:7:20",
+                    "src": "1907:7:36",
+                    "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "value": null,
                   "visibility": "internal"
                 }
               ],
-              "src": "1841:17:20"
+              "src": "1906:17:36"
             },
-            "src": "1815:167:20",
+            "src": "1880:167:36",
+            "virtual": false,
             "visibility": "internal"
           },
           {
             "body": {
-              "id": 1664,
+              "id": 3444,
               "nodeType": "Block",
-              "src": "2154:2:20",
-              "statements": []
-            },
-            "documentation": "@dev System Role constructor.\n@notice The contract is an abstract contract as a result of the internal modifier.",
-            "id": 1665,
-            "implemented": true,
-            "isConstructor": true,
-            "isDeclaredConst": false,
-            "modifiers": [],
-            "name": "",
-            "nodeType": "FunctionDefinition",
-            "parameters": {
-              "id": 1662,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "2142:2:20"
-            },
-            "payable": false,
-            "returnParameters": {
-              "id": 1663,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "2154:0:20"
-            },
-            "scope": 1711,
-            "src": "2131:25:20",
-            "stateMutability": "nonpayable",
-            "superFunction": null,
-            "visibility": "internal"
-          },
-          {
-            "body": {
-              "id": 1677,
-              "nodeType": "Block",
-              "src": "2389:51:20",
+              "src": "2280:51:36",
               "statements": [
                 {
                   "expression": {
-                    "argumentTypes": null,
                     "arguments": [
                       {
-                        "argumentTypes": null,
-                        "id": 1674,
+                        "id": 3441,
                         "name": "account",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1667,
-                        "src": "2425:7:20",
+                        "referencedDeclaration": 3434,
+                        "src": "2316:7:36",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
                           "typeString": "address"
@@ -1712,33 +1735,32 @@
                         }
                       ],
                       "expression": {
-                        "argumentTypes": null,
-                        "id": 1672,
+                        "id": 3439,
                         "name": "systemAccounts",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1629,
-                        "src": "2406:14:20",
+                        "referencedDeclaration": 3395,
+                        "src": "2297:14:36",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_Role_$2430_storage",
+                          "typeIdentifier": "t_struct$_Role_$4597_storage",
                           "typeString": "struct Roles.Role storage ref"
                         }
                       },
-                      "id": 1673,
+                      "id": 3440,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
                       "lValueRequested": false,
                       "memberName": "has",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 2492,
-                      "src": "2406:18:20",
+                      "referencedDeclaration": 4667,
+                      "src": "2297:18:36",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_function_internal_view$_t_struct$_Role_$2430_storage_ptr_$_t_address_$returns$_t_bool_$bound_to$_t_struct$_Role_$2430_storage_ptr_$",
+                        "typeIdentifier": "t_function_internal_view$_t_struct$_Role_$4597_storage_ptr_$_t_address_$returns$_t_bool_$bound_to$_t_struct$_Role_$4597_storage_ptr_$",
                         "typeString": "function (struct Roles.Role storage pointer,address) view returns (bool)"
                       }
                     },
-                    "id": 1675,
+                    "id": 3442,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1746,38 +1768,47 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "2406:27:20",
+                    "src": "2297:27:36",
+                    "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
                     }
                   },
-                  "functionReturnParameters": 1671,
-                  "id": 1676,
+                  "functionReturnParameters": 3438,
+                  "id": 3443,
                   "nodeType": "Return",
-                  "src": "2399:34:20"
+                  "src": "2290:34:36"
                 }
               ]
             },
-            "documentation": "@dev Checks whether an address is a system account.\n@param account the address to check.\n@return true if system account.",
-            "id": 1678,
+            "documentation": {
+              "id": 3432,
+              "nodeType": "StructuredDocumentation",
+              "src": "2053:153:36",
+              "text": " @dev Checks whether an address is a system account.\n @param account the address to check.\n @return true if system account."
+            },
+            "functionSelector": "326ecb05",
+            "id": 3445,
             "implemented": true,
-            "isConstructor": false,
-            "isDeclaredConst": true,
+            "kind": "function",
             "modifiers": [],
             "name": "isSystemAccount",
+            "nameLocation": "2220:15:36",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1668,
+              "id": 3435,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1667,
+                  "id": 3434,
+                  "mutability": "mutable",
                   "name": "account",
+                  "nameLocation": "2244:7:36",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1678,
-                  "src": "2345:15:20",
+                  "scope": 3445,
+                  "src": "2236:15:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1785,33 +1816,34 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1666,
+                    "id": 3433,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2345:7:20",
+                    "src": "2236:7:36",
+                    "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "value": null,
                   "visibility": "internal"
                 }
               ],
-              "src": "2344:17:20"
+              "src": "2235:17:36"
             },
-            "payable": false,
             "returnParameters": {
-              "id": 1671,
+              "id": 3438,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1670,
+                  "id": 3437,
+                  "mutability": "mutable",
                   "name": "",
+                  "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1678,
-                  "src": "2383:4:20",
+                  "scope": 3445,
+                  "src": "2274:4:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1819,45 +1851,42 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 1669,
+                    "id": 3436,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2383:4:20",
+                    "src": "2274:4:36",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
                     }
                   },
-                  "value": null,
                   "visibility": "internal"
                 }
               ],
-              "src": "2382:6:20"
+              "src": "2273:6:36"
             },
-            "scope": 1711,
-            "src": "2320:120:20",
+            "scope": 3480,
+            "src": "2211:120:36",
             "stateMutability": "view",
-            "superFunction": null,
+            "virtual": false,
             "visibility": "public"
           },
           {
             "body": {
-              "id": 1693,
+              "id": 3461,
               "nodeType": "Block",
-              "src": "2653:86:20",
+              "src": "2552:86:36",
               "statements": [
                 {
                   "expression": {
-                    "argumentTypes": null,
                     "arguments": [
                       {
-                        "argumentTypes": null,
-                        "id": 1686,
+                        "id": 3454,
                         "name": "account",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1680,
-                        "src": "2682:7:20",
+                        "referencedDeclaration": 3448,
+                        "src": "2581:7:36",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
                           "typeString": "address"
@@ -1872,33 +1901,32 @@
                         }
                       ],
                       "expression": {
-                        "argumentTypes": null,
-                        "id": 1683,
+                        "id": 3451,
                         "name": "systemAccounts",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1629,
-                        "src": "2663:14:20",
+                        "referencedDeclaration": 3395,
+                        "src": "2562:14:36",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_Role_$2430_storage",
+                          "typeIdentifier": "t_struct$_Role_$4597_storage",
                           "typeString": "struct Roles.Role storage ref"
                         }
                       },
-                      "id": 1685,
+                      "id": 3453,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
                       "lValueRequested": false,
                       "memberName": "add",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 2446,
-                      "src": "2663:18:20",
+                      "referencedDeclaration": 4615,
+                      "src": "2562:18:36",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_function_internal_nonpayable$_t_struct$_Role_$2430_storage_ptr_$_t_address_$returns$__$bound_to$_t_struct$_Role_$2430_storage_ptr_$",
+                        "typeIdentifier": "t_function_internal_nonpayable$_t_struct$_Role_$4597_storage_ptr_$_t_address_$returns$__$bound_to$_t_struct$_Role_$4597_storage_ptr_$",
                         "typeString": "function (struct Roles.Role storage pointer,address)"
                       }
                     },
-                    "id": 1687,
+                    "id": 3455,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1906,28 +1934,27 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "2663:27:20",
+                    "src": "2562:27:36",
+                    "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1688,
+                  "id": 3456,
                   "nodeType": "ExpressionStatement",
-                  "src": "2663:27:20"
+                  "src": "2562:27:36"
                 },
                 {
                   "eventCall": {
-                    "argumentTypes": null,
                     "arguments": [
                       {
-                        "argumentTypes": null,
-                        "id": 1690,
+                        "id": 3458,
                         "name": "account",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1680,
-                        "src": "2724:7:20",
+                        "referencedDeclaration": 3448,
+                        "src": "2623:7:36",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
                           "typeString": "address"
@@ -1941,18 +1968,18 @@
                           "typeString": "address"
                         }
                       ],
-                      "id": 1689,
+                      "id": 3457,
                       "name": "SystemAccountAdded",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1633,
-                      "src": "2705:18:20",
+                      "referencedDeclaration": 3400,
+                      "src": "2604:18:36",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_event_nonpayable$_t_address_$returns$__$",
                         "typeString": "function (address)"
                       }
                     },
-                    "id": 1691,
+                    "id": 3459,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1960,37 +1987,46 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "2705:27:20",
+                    "src": "2604:27:36",
+                    "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1692,
+                  "id": 3460,
                   "nodeType": "EmitStatement",
-                  "src": "2700:32:20"
+                  "src": "2599:32:36"
                 }
               ]
             },
-            "documentation": "@dev Assigns the system role to an account.\n@notice This method is unprotected and should be authorized in the child contract.",
-            "id": 1694,
+            "documentation": {
+              "id": 3446,
+              "nodeType": "StructuredDocumentation",
+              "src": "2337:152:36",
+              "text": " @dev Assigns the system role to an account.\n @notice This method is unprotected and should be authorized in the child contract."
+            },
+            "functionSelector": "a84c56d0",
+            "id": 3462,
             "implemented": true,
-            "isConstructor": false,
-            "isDeclaredConst": false,
+            "kind": "function",
             "modifiers": [],
             "name": "addSystemAccount",
+            "nameLocation": "2503:16:36",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1681,
+              "id": 3449,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1680,
+                  "id": 3448,
+                  "mutability": "mutable",
                   "name": "account",
+                  "nameLocation": "2528:7:36",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1694,
-                  "src": "2629:15:20",
+                  "scope": 3462,
+                  "src": "2520:15:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1998,52 +2034,49 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1679,
+                    "id": 3447,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2629:7:20",
+                    "src": "2520:7:36",
+                    "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "value": null,
                   "visibility": "internal"
                 }
               ],
-              "src": "2628:17:20"
+              "src": "2519:17:36"
             },
-            "payable": false,
             "returnParameters": {
-              "id": 1682,
+              "id": 3450,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2653:0:20"
+              "src": "2552:0:36"
             },
-            "scope": 1711,
-            "src": "2603:136:20",
+            "scope": 3480,
+            "src": "2494:144:36",
             "stateMutability": "nonpayable",
-            "superFunction": null,
+            "virtual": true,
             "visibility": "public"
           },
           {
             "body": {
-              "id": 1709,
+              "id": 3478,
               "nodeType": "Block",
-              "src": "2957:91:20",
+              "src": "2864:91:36",
               "statements": [
                 {
                   "expression": {
-                    "argumentTypes": null,
                     "arguments": [
                       {
-                        "argumentTypes": null,
-                        "id": 1702,
+                        "id": 3471,
                         "name": "account",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1696,
-                        "src": "2989:7:20",
+                        "referencedDeclaration": 3465,
+                        "src": "2896:7:36",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
                           "typeString": "address"
@@ -2058,33 +2091,32 @@
                         }
                       ],
                       "expression": {
-                        "argumentTypes": null,
-                        "id": 1699,
+                        "id": 3468,
                         "name": "systemAccounts",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1629,
-                        "src": "2967:14:20",
+                        "referencedDeclaration": 3395,
+                        "src": "2874:14:36",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_Role_$2430_storage",
+                          "typeIdentifier": "t_struct$_Role_$4597_storage",
                           "typeString": "struct Roles.Role storage ref"
                         }
                       },
-                      "id": 1701,
+                      "id": 3470,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
                       "lValueRequested": false,
                       "memberName": "remove",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 2462,
-                      "src": "2967:21:20",
+                      "referencedDeclaration": 4633,
+                      "src": "2874:21:36",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_function_internal_nonpayable$_t_struct$_Role_$2430_storage_ptr_$_t_address_$returns$__$bound_to$_t_struct$_Role_$2430_storage_ptr_$",
+                        "typeIdentifier": "t_function_internal_nonpayable$_t_struct$_Role_$4597_storage_ptr_$_t_address_$returns$__$bound_to$_t_struct$_Role_$4597_storage_ptr_$",
                         "typeString": "function (struct Roles.Role storage pointer,address)"
                       }
                     },
-                    "id": 1703,
+                    "id": 3472,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -2092,28 +2124,27 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "2967:30:20",
+                    "src": "2874:30:36",
+                    "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1704,
+                  "id": 3473,
                   "nodeType": "ExpressionStatement",
-                  "src": "2967:30:20"
+                  "src": "2874:30:36"
                 },
                 {
                   "eventCall": {
-                    "argumentTypes": null,
                     "arguments": [
                       {
-                        "argumentTypes": null,
-                        "id": 1706,
+                        "id": 3475,
                         "name": "account",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1696,
-                        "src": "3033:7:20",
+                        "referencedDeclaration": 3465,
+                        "src": "2940:7:36",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
                           "typeString": "address"
@@ -2127,18 +2158,18 @@
                           "typeString": "address"
                         }
                       ],
-                      "id": 1705,
+                      "id": 3474,
                       "name": "SystemAccountRemoved",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1637,
-                      "src": "3012:20:20",
+                      "referencedDeclaration": 3405,
+                      "src": "2919:20:36",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_event_nonpayable$_t_address_$returns$__$",
                         "typeString": "function (address)"
                       }
                     },
-                    "id": 1707,
+                    "id": 3476,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -2146,37 +2177,46 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "3012:29:20",
+                    "src": "2919:29:36",
+                    "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1708,
+                  "id": 3477,
                   "nodeType": "EmitStatement",
-                  "src": "3007:34:20"
+                  "src": "2914:34:36"
                 }
               ]
             },
-            "documentation": "@dev Removes the system role from an account.\n@notice This method is unprotected and should be authorized in the child contract.",
-            "id": 1710,
+            "documentation": {
+              "id": 3463,
+              "nodeType": "StructuredDocumentation",
+              "src": "2644:154:36",
+              "text": " @dev Removes the system role from an account.\n @notice This method is unprotected and should be authorized in the child contract."
+            },
+            "functionSelector": "ebbc3d46",
+            "id": 3479,
             "implemented": true,
-            "isConstructor": false,
-            "isDeclaredConst": false,
+            "kind": "function",
             "modifiers": [],
             "name": "removeSystemAccount",
+            "nameLocation": "2812:19:36",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1697,
+              "id": 3466,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1696,
+                  "id": 3465,
+                  "mutability": "mutable",
                   "name": "account",
+                  "nameLocation": "2840:7:36",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1710,
-                  "src": "2933:15:20",
+                  "scope": 3479,
+                  "src": "2832:15:36",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2184,48 +2224,48 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1695,
+                    "id": 3464,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2933:7:20",
+                    "src": "2832:7:36",
+                    "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "value": null,
                   "visibility": "internal"
                 }
               ],
-              "src": "2932:17:20"
+              "src": "2831:17:36"
             },
-            "payable": false,
             "returnParameters": {
-              "id": 1698,
+              "id": 3467,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2957:0:20"
+              "src": "2864:0:36"
             },
-            "scope": 1711,
-            "src": "2904:144:20",
+            "scope": 3480,
+            "src": "2803:152:36",
             "stateMutability": "nonpayable",
-            "superFunction": null,
+            "virtual": true,
             "visibility": "public"
           }
         ],
-        "scope": 1712,
-        "src": "1018:2033:20"
+        "scope": 3481,
+        "src": "1078:1880:36",
+        "usedErrors": []
       }
     ],
-    "src": "599:2453:20"
+    "src": "641:2318:36"
   },
   "compiler": {
     "name": "solc",
-    "version": "0.4.24+commit.e67f0147.Emscripten.clang"
+    "version": "0.8.11+commit.d7f03943.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "2.0.1",
-  "updatedAt": "2020-01-08T13:39:11.526Z",
+  "schemaVersion": "3.4.4",
+  "updatedAt": "2022-04-28T11:51:18.658Z",
   "devdoc": {
     "details": "SystemRole accounts have been approved to perform operational actions (e.g. mint and burn).",
     "events": {
@@ -2276,4 +2316,3 @@
     "notice": "addSystemAccount and removeSystemAccount are unprotected by default, i.e. anyone can call them.Contracts inheriting SystemRole *should* authorize the caller by overriding them.The contract is an abstract contract.",
     "version": 1
   }
-}

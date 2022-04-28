@@ -34,7 +34,7 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "// SPDX-License-Identifier: UNLICENSED\npragma solidity ^0.8.0;\n\nimport \"../../token/ERC20/BasicToken.sol\";\n\n\ninterface ERC223ContractInterface {\n  function tokenFallback(address _from, uint256 _value, bytes memory _data) external;\n}\n\n\ncontract ERC223TokenMock is BasicToken {\n\n  constructor(address initialAccount, uint256 initialBalance){\n    balances[initialAccount] = initialBalance;\n    totalSupply_ = initialBalance;\n  }\n\n  // ERC223 compatible transfer function (except the name)\n  function transferERC223(address _to, uint256 _value, bytes memory _data) public\n    returns (bool success)\n  {\n    transfer(_to, _value);\n    bool isContract = false;\n    // solium-disable-next-line security/no-inline-assembly\n    assembly {\n      isContract := not(iszero(extcodesize(_to)))\n    }\n    if (isContract) {\n      ERC223ContractInterface receiver = ERC223ContractInterface(_to);\n      receiver.tokenFallback(msg.sender, _value, _data);\n    }\n    return true;\n  }\n}\n",
-  "sourcePath": "/Users/gislik/Code/smart-contracts-private/contracts/ownership/mocks/ERC223TokenMock.sol",
+  "sourcePath": "/Users/kristen/work/monerium/smart-contracts-private/contracts/ownership/mocks/ERC223TokenMock.sol",
   "ast": {
     "absolutePath": "project:/contracts/ownership/mocks/ERC223TokenMock.sol",
     "exportedSymbols": {
@@ -2064,8 +2064,8 @@
     "version": "0.8.11+commit.d7f03943.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.4.6",
-  "updatedAt": "2022-03-28T12:33:39.163Z",
+  "schemaVersion": "3.4.4",
+  "updatedAt": "2022-04-28T11:51:18.696Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},
