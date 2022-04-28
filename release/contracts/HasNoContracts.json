@@ -2,47 +2,11 @@
   "contractName": "HasNoContracts",
   "abi": [
     {
-      "constant": false,
-      "inputs": [],
-      "name": "renounceOwnership",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "owner",
-      "outputs": [
-        {
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "_newOwner",
-          "type": "address"
-        }
-      ],
-      "name": "transferOwnership",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
       "anonymous": false,
       "inputs": [
         {
           "indexed": true,
+          "internalType": "address",
           "name": "previousOwner",
           "type": "address"
         }
@@ -55,11 +19,13 @@
       "inputs": [
         {
           "indexed": true,
+          "internalType": "address",
           "name": "previousOwner",
           "type": "address"
         },
         {
           "indexed": true,
+          "internalType": "address",
           "name": "newOwner",
           "type": "address"
         }
@@ -68,23 +34,55 @@
       "type": "event"
     },
     {
-      "constant": false,
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "_newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
           "name": "_contractAddr",
           "type": "address"
         }
       ],
       "name": "reclaimContract",
       "outputs": [],
-      "payable": false,
       "stateMutability": "nonpayable",
       "type": "function"
     }
   ],
   "metadata": "{\"compiler\":{\"version\":\"0.8.11+commit.d7f03943\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"}],\"name\":\"OwnershipRenounced\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_contractAddr\",\"type\":\"address\"}],\"name\":\"reclaimContract\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"author\":\"Remco Bloemen <remco@2\\u03c0.com>\",\"details\":\"Should contracts (anything Ownable) end up being owned by this contract, it allows the owner of this contract to reclaim ownership of the contracts.\",\"kind\":\"dev\",\"methods\":{\"reclaimContract(address)\":{\"details\":\"Reclaim ownership of Ownable contracts\",\"params\":{\"_contractAddr\":\"The address of the Ownable to be reclaimed.\"}},\"renounceOwnership()\":{\"details\":\"Allows the current owner to relinquish control of the contract.\"},\"transferOwnership(address)\":{\"details\":\"Allows the current owner to transfer control of the contract to a newOwner.\",\"params\":{\"_newOwner\":\"The address to transfer ownership to.\"}}},\"title\":\"Contracts that should not own Contracts\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"renounceOwnership()\":{\"notice\":\"Renouncing to ownership will leave the contract without an owner. It will not be possible to call the functions with the `onlyOwner` modifier anymore.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/ownership/HasNoContracts.sol\":\"HasNoContracts\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":1000},\"remappings\":[]},\"sources\":{\"project:/contracts/ownership/HasNoContracts.sol\":{\"keccak256\":\"0x4b56f82527c084cec1ded0d6ce4161615d7e9448b49c904278647701afb89015\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6e41dc4c6173f707be7020e600622caaf6461851917b2b1a989d41c74c620e49\",\"dweb:/ipfs/QmR286HLknD5ozrEJcy5tFQunwwe6SBh8tLkr97hPnzu7N\"]},\"project:/contracts/ownership/Ownable.sol\":{\"keccak256\":\"0x0041c7f55b3f5b57b5fd6d3eec14573596c5f0d59ce8802e08dae01ed6ff7603\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://21935211244e684ccbbd0858a4e2194a41c1b3bb36760bbbe4be4b11a63dd4cb\",\"dweb:/ipfs/Qmbw5C8ZJgA4jRPVP3rqohQb7f72YtUGgBg4eMqX3u56Rv\"]}},\"version\":1}",
-  "bytecode": "0x608060405260008054600160a060020a0319163317905561036d806100256000396000f3006080604052600436106100615763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416632aed7f3f8114610066578063715018a6146100965780638da5cb5b146100ab578063f2fde38b146100e9575b600080fd5b34801561007257600080fd5b5061009473ffffffffffffffffffffffffffffffffffffffff60043516610117565b005b3480156100a257600080fd5b506100946101cb565b3480156100b757600080fd5b506100c0610251565b6040805173ffffffffffffffffffffffffffffffffffffffff9092168252519081900360200190f35b3480156100f557600080fd5b5061009473ffffffffffffffffffffffffffffffffffffffff6004351661026d565b6000805473ffffffffffffffffffffffffffffffffffffffff16331461013c57600080fd5b5060008054604080517ff2fde38b00000000000000000000000000000000000000000000000000000000815273ffffffffffffffffffffffffffffffffffffffff9283166004820152905184939284169263f2fde38b926024808201939182900301818387803b1580156101af57600080fd5b505af11580156101c3573d6000803e3d6000fd5b505050505050565b60005473ffffffffffffffffffffffffffffffffffffffff1633146101ef57600080fd5b6000805460405173ffffffffffffffffffffffffffffffffffffffff909116917ff8df31144d9c2f0f6b59d69b8b98abd5459d07f2742c4df920b25aae33c6482091a26000805473ffffffffffffffffffffffffffffffffffffffff19169055565b60005473ffffffffffffffffffffffffffffffffffffffff1681565b60005473ffffffffffffffffffffffffffffffffffffffff16331461029157600080fd5b61029a8161029d565b50565b73ffffffffffffffffffffffffffffffffffffffff811615156102bf57600080fd5b6000805460405173ffffffffffffffffffffffffffffffffffffffff808516939216917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a36000805473ffffffffffffffffffffffffffffffffffffffff191673ffffffffffffffffffffffffffffffffffffffff929092169190911790555600a165627a7a72305820c714725b1a33a258ae0b73f51d297c00777bd957a5e746b07585e2e1e1214af30029",
-  "deployedBytecode": "0x6080604052600436106100615763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416632aed7f3f8114610066578063715018a6146100965780638da5cb5b146100ab578063f2fde38b146100e9575b600080fd5b34801561007257600080fd5b5061009473ffffffffffffffffffffffffffffffffffffffff60043516610117565b005b3480156100a257600080fd5b506100946101cb565b3480156100b757600080fd5b506100c0610251565b6040805173ffffffffffffffffffffffffffffffffffffffff9092168252519081900360200190f35b3480156100f557600080fd5b5061009473ffffffffffffffffffffffffffffffffffffffff6004351661026d565b6000805473ffffffffffffffffffffffffffffffffffffffff16331461013c57600080fd5b5060008054604080517ff2fde38b00000000000000000000000000000000000000000000000000000000815273ffffffffffffffffffffffffffffffffffffffff9283166004820152905184939284169263f2fde38b926024808201939182900301818387803b1580156101af57600080fd5b505af11580156101c3573d6000803e3d6000fd5b505050505050565b60005473ffffffffffffffffffffffffffffffffffffffff1633146101ef57600080fd5b6000805460405173ffffffffffffffffffffffffffffffffffffffff909116917ff8df31144d9c2f0f6b59d69b8b98abd5459d07f2742c4df920b25aae33c6482091a26000805473ffffffffffffffffffffffffffffffffffffffff19169055565b60005473ffffffffffffffffffffffffffffffffffffffff1681565b60005473ffffffffffffffffffffffffffffffffffffffff16331461029157600080fd5b61029a8161029d565b50565b73ffffffffffffffffffffffffffffffffffffffff811615156102bf57600080fd5b6000805460405173ffffffffffffffffffffffffffffffffffffffff808516939216917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a36000805473ffffffffffffffffffffffffffffffffffffffff191673ffffffffffffffffffffffffffffffffffffffff929092169190911790555600a165627a7a72305820c714725b1a33a258ae0b73f51d297c00777bd957a5e746b07585e2e1e1214af30029",
+  "bytecode": "0x608060405234801561001057600080fd5b50600080546001600160a01b031916331790556102b4806100326000396000f3fe608060405234801561001057600080fd5b506004361061004c5760003560e01c80632aed7f3f14610051578063715018a6146100665780638da5cb5b1461006e578063f2fde38b1461009d575b600080fd5b61006461005f36600461024e565b6100b0565b005b610064610144565b600054610081906001600160a01b031681565b6040516001600160a01b03909116815260200160405180910390f35b6100646100ab36600461024e565b6101b0565b6000546001600160a01b031633146100c757600080fd5b6000546040517ff2fde38b0000000000000000000000000000000000000000000000000000000081526001600160a01b039182166004820152829182169063f2fde38b90602401600060405180830381600087803b15801561012857600080fd5b505af115801561013c573d6000803e3d6000fd5b505050505050565b6000546001600160a01b0316331461015b57600080fd5b600080546040516001600160a01b03909116917ff8df31144d9c2f0f6b59d69b8b98abd5459d07f2742c4df920b25aae33c6482091a26000805473ffffffffffffffffffffffffffffffffffffffff19169055565b6000546001600160a01b031633146101c757600080fd5b6101d0816101d3565b50565b6001600160a01b0381166101e657600080fd5b600080546040516001600160a01b03808516939216917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a36000805473ffffffffffffffffffffffffffffffffffffffff19166001600160a01b0392909216919091179055565b60006020828403121561026057600080fd5b81356001600160a01b038116811461027757600080fd5b939250505056fea264697066735822122069f4ee54ec47416276cdcdfedc57420266ddc3b08ce37c61888543d204e97a7964736f6c634300080b0033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061004c5760003560e01c80632aed7f3f14610051578063715018a6146100665780638da5cb5b1461006e578063f2fde38b1461009d575b600080fd5b61006461005f36600461024e565b6100b0565b005b610064610144565b600054610081906001600160a01b031681565b6040516001600160a01b03909116815260200160405180910390f35b6100646100ab36600461024e565b6101b0565b6000546001600160a01b031633146100c757600080fd5b6000546040517ff2fde38b0000000000000000000000000000000000000000000000000000000081526001600160a01b039182166004820152829182169063f2fde38b90602401600060405180830381600087803b15801561012857600080fd5b505af115801561013c573d6000803e3d6000fd5b505050505050565b6000546001600160a01b0316331461015b57600080fd5b600080546040516001600160a01b03909116917ff8df31144d9c2f0f6b59d69b8b98abd5459d07f2742c4df920b25aae33c6482091a26000805473ffffffffffffffffffffffffffffffffffffffff19169055565b6000546001600160a01b031633146101c757600080fd5b6101d0816101d3565b50565b6001600160a01b0381166101e657600080fd5b600080546040516001600160a01b03808516939216917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a36000805473ffffffffffffffffffffffffffffffffffffffff19166001600160a01b0392909216919091179055565b60006020828403121561026057600080fd5b81356001600160a01b038116811461027757600080fd5b939250505056fea264697066735822122069f4ee54ec47416276cdcdfedc57420266ddc3b08ce37c61888543d204e97a7964736f6c634300080b0033",
   "immutableReferences": {},
   "generatedSources": [],
   "deployedGeneratedSources": [
@@ -460,133 +458,138 @@
       "name": "#utility.yul"
     }
   ],
-  "sourceMap": "311:339:32:-;;;567:5:36;:18;;-1:-1:-1;;;;;;567:18:36;575:10;567:18;;;311:339:32;;;;;;",
-  "deployedSourceMap": "311:339:32:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;482:166;;8:9:-1;5:2;;;30:1;27;20:12;5:2;-1:-1;482:166:32;;;;;;;;;1001:111:36;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1001:111:36;;;;238:20;;8:9:-1;5:2;;;30:1;27;20:12;5:2;238:20:36;;;;;;;;;;;;;;;;;;;;;;;1274:103;;8:9:-1;5:2;;;30:1;27;20:12;5:2;-1:-1;1274:103:36;;;;;;;482:166:32;555:20;719:5:36;;;;705:10;:19;697:28;;;;;;-1:-1:-1;637:5:32;;;606:37;;;;;;:30;637:5;;;606:37;;;;;;586:13;;606:30;;;;;;:37;;;;;;;;;;;637:5;606:30;:37;;;5:2:-1;;;;30:1;27;20:12;5:2;606:37:32;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;606:37:32;;;;482:166;;:::o;1001:111:36:-;719:5;;;;705:10;:19;697:28;;;;;;1077:5;;;1058:25;;1077:5;;;;;1058:25;;;1105:1;1089:18;;-1:-1:-1;;1089:18:36;;;1001:111::o;238:20::-;;;;;;:::o;1274:103::-;719:5;;;;705:10;:19;697:28;;;;;;1343:29;1362:9;1343:18;:29::i;:::-;1274:103;:::o;1512:171::-;1582:23;;;;;1574:32;;;;;;1638:5;;;1617:38;;;;;;;1638:5;;;1617:38;;;1661:5;:17;;-1:-1:-1;;1661:17:36;;;;;;;;;;;;1512:171::o",
-  "source": "pragma solidity ^0.4.24;\n\nimport \"./Ownable.sol\";\n\n\n/**\n * @title Contracts that should not own Contracts\n * @author Remco Bloemen <remco@2π.com>\n * @dev Should contracts (anything Ownable) end up being owned by this contract, it allows the owner\n * of this contract to reclaim ownership of the contracts.\n */\ncontract HasNoContracts is Ownable {\n\n  /**\n   * @dev Reclaim ownership of Ownable contracts\n   * @param _contractAddr The address of the Ownable to be reclaimed.\n   */\n  function reclaimContract(address _contractAddr) external onlyOwner {\n    Ownable contractInst = Ownable(_contractAddr);\n    contractInst.transferOwnership(owner);\n  }\n}\n",
-  "sourcePath": "openzeppelin-solidity/contracts/ownership/HasNoContracts.sol",
+  "sourceMap": "341:339:43:-:0;;;;;;;;;;;;-1:-1:-1;588:5:47;:18;;-1:-1:-1;;;;;;588:18:47;596:10;588:18;;;341:339:43;;;;;;",
+  "deployedSourceMap": "341:339:43:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;512:166;;;;;;:::i;:::-;;:::i;:::-;;1022:111:47;;;:::i;269:20::-;;;;;-1:-1:-1;;;;;269:20:47;;;;;;-1:-1:-1;;;;;492:55:54;;;474:74;;462:2;447:18;269:20:47;;;;;;;1295:111;;;;;;:::i;:::-;;:::i;512:166:43:-;740:5:47;;-1:-1:-1;;;;;740:5:47;726:10;:19;718:28;;;;;;585:20:43::1;667:5:::0;636:37:::1;::::0;;;;-1:-1:-1;;;;;667:5:43;;::::1;636:37;::::0;::::1;474:74:54::0;616:13:43;;636:30;::::1;::::0;::::1;::::0;447:18:54;;636:37:43::1;;;;;;;;;;;;;;;;;::::0;::::1;;;;;;;;;;;;::::0;::::1;;;;;;;;;579:99;512:166:::0;:::o;1022:111:47:-;740:5;;-1:-1:-1;;;;;740:5:47;726:10;:19;718:28;;;;;;1098:5:::1;::::0;;1079:25:::1;::::0;-1:-1:-1;;;;;1098:5:47;;::::1;::::0;1079:25:::1;::::0;::::1;1126:1;1110:18:::0;;-1:-1:-1;;1110:18:47::1;::::0;;1022:111::o;1295:::-;740:5;;-1:-1:-1;;;;;740:5:47;726:10;:19;718:28;;;;;;1372:29:::1;1391:9;1372:18;:29::i;:::-;1295:111:::0;:::o;1541:171::-;-1:-1:-1;;;;;1611:23:47;;1603:32;;;;;;1667:5;;;1646:38;;-1:-1:-1;;;;;1646:38:47;;;;1667:5;;;1646:38;;;1690:5;:17;;-1:-1:-1;;1690:17:47;-1:-1:-1;;;;;1690:17:47;;;;;;;;;;1541:171::o;14:309:54:-;73:6;126:2;114:9;105:7;101:23;97:32;94:52;;;142:1;139;132:12;94:52;181:9;168:23;-1:-1:-1;;;;;224:5:54;220:54;213:5;210:65;200:93;;289:1;286;279:12;200:93;312:5;14:309;-1:-1:-1;;;14:309:54:o",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\nimport \"./Ownable.sol\";\n\n/**\n * @title Contracts that should not own Contracts\n * @author Remco Bloemen <remco@2π.com>\n * @dev Should contracts (anything Ownable) end up being owned by this contract, it allows the owner\n * of this contract to reclaim ownership of the contracts.\n */\ncontract HasNoContracts is Ownable {\n\n  /**\n   * @dev Reclaim ownership of Ownable contracts\n   * @param _contractAddr The address of the Ownable to be reclaimed.\n   */\n  function reclaimContract(address _contractAddr) external onlyOwner {\n    Ownable contractInst = Ownable(_contractAddr);\n    contractInst.transferOwnership(owner);\n  }\n}\n",
+  "sourcePath": "/Users/kristen/work/monerium/smart-contracts-private/contracts/ownership/HasNoContracts.sol",
   "ast": {
-    "absolutePath": "openzeppelin-solidity/contracts/ownership/HasNoContracts.sol",
+    "absolutePath": "project:/contracts/ownership/HasNoContracts.sol",
     "exportedSymbols": {
       "HasNoContracts": [
-        2786
+        4412
       ],
       "Ownable": [
         4589
       ]
     },
-    "id": 2787,
+    "id": 4413,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 2762,
+        "id": 4385,
         "literals": [
           "solidity",
           "^",
-          "0.4",
-          ".24"
+          "0.8",
+          ".0"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:24:32"
+        "src": "32:23:43"
       },
       {
-        "absolutePath": "openzeppelin-solidity/contracts/ownership/Ownable.sol",
+        "absolutePath": "project:/contracts/ownership/Ownable.sol",
         "file": "./Ownable.sol",
-        "id": 2763,
+        "id": 4386,
+        "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
-        "scope": 2787,
-        "sourceUnit": 2946,
-        "src": "26:23:32",
+        "scope": 4413,
+        "sourceUnit": 4590,
+        "src": "57:23:43",
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
+        "abstract": false,
         "baseContracts": [
           {
-            "arguments": null,
             "baseName": {
-              "contractScope": null,
-              "id": 2764,
+              "id": 4388,
               "name": "Ownable",
-              "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 2945,
-              "src": "338:7:32",
-              "typeDescriptions": {
-                "typeIdentifier": "t_contract$_Ownable_$2945",
-                "typeString": "contract Ownable"
-              }
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 4589,
+              "src": "368:7:43"
             },
-            "id": 2765,
+            "id": 4389,
             "nodeType": "InheritanceSpecifier",
-            "src": "338:7:32"
+            "src": "368:7:43"
           }
         ],
-        "contractDependencies": [
-          2945
-        ],
+        "canonicalName": "HasNoContracts",
+        "contractDependencies": [],
         "contractKind": "contract",
-        "documentation": "@title Contracts that should not own Contracts\n@author Remco Bloemen <remco@2π.com>\n@dev Should contracts (anything Ownable) end up being owned by this contract, it allows the owner\nof this contract to reclaim ownership of the contracts.",
+        "documentation": {
+          "id": 4387,
+          "nodeType": "StructuredDocumentation",
+          "src": "82:258:43",
+          "text": " @title Contracts that should not own Contracts\n @author Remco Bloemen <remco@2π.com>\n @dev Should contracts (anything Ownable) end up being owned by this contract, it allows the owner\n of this contract to reclaim ownership of the contracts."
+        },
         "fullyImplemented": true,
-        "id": 2786,
+        "id": 4412,
         "linearizedBaseContracts": [
-          2786,
-          2945
+          4412,
+          4589
         ],
         "name": "HasNoContracts",
+        "nameLocation": "350:14:43",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "body": {
-              "id": 2784,
+              "id": 4410,
               "nodeType": "Block",
-              "src": "549:99:32",
+              "src": "579:99:43",
               "statements": [
                 {
                   "assignments": [
-                    2773
+                    4399
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 2773,
+                      "id": 4399,
+                      "mutability": "mutable",
                       "name": "contractInst",
+                      "nameLocation": "593:12:43",
                       "nodeType": "VariableDeclaration",
-                      "scope": 2785,
-                      "src": "555:20:32",
+                      "scope": 4410,
+                      "src": "585:20:43",
                       "stateVariable": false,
                       "storageLocation": "default",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_contract$_Ownable_$2945",
+                        "typeIdentifier": "t_contract$_Ownable_$4589",
                         "typeString": "contract Ownable"
                       },
                       "typeName": {
-                        "contractScope": null,
-                        "id": 2772,
-                        "name": "Ownable",
+                        "id": 4398,
                         "nodeType": "UserDefinedTypeName",
-                        "referencedDeclaration": 2945,
-                        "src": "555:7:32",
+                        "pathNode": {
+                          "id": 4397,
+                          "name": "Ownable",
+                          "nodeType": "IdentifierPath",
+                          "referencedDeclaration": 4589,
+                          "src": "585:7:43"
+                        },
+                        "referencedDeclaration": 4589,
+                        "src": "585:7:43",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_Ownable_$2945",
+                          "typeIdentifier": "t_contract$_Ownable_$4589",
                           "typeString": "contract Ownable"
                         }
                       },
-                      "value": null,
                       "visibility": "internal"
                     }
                   ],
-                  "id": 2777,
+                  "id": 4403,
                   "initialValue": {
-                    "argumentTypes": null,
                     "arguments": [
                       {
-                        "argumentTypes": null,
-                        "id": 2775,
+                        "id": 4401,
                         "name": "_contractAddr",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2767,
-                        "src": "586:13:32",
+                        "referencedDeclaration": 4392,
+                        "src": "616:13:43",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
                           "typeString": "address"
@@ -600,18 +603,18 @@
                           "typeString": "address"
                         }
                       ],
-                      "id": 2774,
+                      "id": 4400,
                       "name": "Ownable",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2945,
-                      "src": "578:7:32",
+                      "referencedDeclaration": 4589,
+                      "src": "608:7:43",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_type$_t_contract$_Ownable_$2945_$",
+                        "typeIdentifier": "t_type$_t_contract$_Ownable_$4589_$",
                         "typeString": "type(contract Ownable)"
                       }
                     },
-                    "id": 2776,
+                    "id": 4402,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -619,27 +622,26 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "578:22:32",
+                    "src": "608:22:43",
+                    "tryCall": false,
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_Ownable_$2945",
+                      "typeIdentifier": "t_contract$_Ownable_$4589",
                       "typeString": "contract Ownable"
                     }
                   },
                   "nodeType": "VariableDeclarationStatement",
-                  "src": "555:45:32"
+                  "src": "585:45:43"
                 },
                 {
                   "expression": {
-                    "argumentTypes": null,
                     "arguments": [
                       {
-                        "argumentTypes": null,
-                        "id": 2781,
+                        "id": 4407,
                         "name": "owner",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2863,
-                        "src": "637:5:32",
+                        "referencedDeclaration": 4500,
+                        "src": "667:5:43",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
                           "typeString": "address"
@@ -654,33 +656,32 @@
                         }
                       ],
                       "expression": {
-                        "argumentTypes": null,
-                        "id": 2778,
+                        "id": 4404,
                         "name": "contractInst",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2773,
-                        "src": "606:12:32",
+                        "referencedDeclaration": 4399,
+                        "src": "636:12:43",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_Ownable_$2945",
+                          "typeIdentifier": "t_contract$_Ownable_$4589",
                           "typeString": "contract Ownable"
                         }
                       },
-                      "id": 2780,
+                      "id": 4406,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
                       "lValueRequested": false,
                       "memberName": "transferOwnership",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 2921,
-                      "src": "606:30:32",
+                      "referencedDeclaration": 4563,
+                      "src": "636:30:43",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_external_nonpayable$_t_address_$returns$__$",
                         "typeString": "function (address) external"
                       }
                     },
-                    "id": 2782,
+                    "id": 4408,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -688,57 +689,60 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "606:37:32",
+                    "src": "636:37:43",
+                    "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 2783,
+                  "id": 4409,
                   "nodeType": "ExpressionStatement",
-                  "src": "606:37:32"
+                  "src": "636:37:43"
                 }
               ]
             },
-            "documentation": "@dev Reclaim ownership of Ownable contracts\n@param _contractAddr The address of the Ownable to be reclaimed.",
-            "id": 2785,
+            "documentation": {
+              "id": 4390,
+              "nodeType": "StructuredDocumentation",
+              "src": "381:128:43",
+              "text": " @dev Reclaim ownership of Ownable contracts\n @param _contractAddr The address of the Ownable to be reclaimed."
+            },
+            "functionSelector": "2aed7f3f",
+            "id": 4411,
             "implemented": true,
-            "isConstructor": false,
-            "isDeclaredConst": false,
+            "kind": "function",
             "modifiers": [
               {
-                "arguments": null,
-                "id": 2770,
+                "id": 4395,
+                "kind": "modifierInvocation",
                 "modifierName": {
-                  "argumentTypes": null,
-                  "id": 2769,
+                  "id": 4394,
                   "name": "onlyOwner",
-                  "nodeType": "Identifier",
-                  "overloadedDeclarations": [],
-                  "referencedDeclaration": 2893,
-                  "src": "539:9:32",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_modifier$__$",
-                    "typeString": "modifier ()"
-                  }
+                  "nodeType": "IdentifierPath",
+                  "referencedDeclaration": 4532,
+                  "src": "569:9:43"
                 },
                 "nodeType": "ModifierInvocation",
-                "src": "539:9:32"
+                "src": "569:9:43"
               }
             ],
             "name": "reclaimContract",
+            "nameLocation": "521:15:43",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2768,
+              "id": 4393,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2767,
+                  "id": 4392,
+                  "mutability": "mutable",
                   "name": "_contractAddr",
+                  "nameLocation": "545:13:43",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2785,
-                  "src": "507:21:32",
+                  "scope": 4411,
+                  "src": "537:21:43",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -746,164 +750,169 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 2766,
+                    "id": 4391,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "507:7:32",
+                    "src": "537:7:43",
+                    "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "value": null,
                   "visibility": "internal"
                 }
               ],
-              "src": "506:23:32"
+              "src": "536:23:43"
             },
-            "payable": false,
             "returnParameters": {
-              "id": 2771,
+              "id": 4396,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "549:0:32"
+              "src": "579:0:43"
             },
-            "scope": 2786,
-            "src": "482:166:32",
+            "scope": 4412,
+            "src": "512:166:43",
             "stateMutability": "nonpayable",
-            "superFunction": null,
+            "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 2787,
-        "src": "311:339:32"
+        "scope": 4413,
+        "src": "341:339:43",
+        "usedErrors": []
       }
     ],
-    "src": "0:651:32"
+    "src": "32:649:43"
   },
   "legacyAST": {
-    "absolutePath": "openzeppelin-solidity/contracts/ownership/HasNoContracts.sol",
+    "absolutePath": "project:/contracts/ownership/HasNoContracts.sol",
     "exportedSymbols": {
       "HasNoContracts": [
-        2786
+        4412
       ],
       "Ownable": [
         4589
       ]
     },
-    "id": 2787,
+    "id": 4413,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 2762,
+        "id": 4385,
         "literals": [
           "solidity",
           "^",
-          "0.4",
-          ".24"
+          "0.8",
+          ".0"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:24:32"
+        "src": "32:23:43"
       },
       {
-        "absolutePath": "openzeppelin-solidity/contracts/ownership/Ownable.sol",
+        "absolutePath": "project:/contracts/ownership/Ownable.sol",
         "file": "./Ownable.sol",
-        "id": 2763,
+        "id": 4386,
+        "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
-        "scope": 2787,
-        "sourceUnit": 2946,
-        "src": "26:23:32",
+        "scope": 4413,
+        "sourceUnit": 4590,
+        "src": "57:23:43",
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
+        "abstract": false,
         "baseContracts": [
           {
-            "arguments": null,
             "baseName": {
-              "contractScope": null,
-              "id": 2764,
+              "id": 4388,
               "name": "Ownable",
-              "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 2945,
-              "src": "338:7:32",
-              "typeDescriptions": {
-                "typeIdentifier": "t_contract$_Ownable_$2945",
-                "typeString": "contract Ownable"
-              }
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 4589,
+              "src": "368:7:43"
             },
-            "id": 2765,
+            "id": 4389,
             "nodeType": "InheritanceSpecifier",
-            "src": "338:7:32"
+            "src": "368:7:43"
           }
         ],
-        "contractDependencies": [
-          2945
-        ],
+        "canonicalName": "HasNoContracts",
+        "contractDependencies": [],
         "contractKind": "contract",
-        "documentation": "@title Contracts that should not own Contracts\n@author Remco Bloemen <remco@2π.com>\n@dev Should contracts (anything Ownable) end up being owned by this contract, it allows the owner\nof this contract to reclaim ownership of the contracts.",
+        "documentation": {
+          "id": 4387,
+          "nodeType": "StructuredDocumentation",
+          "src": "82:258:43",
+          "text": " @title Contracts that should not own Contracts\n @author Remco Bloemen <remco@2π.com>\n @dev Should contracts (anything Ownable) end up being owned by this contract, it allows the owner\n of this contract to reclaim ownership of the contracts."
+        },
         "fullyImplemented": true,
-        "id": 2786,
+        "id": 4412,
         "linearizedBaseContracts": [
-          2786,
-          2945
+          4412,
+          4589
         ],
         "name": "HasNoContracts",
+        "nameLocation": "350:14:43",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "body": {
-              "id": 2784,
+              "id": 4410,
               "nodeType": "Block",
-              "src": "549:99:32",
+              "src": "579:99:43",
               "statements": [
                 {
                   "assignments": [
-                    2773
+                    4399
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 2773,
+                      "id": 4399,
+                      "mutability": "mutable",
                       "name": "contractInst",
+                      "nameLocation": "593:12:43",
                       "nodeType": "VariableDeclaration",
-                      "scope": 2785,
-                      "src": "555:20:32",
+                      "scope": 4410,
+                      "src": "585:20:43",
                       "stateVariable": false,
                       "storageLocation": "default",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_contract$_Ownable_$2945",
+                        "typeIdentifier": "t_contract$_Ownable_$4589",
                         "typeString": "contract Ownable"
                       },
                       "typeName": {
-                        "contractScope": null,
-                        "id": 2772,
-                        "name": "Ownable",
+                        "id": 4398,
                         "nodeType": "UserDefinedTypeName",
-                        "referencedDeclaration": 2945,
-                        "src": "555:7:32",
+                        "pathNode": {
+                          "id": 4397,
+                          "name": "Ownable",
+                          "nodeType": "IdentifierPath",
+                          "referencedDeclaration": 4589,
+                          "src": "585:7:43"
+                        },
+                        "referencedDeclaration": 4589,
+                        "src": "585:7:43",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_Ownable_$2945",
+                          "typeIdentifier": "t_contract$_Ownable_$4589",
                           "typeString": "contract Ownable"
                         }
                       },
-                      "value": null,
                       "visibility": "internal"
                     }
                   ],
-                  "id": 2777,
+                  "id": 4403,
                   "initialValue": {
-                    "argumentTypes": null,
                     "arguments": [
                       {
-                        "argumentTypes": null,
-                        "id": 2775,
+                        "id": 4401,
                         "name": "_contractAddr",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2767,
-                        "src": "586:13:32",
+                        "referencedDeclaration": 4392,
+                        "src": "616:13:43",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
                           "typeString": "address"
@@ -917,18 +926,18 @@
                           "typeString": "address"
                         }
                       ],
-                      "id": 2774,
+                      "id": 4400,
                       "name": "Ownable",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2945,
-                      "src": "578:7:32",
+                      "referencedDeclaration": 4589,
+                      "src": "608:7:43",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_type$_t_contract$_Ownable_$2945_$",
+                        "typeIdentifier": "t_type$_t_contract$_Ownable_$4589_$",
                         "typeString": "type(contract Ownable)"
                       }
                     },
-                    "id": 2776,
+                    "id": 4402,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -936,27 +945,26 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "578:22:32",
+                    "src": "608:22:43",
+                    "tryCall": false,
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_Ownable_$2945",
+                      "typeIdentifier": "t_contract$_Ownable_$4589",
                       "typeString": "contract Ownable"
                     }
                   },
                   "nodeType": "VariableDeclarationStatement",
-                  "src": "555:45:32"
+                  "src": "585:45:43"
                 },
                 {
                   "expression": {
-                    "argumentTypes": null,
                     "arguments": [
                       {
-                        "argumentTypes": null,
-                        "id": 2781,
+                        "id": 4407,
                         "name": "owner",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2863,
-                        "src": "637:5:32",
+                        "referencedDeclaration": 4500,
+                        "src": "667:5:43",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
                           "typeString": "address"
@@ -971,33 +979,32 @@
                         }
                       ],
                       "expression": {
-                        "argumentTypes": null,
-                        "id": 2778,
+                        "id": 4404,
                         "name": "contractInst",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2773,
-                        "src": "606:12:32",
+                        "referencedDeclaration": 4399,
+                        "src": "636:12:43",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_Ownable_$2945",
+                          "typeIdentifier": "t_contract$_Ownable_$4589",
                           "typeString": "contract Ownable"
                         }
                       },
-                      "id": 2780,
+                      "id": 4406,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
                       "lValueRequested": false,
                       "memberName": "transferOwnership",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 2921,
-                      "src": "606:30:32",
+                      "referencedDeclaration": 4563,
+                      "src": "636:30:43",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_external_nonpayable$_t_address_$returns$__$",
                         "typeString": "function (address) external"
                       }
                     },
-                    "id": 2782,
+                    "id": 4408,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1005,57 +1012,60 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "606:37:32",
+                    "src": "636:37:43",
+                    "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 2783,
+                  "id": 4409,
                   "nodeType": "ExpressionStatement",
-                  "src": "606:37:32"
+                  "src": "636:37:43"
                 }
               ]
             },
-            "documentation": "@dev Reclaim ownership of Ownable contracts\n@param _contractAddr The address of the Ownable to be reclaimed.",
-            "id": 2785,
+            "documentation": {
+              "id": 4390,
+              "nodeType": "StructuredDocumentation",
+              "src": "381:128:43",
+              "text": " @dev Reclaim ownership of Ownable contracts\n @param _contractAddr The address of the Ownable to be reclaimed."
+            },
+            "functionSelector": "2aed7f3f",
+            "id": 4411,
             "implemented": true,
-            "isConstructor": false,
-            "isDeclaredConst": false,
+            "kind": "function",
             "modifiers": [
               {
-                "arguments": null,
-                "id": 2770,
+                "id": 4395,
+                "kind": "modifierInvocation",
                 "modifierName": {
-                  "argumentTypes": null,
-                  "id": 2769,
+                  "id": 4394,
                   "name": "onlyOwner",
-                  "nodeType": "Identifier",
-                  "overloadedDeclarations": [],
-                  "referencedDeclaration": 2893,
-                  "src": "539:9:32",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_modifier$__$",
-                    "typeString": "modifier ()"
-                  }
+                  "nodeType": "IdentifierPath",
+                  "referencedDeclaration": 4532,
+                  "src": "569:9:43"
                 },
                 "nodeType": "ModifierInvocation",
-                "src": "539:9:32"
+                "src": "569:9:43"
               }
             ],
             "name": "reclaimContract",
+            "nameLocation": "521:15:43",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2768,
+              "id": 4393,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2767,
+                  "id": 4392,
+                  "mutability": "mutable",
                   "name": "_contractAddr",
+                  "nameLocation": "545:13:43",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2785,
-                  "src": "507:21:32",
+                  "scope": 4411,
+                  "src": "537:21:43",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1063,48 +1073,48 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 2766,
+                    "id": 4391,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "507:7:32",
+                    "src": "537:7:43",
+                    "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "value": null,
                   "visibility": "internal"
                 }
               ],
-              "src": "506:23:32"
+              "src": "536:23:43"
             },
-            "payable": false,
             "returnParameters": {
-              "id": 2771,
+              "id": 4396,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "549:0:32"
+              "src": "579:0:43"
             },
-            "scope": 2786,
-            "src": "482:166:32",
+            "scope": 4412,
+            "src": "512:166:43",
             "stateMutability": "nonpayable",
-            "superFunction": null,
+            "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 2787,
-        "src": "311:339:32"
+        "scope": 4413,
+        "src": "341:339:43",
+        "usedErrors": []
       }
     ],
-    "src": "0:651:32"
+    "src": "32:649:43"
   },
   "compiler": {
     "name": "solc",
-    "version": "0.4.24+commit.e67f0147.Emscripten.clang"
+    "version": "0.8.11+commit.d7f03943.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "2.0.1",
-  "updatedAt": "2020-01-08T13:39:11.481Z",
+  "schemaVersion": "3.4.4",
+  "updatedAt": "2022-04-28T11:51:18.685Z",
   "devdoc": {
     "author": "Remco Bloemen <remco@2π.com>",
     "details": "Should contracts (anything Ownable) end up being owned by this contract, it allows the owner of this contract to reclaim ownership of the contracts.",
