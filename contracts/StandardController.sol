@@ -38,6 +38,7 @@ contract StandardController is Pausable, Claimable {
 
   TokenStorage internal token;
   address internal frontend;
+  address internal polygonBridgeFrontend;
 
   string public name;
   string public symbol;
@@ -49,6 +50,13 @@ contract StandardController is Pausable, Claimable {
    * @param current Address of the new frontend.
    */
   event Frontend(address indexed old, address indexed current);
+
+  /**
+   * @dev Emitted when updating the Polygon Bridge frontend.
+   * @param old Address of the old Polygon Bridge frontend.
+   * @param current Address of the new Polygon Bridge frontend.
+   */
+  event PolygonBridgeFrontend(address indexed old, address indexed current);
 
   /**
    * @dev Emitted when updating the storage.
@@ -100,6 +108,7 @@ contract StandardController is Pausable, Claimable {
     require(to != address(this), "must not send to controller");
     require(to != address(token), "must not send to token storage");
     require(to != frontend, "must not send to frontend");
+    require(to != polygonBridgeFrontend, "must not send to polygonBridgeFrontend");
   }
 
   /**
@@ -108,6 +117,14 @@ contract StandardController is Pausable, Claimable {
    */
   function getFrontend() external view returns (address) {
     return frontend;
+  }
+
+  /**
+   * @dev Returns the current Polygon Bridge frontend.
+   * @return Address of the Polygon Bridge frontend.
+   */
+  function getPolygonBridgeFrontend() external view returns (address) {
+    return polygonBridgeFrontend;
   }
 
   /**
@@ -125,6 +142,15 @@ contract StandardController is Pausable, Claimable {
   function setFrontend(address frontend_) public onlyOwner {
     emit Frontend(frontend, frontend_);
     frontend = frontend_;
+  }
+
+  /**
+   * @dev Sets a new Polygon Bridge frontend.
+   * @param polygonBridgeFrontend_ Address of the new Polygon Bridge frontend.
+   */
+  function setPolygonBridgeFrontend(address polygonBridgeFrontend_) public onlyOwner {
+    emit PolygonBridgeFrontend(polygonBridgeFrontend, polygonBridgeFrontend_);
+    polygonBridgeFrontend = polygonBridgeFrontend_;
   }
 
   /**
