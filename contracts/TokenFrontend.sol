@@ -82,7 +82,7 @@ abstract contract TokenFrontend is Claimable, CanReclaimToken, NoOwner, IERC20, 
     require(address_ != address(0x0), "controller address cannot be the null address");
     emit Controller(ticker, address(controller), address_);
     controller = SmartController(address_);
-    require(controller.getFrontend() == address(this), "controller frontend does not point back");
+    require(controller.isFrontend(address(this)), "controller frontend does not point back");
     require(controller.ticker() == ticker, "ticker does not match controller ticket");
   }
 

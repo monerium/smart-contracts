@@ -38,7 +38,7 @@ contract StandardController is Pausable, Claimable {
 
   TokenStorage internal token;
   address internal frontend;
-  address internal polygonBridgeFrontend;
+  mapping(address => bool) internal bridgeFrontends;
 
   string public name;
   string public symbol;
@@ -52,11 +52,11 @@ contract StandardController is Pausable, Claimable {
   event Frontend(address indexed old, address indexed current);
 
   /**
-   * @dev Emitted when updating the Polygon Bridge frontend.
-   * @param old Address of the old Polygon Bridge frontend.
-   * @param current Address of the new Polygon Bridge frontend.
+   * @dev Emitted when updating the Bridge frontend.
+   * @param frontend Address of the new Bridge frontend.
+   * @param title String of the frontend name.
    */
-  event PolygonBridgeFrontend(address indexed old, address indexed current);
+  event BridgeFrontend(address indexed frontend, string indexed title);
 
   /**
    * @dev Emitted when updating the storage.
@@ -108,7 +108,7 @@ contract StandardController is Pausable, Claimable {
     require(to != address(this), "must not send to controller");
     require(to != address(token), "must not send to token storage");
     require(to != frontend, "must not send to frontend");
-    require(to != polygonBridgeFrontend, "must not send to polygonBridgeFrontend");
+    require(isFrontend(to) == false, "must not send to bridgeFrontends");
   }
 
   /**
@@ -117,14 +117,6 @@ contract StandardController is Pausable, Claimable {
    */
   function getFrontend() external view returns (address) {
     return frontend;
-  }
-
-  /**
-   * @dev Returns the current Polygon Bridge frontend.
-   * @return Address of the Polygon Bridge frontend.
-   */
-  function getPolygonBridgeFrontend() external view returns (address) {
-    return polygonBridgeFrontend;
   }
 
   /**
@@ -145,12 +137,21 @@ contract StandardController is Pausable, Claimable {
   }
 
   /**
-   * @dev Sets a new Polygon Bridge frontend.
-   * @param polygonBridgeFrontend_ Address of the new Polygon Bridge frontend.
+   * @dev Set a new bridge frontend.
+   * @param frontend_ Address of the new bridge frontend.
+   * @param title Keccack256 hash of the frontend title.
    */
-  function setPolygonBridgeFrontend(address polygonBridgeFrontend_) public onlyOwner {
-    emit PolygonBridgeFrontend(polygonBridgeFrontend, polygonBridgeFrontend_);
-    polygonBridgeFrontend = polygonBridgeFrontend_;
+  function setBridgeFrontend(address frontend_, string calldata title) public onlyOwner {
+    emit BridgeFrontend(frontend_, title);
+    bridgeFrontends[frontend_] = true;
+  }
+
+  /**
+   * @dev Checks wether an address is a frontend.
+   * @param frontend_ Address of the frontend candidate.
+   */
+  function isFrontend(address frontend_) public view returns (bool) {
+    return (frontend_ == frontend) || bridgeFrontends[frontend_];
   }
 
   /**
