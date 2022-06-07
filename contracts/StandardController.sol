@@ -73,7 +73,7 @@ contract StandardController is Pausable, Claimable {
    */
   modifier guarded(address caller) {
     require(
-            msg.sender == caller || msg.sender == frontend,
+            msg.sender == caller || isFrontend(msg.sender),
             "either caller must be sender or calling via frontend"
             );
     _;
