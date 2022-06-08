@@ -19,7 +19,7 @@ module.exports = async function(exit) {
     console.log(tx1);
     const x = await token.getController();
     console.log(`controller ${x} to ${account}`);
-    const controller = SmartController.at(x);
+    const controller = await SmartController.at(x);
     const tx2 = await controller.transferOwnership(account);
     console.log(tx2);
     exit(0);
