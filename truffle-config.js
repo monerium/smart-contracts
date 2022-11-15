@@ -104,6 +104,7 @@ module.exports = {
       gas: 5000000,
       from: address,
       gasPrice: web3.utils.toWei('10', 'gwei'),
+      timeoutBlocks: 200,
       skipDryRun: true
     },
     polygon_pos_mainnet: {
