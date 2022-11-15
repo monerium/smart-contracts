@@ -24,58 +24,6 @@ Read more about e-money [here](https://monerium.com/monerium/2019/06/28/e-money-
 
 Monerium e-money tokens [v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3) are live on Ethereum mainnet and are [ERC20](https://eips.ethereum.org/EIPS/eip-20) and [ERC677](https://github.com/ethereum/EIPs/issues/677) compliant.
 
-### Euro / EUR
-
-| Field | Value |
-| --- | --- |
-| Name | Monerium EUR emoney |
-| Contract address  | [0x3231cb76718cdef2155fc47b5286d82e6eda273f](https://etherscan.io/token/0x3231cb76718cdef2155fc47b5286d82e6eda273f)  |
-| ENS domain | eur.monerium.eth |
-| Symbol | EURe |
-| Ticker | EUR |
-| Decimals | 18 |
-| QR code  | <img src="docs/0x3231cb76718cdef2155fc47b5286d82e6eda273f.png" height="128" />  |
-| Logo | <img src="assets/tokens/eur/logo.png" height="128" />  |
-
-### Sterling / GBP
-
-| Field | Value |
-| --- | :-: |
-| Name | Monerium GBP emoney |
-| Contract address  | [0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd](https://etherscan.io/token/0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd)  |
-| ENS domain | gbp.monerium.eth |
-| Symbol | GBPe |
-| Ticker | GBP |
-| Decimals | 18 |
-| QR code  | <img src="docs/0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd.png" height="128" />  |
-| Logo | <img src="assets/tokens/gbp/logo.png" height="128" />  |
-
-### US Dollar / USD
-
-| Field | Value |
-| --- | :-: |
-| Name | Monerium USD emoney |
-| Contract address  | [0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52](https://etherscan.io/token/0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52)  |
-| ENS domain | usd.monerium.eth |
-| Symbol | USDe |
-| Ticker | USD |
-| Decimals | 18 |
-| QR code  | <img src="docs/0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52.png" height="128" />  |
-| Logo | <img src="assets/tokens/usd/logo.png" height="128" />  |
-
-### Icelandic krona / ISK
-
-| Field | Value |
-| --- | :-: |
-| Name | Monerium ISK emoney |
-| Contract address  | [0xc642549743a93674cf38d6431f75d6443f88e3e2](https://etherscan.io/token/0xc642549743a93674cf38d6431f75d6443f88e3e2)  |
-| ENS domain | isk.monerium.eth |
-| Symbol | ISKe |
-| Ticker | ISK |
-| Decimals | 18 |
-| QR code  | <img src="docs/0xc642549743a93674cf38d6431f75d6443f88e3e2.png" height="128" />  |
-| Logo | <img src="assets/tokens/isk/logo.png" height="128" />  |
-
 ## Test tokens
 
 For the innovators, product builders, and other curious minds we've opened up a sandboxed version of our system that is
@@ -84,15 +32,12 @@ your platform. [Go to sandbox](https://sandbox.monerium.dev/).
 
 Please fill out the "Partner with Monerium" form on [monerium.com](https://monerium.com/#partners) to get test money for the Ropsten or Kovan test networks.
 
-**Contract addresses for the test networks:**
-
-| Token | Rinkeby ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) | Ropsten ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) | Kovan ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) |
-| -------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| EUR      | 0x25c13fc529dc4afe4d488bd1f2ee5e1ec4918e0b                                          | 0x0ae91c2b9e31e92871129117d908b0963c054048                                          | 0x9b8fd8fcfaa2438d11e7ed77d5afb6c2e1044b37                                        |
-| GBP      | 0x01df10e345d0364d3a5b8422a66af6305803bd1e                                          | 0xd9979346224e7b147caddf399b56357e20d3e67c                                          | 0xe28884ed5bd43e3f9f1dd733d254c9f5c6f983d2                                        |
-| ISK      | 0x0c9d7a0d8bf4bc9d15f577bbf650ebc8044a71db                                          | 0x80b02ef56cbbc542f0ce89ad1d2a680244da9a63                                          | 0x39ad1ad871787ba4b3df5b8ac3d81b2c9b7c6290                                        |
-| USD      | 0x09c0a236e1227500f495cb0731c4af69b49639a5                                          | 0x3781dcdd60e006e33b664dce0d6be934f0a139c8                                          | 0x57724f65b3f914de7820c6f76b2099fa3a90f509                                        |
-
+| Contract | Ropsten ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) | Kovan ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) | Rinkeby ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) | Mumbai                                                                                                                          |
+| -------- | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| EUR      | 0x0ae91c2b9e31e92871129117d908b0963c054048                                          | 0x9b8fd8fcfaa2438d11e7ed77d5afb6c2e1044b37                                        | 0x25c13fc529dc4afe4d488bd1f2ee5e1ec4918e0b                                          | [0xCF487EFd00B70EaC8C28C654356Fb0E387E66D62](https://mumbai.polygonscan.com/address/0xCF487EFd00B70EaC8C28C654356Fb0E387E66D62) |
+| GBP      | 0xd9979346224e7b147caddf399b56357e20d3e67c                                          | 0xe28884ed5bd43e3f9f1dd733d254c9f5c6f983d2                                        | 0x01df10e345d0364d3a5b8422a66af6305803bd1e                                          | [0x890e629d2728f470811adDc84990de9f5e91bC72](https://mumbai.polygonscan.com/address/0x890e629d2728f470811adDc84990de9f5e91bC72) |
+| ISK      | 0x80b02ef56cbbc542f0ce89ad1d2a680244da9a63                                          | 0x39ad1ad871787ba4b3df5b8ac3d81b2c9b7c6290                                        | 0x0c9d7a0d8bf4bc9d15f577bbf650ebc8044a71db                                          | [0x3fC9C5725eE369d6DDf08481ee5B31BA3c8e3D91](https://mumbai.polygonscan.com/address/0x3fC9C5725eE369d6DDf08481ee5B31BA3c8e3D91) |
+| USD      | 0x3781dcdd60e006e33b664dce0d6be934f0a139c8                                          | 0x57724f65b3f914de7820c6f76b2099fa3a90f509                                        | 0x09c0a236e1227500f495cb0731c4af69b49639a5                                          | [0xcCA6b920eebFf5343cCCf386909Ec2D8Ba802bdd](https://mumbai.polygonscan.com/address/0xcCA6b920eebFf5343cCCf386909Ec2D8Ba802bdd) |
 
 ## Using Monerium money / Token integration
 
@@ -218,22 +163,6 @@ Development happens on the master branch and we use [Semantic Versioning](http:/
 ```sh
 # npx truffle migrate [--network <name>]
 ```
-
-| Contract | Mainnet ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) | Polygon-Pos ([v1.10.0](https://github.com/monerium/smart-contracts/releases/tag/v1.10.0)) | Ropsten ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) | Kovan ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) | Rinkeby ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) | Mumbai                                                                                                                          |
-| -------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| EUR      | 0x3231cb76718cdef2155fc47b5286d82e6eda273f                                          | 0x18ec0A6E18E5bc3784fDd3a3634b31245ab704F6                                                | 0x0ae91c2b9e31e92871129117d908b0963c054048                                          | 0x9b8fd8fcfaa2438d11e7ed77d5afb6c2e1044b37                                        | 0x25c13fc529dc4afe4d488bd1f2ee5e1ec4918e0b                                          | [0xCF487EFd00B70EaC8C28C654356Fb0E387E66D62](https://mumbai.polygonscan.com/address/0xCF487EFd00B70EaC8C28C654356Fb0E387E66D62) |
-| GBP      | 0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd                                          | 0x75792CBDb361d80ba89271a079EfeE62c29FA324                                                | 0xd9979346224e7b147caddf399b56357e20d3e67c                                          | 0xe28884ed5bd43e3f9f1dd733d254c9f5c6f983d2                                        | 0x01df10e345d0364d3a5b8422a66af6305803bd1e                                          | [0x890e629d2728f470811adDc84990de9f5e91bC72](https://mumbai.polygonscan.com/address/0x890e629d2728f470811adDc84990de9f5e91bC72) |
-| ISK      | 0xc642549743a93674cf38d6431f75d6443f88e3e2                                          | 0xf1bBf27A9D659D326efBfa5D284EBaeFB803983D                                                | 0x80b02ef56cbbc542f0ce89ad1d2a680244da9a63                                          | 0x39ad1ad871787ba4b3df5b8ac3d81b2c9b7c6290                                        | 0x0c9d7a0d8bf4bc9d15f577bbf650ebc8044a71db                                          | [0x3fC9C5725eE369d6DDf08481ee5B31BA3c8e3D91](https://mumbai.polygonscan.com/address/0x3fC9C5725eE369d6DDf08481ee5B31BA3c8e3D91) |
-| USD      | 0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52                                          | 0x64E97c1a6535afD4a313eF46F88A64a34250B719                                                | 0x3781dcdd60e006e33b664dce0d6be934f0a139c8                                          | 0x57724f65b3f914de7820c6f76b2099fa3a90f509                                        | 0x09c0a236e1227500f495cb0731c4af69b49639a5                                          | [0xcCA6b920eebFf5343cCCf386909Ec2D8Ba802bdd](https://mumbai.polygonscan.com/address/0xcCA6b920eebFf5343cCCf386909Ec2D8Ba802bdd) |
-
-The token addresses can be resolved using ENS in compatible wallets.
-
-| Contract | Mainnet                                                               | Rinkeby       |
-| -------- | --------------------------------------------------------------------- | ------------- |
-| EUR      | [eur.monerium.eth](https://manager.ens.domains/name/eur.monerium.eth) |               |
-| GBP      | [gbp.monerium.eth](https://manager.ens.domains/name/gbp.monerium.eth) |               |
-| ISK      | [isk.monerium.eth](https://manager.ens.domains/name/isk.monerium.eth) | monerium.test |
-| USD      | [usd.monerium.eth](https://manager.ens.domains/name/usd.monerium.eth) |               |
 
 ## Unit tests
 
