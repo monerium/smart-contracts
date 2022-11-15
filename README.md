@@ -47,7 +47,7 @@ will be available to help you every step of the way, from implementation to ongo
  
 Each token has the following [ERC20](https://eips.ethereum.org/EIPS/eip-20) and [ERC677](https://github.com/ethereum/EIPs/issues/677) methods available to integrate with your application.
 
-```sol
+```js
 contract Euro {
 
   // Transfers tokens [ERC20].
@@ -185,7 +185,7 @@ Code coverage for the token system can be checked with [solidity-coverage](https
 ## License
 
 ```text
-Copyright 2019 Monerium ehf.
+Copyright 2022 Monerium ehf.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
