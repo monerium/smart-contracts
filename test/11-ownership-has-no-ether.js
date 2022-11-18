@@ -2,11 +2,6 @@ const HasNoEther = artifacts.require('HasNoEther');
 const ForceEther = artifacts.require('ForceEther');
 var truffleAssert = require('truffle-assertions');
 
-const toPromise = func =>
-  (...args) =>
-    new Promise((resolve, reject) =>
-      func(...args, (error, data) => error ? reject(error) : resolve(data)));
-
 contract('HasNoEther', function (accounts) {
   const amount = web3.utils.toWei('1', 'ether');
 
@@ -24,7 +19,7 @@ contract('HasNoEther', function (accounts) {
     let hasNoEther = await HasNoEther.new();
 
     await truffleAssert.fails(
-      toPromise(web3.eth.sendTransaction)({
+      web3.eth.sendTransaction({
         from: accounts[1],
         to: hasNoEther.address,
         value: amount,
