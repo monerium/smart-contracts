@@ -62,27 +62,6 @@ module.exports = {
       network_id: 2000,   // monerium testnet
       from: "0x253c61c9e3d1aa594761f7ef3f7cbe7a5151f9fd",
     },
-    rinkeby: {
-      network_id: 4,      // rinkeby
-      from: address,
-      gas: 6800000,       // balance between out of gas errors and block gas limit errors
-      gasPrice: toWei('41', 'gwei'), // average gas price on rinkeby
-      provider: () => walletProvider,
-    },
-    ropsten: {
-      provider: () => walletProvider,
-      network_id: 3,
-      gas: 6800000,
-      from: address,
-      gasPrice: toWei('41', 'gwei'),
-    },
-    kovan: {
-      provider: () => walletProvider,
-      network_id: 42,
-      gas: 4600000,
-      from: address,
-      gasPrice: toWei('41', 'gwei'),
-    },
     goerli: {
       provider: () => walletProvider,
       network_id: 5,
@@ -91,6 +70,22 @@ module.exports = {
       gasPrice: toWei('10', 'gwei'),
       timeoutBlocks: 200,
       skipDryRun: true,
+    },
+    mainnet: {
+      provider: () => walletProvider,
+      network_id: 1,
+      gas: 6800000,
+      from: address,
+      gasPrice: toWei('15', 'gwei'),
+    },
+    polygon_pos_mumbai: {
+      provider: () => walletProvider,
+      network_id: 80001,
+      confirmation: 2,
+      timeoutBlocks: 200,
+      chainId: 80001,
+      gas: 4465030,
+      gasPrice: toWei('41', 'gwei'),
     },
     polygon_pos_mainnet: {
       provider: () => walletProvider,
@@ -108,22 +103,6 @@ module.exports = {
       gas: 4465030,
       maxPriorityFeePerGas: toWei('40', 'gwei'),
       maxFee: toWei('41'),
-    },
-    polygon_pos_mumbai: {
-      provider: () => walletProvider,
-      network_id: 80001,
-      confirmation: 2,
-      timeoutBlocks: 200,
-      chainId: 80001,
-      gas: 4465030,
-      gasPrice: toWei('41', 'gwei'),
-    },
-    mainnet: {
-      provider: () => walletProvider,
-      network_id: 1,
-      gas: 6800000,
-      from: address,
-      gasPrice: toWei('15', 'gwei'),
     },
   },
 
