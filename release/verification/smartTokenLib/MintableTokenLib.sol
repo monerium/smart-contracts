@@ -17,8 +17,8 @@
 
 pragma solidity 0.8.11;
 
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
+import "./SafeMath.sol";
+import "./SignatureChecker.sol";
 import "./ERC20Lib.sol";
 import "./TokenStorage.sol";
 

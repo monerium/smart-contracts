@@ -20,7 +20,7 @@ pragma solidity 0.8.11;
 import "./ERC20Lib.sol";
 import "./MintableTokenLib.sol";
 import "./IValidator.sol";
-import "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
+import "./SignatureChecker.sol";
 
 /**
  * @title SmartTokenLib

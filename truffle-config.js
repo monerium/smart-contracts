@@ -6,7 +6,7 @@ const key = process.env['KEY'];
 const mnemonic = process.env['MNEMONIC'];
 const poahost = process.env['POA_HOST'];
 const etherscanKey = process.env['ETHERSCAN_API'];
-const polygonscanKey =  process.env['POLYGONSCAN_API'];
+const polygonscanKey = process.env['POLYGONSCAN_API'];
 const gnosisscanKey = process.env['GNOSISSCAN_API'];
 
 var url = process.env['URL'];
@@ -55,7 +55,7 @@ module.exports = {
     poa: {
       host: poahost != undefined ? poahost : "localhost",
       port: 8545,
-      network_id: 100,
+      network_id: 12346,
     },
     goerli: {
       provider: () => walletProvider,
@@ -78,7 +78,7 @@ module.exports = {
       network_id: 80001,
       confirmation: 2,
       timeoutBlocks: 200,
-      chainId: 80001,
+      // chainId: 80001,
       gas: 4465030,
       gasPrice: toWei('41', 'gwei'),
     },
@@ -87,7 +87,7 @@ module.exports = {
       network_id: 137,
       confirmation: 2,
       timeoutBlocks: 200,
-      chainId: 137,
+      // chainId: 137,
       gas: 4465030,
     },
     gnosischain_chiado: {
@@ -102,19 +102,23 @@ module.exports = {
       provider: walletProvider,
       network_id: 100,
       from: address,
-      gasPrice: toWei('2', 'gwei'),
+      // gasPrice: toWei('2', 'gwei'),
       timeoutBlocks: 200,
+      maxFeePerGas: toWei('15', 'gwei'),
+      maxPriorityFeePerGas: toWei('2', 'gwei'),
       skipDryRun: true
     },
     dashboard: {
-      network_id: 100,
-      chainId: 100,
+      network_id: 1,
+      // chainId: 80001,
       confirmation: 2,
       timeoutBlocks: 200,
-      gasPrice: toWei('2', 'gwei'),
+      // gasPrice: toWei('2', 'gwei'),
+      from: address,
+      // gasLimit: 30000000,
       gas: 4465030,
-      // maxPriorityFeePerGas: toWei('40', 'gwei'),
-      // maxFee: toWei('41'),
+      maxFeePerGas: toWei('20', 'gwei'),
+      maxPriorityFeePerGas: toWei('4', 'gwei'),
     },
   },
 
