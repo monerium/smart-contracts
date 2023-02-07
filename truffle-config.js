@@ -7,6 +7,7 @@ const mnemonic = process.env['MNEMONIC'];
 const poahost = process.env['POA_HOST'];
 const etherscanKey = process.env['ETHERSCAN_API'];
 const polygonscanKey =  process.env['POLYGONSCAN_API'];
+const gnosisscanKey = process.env['GNOSISSCAN_API'];
 
 var url = process.env['URL'];
 var walletProvider;
@@ -89,14 +90,31 @@ module.exports = {
       chainId: 137,
       gas: 4465030,
     },
+    gnosischain_chiado: {
+      provider: walletProvider,
+      network_id: 10200,
+      from: address,
+      gasPrice: toWei('2', 'gwei'),
+      timeoutBlocks: 200,
+      skipDryRun: true
+    },
+    gnosischain_mainnet: {
+      provider: walletProvider,
+      network_id: 100,
+      from: address,
+      gasPrice: toWei('2', 'gwei'),
+      timeoutBlocks: 200,
+      skipDryRun: true
+    },
     dashboard: {
-      network_id: 137,
+      network_id: 100,
+      chainId: 100,
       confirmation: 2,
       timeoutBlocks: 200,
-      chainId: 137,
+      gasPrice: toWei('2', 'gwei'),
       gas: 4465030,
-      maxPriorityFeePerGas: toWei('40', 'gwei'),
-      maxFee: toWei('41'),
+      // maxPriorityFeePerGas: toWei('40', 'gwei'),
+      // maxFee: toWei('41'),
     },
   },
 
@@ -120,6 +138,7 @@ module.exports = {
   api_keys: {
     etherscan: etherscanKey,
     polygonscan: polygonscanKey,
+    gnosisscan: gnosisscanKey,
   },
 
   mocha: {

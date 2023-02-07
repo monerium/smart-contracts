@@ -19,12 +19,12 @@ pragma solidity ^0.8.0;
 
 import "./ownership/Claimable.sol";
 
-contract Migrations is  Claimable {
+contract Migrations is Claimable {
 
     uint public last_completed_migration;
 
-    constructor(){
-      owner = msg.sender;
+    constructor() {
+        owner = msg.sender;
     }
 
     function setCompleted(uint completed) external onlyOwner {

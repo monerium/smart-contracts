@@ -1,0 +1,2176 @@
+{
+  "contractName": "CanReclaimToken",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipRenounced",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract ERC20Basic",
+          "name": "_token",
+          "type": "address"
+        }
+      ],
+      "name": "reclaimToken",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.11+commit.d7f03943\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"}],\"name\":\"OwnershipRenounced\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract ERC20Basic\",\"name\":\"_token\",\"type\":\"address\"}],\"name\":\"reclaimToken\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"author\":\"SylTi\",\"details\":\"This allow a contract to recover any ERC20 token received in a contract by transferring the balance to the contract owner. This will prevent any accidental loss of tokens.\",\"kind\":\"dev\",\"methods\":{\"reclaimToken(address)\":{\"details\":\"Reclaim all ERC20Basic compatible tokens\",\"params\":{\"_token\":\"ERC20Basic The address of the token contract\"}},\"renounceOwnership()\":{\"details\":\"Allows the current owner to relinquish control of the contract.\"},\"transferOwnership(address)\":{\"details\":\"Allows the current owner to transfer control of the contract to a newOwner.\",\"params\":{\"_newOwner\":\"The address to transfer ownership to.\"}}},\"title\":\"Contracts that should be able to recover tokens\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"renounceOwnership()\":{\"notice\":\"Renouncing to ownership will leave the contract without an owner. It will not be possible to call the functions with the `onlyOwner` modifier anymore.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/ownership/CanReclaimToken.sol\":\"CanReclaimToken\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":1000},\"remappings\":[]},\"sources\":{\"project:/contracts/ownership/CanReclaimToken.sol\":{\"keccak256\":\"0x108e55b7d2d50484b7bf5699b1e0b27b29dcd633c8651ea8ca14e0f805f4d2f3\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://49bd1fbc3055642b7150e0616d5add5d19e292dee5bc4fa7a0e5865ee1dc4fe3\",\"dweb:/ipfs/Qme4kZKkizviTR3VjadY7rftSX9UV8pqJB7euV9udVVSVF\"]},\"project:/contracts/ownership/Ownable.sol\":{\"keccak256\":\"0x0041c7f55b3f5b57b5fd6d3eec14573596c5f0d59ce8802e08dae01ed6ff7603\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://21935211244e684ccbbd0858a4e2194a41c1b3bb36760bbbe4be4b11a63dd4cb\",\"dweb:/ipfs/Qmbw5C8ZJgA4jRPVP3rqohQb7f72YtUGgBg4eMqX3u56Rv\"]},\"project:/contracts/token/ERC20/ERC20Basic.sol\":{\"keccak256\":\"0x54484484f83afe433e6bc50c0003d99c5e877747a783581500a25df8ce7017dd\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://85c97b9279681e06af93f38223117d3351acbe205ed8a47d33c650149ef09bb2\",\"dweb:/ipfs/QmYAcawJZ5tH9e6Syno9fejaaNdpzXbjtWQUhKZyA86g5d\"]},\"project:/contracts/token/ERC20/SafeERC20.sol\":{\"keccak256\":\"0xa4c3829e43d20517869a6555f80977d4e582ae439b6b7c5013960fb05932f635\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://d815f26b889c44a2f1703cb59ddf9a5e426447df50ce91e240bc68f046b99465\",\"dweb:/ipfs/QmUTTNoty755VqS2jvZra7HrumCnRNkLcPRihs7W3s4Vj2\"]}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b50600080546001600160a01b031916331790556103ba806100326000396000f3fe608060405234801561001057600080fd5b506004361061004c5760003560e01c806317ffc32014610051578063715018a6146100665780638da5cb5b1461006e578063f2fde38b1461009d575b600080fd5b61006461005f366004610325565b6100b0565b005b61006461016c565b600054610081906001600160a01b031681565b6040516001600160a01b03909116815260200160405180910390f35b6100646100ab366004610325565b6101d8565b6000546001600160a01b031633146100c757600080fd5b6040517f70a082310000000000000000000000000000000000000000000000000000000081523060048201526000906001600160a01b038316906370a0823190602401602060405180830381865afa158015610127573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061014b9190610349565b600054909150610168906001600160a01b038481169116836101fb565b5050565b6000546001600160a01b0316331461018357600080fd5b600080546040516001600160a01b03909116917ff8df31144d9c2f0f6b59d69b8b98abd5459d07f2742c4df920b25aae33c6482091a26000805473ffffffffffffffffffffffffffffffffffffffff19169055565b6000546001600160a01b031633146101ef57600080fd5b6101f881610295565b50565b6040517fa9059cbb0000000000000000000000000000000000000000000000000000000081526001600160a01b0383811660048301526024820183905284169063a9059cbb906044016020604051808303816000875af1158015610263573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906102879190610362565b61029057600080fd5b505050565b6001600160a01b0381166102a857600080fd5b600080546040516001600160a01b03808516939216917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a36000805473ffffffffffffffffffffffffffffffffffffffff19166001600160a01b0392909216919091179055565b6001600160a01b03811681146101f857600080fd5b60006020828403121561033757600080fd5b813561034281610310565b9392505050565b60006020828403121561035b57600080fd5b5051919050565b60006020828403121561037457600080fd5b8151801515811461034257600080fdfea2646970667358221220040e6180dca373e53a2866c4ace7397ac3f85a67009c8bb04ef36688b0e212cf64736f6c634300080b0033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061004c5760003560e01c806317ffc32014610051578063715018a6146100665780638da5cb5b1461006e578063f2fde38b1461009d575b600080fd5b61006461005f366004610325565b6100b0565b005b61006461016c565b600054610081906001600160a01b031681565b6040516001600160a01b03909116815260200160405180910390f35b6100646100ab366004610325565b6101d8565b6000546001600160a01b031633146100c757600080fd5b6040517f70a082310000000000000000000000000000000000000000000000000000000081523060048201526000906001600160a01b038316906370a0823190602401602060405180830381865afa158015610127573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061014b9190610349565b600054909150610168906001600160a01b038481169116836101fb565b5050565b6000546001600160a01b0316331461018357600080fd5b600080546040516001600160a01b03909116917ff8df31144d9c2f0f6b59d69b8b98abd5459d07f2742c4df920b25aae33c6482091a26000805473ffffffffffffffffffffffffffffffffffffffff19169055565b6000546001600160a01b031633146101ef57600080fd5b6101f881610295565b50565b6040517fa9059cbb0000000000000000000000000000000000000000000000000000000081526001600160a01b0383811660048301526024820183905284169063a9059cbb906044016020604051808303816000875af1158015610263573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906102879190610362565b61029057600080fd5b505050565b6001600160a01b0381166102a857600080fd5b600080546040516001600160a01b03808516939216917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a36000805473ffffffffffffffffffffffffffffffffffffffff19166001600160a01b0392909216919091179055565b6001600160a01b03811681146101f857600080fd5b60006020828403121561033757600080fd5b813561034281610310565b9392505050565b60006020828403121561035b57600080fd5b5051919050565b60006020828403121561037457600080fd5b8151801515811461034257600080fdfea2646970667358221220040e6180dca373e53a2866c4ace7397ac3f85a67009c8bb04ef36688b0e212cf64736f6c634300080b0033",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [
+    {
+      "ast": {
+        "nodeType": "YulBlock",
+        "src": "0:1733:55",
+        "statements": [
+          {
+            "nodeType": "YulBlock",
+            "src": "6:3:55",
+            "statements": []
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "71:109:55",
+              "statements": [
+                {
+                  "body": {
+                    "nodeType": "YulBlock",
+                    "src": "158:16:55",
+                    "statements": [
+                      {
+                        "expression": {
+                          "arguments": [
+                            {
+                              "kind": "number",
+                              "nodeType": "YulLiteral",
+                              "src": "167:1:55",
+                              "type": "",
+                              "value": "0"
+                            },
+                            {
+                              "kind": "number",
+                              "nodeType": "YulLiteral",
+                              "src": "170:1:55",
+                              "type": "",
+                              "value": "0"
+                            }
+                          ],
+                          "functionName": {
+                            "name": "revert",
+                            "nodeType": "YulIdentifier",
+                            "src": "160:6:55"
+                          },
+                          "nodeType": "YulFunctionCall",
+                          "src": "160:12:55"
+                        },
+                        "nodeType": "YulExpressionStatement",
+                        "src": "160:12:55"
+                      }
+                    ]
+                  },
+                  "condition": {
+                    "arguments": [
+                      {
+                        "arguments": [
+                          {
+                            "name": "value",
+                            "nodeType": "YulIdentifier",
+                            "src": "94:5:55"
+                          },
+                          {
+                            "arguments": [
+                              {
+                                "name": "value",
+                                "nodeType": "YulIdentifier",
+                                "src": "105:5:55"
+                              },
+                              {
+                                "kind": "number",
+                                "nodeType": "YulLiteral",
+                                "src": "112:42:55",
+                                "type": "",
+                                "value": "0xffffffffffffffffffffffffffffffffffffffff"
+                              }
+                            ],
+                            "functionName": {
+                              "name": "and",
+                              "nodeType": "YulIdentifier",
+                              "src": "101:3:55"
+                            },
+                            "nodeType": "YulFunctionCall",
+                            "src": "101:54:55"
+                          }
+                        ],
+                        "functionName": {
+                          "name": "eq",
+                          "nodeType": "YulIdentifier",
+                          "src": "91:2:55"
+                        },
+                        "nodeType": "YulFunctionCall",
+                        "src": "91:65:55"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "iszero",
+                      "nodeType": "YulIdentifier",
+                      "src": "84:6:55"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "84:73:55"
+                  },
+                  "nodeType": "YulIf",
+                  "src": "81:93:55"
+                }
+              ]
+            },
+            "name": "validator_revert_contract_ERC20Basic",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "value",
+                "nodeType": "YulTypedName",
+                "src": "60:5:55",
+                "type": ""
+              }
+            ],
+            "src": "14:166:55"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "274:189:55",
+              "statements": [
+                {
+                  "body": {
+                    "nodeType": "YulBlock",
+                    "src": "320:16:55",
+                    "statements": [
+                      {
+                        "expression": {
+                          "arguments": [
+                            {
+                              "kind": "number",
+                              "nodeType": "YulLiteral",
+                              "src": "329:1:55",
+                              "type": "",
+                              "value": "0"
+                            },
+                            {
+                              "kind": "number",
+                              "nodeType": "YulLiteral",
+                              "src": "332:1:55",
+                              "type": "",
+                              "value": "0"
+                            }
+                          ],
+                          "functionName": {
+                            "name": "revert",
+                            "nodeType": "YulIdentifier",
+                            "src": "322:6:55"
+                          },
+                          "nodeType": "YulFunctionCall",
+                          "src": "322:12:55"
+                        },
+                        "nodeType": "YulExpressionStatement",
+                        "src": "322:12:55"
+                      }
+                    ]
+                  },
+                  "condition": {
+                    "arguments": [
+                      {
+                        "arguments": [
+                          {
+                            "name": "dataEnd",
+                            "nodeType": "YulIdentifier",
+                            "src": "295:7:55"
+                          },
+                          {
+                            "name": "headStart",
+                            "nodeType": "YulIdentifier",
+                            "src": "304:9:55"
+                          }
+                        ],
+                        "functionName": {
+                          "name": "sub",
+                          "nodeType": "YulIdentifier",
+                          "src": "291:3:55"
+                        },
+                        "nodeType": "YulFunctionCall",
+                        "src": "291:23:55"
+                      },
+                      {
+                        "kind": "number",
+                        "nodeType": "YulLiteral",
+                        "src": "316:2:55",
+                        "type": "",
+                        "value": "32"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "slt",
+                      "nodeType": "YulIdentifier",
+                      "src": "287:3:55"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "287:32:55"
+                  },
+                  "nodeType": "YulIf",
+                  "src": "284:52:55"
+                },
+                {
+                  "nodeType": "YulVariableDeclaration",
+                  "src": "345:36:55",
+                  "value": {
+                    "arguments": [
+                      {
+                        "name": "headStart",
+                        "nodeType": "YulIdentifier",
+                        "src": "371:9:55"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "calldataload",
+                      "nodeType": "YulIdentifier",
+                      "src": "358:12:55"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "358:23:55"
+                  },
+                  "variables": [
+                    {
+                      "name": "value",
+                      "nodeType": "YulTypedName",
+                      "src": "349:5:55",
+                      "type": ""
+                    }
+                  ]
+                },
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "name": "value",
+                        "nodeType": "YulIdentifier",
+                        "src": "427:5:55"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "validator_revert_contract_ERC20Basic",
+                      "nodeType": "YulIdentifier",
+                      "src": "390:36:55"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "390:43:55"
+                  },
+                  "nodeType": "YulExpressionStatement",
+                  "src": "390:43:55"
+                },
+                {
+                  "nodeType": "YulAssignment",
+                  "src": "442:15:55",
+                  "value": {
+                    "name": "value",
+                    "nodeType": "YulIdentifier",
+                    "src": "452:5:55"
+                  },
+                  "variableNames": [
+                    {
+                      "name": "value0",
+                      "nodeType": "YulIdentifier",
+                      "src": "442:6:55"
+                    }
+                  ]
+                }
+              ]
+            },
+            "name": "abi_decode_tuple_t_contract$_ERC20Basic_$5117",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "headStart",
+                "nodeType": "YulTypedName",
+                "src": "240:9:55",
+                "type": ""
+              },
+              {
+                "name": "dataEnd",
+                "nodeType": "YulTypedName",
+                "src": "251:7:55",
+                "type": ""
+              }
+            ],
+            "returnVariables": [
+              {
+                "name": "value0",
+                "nodeType": "YulTypedName",
+                "src": "263:6:55",
+                "type": ""
+              }
+            ],
+            "src": "185:278:55"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "569:125:55",
+              "statements": [
+                {
+                  "nodeType": "YulAssignment",
+                  "src": "579:26:55",
+                  "value": {
+                    "arguments": [
+                      {
+                        "name": "headStart",
+                        "nodeType": "YulIdentifier",
+                        "src": "591:9:55"
+                      },
+                      {
+                        "kind": "number",
+                        "nodeType": "YulLiteral",
+                        "src": "602:2:55",
+                        "type": "",
+                        "value": "32"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "add",
+                      "nodeType": "YulIdentifier",
+                      "src": "587:3:55"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "587:18:55"
+                  },
+                  "variableNames": [
+                    {
+                      "name": "tail",
+                      "nodeType": "YulIdentifier",
+                      "src": "579:4:55"
+                    }
+                  ]
+                },
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "name": "headStart",
+                        "nodeType": "YulIdentifier",
+                        "src": "621:9:55"
+                      },
+                      {
+                        "arguments": [
+                          {
+                            "name": "value0",
+                            "nodeType": "YulIdentifier",
+                            "src": "636:6:55"
+                          },
+                          {
+                            "kind": "number",
+                            "nodeType": "YulLiteral",
+                            "src": "644:42:55",
+                            "type": "",
+                            "value": "0xffffffffffffffffffffffffffffffffffffffff"
+                          }
+                        ],
+                        "functionName": {
+                          "name": "and",
+                          "nodeType": "YulIdentifier",
+                          "src": "632:3:55"
+                        },
+                        "nodeType": "YulFunctionCall",
+                        "src": "632:55:55"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "mstore",
+                      "nodeType": "YulIdentifier",
+                      "src": "614:6:55"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "614:74:55"
+                  },
+                  "nodeType": "YulExpressionStatement",
+                  "src": "614:74:55"
+                }
+              ]
+            },
+            "name": "abi_encode_tuple_t_address__to_t_address__fromStack_reversed",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "headStart",
+                "nodeType": "YulTypedName",
+                "src": "538:9:55",
+                "type": ""
+              },
+              {
+                "name": "value0",
+                "nodeType": "YulTypedName",
+                "src": "549:6:55",
+                "type": ""
+              }
+            ],
+            "returnVariables": [
+              {
+                "name": "tail",
+                "nodeType": "YulTypedName",
+                "src": "560:4:55",
+                "type": ""
+              }
+            ],
+            "src": "468:226:55"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "769:189:55",
+              "statements": [
+                {
+                  "body": {
+                    "nodeType": "YulBlock",
+                    "src": "815:16:55",
+                    "statements": [
+                      {
+                        "expression": {
+                          "arguments": [
+                            {
+                              "kind": "number",
+                              "nodeType": "YulLiteral",
+                              "src": "824:1:55",
+                              "type": "",
+                              "value": "0"
+                            },
+                            {
+                              "kind": "number",
+                              "nodeType": "YulLiteral",
+                              "src": "827:1:55",
+                              "type": "",
+                              "value": "0"
+                            }
+                          ],
+                          "functionName": {
+                            "name": "revert",
+                            "nodeType": "YulIdentifier",
+                            "src": "817:6:55"
+                          },
+                          "nodeType": "YulFunctionCall",
+                          "src": "817:12:55"
+                        },
+                        "nodeType": "YulExpressionStatement",
+                        "src": "817:12:55"
+                      }
+                    ]
+                  },
+                  "condition": {
+                    "arguments": [
+                      {
+                        "arguments": [
+                          {
+                            "name": "dataEnd",
+                            "nodeType": "YulIdentifier",
+                            "src": "790:7:55"
+                          },
+                          {
+                            "name": "headStart",
+                            "nodeType": "YulIdentifier",
+                            "src": "799:9:55"
+                          }
+                        ],
+                        "functionName": {
+                          "name": "sub",
+                          "nodeType": "YulIdentifier",
+                          "src": "786:3:55"
+                        },
+                        "nodeType": "YulFunctionCall",
+                        "src": "786:23:55"
+                      },
+                      {
+                        "kind": "number",
+                        "nodeType": "YulLiteral",
+                        "src": "811:2:55",
+                        "type": "",
+                        "value": "32"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "slt",
+                      "nodeType": "YulIdentifier",
+                      "src": "782:3:55"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "782:32:55"
+                  },
+                  "nodeType": "YulIf",
+                  "src": "779:52:55"
+                },
+                {
+                  "nodeType": "YulVariableDeclaration",
+                  "src": "840:36:55",
+                  "value": {
+                    "arguments": [
+                      {
+                        "name": "headStart",
+                        "nodeType": "YulIdentifier",
+                        "src": "866:9:55"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "calldataload",
+                      "nodeType": "YulIdentifier",
+                      "src": "853:12:55"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "853:23:55"
+                  },
+                  "variables": [
+                    {
+                      "name": "value",
+                      "nodeType": "YulTypedName",
+                      "src": "844:5:55",
+                      "type": ""
+                    }
+                  ]
+                },
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "name": "value",
+                        "nodeType": "YulIdentifier",
+                        "src": "922:5:55"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "validator_revert_contract_ERC20Basic",
+                      "nodeType": "YulIdentifier",
+                      "src": "885:36:55"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "885:43:55"
+                  },
+                  "nodeType": "YulExpressionStatement",
+                  "src": "885:43:55"
+                },
+                {
+                  "nodeType": "YulAssignment",
+                  "src": "937:15:55",
+                  "value": {
+                    "name": "value",
+                    "nodeType": "YulIdentifier",
+                    "src": "947:5:55"
+                  },
+                  "variableNames": [
+                    {
+                      "name": "value0",
+                      "nodeType": "YulIdentifier",
+                      "src": "937:6:55"
+                    }
+                  ]
+                }
+              ]
+            },
+            "name": "abi_decode_tuple_t_address",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "headStart",
+                "nodeType": "YulTypedName",
+                "src": "735:9:55",
+                "type": ""
+              },
+              {
+                "name": "dataEnd",
+                "nodeType": "YulTypedName",
+                "src": "746:7:55",
+                "type": ""
+              }
+            ],
+            "returnVariables": [
+              {
+                "name": "value0",
+                "nodeType": "YulTypedName",
+                "src": "758:6:55",
+                "type": ""
+              }
+            ],
+            "src": "699:259:55"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "1044:103:55",
+              "statements": [
+                {
+                  "body": {
+                    "nodeType": "YulBlock",
+                    "src": "1090:16:55",
+                    "statements": [
+                      {
+                        "expression": {
+                          "arguments": [
+                            {
+                              "kind": "number",
+                              "nodeType": "YulLiteral",
+                              "src": "1099:1:55",
+                              "type": "",
+                              "value": "0"
+                            },
+                            {
+                              "kind": "number",
+                              "nodeType": "YulLiteral",
+                              "src": "1102:1:55",
+                              "type": "",
+                              "value": "0"
+                            }
+                          ],
+                          "functionName": {
+                            "name": "revert",
+                            "nodeType": "YulIdentifier",
+                            "src": "1092:6:55"
+                          },
+                          "nodeType": "YulFunctionCall",
+                          "src": "1092:12:55"
+                        },
+                        "nodeType": "YulExpressionStatement",
+                        "src": "1092:12:55"
+                      }
+                    ]
+                  },
+                  "condition": {
+                    "arguments": [
+                      {
+                        "arguments": [
+                          {
+                            "name": "dataEnd",
+                            "nodeType": "YulIdentifier",
+                            "src": "1065:7:55"
+                          },
+                          {
+                            "name": "headStart",
+                            "nodeType": "YulIdentifier",
+                            "src": "1074:9:55"
+                          }
+                        ],
+                        "functionName": {
+                          "name": "sub",
+                          "nodeType": "YulIdentifier",
+                          "src": "1061:3:55"
+                        },
+                        "nodeType": "YulFunctionCall",
+                        "src": "1061:23:55"
+                      },
+                      {
+                        "kind": "number",
+                        "nodeType": "YulLiteral",
+                        "src": "1086:2:55",
+                        "type": "",
+                        "value": "32"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "slt",
+                      "nodeType": "YulIdentifier",
+                      "src": "1057:3:55"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "1057:32:55"
+                  },
+                  "nodeType": "YulIf",
+                  "src": "1054:52:55"
+                },
+                {
+                  "nodeType": "YulAssignment",
+                  "src": "1115:26:55",
+                  "value": {
+                    "arguments": [
+                      {
+                        "name": "headStart",
+                        "nodeType": "YulIdentifier",
+                        "src": "1131:9:55"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "mload",
+                      "nodeType": "YulIdentifier",
+                      "src": "1125:5:55"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "1125:16:55"
+                  },
+                  "variableNames": [
+                    {
+                      "name": "value0",
+                      "nodeType": "YulIdentifier",
+                      "src": "1115:6:55"
+                    }
+                  ]
+                }
+              ]
+            },
+            "name": "abi_decode_tuple_t_uint256_fromMemory",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "headStart",
+                "nodeType": "YulTypedName",
+                "src": "1010:9:55",
+                "type": ""
+              },
+              {
+                "name": "dataEnd",
+                "nodeType": "YulTypedName",
+                "src": "1021:7:55",
+                "type": ""
+              }
+            ],
+            "returnVariables": [
+              {
+                "name": "value0",
+                "nodeType": "YulTypedName",
+                "src": "1033:6:55",
+                "type": ""
+              }
+            ],
+            "src": "963:184:55"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "1281:168:55",
+              "statements": [
+                {
+                  "nodeType": "YulAssignment",
+                  "src": "1291:26:55",
+                  "value": {
+                    "arguments": [
+                      {
+                        "name": "headStart",
+                        "nodeType": "YulIdentifier",
+                        "src": "1303:9:55"
+                      },
+                      {
+                        "kind": "number",
+                        "nodeType": "YulLiteral",
+                        "src": "1314:2:55",
+                        "type": "",
+                        "value": "64"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "add",
+                      "nodeType": "YulIdentifier",
+                      "src": "1299:3:55"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "1299:18:55"
+                  },
+                  "variableNames": [
+                    {
+                      "name": "tail",
+                      "nodeType": "YulIdentifier",
+                      "src": "1291:4:55"
+                    }
+                  ]
+                },
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "name": "headStart",
+                        "nodeType": "YulIdentifier",
+                        "src": "1333:9:55"
+                      },
+                      {
+                        "arguments": [
+                          {
+                            "name": "value0",
+                            "nodeType": "YulIdentifier",
+                            "src": "1348:6:55"
+                          },
+                          {
+                            "kind": "number",
+                            "nodeType": "YulLiteral",
+                            "src": "1356:42:55",
+                            "type": "",
+                            "value": "0xffffffffffffffffffffffffffffffffffffffff"
+                          }
+                        ],
+                        "functionName": {
+                          "name": "and",
+                          "nodeType": "YulIdentifier",
+                          "src": "1344:3:55"
+                        },
+                        "nodeType": "YulFunctionCall",
+                        "src": "1344:55:55"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "mstore",
+                      "nodeType": "YulIdentifier",
+                      "src": "1326:6:55"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "1326:74:55"
+                  },
+                  "nodeType": "YulExpressionStatement",
+                  "src": "1326:74:55"
+                },
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "arguments": [
+                          {
+                            "name": "headStart",
+                            "nodeType": "YulIdentifier",
+                            "src": "1420:9:55"
+                          },
+                          {
+                            "kind": "number",
+                            "nodeType": "YulLiteral",
+                            "src": "1431:2:55",
+                            "type": "",
+                            "value": "32"
+                          }
+                        ],
+                        "functionName": {
+                          "name": "add",
+                          "nodeType": "YulIdentifier",
+                          "src": "1416:3:55"
+                        },
+                        "nodeType": "YulFunctionCall",
+                        "src": "1416:18:55"
+                      },
+                      {
+                        "name": "value1",
+                        "nodeType": "YulIdentifier",
+                        "src": "1436:6:55"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "mstore",
+                      "nodeType": "YulIdentifier",
+                      "src": "1409:6:55"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "1409:34:55"
+                  },
+                  "nodeType": "YulExpressionStatement",
+                  "src": "1409:34:55"
+                }
+              ]
+            },
+            "name": "abi_encode_tuple_t_address_t_uint256__to_t_address_t_uint256__fromStack_reversed",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "headStart",
+                "nodeType": "YulTypedName",
+                "src": "1242:9:55",
+                "type": ""
+              },
+              {
+                "name": "value1",
+                "nodeType": "YulTypedName",
+                "src": "1253:6:55",
+                "type": ""
+              },
+              {
+                "name": "value0",
+                "nodeType": "YulTypedName",
+                "src": "1261:6:55",
+                "type": ""
+              }
+            ],
+            "returnVariables": [
+              {
+                "name": "tail",
+                "nodeType": "YulTypedName",
+                "src": "1272:4:55",
+                "type": ""
+              }
+            ],
+            "src": "1152:297:55"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "1532:199:55",
+              "statements": [
+                {
+                  "body": {
+                    "nodeType": "YulBlock",
+                    "src": "1578:16:55",
+                    "statements": [
+                      {
+                        "expression": {
+                          "arguments": [
+                            {
+                              "kind": "number",
+                              "nodeType": "YulLiteral",
+                              "src": "1587:1:55",
+                              "type": "",
+                              "value": "0"
+                            },
+                            {
+                              "kind": "number",
+                              "nodeType": "YulLiteral",
+                              "src": "1590:1:55",
+                              "type": "",
+                              "value": "0"
+                            }
+                          ],
+                          "functionName": {
+                            "name": "revert",
+                            "nodeType": "YulIdentifier",
+                            "src": "1580:6:55"
+                          },
+                          "nodeType": "YulFunctionCall",
+                          "src": "1580:12:55"
+                        },
+                        "nodeType": "YulExpressionStatement",
+                        "src": "1580:12:55"
+                      }
+                    ]
+                  },
+                  "condition": {
+                    "arguments": [
+                      {
+                        "arguments": [
+                          {
+                            "name": "dataEnd",
+                            "nodeType": "YulIdentifier",
+                            "src": "1553:7:55"
+                          },
+                          {
+                            "name": "headStart",
+                            "nodeType": "YulIdentifier",
+                            "src": "1562:9:55"
+                          }
+                        ],
+                        "functionName": {
+                          "name": "sub",
+                          "nodeType": "YulIdentifier",
+                          "src": "1549:3:55"
+                        },
+                        "nodeType": "YulFunctionCall",
+                        "src": "1549:23:55"
+                      },
+                      {
+                        "kind": "number",
+                        "nodeType": "YulLiteral",
+                        "src": "1574:2:55",
+                        "type": "",
+                        "value": "32"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "slt",
+                      "nodeType": "YulIdentifier",
+                      "src": "1545:3:55"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "1545:32:55"
+                  },
+                  "nodeType": "YulIf",
+                  "src": "1542:52:55"
+                },
+                {
+                  "nodeType": "YulVariableDeclaration",
+                  "src": "1603:29:55",
+                  "value": {
+                    "arguments": [
+                      {
+                        "name": "headStart",
+                        "nodeType": "YulIdentifier",
+                        "src": "1622:9:55"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "mload",
+                      "nodeType": "YulIdentifier",
+                      "src": "1616:5:55"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "1616:16:55"
+                  },
+                  "variables": [
+                    {
+                      "name": "value",
+                      "nodeType": "YulTypedName",
+                      "src": "1607:5:55",
+                      "type": ""
+                    }
+                  ]
+                },
+                {
+                  "body": {
+                    "nodeType": "YulBlock",
+                    "src": "1685:16:55",
+                    "statements": [
+                      {
+                        "expression": {
+                          "arguments": [
+                            {
+                              "kind": "number",
+                              "nodeType": "YulLiteral",
+                              "src": "1694:1:55",
+                              "type": "",
+                              "value": "0"
+                            },
+                            {
+                              "kind": "number",
+                              "nodeType": "YulLiteral",
+                              "src": "1697:1:55",
+                              "type": "",
+                              "value": "0"
+                            }
+                          ],
+                          "functionName": {
+                            "name": "revert",
+                            "nodeType": "YulIdentifier",
+                            "src": "1687:6:55"
+                          },
+                          "nodeType": "YulFunctionCall",
+                          "src": "1687:12:55"
+                        },
+                        "nodeType": "YulExpressionStatement",
+                        "src": "1687:12:55"
+                      }
+                    ]
+                  },
+                  "condition": {
+                    "arguments": [
+                      {
+                        "arguments": [
+                          {
+                            "name": "value",
+                            "nodeType": "YulIdentifier",
+                            "src": "1654:5:55"
+                          },
+                          {
+                            "arguments": [
+                              {
+                                "arguments": [
+                                  {
+                                    "name": "value",
+                                    "nodeType": "YulIdentifier",
+                                    "src": "1675:5:55"
+                                  }
+                                ],
+                                "functionName": {
+                                  "name": "iszero",
+                                  "nodeType": "YulIdentifier",
+                                  "src": "1668:6:55"
+                                },
+                                "nodeType": "YulFunctionCall",
+                                "src": "1668:13:55"
+                              }
+                            ],
+                            "functionName": {
+                              "name": "iszero",
+                              "nodeType": "YulIdentifier",
+                              "src": "1661:6:55"
+                            },
+                            "nodeType": "YulFunctionCall",
+                            "src": "1661:21:55"
+                          }
+                        ],
+                        "functionName": {
+                          "name": "eq",
+                          "nodeType": "YulIdentifier",
+                          "src": "1651:2:55"
+                        },
+                        "nodeType": "YulFunctionCall",
+                        "src": "1651:32:55"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "iszero",
+                      "nodeType": "YulIdentifier",
+                      "src": "1644:6:55"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "1644:40:55"
+                  },
+                  "nodeType": "YulIf",
+                  "src": "1641:60:55"
+                },
+                {
+                  "nodeType": "YulAssignment",
+                  "src": "1710:15:55",
+                  "value": {
+                    "name": "value",
+                    "nodeType": "YulIdentifier",
+                    "src": "1720:5:55"
+                  },
+                  "variableNames": [
+                    {
+                      "name": "value0",
+                      "nodeType": "YulIdentifier",
+                      "src": "1710:6:55"
+                    }
+                  ]
+                }
+              ]
+            },
+            "name": "abi_decode_tuple_t_bool_fromMemory",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "headStart",
+                "nodeType": "YulTypedName",
+                "src": "1498:9:55",
+                "type": ""
+              },
+              {
+                "name": "dataEnd",
+                "nodeType": "YulTypedName",
+                "src": "1509:7:55",
+                "type": ""
+              }
+            ],
+            "returnVariables": [
+              {
+                "name": "value0",
+                "nodeType": "YulTypedName",
+                "src": "1521:6:55",
+                "type": ""
+              }
+            ],
+            "src": "1454:277:55"
+          }
+        ]
+      },
+      "contents": "{\n    { }\n    function validator_revert_contract_ERC20Basic(value)\n    {\n        if iszero(eq(value, and(value, 0xffffffffffffffffffffffffffffffffffffffff))) { revert(0, 0) }\n    }\n    function abi_decode_tuple_t_contract$_ERC20Basic_$5117(headStart, dataEnd) -> value0\n    {\n        if slt(sub(dataEnd, headStart), 32) { revert(0, 0) }\n        let value := calldataload(headStart)\n        validator_revert_contract_ERC20Basic(value)\n        value0 := value\n    }\n    function abi_encode_tuple_t_address__to_t_address__fromStack_reversed(headStart, value0) -> tail\n    {\n        tail := add(headStart, 32)\n        mstore(headStart, and(value0, 0xffffffffffffffffffffffffffffffffffffffff))\n    }\n    function abi_decode_tuple_t_address(headStart, dataEnd) -> value0\n    {\n        if slt(sub(dataEnd, headStart), 32) { revert(0, 0) }\n        let value := calldataload(headStart)\n        validator_revert_contract_ERC20Basic(value)\n        value0 := value\n    }\n    function abi_decode_tuple_t_uint256_fromMemory(headStart, dataEnd) -> value0\n    {\n        if slt(sub(dataEnd, headStart), 32) { revert(0, 0) }\n        value0 := mload(headStart)\n    }\n    function abi_encode_tuple_t_address_t_uint256__to_t_address_t_uint256__fromStack_reversed(headStart, value1, value0) -> tail\n    {\n        tail := add(headStart, 64)\n        mstore(headStart, and(value0, 0xffffffffffffffffffffffffffffffffffffffff))\n        mstore(add(headStart, 32), value1)\n    }\n    function abi_decode_tuple_t_bool_fromMemory(headStart, dataEnd) -> value0\n    {\n        if slt(sub(dataEnd, headStart), 32) { revert(0, 0) }\n        let value := mload(headStart)\n        if iszero(eq(value, iszero(iszero(value)))) { revert(0, 0) }\n        value0 := value\n    }\n}",
+      "id": 55,
+      "language": "Yul",
+      "name": "#utility.yul"
+    }
+  ],
+  "sourceMap": "427:366:42:-:0;;;;;;;;;;;;-1:-1:-1;588:5:48;:18;;-1:-1:-1;;;;;;588:18:48;596:10;588:18;;;427:366:42;;;;;;",
+  "deployedSourceMap": "427:366:42:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;629:161;;;;;;:::i;:::-;;:::i;:::-;;1022:111:48;;;:::i;269:20::-;;;;;-1:-1:-1;;;;;269:20:48;;;;;;-1:-1:-1;;;;;632:55:55;;;614:74;;602:2;587:18;269:20:48;;;;;;;1295:111;;;;;;:::i;:::-;;:::i;629:161:42:-;740:5:48;;-1:-1:-1;;;;;740:5:48;726:10;:19;718:28;;;;;;713:31:42::1;::::0;;;;738:4:::1;713:31;::::0;::::1;614:74:55::0;695:15:42::1;::::0;-1:-1:-1;;;;;713:16:42;::::1;::::0;::::1;::::0;587:18:55;;713:31:42::1;;;;;;;;;;;;;;;;;::::0;::::1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;770:5;::::0;695:49;;-1:-1:-1;750:35:42::1;::::0;-1:-1:-1;;;;;750:19:42;;::::1;::::0;770:5:::1;695:49:::0;750:19:::1;:35::i;:::-;689:101;629:161:::0;:::o;1022:111:48:-;740:5;;-1:-1:-1;;;;;740:5:48;726:10;:19;718:28;;;;;;1098:5:::1;::::0;;1079:25:::1;::::0;-1:-1:-1;;;;;1098:5:48;;::::1;::::0;1079:25:::1;::::0;::::1;1126:1;1110:18:::0;;-1:-1:-1;;1110:18:48::1;::::0;;1022:111::o;1295:::-;740:5;;-1:-1:-1;;;;;740:5:48;726:10;:19;718:28;;;;;;1372:29:::1;1391:9;1372:18;:29::i;:::-;1295:111:::0;:::o;376:149:54:-;491:28;;;;;-1:-1:-1;;;;;1344:55:55;;;491:28:54;;;1326:74:55;1416:18;;;1409:34;;;491:15:54;;;;;1299:18:55;;491:28:54;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;483:37;;;;;;376:149;;;:::o;1541:171:48:-;-1:-1:-1;;;;;1611:23:48;;1603:32;;;;;;1667:5;;;1646:38;;-1:-1:-1;;;;;1646:38:48;;;;1667:5;;;1646:38;;;1690:5;:17;;-1:-1:-1;;1690:17:48;-1:-1:-1;;;;;1690:17:48;;;;;;;;;;1541:171::o;14:166:55:-;-1:-1:-1;;;;;105:5:55;101:54;94:5;91:65;81:93;;170:1;167;160:12;185:278;263:6;316:2;304:9;295:7;291:23;287:32;284:52;;;332:1;329;322:12;284:52;371:9;358:23;390:43;427:5;390:43;:::i;:::-;452:5;185:278;-1:-1:-1;;;185:278:55:o;963:184::-;1033:6;1086:2;1074:9;1065:7;1061:23;1057:32;1054:52;;;1102:1;1099;1092:12;1054:52;-1:-1:-1;1125:16:55;;963:184;-1:-1:-1;963:184:55:o;1454:277::-;1521:6;1574:2;1562:9;1553:7;1549:23;1545:32;1542:52;;;1590:1;1587;1580:12;1542:52;1622:9;1616:16;1675:5;1668:13;1661:21;1654:5;1651:32;1641:60;;1697:1;1694;1687:12",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\nimport \"./Ownable.sol\";\nimport \"../token/ERC20/ERC20Basic.sol\";\nimport \"../token/ERC20/SafeERC20.sol\";\n\n/**\n * @title Contracts that should be able to recover tokens\n * @author SylTi\n * @dev This allow a contract to recover any ERC20 token received in a contract by transferring the balance to the contract owner.\n * This will prevent any accidental loss of tokens.\n */\ncontract CanReclaimToken is Ownable {\n  using SafeERC20 for ERC20Basic;\n\n  /**\n   * @dev Reclaim all ERC20Basic compatible tokens\n   * @param _token ERC20Basic The address of the token contract\n   */\n  function reclaimToken(ERC20Basic _token) external onlyOwner {\n    uint256 balance = _token.balanceOf(address(this));\n    _token.safeTransfer(owner, balance);\n  }\n\n}\n",
+  "sourcePath": "/Users/gislik/Code/smart-contracts-private/contracts/ownership/CanReclaimToken.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/ownership/CanReclaimToken.sol",
+    "exportedSymbols": {
+      "CanReclaimToken": [
+        4543
+      ],
+      "ERC20Basic": [
+        5117
+      ],
+      "Ownable": [
+        4807
+      ],
+      "SafeERC20": [
+        5141
+      ]
+    },
+    "id": 4544,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 4505,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "32:23:42"
+      },
+      {
+        "absolutePath": "project:/contracts/ownership/Ownable.sol",
+        "file": "./Ownable.sol",
+        "id": 4506,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 4544,
+        "sourceUnit": 4808,
+        "src": "57:23:42",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "project:/contracts/token/ERC20/ERC20Basic.sol",
+        "file": "../token/ERC20/ERC20Basic.sol",
+        "id": 4507,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 4544,
+        "sourceUnit": 5118,
+        "src": "81:39:42",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "project:/contracts/token/ERC20/SafeERC20.sol",
+        "file": "../token/ERC20/SafeERC20.sol",
+        "id": 4508,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 4544,
+        "sourceUnit": 5142,
+        "src": "121:38:42",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 4510,
+              "name": "Ownable",
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 4807,
+              "src": "455:7:42"
+            },
+            "id": 4511,
+            "nodeType": "InheritanceSpecifier",
+            "src": "455:7:42"
+          }
+        ],
+        "canonicalName": "CanReclaimToken",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": {
+          "id": 4509,
+          "nodeType": "StructuredDocumentation",
+          "src": "161:265:42",
+          "text": " @title Contracts that should be able to recover tokens\n @author SylTi\n @dev This allow a contract to recover any ERC20 token received in a contract by transferring the balance to the contract owner.\n This will prevent any accidental loss of tokens."
+        },
+        "fullyImplemented": true,
+        "id": 4543,
+        "linearizedBaseContracts": [
+          4543,
+          4807
+        ],
+        "name": "CanReclaimToken",
+        "nameLocation": "436:15:42",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "id": 4515,
+            "libraryName": {
+              "id": 4512,
+              "name": "SafeERC20",
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 5141,
+              "src": "473:9:42"
+            },
+            "nodeType": "UsingForDirective",
+            "src": "467:31:42",
+            "typeName": {
+              "id": 4514,
+              "nodeType": "UserDefinedTypeName",
+              "pathNode": {
+                "id": 4513,
+                "name": "ERC20Basic",
+                "nodeType": "IdentifierPath",
+                "referencedDeclaration": 5117,
+                "src": "487:10:42"
+              },
+              "referencedDeclaration": 5117,
+              "src": "487:10:42",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_ERC20Basic_$5117",
+                "typeString": "contract ERC20Basic"
+              }
+            }
+          },
+          {
+            "body": {
+              "id": 4541,
+              "nodeType": "Block",
+              "src": "689:101:42",
+              "statements": [
+                {
+                  "assignments": [
+                    4525
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 4525,
+                      "mutability": "mutable",
+                      "name": "balance",
+                      "nameLocation": "703:7:42",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 4541,
+                      "src": "695:15:42",
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      },
+                      "typeName": {
+                        "id": 4524,
+                        "name": "uint256",
+                        "nodeType": "ElementaryTypeName",
+                        "src": "695:7:42",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 4533,
+                  "initialValue": {
+                    "arguments": [
+                      {
+                        "arguments": [
+                          {
+                            "id": 4530,
+                            "name": "this",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 4294967268,
+                            "src": "738:4:42",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_contract$_CanReclaimToken_$4543",
+                              "typeString": "contract CanReclaimToken"
+                            }
+                          }
+                        ],
+                        "expression": {
+                          "argumentTypes": [
+                            {
+                              "typeIdentifier": "t_contract$_CanReclaimToken_$4543",
+                              "typeString": "contract CanReclaimToken"
+                            }
+                          ],
+                          "id": 4529,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "lValueRequested": false,
+                          "nodeType": "ElementaryTypeNameExpression",
+                          "src": "730:7:42",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_type$_t_address_$",
+                            "typeString": "type(address)"
+                          },
+                          "typeName": {
+                            "id": 4528,
+                            "name": "address",
+                            "nodeType": "ElementaryTypeName",
+                            "src": "730:7:42",
+                            "typeDescriptions": {}
+                          }
+                        },
+                        "id": 4531,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "kind": "typeConversion",
+                        "lValueRequested": false,
+                        "names": [],
+                        "nodeType": "FunctionCall",
+                        "src": "730:13:42",
+                        "tryCall": false,
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      ],
+                      "expression": {
+                        "id": 4526,
+                        "name": "_token",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 4519,
+                        "src": "713:6:42",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_ERC20Basic_$5117",
+                          "typeString": "contract ERC20Basic"
+                        }
+                      },
+                      "id": 4527,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "balanceOf",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 5099,
+                      "src": "713:16:42",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_external_view$_t_address_$returns$_t_uint256_$",
+                        "typeString": "function (address) view external returns (uint256)"
+                      }
+                    },
+                    "id": 4532,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "713:31:42",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "695:49:42"
+                },
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "id": 4537,
+                        "name": "owner",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 4718,
+                        "src": "770:5:42",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      },
+                      {
+                        "id": 4538,
+                        "name": "balance",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 4525,
+                        "src": "777:7:42",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      ],
+                      "expression": {
+                        "id": 4534,
+                        "name": "_token",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 4519,
+                        "src": "750:6:42",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_ERC20Basic_$5117",
+                          "typeString": "contract ERC20Basic"
+                        }
+                      },
+                      "id": 4536,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "safeTransfer",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 5140,
+                      "src": "750:19:42",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_internal_nonpayable$_t_contract$_ERC20Basic_$5117_$_t_address_$_t_uint256_$returns$__$bound_to$_t_contract$_ERC20Basic_$5117_$",
+                        "typeString": "function (contract ERC20Basic,address,uint256)"
+                      }
+                    },
+                    "id": 4539,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "750:35:42",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 4540,
+                  "nodeType": "ExpressionStatement",
+                  "src": "750:35:42"
+                }
+              ]
+            },
+            "documentation": {
+              "id": 4516,
+              "nodeType": "StructuredDocumentation",
+              "src": "502:124:42",
+              "text": " @dev Reclaim all ERC20Basic compatible tokens\n @param _token ERC20Basic The address of the token contract"
+            },
+            "functionSelector": "17ffc320",
+            "id": 4542,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [
+              {
+                "id": 4522,
+                "kind": "modifierInvocation",
+                "modifierName": {
+                  "id": 4521,
+                  "name": "onlyOwner",
+                  "nodeType": "IdentifierPath",
+                  "referencedDeclaration": 4750,
+                  "src": "679:9:42"
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "679:9:42"
+              }
+            ],
+            "name": "reclaimToken",
+            "nameLocation": "638:12:42",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4520,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4519,
+                  "mutability": "mutable",
+                  "name": "_token",
+                  "nameLocation": "662:6:42",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4542,
+                  "src": "651:17:42",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_ERC20Basic_$5117",
+                    "typeString": "contract ERC20Basic"
+                  },
+                  "typeName": {
+                    "id": 4518,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 4517,
+                      "name": "ERC20Basic",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 5117,
+                      "src": "651:10:42"
+                    },
+                    "referencedDeclaration": 5117,
+                    "src": "651:10:42",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_ERC20Basic_$5117",
+                      "typeString": "contract ERC20Basic"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "650:19:42"
+            },
+            "returnParameters": {
+              "id": 4523,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "689:0:42"
+            },
+            "scope": 4543,
+            "src": "629:161:42",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 4544,
+        "src": "427:366:42",
+        "usedErrors": []
+      }
+    ],
+    "src": "32:762:42"
+  },
+  "legacyAST": {
+    "absolutePath": "project:/contracts/ownership/CanReclaimToken.sol",
+    "exportedSymbols": {
+      "CanReclaimToken": [
+        4543
+      ],
+      "ERC20Basic": [
+        5117
+      ],
+      "Ownable": [
+        4807
+      ],
+      "SafeERC20": [
+        5141
+      ]
+    },
+    "id": 4544,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 4505,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "32:23:42"
+      },
+      {
+        "absolutePath": "project:/contracts/ownership/Ownable.sol",
+        "file": "./Ownable.sol",
+        "id": 4506,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 4544,
+        "sourceUnit": 4808,
+        "src": "57:23:42",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "project:/contracts/token/ERC20/ERC20Basic.sol",
+        "file": "../token/ERC20/ERC20Basic.sol",
+        "id": 4507,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 4544,
+        "sourceUnit": 5118,
+        "src": "81:39:42",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "project:/contracts/token/ERC20/SafeERC20.sol",
+        "file": "../token/ERC20/SafeERC20.sol",
+        "id": 4508,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 4544,
+        "sourceUnit": 5142,
+        "src": "121:38:42",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 4510,
+              "name": "Ownable",
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 4807,
+              "src": "455:7:42"
+            },
+            "id": 4511,
+            "nodeType": "InheritanceSpecifier",
+            "src": "455:7:42"
+          }
+        ],
+        "canonicalName": "CanReclaimToken",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": {
+          "id": 4509,
+          "nodeType": "StructuredDocumentation",
+          "src": "161:265:42",
+          "text": " @title Contracts that should be able to recover tokens\n @author SylTi\n @dev This allow a contract to recover any ERC20 token received in a contract by transferring the balance to the contract owner.\n This will prevent any accidental loss of tokens."
+        },
+        "fullyImplemented": true,
+        "id": 4543,
+        "linearizedBaseContracts": [
+          4543,
+          4807
+        ],
+        "name": "CanReclaimToken",
+        "nameLocation": "436:15:42",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "id": 4515,
+            "libraryName": {
+              "id": 4512,
+              "name": "SafeERC20",
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 5141,
+              "src": "473:9:42"
+            },
+            "nodeType": "UsingForDirective",
+            "src": "467:31:42",
+            "typeName": {
+              "id": 4514,
+              "nodeType": "UserDefinedTypeName",
+              "pathNode": {
+                "id": 4513,
+                "name": "ERC20Basic",
+                "nodeType": "IdentifierPath",
+                "referencedDeclaration": 5117,
+                "src": "487:10:42"
+              },
+              "referencedDeclaration": 5117,
+              "src": "487:10:42",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_ERC20Basic_$5117",
+                "typeString": "contract ERC20Basic"
+              }
+            }
+          },
+          {
+            "body": {
+              "id": 4541,
+              "nodeType": "Block",
+              "src": "689:101:42",
+              "statements": [
+                {
+                  "assignments": [
+                    4525
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 4525,
+                      "mutability": "mutable",
+                      "name": "balance",
+                      "nameLocation": "703:7:42",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 4541,
+                      "src": "695:15:42",
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      },
+                      "typeName": {
+                        "id": 4524,
+                        "name": "uint256",
+                        "nodeType": "ElementaryTypeName",
+                        "src": "695:7:42",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 4533,
+                  "initialValue": {
+                    "arguments": [
+                      {
+                        "arguments": [
+                          {
+                            "id": 4530,
+                            "name": "this",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 4294967268,
+                            "src": "738:4:42",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_contract$_CanReclaimToken_$4543",
+                              "typeString": "contract CanReclaimToken"
+                            }
+                          }
+                        ],
+                        "expression": {
+                          "argumentTypes": [
+                            {
+                              "typeIdentifier": "t_contract$_CanReclaimToken_$4543",
+                              "typeString": "contract CanReclaimToken"
+                            }
+                          ],
+                          "id": 4529,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "lValueRequested": false,
+                          "nodeType": "ElementaryTypeNameExpression",
+                          "src": "730:7:42",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_type$_t_address_$",
+                            "typeString": "type(address)"
+                          },
+                          "typeName": {
+                            "id": 4528,
+                            "name": "address",
+                            "nodeType": "ElementaryTypeName",
+                            "src": "730:7:42",
+                            "typeDescriptions": {}
+                          }
+                        },
+                        "id": 4531,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "kind": "typeConversion",
+                        "lValueRequested": false,
+                        "names": [],
+                        "nodeType": "FunctionCall",
+                        "src": "730:13:42",
+                        "tryCall": false,
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      ],
+                      "expression": {
+                        "id": 4526,
+                        "name": "_token",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 4519,
+                        "src": "713:6:42",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_ERC20Basic_$5117",
+                          "typeString": "contract ERC20Basic"
+                        }
+                      },
+                      "id": 4527,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "balanceOf",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 5099,
+                      "src": "713:16:42",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_external_view$_t_address_$returns$_t_uint256_$",
+                        "typeString": "function (address) view external returns (uint256)"
+                      }
+                    },
+                    "id": 4532,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "713:31:42",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "695:49:42"
+                },
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "id": 4537,
+                        "name": "owner",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 4718,
+                        "src": "770:5:42",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      },
+                      {
+                        "id": 4538,
+                        "name": "balance",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 4525,
+                        "src": "777:7:42",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      ],
+                      "expression": {
+                        "id": 4534,
+                        "name": "_token",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 4519,
+                        "src": "750:6:42",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_ERC20Basic_$5117",
+                          "typeString": "contract ERC20Basic"
+                        }
+                      },
+                      "id": 4536,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "safeTransfer",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 5140,
+                      "src": "750:19:42",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_internal_nonpayable$_t_contract$_ERC20Basic_$5117_$_t_address_$_t_uint256_$returns$__$bound_to$_t_contract$_ERC20Basic_$5117_$",
+                        "typeString": "function (contract ERC20Basic,address,uint256)"
+                      }
+                    },
+                    "id": 4539,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "750:35:42",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 4540,
+                  "nodeType": "ExpressionStatement",
+                  "src": "750:35:42"
+                }
+              ]
+            },
+            "documentation": {
+              "id": 4516,
+              "nodeType": "StructuredDocumentation",
+              "src": "502:124:42",
+              "text": " @dev Reclaim all ERC20Basic compatible tokens\n @param _token ERC20Basic The address of the token contract"
+            },
+            "functionSelector": "17ffc320",
+            "id": 4542,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [
+              {
+                "id": 4522,
+                "kind": "modifierInvocation",
+                "modifierName": {
+                  "id": 4521,
+                  "name": "onlyOwner",
+                  "nodeType": "IdentifierPath",
+                  "referencedDeclaration": 4750,
+                  "src": "679:9:42"
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "679:9:42"
+              }
+            ],
+            "name": "reclaimToken",
+            "nameLocation": "638:12:42",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4520,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4519,
+                  "mutability": "mutable",
+                  "name": "_token",
+                  "nameLocation": "662:6:42",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4542,
+                  "src": "651:17:42",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_ERC20Basic_$5117",
+                    "typeString": "contract ERC20Basic"
+                  },
+                  "typeName": {
+                    "id": 4518,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 4517,
+                      "name": "ERC20Basic",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 5117,
+                      "src": "651:10:42"
+                    },
+                    "referencedDeclaration": 5117,
+                    "src": "651:10:42",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_ERC20Basic_$5117",
+                      "typeString": "contract ERC20Basic"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "650:19:42"
+            },
+            "returnParameters": {
+              "id": 4523,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "689:0:42"
+            },
+            "scope": 4543,
+            "src": "629:161:42",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 4544,
+        "src": "427:366:42",
+        "usedErrors": []
+      }
+    ],
+    "src": "32:762:42"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.11+commit.d7f03943.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.6",
+  "updatedAt": "2022-11-15T22:20:58.308Z",
+  "devdoc": {
+    "author": "SylTi",
+    "details": "This allow a contract to recover any ERC20 token received in a contract by transferring the balance to the contract owner. This will prevent any accidental loss of tokens.",
+    "kind": "dev",
+    "methods": {
+      "reclaimToken(address)": {
+        "details": "Reclaim all ERC20Basic compatible tokens",
+        "params": {
+          "_token": "ERC20Basic The address of the token contract"
+        }
+      },
+      "renounceOwnership()": {
+        "details": "Allows the current owner to relinquish control of the contract."
+      },
+      "transferOwnership(address)": {
+        "details": "Allows the current owner to transfer control of the contract to a newOwner.",
+        "params": {
+          "_newOwner": "The address to transfer ownership to."
+        }
+      }
+    },
+    "title": "Contracts that should be able to recover tokens",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {
+      "renounceOwnership()": {
+        "notice": "Renouncing to ownership will leave the contract without an owner. It will not be possible to call the functions with the `onlyOwner` modifier anymore."
+      }
+    },
+    "version": 1
+  }
+}

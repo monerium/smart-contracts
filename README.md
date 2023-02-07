@@ -23,60 +23,11 @@ Electronic money (e-money) has been recognized in the European Economic Area (EE
 | :----: | :----: | :----: | :----: |
 | <small><a href="https://polygonscan.com/token/0x18ec0A6E18E5bc3784fDd3a3634b31245ab704F6">![EUR](docs/QR-POLY-EUR.png)</a><br /><a href="https://polygonscan.com/token/0x18ec0A6E18E5bc3784fDd3a3634b31245ab704F6">Polygon.Pos.EUR</a></small> | <small><a href="https://polygonscan.com/token/0x75792CBDb361d80ba89271a079EfeE62c29FA324">![GBP](docs/QR-POLY-GBP.png)</a><br /><a href="https://polygonscan.com/token/0x75792CBDb361d80ba89271a079EfeE62c29FA324">Polygon.Pos.GBP</a> | <small><a href="https://polygonscan.com/token/0xf1bBf27A9D659D326efBfa5D284EBaeFB803983D">![ISK address](docs/QR-POLY-ISK.png)</a><br /><a href="https://polygonscan.com/token/0xf1bBf27A9D659D326efBfa5D284EBaeFB803983D">Polygon.Pos.ISK</a></small> | <small><a href="https://polygonscan.com/token/0x64E97c1a6535afD4a313eF46F88A64a34250B719">![USD address](docs/QR-POLY-USD.png)</a><br /><a href="https://polygonscan.com/token/0x64E97c1a6535afD4a313eF46F88A64a34250B719">Polygon.Pos.USD</a></small> |
 
-Monerium e-money tokens [v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3) are live on Ethereum mainnet and is [ERC20](https://eips.ethereum.org/EIPS/eip-20) and [ERC677](https://github.com/ethereum/EIPs/issues/677) compliant.
+### Gnosischain
 
-### Euro / EUR
-
-| Field | Value |
-| ------------- | ------------- |
-| Name | Monerium EUR emoney |
-| Contract address  | [0x3231cb76718cdef2155fc47b5286d82e6eda273f](https://etherscan.io/token/0x3231cb76718cdef2155fc47b5286d82e6eda273f)  |
-| ENS domain | eur.monerium.eth |
-| Symbol | EURe |
-| Ticker | EUR |
-| Decimals | 18 |
-| QR code  | ![EUR](docs/0x3231cb76718cdef2155fc47b5286d82e6eda273f.png)  |
-| Logo | ![EUR](assets/tokens/eur/logo.png)  |
-
-### Sterling / GBP
-
-| Field | Value |
-| ------------- | ------------- |
-| Name | Monerium GBP emoney |
-| Contract address  | [0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd](https://etherscan.io/token/0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd)  |
-| ENS domain | gbp.monerium.eth |
-| Symbol | GBPe |
-| Ticker | GBP |
-| Decimals | 18 |
-| QR code  | ![GBP](docs/0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd.png)  |
-| Logo | ![GBP](assets/tokens/gbp/logo.png)  |
-
-### US Dollar / USD
-
-| Field | Value |
-| ------------- | ------------- |
-| Name | Monerium USD emoney |
-| Contract address  | [0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52](https://etherscan.io/token/0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52)  |
-| ENS domain | usd.monerium.eth |
-| Symbol | USDe |
-| Ticker | USD |
-| Decimals | 18 |
-| QR code  | ![USD](docs/0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52.png)  |
-| Logo | ![USD](assets/tokens/usd/logo.png)  |
-
-### Icelandic krona / ISK
-
-| Field | Value |
-| ------------- | ------------- |
-| Name | Monerium ISK emoney |
-| Contract address  | [0xc642549743a93674cf38d6431f75d6443f88e3e2](https://etherscan.io/token/0xc642549743a93674cf38d6431f75d6443f88e3e2)  |
-| ENS domain | isk.monerium.eth |
-| Symbol | ISKe |
-| Ticker | ISK |
-| Decimals | 18 |
-| QR code  | ![ISK](docs/0xc642549743a93674cf38d6431f75d6443f88e3e2.png)  |
-| Logo | ![ISK](assets/tokens/isk/logo.png)  |
-
+| EUR | GBP | ISK | USD |
+| :----: | :----: | :----: | :----: |
+| <small><a href="https://gnosisscan.io/token/0xcB444e90D8198415266c6a2724b7900fb12FC56E">![EUR](docs/qr-gnosis-eur.png)</a><br /><a href="https://gnosisscan.io/token/0xcB444e90D8198415266c6a2724b7900fb12FC56E">Gnosischain.EUR</a></small> | <small><a href="https://gnosisscan.io/token/0x5Cb9073902F2035222B9749F8fB0c9BFe5527108">![GBP](docs/qr-gnosis-gbp.png)</a><br /><a href="https://gnosisscan.io/token/0x5Cb9073902F2035222B9749F8fB0c9BFe5527108">Gnosischain.GBP</a> | <small><a href="https://gnosisscan.io/token/0xD8F84BF2E036A3c8E4c0e25ed2aAe0370F3CCca8">![ISK token](docs/qr-gnosis-isk.png)</a><br /><a href="https://gnosisscan.io/token/0xD8F84BF2E036A3c8E4c0e25ed2aAe0370F3CCca8">Gnosischain.ISK</a></small> | <small><a href="https://gnosisscan.io/token/0x20E694659536C6B46e4B8BE8f6303fFCD8d1dF69">![USD token](docs/qr-gnosis-usd.png)</a><br /><a href="https://gnosisscan.io/token/0x20E694659536C6B46e4B8BE8f6303fFCD8d1dF69">Gnosischain.USD</a></small> |Monerium e-money tokens [v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3) are live on Ethereum mainnet and are [ERC20](https://eips.ethereum.org/EIPS/eip-20) and [ERC677](https://github.com/ethereum/EIPs/issues/677) compliant.
 
 ## Test tokens
 
@@ -85,17 +36,14 @@ Play around with our money in a safe environment to understand how this fits int
 
 Please fill out the "Partner with Monerium" form on [monerium.com](https://monerium.com) to get test money for the Ropsten or Kovan test networks.
 
-**Contract addresses for the test networks:**
+| Contract | Ethereum Görli | Polygon Mumbai | Gnosischain Chiado |
+| -------- | ------| ------ | ------ |
+| EUR      | [0x83B844180f66Bbc3BE2E97C6179035AF91c4Cce8](https://goerli.etherscan.io/address/0x83B844180f66Bbc3BE2E97C6179035AF91c4Cce8) | [0xCF487EFd00B70EaC8C28C654356Fb0E387E66D62](https://mumbai.polygonscan.com/address/0xCF487EFd00B70EaC8C28C654356Fb0E387E66D62) | [0xb106ed7587365a16b6691a3D4B2A734f4E8268a2](https://blockscout.chiadochain.net/address/0xb106ed7587365a16b6691a3D4B2A734f4E8268a2) |
+| GBP      | [0x687b68644d0b4e3EC9a24FEc4767FCC5854b9572](https://goerli.etherscan.io/address/0x687b68644d0b4e3EC9a24FEc4767FCC5854b9572) | [0x890e629d2728f470811adDc84990de9f5e91bC72](https://mumbai.polygonscan.com/address/0x890e629d2728f470811adDc84990de9f5e91bC72) | [0xf649DC9b2DF316BA82B1A35b507DEA405B9B4D34](https://blockscout.chiadochain.net/address/0xf649DC9b2DF316BA82B1A35b507DEA405B9B4D34) |
+| ISK      | [0x14B705BfeA90530eA389260B9327174BEb6BD666](https://goerli.etherscan.io/address/0x14B705BfeA90530eA389260B9327174BEb6BD666) | [0x3fC9C5725eE369d6DDf08481ee5B31BA3c8e3D91](https://mumbai.polygonscan.com/address/0x3fC9C5725eE369d6DDf08481ee5B31BA3c8e3D91) | [0x2fADa6C9AEaa03BBaEE07F4761FB30C097367dC4](https://blockscout.chiadochain.net/address/0x2fADa6C9AEaa03BBaEE07F4761FB30C097367dC4) |
+| USD      | [0x1b55D077b3459e73354bA2C338425B3A3079fC0f](https://goerli.etherscan.io/address/0x1b55D077b3459e73354bA2C338425B3A3079fC0f)| [0xcCA6b920eebFf5343cCCf386909Ec2D8Ba802bdd](https://mumbai.polygonscan.com/address/0xcCA6b920eebFf5343cCCf386909Ec2D8Ba802bdd) | [0xA8c6bD0b147f9c612c43629EAD1784aa57ED60E7](https://blockscout.chiadochain.net/address/0xA8c6bD0b147f9c612c43629EAD1784aa57ED60E7) |
 
-| Token | Rinkeby ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) | Ropsten ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) | Kovan ([v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3)) |
-| -------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| EUR      | 0x25c13fc529dc4afe4d488bd1f2ee5e1ec4918e0b                                          | 0x0ae91c2b9e31e92871129117d908b0963c054048                                          | 0x9b8fd8fcfaa2438d11e7ed77d5afb6c2e1044b37                                        |
-| GBP      | 0x01df10e345d0364d3a5b8422a66af6305803bd1e                                          | 0xd9979346224e7b147caddf399b56357e20d3e67c                                          | 0xe28884ed5bd43e3f9f1dd733d254c9f5c6f983d2                                        |
-| ISK      | 0x0c9d7a0d8bf4bc9d15f577bbf650ebc8044a71db                                          | 0x80b02ef56cbbc542f0ce89ad1d2a680244da9a63                                          | 0x39ad1ad871787ba4b3df5b8ac3d81b2c9b7c6290                                        |
-| USD      | 0x09c0a236e1227500f495cb0731c4af69b49639a5                                          | 0x3781dcdd60e006e33b664dce0d6be934f0a139c8                                          | 0x57724f65b3f914de7820c6f76b2099fa3a90f509                                        |
-
-
-## Using Monerium money / Token integration
+## Token integration
 
 We at [Monerium](https://monerium.com) er really exited to talk to all developers and builders that want to use money in their applications.
 Go to [monerium.com](https://monerium.com) and fill out the "Partner with Monerium" form and our expert staff
@@ -131,16 +79,16 @@ contract Euro {
 
 ```
 
-### [ERC20](https://eips.ethereum.org/EIPS/eip-20) / Approve and transfer from
+### ERC20: Approve and transfer from
 
 The user gives your smart contract the right to take the money by itself from their address using the `approve` method.
 Once approved, your contract can call the `transferFrom` method in the Monerium contract and transfer money from the address.
 
-### [ERC677](https://github.com/ethereum/EIPs/issues/677) / Transfer and call
+### ERC677: Transfer and call
 
 `transferAndCall` transfers money and calls the receiving contract's `onTokenTransfer` method with additional data and triggers an event Transfer.
 
-## Test tokens
+## Token design
 
 Four cooperating Ethereum smart-contracts are deployed for each e-money currency token that is [ERC20](https://eips.ethereum.org/EIPS/eip-20) compliant.
 
