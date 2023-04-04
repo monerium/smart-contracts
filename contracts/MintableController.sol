@@ -97,7 +97,6 @@ contract MintableController is SystemRole, StandardController {
    */
   function burnFrom(address from, uint amount)
     public
-    guarded(msg.sender)
     onlySystemAccount(msg.sender)
     returns (bool)
   {

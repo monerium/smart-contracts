@@ -187,8 +187,6 @@ contract StandardController is Pausable, Claimable {
   function transfer_withCaller(address caller, address to, uint amount)
     public
     virtual
-    guarded(caller)
-    whenNotPaused
     returns (bool ok)
   {
     avoidBlackholes(to);
@@ -206,8 +204,6 @@ contract StandardController is Pausable, Claimable {
   function transferFrom_withCaller(address caller, address from, address to, uint amount)
     public
     virtual
-    guarded(caller)
-    whenNotPaused
     returns (bool ok)
   {
     avoidBlackholes(to);
