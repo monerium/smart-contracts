@@ -7,6 +7,7 @@ pragma solidity ^0.8.0;
  * @notice This interface should be inherited to deploy on polygon POS network.
  */
 interface IPolygonPosChildToken {
-  function deposit(address user, bytes calldata depositData) external;
-  function withdraw(uint256 amount) external;
+    function deposit(address user, bytes calldata depositData) external;
+
+    function withdraw(uint256 amount) external;
 }

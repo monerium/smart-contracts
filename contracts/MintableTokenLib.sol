@@ -30,9 +30,8 @@ import "./TokenStorage.sol";
  */
 
 library MintableTokenLib {
-
-  using SafeMath for uint;
-  using SignatureChecker for address;
+    using SafeMath for uint;
+    using SignatureChecker for address;
 
     /**
      * @dev Mints new tokens.
@@ -44,10 +43,7 @@ library MintableTokenLib {
         TokenStorage db,
         address to,
         uint amount
-    )
-        external
-        returns (bool)
-    {
+    ) external returns (bool) {
         db.addBalance(to, amount);
         return true;
     }
@@ -62,10 +58,7 @@ library MintableTokenLib {
         TokenStorage db,
         address from,
         uint amount
-    )
-        public
-        returns (bool)
-    {
+    ) public returns (bool) {
         db.subBalance(from, amount);
         return true;
     }
@@ -90,19 +83,15 @@ library MintableTokenLib {
         uint8 v,
         bytes32 r,
         bytes32 s
-    )
-        external
-        returns (bool)
-    {
-      bytes memory signature;
-      if (r != bytes32(0) || s != bytes32(0)) {
-        signature = bytes(abi.encodePacked(r,s,v));
-      }
-      require(
-          from.isValidSignatureNow(h, signature),
-          "signature/hash does not match"
+    ) external returns (bool) {
+        bytes memory signature;
+        if (r != bytes32(0) || s != bytes32(0)) {
+            signature = bytes(abi.encodePacked(r, s, v));
+        }
+        require(
+            from.isValidSignatureNow(h, signature),
+            "signature/hash does not match"
         );
         return burn(db, from, amount);
     }
-
 }

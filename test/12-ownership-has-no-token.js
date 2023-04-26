@@ -1,8 +1,8 @@
-var truffleAssert = require('truffle-assertions');
-const HasNoTokens = artifacts.require('HasNoTokens');
-const ERC223TokenMock = artifacts.require('ERC223TokenMock');
+var truffleAssert = require("truffle-assertions");
+const HasNoTokens = artifacts.require("HasNoTokens");
+const ERC223TokenMock = artifacts.require("ERC223TokenMock");
 
-contract('HasNoTokens', function (accounts) {
+contract("HasNoTokens", function (accounts) {
   let hasNoTokens = null;
   let token = null;
 
@@ -17,13 +17,17 @@ contract('HasNoTokens', function (accounts) {
     assert.equal(startBalance, 10);
   });
 
-  it('should not accept ERC223 tokens', async function () {
+  it("should not accept ERC223 tokens", async function () {
     await truffleAssert.reverts(
-      token.transferERC223(hasNoTokens.address, 10, '0x0000000000000000000000000000000000000000')
+      token.transferERC223(
+        hasNoTokens.address,
+        10,
+        "0x0000000000000000000000000000000000000000"
+      )
     );
   });
 
-  it('should allow owner to reclaim tokens', async function () {
+  it("should allow owner to reclaim tokens", async function () {
     const ownerStartBalance = await token.balanceOf(accounts[0]);
     await hasNoTokens.reclaimToken(token.address);
     const ownerFinalBalance = await token.balanceOf(accounts[0]);
@@ -32,9 +36,9 @@ contract('HasNoTokens', function (accounts) {
     assert.equal(ownerFinalBalance - ownerStartBalance, 10);
   });
 
-  it('should allow only owner to reclaim tokens', async function () {
+  it("should allow only owner to reclaim tokens", async function () {
     await truffleAssert.reverts(
-      hasNoTokens.reclaimToken(token.address, { from: accounts[1] }),
+      hasNoTokens.reclaimToken(token.address, { from: accounts[1] })
     );
   });
 });

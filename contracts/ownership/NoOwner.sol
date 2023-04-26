@@ -12,4 +12,5 @@ import "./HasNoContracts.sol";
  * Owned contracts. See respective base contracts for details.
  */
 contract NoOwner is HasNoEther, HasNoTokens, HasNoContracts {
+
 }

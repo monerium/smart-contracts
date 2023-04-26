@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./Ownable.sol";
+import "./SystemRole.sol";
 
 /**
- * @title Claimable
- * @dev Extension for the Ownable contract, where the ownership needs to be claimed.
+ * @title ClaimableSystemRole
+ * @dev Extension for the SystemRole contract, where the ownership needs to be claimed.
  * This allows the new owner to accept the transfer.
  */
-abstract contract Claimable is Ownable {
+abstract contract ClaimableSystemRole is SystemRole {
     address public pendingOwner;
 
     /**
@@ -35,6 +35,7 @@ abstract contract Claimable is Ownable {
     function claimOwnership() public onlyPendingOwner {
         emit OwnershipTransferred(owner, pendingOwner);
         owner = pendingOwner;
+        _setupRole(DEFAULT_ADMIN_ROLE, owner);
         pendingOwner = address(0);
     }
 }

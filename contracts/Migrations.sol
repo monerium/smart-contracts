@@ -20,7 +20,6 @@ pragma solidity ^0.8.0;
 import "./ownership/Claimable.sol";
 
 contract Migrations is Claimable {
-
     uint public last_completed_migration;
 
     constructor() {
@@ -35,5 +34,4 @@ contract Migrations is Claimable {
         Migrations upgraded = Migrations(new_address);
         upgraded.setCompleted(last_completed_migration);
     }
-
 }

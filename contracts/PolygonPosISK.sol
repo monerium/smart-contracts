@@ -20,9 +20,14 @@ pragma solidity 0.8.11;
 import "./PolygonPosTokenFrontend.sol";
 
 contract PolygonPosISK is PolygonPosTokenFrontend {
-
-    constructor(address childChainManagerProxy)
-      PolygonPosTokenFrontend("Monerium ISK emoney", "ISKe", "ISK", childChainManagerProxy)
-    { }
-
+    constructor(
+        address childChainManagerProxy
+    )
+        PolygonPosTokenFrontend(
+            "Monerium ISK emoney",
+            "ISKe",
+            "ISK",
+            childChainManagerProxy
+        )
+    {}
 }

@@ -1,9 +1,11 @@
 const SmartController = artifacts.require("./SmartController.sol");
 const TokenFrontend = artifacts.require("./TokenFrontend.sol");
 
-module.exports = async function(exit) {
+module.exports = async function (exit) {
   if (process.argv.length < 7) {
-    console.log(`Usage: ${process.argv.join(" ")} <target frontend> <bridge frontend>`)
+    console.log(
+      `Usage: ${process.argv.join(" ")} <target frontend> <bridge frontend>`
+    );
     exit(1);
   }
 
@@ -13,15 +15,27 @@ module.exports = async function(exit) {
 
   try {
     // Parameters
-    const token = await TokenFrontend.at(frontend)
-    const tokenBridge = await TokenFrontend.at(bridge)
+    const token = await TokenFrontend.at(frontend);
+    const tokenBridge = await TokenFrontend.at(bridge);
     const ctlAddress = await token.getController();
     const ctl = await SmartController.at(ctlAddress);
-    console.log (`Claiming ownership of token:`, token.address, " and controller: ", ctlAddress);
+    console.log(
+      `Claiming ownership of token:`,
+      token.address,
+      " and controller: ",
+      ctlAddress
+    );
     txToken = await token.claimOwnership();
     txController = await ctl.claimOwnership();
     txBridge = await tokenBridge.claimOwnership();
-    console.log("token tx :", txToken, "\nController tx: ", txController, "\nBridge tx: ", txBridge);
+    console.log(
+      "token tx :",
+      txToken,
+      "\nController tx: ",
+      txController,
+      "\nBridge tx: ",
+      txBridge
+    );
     exit(0);
   } catch (e) {
     exit(e);

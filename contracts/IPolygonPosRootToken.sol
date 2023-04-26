@@ -8,5 +8,5 @@ pragma solidity ^0.8.0;
  * @notice This interface should be inherited to deploy on ethereum.
  */
 interface IPolygonPosRootToken {
-  function mint(address user, uint256 amount) external returns(bool);
+    function mint(address user, uint256 amount) external returns (bool);
 }
