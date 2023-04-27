@@ -26,6 +26,7 @@ import "./TokenStorage.sol";
  * https://github.com/ethereum/EIPs/issues/20
  */
 library ERC20Lib {
+
     using SafeMath for uint;
 
     /**
@@ -35,12 +36,10 @@ library ERC20Lib {
      * @param to Recipient address.
      * @param amount Number of tokens to transfer.
      */
-    function transfer(
-        TokenStorage db,
-        address caller,
-        address to,
-        uint amount
-    ) external returns (bool success) {
+    function transfer(TokenStorage db, address caller, address to, uint amount)
+        external
+        returns (bool success)
+    {
         db.subBalance(caller, amount);
         db.addBalance(to, amount);
         return true;
@@ -61,7 +60,10 @@ library ERC20Lib {
         address from,
         address to,
         uint amount
-    ) external returns (bool success) {
+    )
+        external
+        returns (bool success)
+    {
         uint allowance_ = db.getAllowed(from, caller);
         db.subBalance(from, amount);
         db.addBalance(to, amount);
@@ -80,12 +82,10 @@ library ERC20Lib {
      * @param spender The address of the future spender.
      * @param amount The allowance of the spender.
      */
-    function approve(
-        TokenStorage db,
-        address caller,
-        address spender,
-        uint amount
-    ) public returns (bool success) {
+    function approve(TokenStorage db, address caller, address spender, uint amount)
+        public
+        returns (bool success)
+    {
         db.setAllowed(caller, spender, amount);
         return true;
     }
@@ -96,10 +96,11 @@ library ERC20Lib {
      * @param who Address to lookup.
      * @return balance Balance of address.
      */
-    function balanceOf(
-        TokenStorage db,
-        address who
-    ) external view returns (uint balance) {
+    function balanceOf(TokenStorage db, address who)
+        external
+        view
+        returns (uint balance)
+    {
         return db.getBalance(who);
     }
 
@@ -110,11 +111,12 @@ library ERC20Lib {
      * @param spender The address of the spender.
      * @return remaining Number of tokens the spender is allowed to spend.
      */
-    function allowance(
-        TokenStorage db,
-        address owner,
-        address spender
-    ) external view returns (uint remaining) {
+    function allowance(TokenStorage db, address owner, address spender)
+        external
+        view
+        returns (uint remaining)
+    {
         return db.getAllowed(owner, spender);
     }
+
 }

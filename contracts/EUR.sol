@@ -20,5 +20,9 @@ pragma solidity 0.8.11;
 import "./TokenFrontend.sol";
 
 contract EUR is TokenFrontend {
-    constructor() TokenFrontend("Monerium EUR emoney", "EURe", "EUR") {}
+
+    constructor()
+        TokenFrontend("Monerium EUR emoney", "EURe", "EUR")
+    { }
+
 }

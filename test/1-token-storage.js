@@ -6,7 +6,8 @@ var StandardController = artifacts.require("./StandardController.sol");
 
 var TokenStorageLib = artifacts.require("./TokenStorageLib.sol");
 
-contract("TokenStorage", (accounts) => {
+contract("TokenStorage", accounts => {
+
   if (web3.version.network <= 100) return;
 
   let storage;
@@ -36,11 +37,7 @@ contract("TokenStorage", (accounts) => {
 
   it("should have a cumulative balance of 73000 in the first account", async () => {
     const balance = await storage.getBalance(accounts[0]);
-    assert.equal(
-      balance.valueOf(),
-      73000,
-      "balance in account one is not 73000"
-    );
+    assert.equal(balance.valueOf(), 73000, "balance in account one is not 73000");
   });
 
   it("should have a balance of 30000 in second account", async () => {
@@ -51,28 +48,20 @@ contract("TokenStorage", (accounts) => {
 
   it("should fail when minting from a non-owner account", async () => {
     await truffleAssert.reverts(
-      storage.addBalance(accounts[3], 1000000, { from: accounts[4] })
+      storage.addBalance(accounts[3], 1000000, {from: accounts[4]})
     );
   });
 
   it("should be able to reclaim ownership of contracts", async () => {
-    const recipient = await AcceptingRecipient.new();
+    const recipient = await AcceptingRecipient.new()
     const owner0 = await recipient.owner();
     assert.strictEqual(owner0, accounts[0], "incorrect original owner");
-    await recipient.transferOwnership(storage.address, { from: owner0 });
+    await recipient.transferOwnership(storage.address, {from: owner0});
     const owner1 = await recipient.owner();
-    assert.strictEqual(
-      owner1,
-      storage.address,
-      "standard controller should be owner"
-    );
+    assert.strictEqual(owner1, storage.address, "standard controller should be owner");
     await storage.reclaimContract(recipient.address);
     const owner2 = await recipient.owner();
-    assert.strictEqual(
-      owner2,
-      owner0,
-      "must be original owner after reclaiming ownership"
-    );
+    assert.strictEqual(owner2, owner0, "must be original owner after reclaiming ownership");
   });
 
   it("should be able to recover tokens (ERC20)", async () => {
@@ -81,46 +70,27 @@ contract("TokenStorage", (accounts) => {
     assert.notEqual(amount0.toNumber(), 0, "owner must have some tokens");
     const balance0 = await token.balanceOf(storage.address);
     assert.strictEqual(balance0.toNumber(), 0, "initial balance must be 0");
-    await token.transfer(storage.address, 20, { from: accounts[0] });
+    await token.transfer(storage.address, 20, {from: accounts[0]});
     const balance1 = await token.balanceOf(storage.address);
-    assert.strictEqual(
-      balance1.toNumber(),
-      20,
-      "ERC20 transfer should succeed"
-    );
+    assert.strictEqual(balance1.toNumber(), 20, "ERC20 transfer should succeed");
     await storage.reclaimToken(token.address);
     const balance2 = await token.balanceOf(storage.address);
-    assert.strictEqual(
-      balance2.toNumber(),
-      balance0.toNumber(),
-      "mismatch in token before and after"
-    );
+    assert.strictEqual(balance2.toNumber(), balance0.toNumber(), "mismatch in token before and after");
     const amount1 = await token.balanceOf(accounts[0]);
-    assert.strictEqual(
-      amount1.toNumber(),
-      amount0.toNumber(),
-      "unable to recover"
-    );
+    assert.strictEqual(amount1.toNumber(), amount0.toNumber(), "unable to recover");
   });
 
   it("should be able to transfer ownership", async () => {
     const owner0 = await storage.owner();
     assert.strictEqual(owner0, accounts[0], "incorrect original owner");
 
-    await storage.transferOwnership(accounts[8], { from: owner0 });
+    await storage.transferOwnership(accounts[8], {from: owner0});
     const owner1 = await storage.owner();
-    assert.strictEqual(
-      owner1,
-      owner0,
-      "must be original owner before claiming ownership"
-    );
+    assert.strictEqual(owner1, owner0, "must be original owner before claiming ownership");
 
-    await storage.claimOwnership({ from: accounts[8] });
+    await storage.claimOwnership({from: accounts[8]});
     const owner2 = await storage.owner();
-    assert.strictEqual(
-      owner2,
-      accounts[8],
-      "must be new owner address after claiming ownership"
-    );
+    assert.strictEqual(owner2, accounts[8], "must be new owner address after claiming ownership");
   });
+
 });

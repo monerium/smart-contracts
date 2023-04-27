@@ -11,20 +11,25 @@ import "./CanReclaimToken.sol";
  * owner to reclaim the tokens.
  */
 contract HasNoTokens is CanReclaimToken {
-    /**
-     * @dev Reject all ERC223 compatible tokens
-     * @param _from address The address that is transferring the tokens
-     * @param _value uint256 the amount of the specified token
-     * @param _data Bytes The data passed from the caller.
-     */
-    function tokenFallback(
-        address _from,
-        uint256 _value,
-        bytes calldata _data
-    ) external pure {
-        _from;
-        _value;
-        _data;
-        revert();
-    }
+
+ /**
+  * @dev Reject all ERC223 compatible tokens
+  * @param _from address The address that is transferring the tokens
+  * @param _value uint256 the amount of the specified token
+  * @param _data Bytes The data passed from the caller.
+  */
+  function tokenFallback(
+    address _from,
+    uint256 _value,
+    bytes calldata _data
+  )
+    external
+    pure
+  {
+    _from;
+    _value;
+    _data;
+    revert();
+  }
+
 }

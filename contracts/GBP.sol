@@ -20,5 +20,9 @@ pragma solidity 0.8.11;
 import "./TokenFrontend.sol";
 
 contract GBP is TokenFrontend {
-    constructor() TokenFrontend("Monerium GBP emoney", "GBPe", "GBP") {}
+
+    constructor()
+        TokenFrontend("Monerium GBP emoney", "GBPe", "GBP")
+    { }
+
 }

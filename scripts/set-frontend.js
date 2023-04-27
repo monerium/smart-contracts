@@ -1,14 +1,15 @@
 var StandardController = artifacts.require("./StandardController.sol");
 
-module.exports = async function (exit) {
+module.exports = async function(exit) {
+
   if (process.argv.length < 6) {
-    console.log(`Usage: ${process.argv.join(" ")} <controller> <frontend>`);
+    console.log(`Usage: ${process.argv.join(" ")} <controller> <frontend>`)
     exit(1);
   }
 
   const len = process.argv.length;
-  const controller = process.argv[len - 2];
-  const frontend = process.argv[len - 1];
+  const controller = process.argv[len-2];
+  const frontend = process.argv[len-1];
   console.log(`controller ${controller}, frontend ${frontend}`);
 
   try {
@@ -19,4 +20,4 @@ module.exports = async function (exit) {
   } catch (e) {
     exit(e);
   }
-};
+}
