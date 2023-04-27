@@ -78,6 +78,7 @@ contract MintableController is StandardController {
         returns (bool)
     {
         avoidBlackholes(to);
+        mintAllowances[caller] = mintAllowances[caller] - amount;
         return token.mint(to, amount);
     }
 

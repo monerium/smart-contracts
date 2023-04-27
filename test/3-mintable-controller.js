@@ -230,6 +230,18 @@ contract("MintableController", (accounts) => {
     });
   }
 
+  it("should fail to mint after reaching allowances", async () => {
+    await controller.setMintAllowance(system, 1, {
+      from: nonSystem,
+    });
+    remaningAllowance = await controller.getMintAllowance(system);
+    assert.strictEqual(remaningAllowance.toNumber(), 1);
+    await controller.mintTo_withCaller(system, system, 1, { from: system });
+    await truffleAssert.reverts(
+      controller.mintTo_withCaller(system, system, 1, { from: system })
+    );
+  });
+
   it("should fail adding system account from a non-owner address", async () => {
     await truffleAssert.reverts(
       controller.addSystemAccount(nonSystem, { from: system })
@@ -253,4 +265,5 @@ contract("MintableController", (accounts) => {
     const isSystem = await controller.isSystemAccount(system);
     assert.strictEqual(isSystem, false, "unable to remove system account");
   });
+
 });
