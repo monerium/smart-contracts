@@ -22,13 +22,15 @@ pragma solidity 0.8.11;
  * @dev Contracts implementing this interface can participate in [ERC677].
  */
 interface IERC677Recipient {
-
     /**
      * @dev Receives notification from [ERC677] transferAndCall.
      * @param from Sender address.
      * @param amount Number of tokens.
      * @param data Additional data.
      */
-    function onTokenTransfer(address from, uint256 amount, bytes calldata data) external returns (bool);
-
+    function onTokenTransfer(
+        address from,
+        uint256 amount,
+        bytes calldata data
+    ) external returns (bool);
 }

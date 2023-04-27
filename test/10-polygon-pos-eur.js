@@ -1,4 +1,4 @@
-var truffleAssert = require('truffle-assertions');
+var truffleAssert = require("truffle-assertions");
 var PolygonPosEUR = artifacts.require("./PolygonPosEUR.sol");
 var SmartController = artifacts.require("./SmartController.sol");
 var BlacklistValidator = artifacts.require("./BlacklistValidator.sol");
@@ -10,17 +10,18 @@ var TokenStorageLib = artifacts.require("./TokenStorageLib.sol");
 var ERC20Lib = artifacts.require("./ERC20Lib.sol");
 var ERC677Lib = artifacts.require("./ERC677Lib.sol");
 
-const abiEncoded100uint = "0x0000000000000000000000000000000000000000000000000000000000000064";
+const abiEncoded100uint =
+  "0x0000000000000000000000000000000000000000000000000000000000000064";
 const AddressZero = "0x0000000000000000000000000000000000000000";
 
-contract("PolygonPosEUR", accounts => {
-
+contract("PolygonPosEUR", (accounts) => {
   if (web3.version.network <= 100) return;
 
   let ppeur;
   let owner;
   let depositor;
-
+  // Bridge has been put in hold.
+  /*
   before("setup PolygonPosEUR", async () => {
     owner = accounts[0]
     depositor = accounts[1];
@@ -41,6 +42,8 @@ contract("PolygonPosEUR", accounts => {
     controller = await SmartController.new(AddressZero, blacklist.address, web3.utils.asciiToHex("EUR"), ppeur.address);
     await ppeur.setController(controller.address);
     await controller.addSystemAccount(ppeur.address);
+    await controller.setMaxMintAllowance(1000000000000);
+    await controller.setMintAllowance(ppeur, 1000000000000);
   });
 
   it("shouldn't be able to deposit without DEPOSITOR role", async () => {
@@ -65,5 +68,5 @@ contract("PolygonPosEUR", accounts => {
     const balanceAfter = await ppeur.balanceOf(accounts[0]);
     assert.strictEqual(balanceBefore.toNumber() - 100, balanceAfter.toNumber(), "should be equal if withdraw succeded");
   })
-
+*/
 });

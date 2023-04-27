@@ -25,14 +25,20 @@ import "./SmartController.sol";
  * @dev Constantly rejects token transfers by using a rejecting validator.
  */
 contract ConstantSmartController is SmartController {
-
     /**
      * @dev Contract constructor.
      * @param storage_ Address of the new storage.
      * @param ticker 3 letter currency ticker.
      */
-    constructor(address storage_, bytes3 ticker)
-      SmartController(storage_, address(new ConstantValidator(false)), ticker, address(0x0))
-    { }
-
+    constructor(
+        address storage_,
+        bytes3 ticker
+    )
+        SmartController(
+            storage_,
+            address(new ConstantValidator(false)),
+            ticker,
+            address(0x0)
+        )
+    {}
 }

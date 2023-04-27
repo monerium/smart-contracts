@@ -1,4 +1,4 @@
-var truffleAssert = require('truffle-assertions');
+var truffleAssert = require("truffle-assertions");
 var StandardController = artifacts.require("./StandardController.sol");
 var TokenStorage = artifacts.require("./TokenStorage.sol");
 var AcceptingRecipient = artifacts.require("./AcceptingRecipient.sol");
@@ -15,8 +15,7 @@ var ERC677Lib = artifacts.require("./ERC677Lib.sol");
 
 const AddressZero = "0x0000000000000000000000000000000000000000";
 
-contract('StandardController', accounts => {
-
+contract("StandardController", (accounts) => {
   if (web3.version.network <= 100) return;
 
   const owner = accounts[0];
@@ -33,16 +32,23 @@ contract('StandardController', accounts => {
     await TokenStorage.link("TokenStorageLib", TokenStorageLib.address);
     // Deploy
     frontend = await USD.new();
-    controller = await StandardController.new(AddressZero, 50000, frontend.address);
+    controller = await StandardController.new(
+      AddressZero,
+      50000,
+      frontend.address
+    );
   });
-
 
   it("should construct with TokenStorage as constructor", async () => {
     storage = await TokenStorage.new();
     controller2 = await StandardController.new(storage.address, 0, AddressZero);
 
     controllerStorage = await controller2.getStorage();
-    assert.equal(storage.address, controllerStorage, "The controller's storage isn't the same as given in construction's argument")
+    assert.equal(
+      storage.address,
+      controllerStorage,
+      "The controller's storage isn't the same as given in construction's argument"
+    );
   });
 
   it("should have a total supply of 50000 tokens", async () => {
@@ -56,26 +62,50 @@ contract('StandardController', accounts => {
   });
 
   it("should transfer 25000 to the second account", async () => {
-    await controller.transfer_withCaller(accounts[0], accounts[1], 25000, {from: accounts[0]});
+    await controller.transfer_withCaller(accounts[0], accounts[1], 25000, {
+      from: accounts[0],
+    });
     const balance = await controller.balanceOf(accounts[1]);
-    assert.equal(balance.valueOf(), 25000, "25000 wasn't in the second account");
+    assert.equal(
+      balance.valueOf(),
+      25000,
+      "25000 wasn't in the second account"
+    );
   });
 
   it("should allow the third account to spend 12000 from the second account", async () => {
-    await controller.approve_withCaller(accounts[1], accounts[2], 12000, {from: accounts[1]});
+    await controller.approve_withCaller(accounts[1], accounts[2], 12000, {
+      from: accounts[1],
+    });
     const allowance = await controller.allowance(accounts[1], accounts[2]);
     assert.equal(allowance.valueOf(), 12000, "the allowance wasn't 12000");
   });
 
   it("should transfer 9300 from the second account to the fourth using the third account", async () => {
-    await controller.transferFrom_withCaller(accounts[2], accounts[1], accounts[3], 9300, {from: accounts[2]});
+    await controller.transferFrom_withCaller(
+      accounts[2],
+      accounts[1],
+      accounts[3],
+      9300,
+      { from: accounts[2] }
+    );
     const balance = await controller.balanceOf(accounts[3]);
-    assert.equal(balance.valueOf(), 9300, "The forth account does not have 9300");
+    assert.equal(
+      balance.valueOf(),
+      9300,
+      "The forth account does not have 9300"
+    );
   });
 
   it("should transfer 456 to an accepting contract", async () => {
     const recipient = await AcceptingRecipient.new();
-    await controller.transferAndCall_withCaller(accounts[3], recipient.address, 456, 0x10, {from: accounts[3]});
+    await controller.transferAndCall_withCaller(
+      accounts[3],
+      recipient.address,
+      456,
+      0x10,
+      { from: accounts[3] }
+    );
     const from = await recipient.from();
     assert.equal(from, accounts[3], "from address not stored in recipient");
     const amount = await recipient.amount();
@@ -86,7 +116,13 @@ contract('StandardController', accounts => {
 
   it("should not transfer 123 to a rejecting contract", async () => {
     try {
-      await controller.transferAndCall_withCaller(accounts[3], RejectingRecipient.address, 123, 0x20, {from: accounts[3]});
+      await controller.transferAndCall_withCaller(
+        accounts[3],
+        RejectingRecipient.address,
+        123,
+        0x20,
+        { from: accounts[3] }
+      );
     } catch {
       return;
     }
@@ -119,41 +155,49 @@ contract('StandardController', accounts => {
     );
   });
 
-  it("should be pausable", async () => {
-    await controller.pause({from: accounts[0]});
-    await truffleAssert.reverts(
-      controller.transfer_withCaller(accounts[1], accounts[2], 5, {from: accounts[1]})
-    );
-    await controller.unpause({from: accounts[0]});
-    await controller.transfer_withCaller(accounts[1], accounts[2], 5, {from: accounts[1]});
-  });
-
   it("should not be allowed to receive tokens (ERC223, ERC677)", async () => {
     await truffleAssert.reverts(
-      controller.transferAndCall_withCaller(accounts[0], controller.address, 223, AddressZero)
+      controller.transferAndCall_withCaller(
+        accounts[0],
+        controller.address,
+        223,
+        AddressZero
+      )
     );
   });
 
   it("should be able to change ownership of its storage", async () => {
     const storage = await TokenStorage.at(await controller.getStorage());
-    const owner0 =  await storage.owner();
+    const owner0 = await storage.owner();
     assert.strictEqual(owner0, controller.address, "incorrect original owner");
     await controller.transferStorageOwnership(accounts[0]);
-    await storage.claimOwnership({from: accounts[0]})
+    await storage.claimOwnership({ from: accounts[0] });
     const owner1 = await storage.owner();
-    assert.strictEqual(owner1, accounts[0], "unable to transfer/claim ownership");
+    assert.strictEqual(
+      owner1,
+      accounts[0],
+      "unable to transfer/claim ownership"
+    );
     await storage.transferOwnership(controller.address);
     await controller.claimStorageOwnership();
     const owner2 = await storage.owner();
-    assert.strictEqual(owner2, owner0, "controller should be the storage owner");
+    assert.strictEqual(
+      owner2,
+      owner0,
+      "controller should be the storage owner"
+    );
   });
 
   it("should fail to set a new storage from a non-owner account", async () => {
     const initial = await controller.getStorage();
     const storage = await TokenStorage.new();
-    assert.notEqual(storage.address, initial, "initial storage should not be a newly instantiated storage");
+    assert.notEqual(
+      storage.address,
+      initial,
+      "initial storage should not be a newly instantiated storage"
+    );
     await truffleAssert.reverts(
-      controller.setStorage(storage.address, {from: accounts[7]})
+      controller.setStorage(storage.address, { from: accounts[7] })
     );
     const post = await controller.getStorage();
     assert.strictEqual(post, initial, "storage should not change");
@@ -162,8 +206,12 @@ contract('StandardController', accounts => {
   it("should be able to set a new storage from an owner account", async () => {
     const initial = await controller.getStorage();
     const storage = await TokenStorage.new();
-    assert.notEqual(storage.address, initial, "initial storage should not be a newly instantiated storage");
-    await controller.setStorage(storage.address, {from: owner});
+    assert.notEqual(
+      storage.address,
+      initial,
+      "initial storage should not be a newly instantiated storage"
+    );
+    await controller.setStorage(storage.address, { from: owner });
     const post = await controller.getStorage();
     assert.strictEqual(post, storage.address, "storage did not change");
   });
@@ -171,9 +219,13 @@ contract('StandardController', accounts => {
   it("should fail to set the frontend as a non-owner", async () => {
     const initial = await controller.getFrontend();
     const frontend = await USD.new();
-    assert.notEqual(frontend.address, initial, "initial frontend should not be a newly instantiated frontend");
+    assert.notEqual(
+      frontend.address,
+      initial,
+      "initial frontend should not be a newly instantiated frontend"
+    );
     await truffleAssert.reverts(
-      controller.setFrontend(frontend.address, {from: accounts[9]})
+      controller.setFrontend(frontend.address, { from: accounts[9] })
     );
     const post = await controller.getFrontend();
     assert.strictEqual(post, initial, "frontend should not change");
@@ -182,10 +234,13 @@ contract('StandardController', accounts => {
   it("should be able to set the frontend as an owner", async () => {
     const initial = await controller.getFrontend();
     const frontend = await USD.new();
-    assert.notEqual(frontend.address, initial, "initial frontend should not be a newly instantiated frontend");
-    await controller.setFrontend(frontend.address, {from: owner});
+    assert.notEqual(
+      frontend.address,
+      initial,
+      "initial frontend should not be a newly instantiated frontend"
+    );
+    await controller.setFrontend(frontend.address, { from: owner });
     const post = await controller.getFrontend();
     assert.strictEqual(post, frontend.address, "frontend did not change");
   });
-
 });

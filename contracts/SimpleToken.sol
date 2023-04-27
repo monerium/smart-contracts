@@ -28,5 +28,4 @@ contract SimpleToken is BasicToken {
         totalSupply_ = 10000000;
         balances[msg.sender] = totalSupply_;
     }
-
 }
