@@ -26,11 +26,9 @@ import "./IERC677Recipient.sol";
  * The contract rejects token ownership.
  */
 contract RejectingRecipient is CanReclaimToken, IERC677Recipient {
-    function onTokenTransfer(
-        address,
-        uint256,
-        bytes calldata
-    ) external pure returns (bool) {
-        return false;
-    }
+
+  function onTokenTransfer(address, uint256, bytes calldata) external pure returns (bool) {
+    return false;
+  }
+
 }

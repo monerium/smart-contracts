@@ -17,7 +17,7 @@
 
 pragma solidity ^0.8.11;
 
-import "./ClaimableSystemRole.sol";
+import "./ownership/Claimable.sol";
 import "./ownership/NoOwner.sol";
 import "./ownership/CanReclaimToken.sol";
 import "./IValidator.sol";
@@ -26,13 +26,9 @@ import "./IValidator.sol";
  * @title BlacklistValidator
  * @dev Implements a validator which rejects transfers to blacklisted addresses.
  */
-contract BlacklistValidator is
-    IValidator,
-    ClaimableSystemRole,
-    CanReclaimToken,
-    NoOwner
-{
-    mapping(address => bool) public blacklist;
+contract BlacklistValidator is IValidator, Claimable, CanReclaimToken, NoOwner {
+
+    mapping (address => bool) public blacklist;
 
     /**
      * @dev Emitted when an address is added to the blacklist.
@@ -46,22 +42,11 @@ contract BlacklistValidator is
      */
     event Unban(address indexed friend);
 
-    constructor() {
-        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
-    }
-
     /**
      * @dev Adds an address to the blacklist.
      * @param adversary Address to add.
      */
-    function ban(address adversary) external {
-        require(
-            owner == msg.sender ||
-                hasRole(SYSTEM_ROLE, msg.sender) ||
-                hasRole(ADMIN_ROLE, msg.sender),
-            "BlacklistValidator: must have admin role to ban"
-        );
-
+    function ban(address adversary) external onlyOwner {
         blacklist[adversary] = true;
         emit Ban(adversary);
     }
@@ -79,11 +64,10 @@ contract BlacklistValidator is
      * @dev Validates token transfer.
      * Implements IValidator interface.
      */
-    function validate(
-        address from,
-        address to,
-        uint amount
-    ) external returns (bool valid) {
+    function validate(address from, address to, uint amount)
+        external
+        returns (bool valid)
+    {
         if (blacklist[from]) {
             valid = false;
         } else {
@@ -96,41 +80,7 @@ contract BlacklistValidator is
      * @dev Explicit override of transferOwnership from Claimable and Ownable
      * @param newOwner Address to transfer ownership to.
      */
-    function transferOwnership(
-        address newOwner
-    ) public override(ClaimableSystemRole, Ownable) {
-        ClaimableSystemRole.transferOwnership(newOwner);
-    }
-
-    /**
-     * @dev Explicit override of addSystemAccount from ClaimableSystemRole
-     * @param account Address to add as system account.
-     */
-    function addSystemAccount(address account) public override onlyOwner {
-        super.addSystemAccount(account);
-    }
-
-    /**
-     * @dev Explicit override of removeSystemAccount from ClaimableSystemRole
-     * @param account Address to remove as system account.
-     */
-    function removeSystemAccount(address account) public override onlyOwner {
-        super.removeSystemAccount(account);
-    }
-
-    /**
-     * @dev Explicit override of addAdminAccount from ClaimableSystemRole
-     * @param account Address to add as admin account.
-     */
-    function addAdminAccount(address account) public override onlyOwner {
-        super.addAdminAccount(account);
-    }
-
-    /**
-     * @dev Explicit override of removeAdminAccount from ClaimableSystemRole
-     * @param account Address to remove as admin account.
-     */
-    function removeAdminAccount(address account) public override onlyOwner {
-        super.removeAdminAccount(account);
+    function transferOwnership(address newOwner) public override(Claimable, Ownable) {
+      Claimable.transferOwnership(newOwner);
     }
 }

@@ -12,14 +12,15 @@ import "../token/ERC20/SafeERC20.sol";
  * This will prevent any accidental loss of tokens.
  */
 contract CanReclaimToken is Ownable {
-    using SafeERC20 for ERC20Basic;
+  using SafeERC20 for ERC20Basic;
 
-    /**
-     * @dev Reclaim all ERC20Basic compatible tokens
-     * @param _token ERC20Basic The address of the token contract
-     */
-    function reclaimToken(ERC20Basic _token) external onlyOwner {
-        uint256 balance = _token.balanceOf(address(this));
-        _token.safeTransfer(owner, balance);
-    }
+  /**
+   * @dev Reclaim all ERC20Basic compatible tokens
+   * @param _token ERC20Basic The address of the token contract
+   */
+  function reclaimToken(ERC20Basic _token) external onlyOwner {
+    uint256 balance = _token.balanceOf(address(this));
+    _token.safeTransfer(owner, balance);
+  }
+
 }

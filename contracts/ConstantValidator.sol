@@ -27,6 +27,7 @@ import "./IValidator.sol";
  * @dev Constantly validates token transfers based on the constructor value.
  */
 contract ConstantValidator is IValidator, Claimable, CanReclaimToken, NoOwner {
+
     bool internal valid;
 
     /**
@@ -49,9 +50,7 @@ contract ConstantValidator is IValidator, Claimable, CanReclaimToken, NoOwner {
      * @dev Explicit override of transferOwnership from Claimable and Ownable
      * @param newOwner Address to transfer ownership to.
      */
-    function transferOwnership(
-        address newOwner
-    ) public override(Claimable, Ownable) {
-        Claimable.transferOwnership(newOwner);
+    function transferOwnership(address newOwner) public override(Claimable, Ownable) {
+      Claimable.transferOwnership(newOwner);
     }
 }

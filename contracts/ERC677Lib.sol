@@ -28,6 +28,7 @@ import "./ERC20Lib.sol";
  * https://github.com/ethereum/EIPs/issues/677
  */
 library ERC677Lib {
+
     using ERC20Lib for TokenStorage;
     using Address for address;
 
@@ -47,8 +48,14 @@ library ERC677Lib {
         address to,
         uint256 amount,
         bytes calldata data
-    ) external returns (bool) {
-        require(db.transfer(caller, to, amount), "unable to transfer");
+    )
+        external
+        returns (bool)
+    {
+        require(
+            db.transfer(caller, to, amount), 
+            "unable to transfer"
+        );
         if (to.isContract()) {
             IERC677Recipient recipient = IERC677Recipient(to);
             require(
@@ -58,4 +65,5 @@ library ERC677Lib {
         }
         return true;
     }
+
 }

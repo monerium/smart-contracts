@@ -7,9 +7,10 @@ pragma solidity ^0.8.0;
 // @notice To use, construct the contract with the target as argument.
 // @author Remco Bloemen <remco@neufund.org>
 contract ForceEther {
-    constructor() payable {}
 
-    function destroyAndSend(address payable _recipient) public {
-        selfdestruct(_recipient);
-    }
+  constructor() payable { }
+
+  function destroyAndSend(address payable _recipient) public {
+    selfdestruct(_recipient);
+  }
 }

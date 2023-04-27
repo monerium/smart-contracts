@@ -26,18 +26,16 @@ import "./IERC677Recipient.sol";
  * The contract accepts token ownership and stores data in public member variables.
  */
 contract AcceptingRecipient is CanReclaimToken, IERC677Recipient {
+
     address public from;
     uint256 public amount;
     bytes public data;
 
-    function onTokenTransfer(
-        address from_,
-        uint256 amount_,
-        bytes calldata data_
-    ) external returns (bool) {
+    function onTokenTransfer(address from_, uint256 amount_, bytes calldata data_) external returns (bool) {
         from = from_;
         amount = amount_;
         data = data_;
         return true;
     }
+
 }

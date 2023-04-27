@@ -1,19 +1,21 @@
-const HasNoEther = artifacts.require("HasNoEther");
-const ForceEther = artifacts.require("ForceEther");
-var truffleAssert = require("truffle-assertions");
+const HasNoEther = artifacts.require('HasNoEther');
+const ForceEther = artifacts.require('ForceEther');
+var truffleAssert = require('truffle-assertions');
 
-contract("HasNoEther", function (accounts) {
-  const amount = web3.utils.toWei("1", "ether");
+contract('HasNoEther', function (accounts) {
+  const amount = web3.utils.toWei('1', 'ether');
 
-  it("should be constructorable", async function () {
+  it('should be constructorable', async function () {
     await HasNoEther.new();
   });
 
-  it("should not accept ether in constructor", async function () {
-    await truffleAssert.fails(HasNoEther.new({ value: amount }));
+  it('should not accept ether in constructor', async function () {
+    await truffleAssert.fails(
+      HasNoEther.new({ value: amount })
+    );
   });
 
-  it("should not accept ether", async function () {
+  it('should not accept ether', async function () {
     let hasNoEther = await HasNoEther.new();
 
     await truffleAssert.fails(
@@ -21,11 +23,11 @@ contract("HasNoEther", function (accounts) {
         from: accounts[1],
         to: hasNoEther.address,
         value: amount,
-      })
+      }),
     );
   });
 
-  it("should allow owner to reclaim ether", async function () {
+  it('should allow owner to reclaim ether', async function () {
     // Create contract
     let hasNoEther = await HasNoEther.new();
     const startBalance = await web3.eth.getBalance(hasNoEther.address);
@@ -43,13 +45,10 @@ contract("HasNoEther", function (accounts) {
     const ownerFinalBalance = await web3.eth.getBalance(accounts[0]);
     const finalBalance = await web3.eth.getBalance(hasNoEther.address);
     assert.equal(finalBalance, 0);
-    assert.isAbove(
-      parseInt(ownerFinalBalance, 10),
-      parseInt(ownerStartBalance, 10)
-    );
+    assert.isAbove(parseInt(ownerFinalBalance, 10), parseInt(ownerStartBalance, 10));
   });
 
-  it("should allow only owner to reclaim ether", async function () {
+  it('should allow only owner to reclaim ether', async function () {
     // Create contract
     let hasNoEther = await HasNoEther.new({ from: accounts[0] });
 
@@ -60,6 +59,8 @@ contract("HasNoEther", function (accounts) {
     assert.equal(forcedBalance, amount);
 
     // Reclaim
-    await truffleAssert.reverts(hasNoEther.reclaimEther({ from: accounts[1] }));
+    await truffleAssert.reverts(
+      hasNoEther.reclaimEther({ from: accounts[1] })
+    );
   });
 });

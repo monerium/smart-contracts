@@ -29,6 +29,7 @@ import "./TokenStorageLib.sol";
  * between token upgrades.
  */
 contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
+
     using TokenStorageLib for TokenStorageLib.TokenStorage;
 
     TokenStorageLib.TokenStorage internal tokenStorage;
@@ -57,11 +58,7 @@ contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
      * @param spender Address of the spender.
      * @param amount Qunatity of allowance.
      */
-    function setAllowed(
-        address owner,
-        address spender,
-        uint amount
-    ) external onlyOwner {
+    function setAllowed(address owner, address spender, uint amount) external onlyOwner {
         tokenStorage.setAllowed(owner, spender, amount);
     }
 
@@ -88,10 +85,11 @@ contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
      * @param spender Address of the spender.
      * @return Number of units.
      */
-    function getAllowed(
-        address owner,
-        address spender
-    ) external view returns (uint) {
+    function getAllowed(address owner, address spender)
+        external
+        view
+        returns (uint)
+    {
         return tokenStorage.getAllowed(owner, spender);
     }
 
@@ -99,9 +97,7 @@ contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
      * @dev Explicit override of transferOwnership from Claimable and Ownable
      * @param newOwner Address to transfer ownership to.
      */
-    function transferOwnership(
-        address newOwner
-    ) public override(Claimable, Ownable) {
-        Claimable.transferOwnership(newOwner);
+    function transferOwnership(address newOwner) public override(Claimable, Ownable){
+      Claimable.transferOwnership(newOwner);
     }
 }

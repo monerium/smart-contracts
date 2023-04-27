@@ -1,4 +1,4 @@
-var truffleAssert = require("truffle-assertions");
+var truffleAssert = require('truffle-assertions');
 var ConstantValidator = artifacts.require("./ConstantValidator.sol");
 var AcceptingRecipient = artifacts.require("./AcceptingRecipient.sol");
 var SimpleToken = artifacts.require("./SimpleToken.sol");
@@ -6,7 +6,8 @@ var StandardController = artifacts.require("./StandardController.sol");
 
 const AddressZero = "0x0000000000000000000000000000000000000000";
 
-contract("ConstantValidator", (accounts) => {
+contract("ConstantValidator", accounts => {
+
   if (web3.version.network <= 100) return;
 
   const owner = accounts[0];
@@ -25,20 +26,12 @@ contract("ConstantValidator", (accounts) => {
     const recipient = await AcceptingRecipient.new();
     const owner0 = await recipient.owner();
     assert.strictEqual(owner0, accounts[0], "incorrect original owner");
-    await recipient.transferOwnership(validator.address, { from: owner0 });
+    await recipient.transferOwnership(validator.address, {from: owner0});
     const owner1 = await recipient.owner();
-    assert.strictEqual(
-      owner1,
-      validator.address,
-      "standard controller should be owner"
-    );
+    assert.strictEqual(owner1, validator.address, "standard controller should be owner");
     await validator.reclaimContract(recipient.address);
     const owner2 = await recipient.owner();
-    assert.strictEqual(
-      owner2,
-      owner0,
-      "must be original owner after reclaiming ownership"
-    );
+    assert.strictEqual(owner2, owner0, "must be original owner after reclaiming ownership");
   });
 
   it("should be able to recover tokens (ERC20)", async () => {
@@ -47,46 +40,26 @@ contract("ConstantValidator", (accounts) => {
     assert.notEqual(amount0.toNumber(), 0, "owner must have some tokens");
     const balance0 = await token.balanceOf(validator.address);
     assert.strictEqual(balance0.toNumber(), 0, "initial balance must be 0");
-    await token.transfer(validator.address, 20, { from: accounts[0] });
+    await token.transfer(validator.address, 20, {from: accounts[0]});
     const balance1 = await token.balanceOf(validator.address);
-    assert.strictEqual(
-      balance1.toNumber(),
-      20,
-      "ERC20 transfer should succeed"
-    );
+    assert.strictEqual(balance1.toNumber(), 20, "ERC20 transfer should succeed");
     await validator.reclaimToken(token.address);
     const balance2 = await token.balanceOf(validator.address);
-    assert.strictEqual(
-      balance2.toNumber(),
-      balance0.toNumber(),
-      "mismatch in token before and after"
-    );
+    assert.strictEqual(balance2.toNumber(), balance0.toNumber(), "mismatch in token before and after");
     const amount1 = await token.balanceOf(accounts[0]);
-    assert.strictEqual(
-      amount1.toNumber(),
-      amount0.toNumber(),
-      "unable to recover"
-    );
+    assert.strictEqual(amount1.toNumber(), amount0.toNumber(), "unable to recover");
   });
 
-  it("should be able to transfer ownership", async () => {
+    it("should be able to transfer ownership", async () => {
     const owner0 = await validator.owner();
     assert.strictEqual(owner0, owner, "incorrect original owner");
 
-    await validator.transferOwnership(accounts[8], { from: owner0 });
+    await validator.transferOwnership(accounts[8], {from: owner0});
     const owner1 = await validator.owner();
-    assert.strictEqual(
-      owner1,
-      owner0,
-      "must be original owner before claiming ownership"
-    );
+    assert.strictEqual(owner1, owner0, "must be original owner before claiming ownership");
 
-    await validator.claimOwnership({ from: accounts[8] });
+    await validator.claimOwnership({from: accounts[8]});
     const owner2 = await validator.owner();
-    assert.strictEqual(
-      owner2,
-      accounts[8],
-      "must be new owner address after claiming ownership"
-    );
+    assert.strictEqual(owner2, accounts[8], "must be new owner address after claiming ownership");
   });
-});
+})
