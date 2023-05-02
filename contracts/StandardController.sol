@@ -199,7 +199,7 @@ contract StandardController is ClaimableSystemRole {
         address caller,
         address to,
         uint amount
-    ) public virtual returns (bool ok) {
+    ) public virtual onlyFrontend returns (bool ok) {
         avoidBlackholes(to);
         return token.transfer(caller, to, amount);
     }
@@ -217,7 +217,7 @@ contract StandardController is ClaimableSystemRole {
         address from,
         address to,
         uint amount
-    ) public virtual returns (bool ok) {
+    ) public virtual onlyFrontend returns (bool ok) {
         avoidBlackholes(to);
         return token.transferFrom(caller, from, to, amount);
     }
@@ -253,7 +253,7 @@ contract StandardController is ClaimableSystemRole {
         address to,
         uint256 amount,
         bytes calldata data
-    ) public virtual returns (bool ok) {
+    ) public virtual onlyFrontend returns (bool ok) {
         avoidBlackholes(to);
         return token.transferAndCall(caller, to, amount, data);
     }
