@@ -103,7 +103,7 @@ contract SmartController is MintableController {
         address caller,
         address to,
         uint amount
-    ) public override guarded(caller) returns (bool) {
+    ) public override onlyFrontend returns (bool) {
         require(
             smartToken.validate(caller, to, amount),
             "transfer request not valid"
@@ -127,7 +127,7 @@ contract SmartController is MintableController {
         address from,
         address to,
         uint amount
-    ) public override guarded(caller) returns (bool) {
+    ) public override onlyFrontend returns (bool) {
         require(
             smartToken.validate(from, to, amount),
             "transferFrom request not valid"
@@ -150,7 +150,7 @@ contract SmartController is MintableController {
         address to,
         uint256 amount,
         bytes calldata data
-    ) public override guarded(caller) returns (bool) {
+    ) public override onlyFrontend returns (bool) {
         require(
             smartToken.validate(caller, to, amount),
             "transferAndCall request not valid"

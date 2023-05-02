@@ -77,6 +77,17 @@ contract StandardController is ClaimableSystemRole {
     }
 
     /**
+      * @dev Modifier which prevents the function from being called by unauthorized parties.
+      * The caller must be the frontend otherwise the call is reverted.
+      */
+    modifier onlyFrontend() {
+      require(
+        isFrontend(msg.sender)
+      );
+      _;
+    }
+
+    /**
      * @dev Contract constructor.
      * @param storage_ Address of the token storage for the controller.
      * @param initialSupply The amount of tokens to mint upon creation.
@@ -225,7 +236,7 @@ contract StandardController is ClaimableSystemRole {
         address caller,
         address spender,
         uint amount
-    ) public guarded(caller) returns (bool ok) {
+    ) public returns (bool ok) {
         return token.approve(caller, spender, amount);
     }
 
@@ -242,7 +253,7 @@ contract StandardController is ClaimableSystemRole {
         address to,
         uint256 amount,
         bytes calldata data
-    ) public virtual guarded(caller) returns (bool ok) {
+    ) public virtual returns (bool ok) {
         avoidBlackholes(to);
         return token.transferAndCall(caller, to, amount, data);
     }
