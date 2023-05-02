@@ -85,7 +85,7 @@ contract SmartController is MintableController {
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) external guarded(caller) onlySystemAccount(caller) returns (uint) {
+    ) external onlyFrontend onlySystemAccount(caller) returns (uint) {
         avoidBlackholes(to);
         return SmartTokenLib.recover(token, from, to, h, v, r, s);
     }
