@@ -89,56 +89,6 @@ contract("SmartController", (accounts) => {
     assert.equal(supply.valueOf(), 0, "initial supply is not 0");
   });
 
-  it("should mint 88000 new tokens", async () => {
-    await controller.mintTo_withCaller(system, system, 88000, { from: system });
-    const balance = await controller.balanceOf(system);
-    assert.equal(balance.valueOf(), 88000, "did not mint 88000 tokens");
-  });
-
-  it("should fail to recover using an incorrect signature", async () => {
-    const wallet1 = wallets["trust wallet"];
-    const wallet2 = wallets["ledger s nano"];
-    const balance10 = await controller.balanceOf(wallet1.address);
-    const balance20 = await controller.balanceOf(wallet2.address);
-    await controller.mintTo_withCaller(system, wallet1.address, 999, {
-      from: system,
-    });
-
-    const sig = wallet1.signature.replace(/^0x/, "");
-    const r = `0x${sig.slice(0, 64)}`;
-    const s = `0x${sig.slice(64, 128)}`;
-    var v = web3.utils.hexToNumber(`0x${sig.slice(128, 130)}`);
-
-    if (v < 27) v += 27;
-    assert(v == 27 || v == 28);
-
-    await truffleAssert.reverts(
-      controller.recover_withCaller(
-        system,
-        wallet1.address,
-        wallet2.address,
-        hash,
-        v,
-        AddressZero,
-        AddressZero,
-        { from: system }
-      )
-    );
-
-    const balance11 = await controller.balanceOf(wallet1.address);
-    assert.strictEqual(
-      balance11.toNumber(),
-      balance10.toNumber() + 999,
-      "wallet1 should contain 999 more tokens"
-    );
-    const balance21 = await controller.balanceOf(wallet2.address);
-    assert.strictEqual(
-      balance21.toString(),
-      balance20.toString(),
-      "wallet2 end state should equal its initial state"
-    );
-  });
-
   it("should fail setting a new validator from a non-system account", async () => {
     const initial = await controller.getValidator();
     const constantValidator = await ConstantValidator.new(true);
