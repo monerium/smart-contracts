@@ -114,7 +114,7 @@ contract MintableController is StandardController {
     function burnFrom(
         address from,
         uint amount
-    ) public onlySystemAccount(msg.sender) returns (bool) {
+    ) public onlyFrontend onlySystemAccount(msg.sender) returns (bool) {
         return token.burn(from, amount);
     }
 }
