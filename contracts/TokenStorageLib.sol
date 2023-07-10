@@ -25,7 +25,7 @@ library TokenStorageLib {
     struct TokenStorage {
         mapping(address => uint) balances;
         mapping(address => mapping(address => uint)) allowed;
-        uint totalSupply;
+        uint256 totalSupply;
     }
 
     /**
@@ -37,7 +37,7 @@ library TokenStorageLib {
     function addBalance(
         TokenStorage storage self,
         address to,
-        uint amount
+        uint256 amount
     ) external {
         self.totalSupply = self.totalSupply + amount;
         self.balances[to] = self.balances[to] + amount;
@@ -52,7 +52,7 @@ library TokenStorageLib {
     function subBalance(
         TokenStorage storage self,
         address from,
-        uint amount
+        uint256 amount
     ) external {
         self.totalSupply = self.totalSupply - amount;
         self.balances[from] = self.balances[from] - amount;
@@ -69,7 +69,7 @@ library TokenStorageLib {
         TokenStorage storage self,
         address owner,
         address spender,
-        uint amount
+        uint256 amount
     ) external {
         self.allowed[owner][spender] = amount;
     }

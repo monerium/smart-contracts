@@ -82,7 +82,7 @@ contract BlacklistValidator is
     function validate(
         address from,
         address to,
-        uint amount
+        uint256 amount
     ) external returns (bool valid) {
         if (blacklist[from]) {
             valid = false;

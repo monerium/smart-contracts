@@ -38,7 +38,7 @@ contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
      * @param to Address to increase.
      * @param amount Number of units to add.
      */
-    function addBalance(address to, uint amount) external onlyOwner {
+    function addBalance(address to, uint256 amount) external onlyOwner {
         tokenStorage.addBalance(to, amount);
     }
 
@@ -47,7 +47,7 @@ contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
      * @param from Address to decrease.
      * @param amount Number of units to subtract.
      */
-    function subBalance(address from, uint amount) external onlyOwner {
+    function subBalance(address from, uint256 amount) external onlyOwner {
         tokenStorage.subBalance(from, amount);
     }
 
@@ -60,7 +60,7 @@ contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
     function setAllowed(
         address owner,
         address spender,
-        uint amount
+        uint256 amount
     ) external onlyOwner {
         tokenStorage.setAllowed(owner, spender, amount);
     }
@@ -69,7 +69,7 @@ contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
      * @dev Returns the supply of tokens.
      * @return Total supply.
      */
-    function getSupply() external view returns (uint) {
+    function getSupply() external view returns (uint256) {
         return tokenStorage.getSupply();
     }
 
@@ -78,7 +78,7 @@ contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
      * @param who Address to lookup.
      * @return Number of units.
      */
-    function getBalance(address who) external view returns (uint) {
+    function getBalance(address who) external view returns (uint256) {
         return tokenStorage.getBalance(who);
     }
 
@@ -91,7 +91,7 @@ contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
     function getAllowed(
         address owner,
         address spender
-    ) external view returns (uint) {
+    ) external view returns (uint256) {
         return tokenStorage.getAllowed(owner, spender);
     }
 

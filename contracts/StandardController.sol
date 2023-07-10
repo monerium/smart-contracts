@@ -37,7 +37,7 @@ contract StandardController is ClaimableSystemRole {
     address internal frontend;
     mapping(address => bool) internal bridgeFrontends;
 
-    uint public decimals = 18;
+    uint256 public decimals = 18;
 
     /**
      * @dev Emitted when updating the frontend.
@@ -66,16 +66,13 @@ contract StandardController is ClaimableSystemRole {
      */
     event Storage(address indexed old, address indexed current);
 
- 
     /**
-      * @dev Modifier which prevents the function from being called by unauthorized parties.
-      * The caller must be the frontend otherwise the call is reverted.
-      */
+     * @dev Modifier which prevents the function from being called by unauthorized parties.
+     * The caller must be the frontend otherwise the call is reverted.
+     */
     modifier onlyFrontend() {
-      require(
-        isFrontend(msg.sender)
-      );
-      _;
+        require(isFrontend(msg.sender));
+        _;
     }
 
     /**
@@ -84,7 +81,7 @@ contract StandardController is ClaimableSystemRole {
      * @param initialSupply The amount of tokens to mint upon creation.
      * @param frontend_ Address of the authorized frontend.
      */
-    constructor(address storage_, uint initialSupply, address frontend_) {
+    constructor(address storage_, uint256 initialSupply, address frontend_) {
         require(
             storage_ == address(0x0) || initialSupply == 0,
             "either a token storage must be initialized or no initial supply"
@@ -198,7 +195,7 @@ contract StandardController is ClaimableSystemRole {
     function transfer_withCaller(
         address caller,
         address to,
-        uint amount
+        uint256 amount
     ) public virtual onlyFrontend returns (bool ok) {
         avoidBlackholes(to);
         return token.transfer(caller, to, amount);
@@ -216,7 +213,7 @@ contract StandardController is ClaimableSystemRole {
         address caller,
         address from,
         address to,
-        uint amount
+        uint256 amount
     ) public virtual onlyFrontend returns (bool ok) {
         avoidBlackholes(to);
         return token.transferFrom(caller, from, to, amount);
@@ -235,7 +232,7 @@ contract StandardController is ClaimableSystemRole {
     function approve_withCaller(
         address caller,
         address spender,
-        uint amount
+        uint256 amount
     ) public onlyFrontend returns (bool ok) {
         return token.approve(caller, spender, amount);
     }

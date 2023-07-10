@@ -35,7 +35,7 @@ contract MintableController is StandardController {
      */
     constructor(
         address storage_,
-        uint initialSupply,
+        uint256 initialSupply,
         address frontend_
     ) StandardController(storage_, initialSupply, frontend_) {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
@@ -50,7 +50,7 @@ contract MintableController is StandardController {
     function mintTo_withCaller(
         address caller,
         address to,
-        uint amount
+        uint256 amount
     )
         public
         onlyFrontend
@@ -76,7 +76,7 @@ contract MintableController is StandardController {
     function burnFrom_withCaller(
         address caller,
         address from,
-        uint amount,
+        uint256 amount,
         bytes32 h,
         uint8 v,
         bytes32 r,
@@ -93,7 +93,7 @@ contract MintableController is StandardController {
      */
     function burnFrom(
         address from,
-        uint amount
+        uint256 amount
     ) public onlyFrontend onlySystemAccount(msg.sender) returns (bool) {
         return token.burn(from, amount);
     }

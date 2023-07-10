@@ -36,7 +36,7 @@ library ERC20Lib {
         TokenStorage db,
         address caller,
         address to,
-        uint amount
+        uint256 amount
     ) external returns (bool success) {
         db.subBalance(caller, amount);
         db.addBalance(to, amount);
@@ -57,9 +57,9 @@ library ERC20Lib {
         address caller,
         address from,
         address to,
-        uint amount
+        uint256 amount
     ) external returns (bool success) {
-        uint allowance_ = db.getAllowed(from, caller);
+        uint256 allowance_ = db.getAllowed(from, caller);
         db.subBalance(from, amount);
         db.addBalance(to, amount);
         db.setAllowed(from, caller, allowance_ - amount);
@@ -81,7 +81,7 @@ library ERC20Lib {
         TokenStorage db,
         address caller,
         address spender,
-        uint amount
+        uint256 amount
     ) public returns (bool success) {
         db.setAllowed(caller, spender, amount);
         return true;
@@ -96,7 +96,7 @@ library ERC20Lib {
     function balanceOf(
         TokenStorage db,
         address who
-    ) external view returns (uint balance) {
+    ) external view returns (uint256 balance) {
         return db.getBalance(who);
     }
 
@@ -111,7 +111,7 @@ library ERC20Lib {
         TokenStorage db,
         address owner,
         address spender
-    ) external view returns (uint remaining) {
+    ) external view returns (uint256 remaining) {
         return db.getAllowed(owner, spender);
     }
 }

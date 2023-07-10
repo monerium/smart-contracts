@@ -40,7 +40,7 @@ library MintableTokenLib {
     function mint(
         TokenStorage db,
         address to,
-        uint amount
+        uint256 amount
     ) external returns (bool) {
         db.addBalance(to, amount);
         return true;
@@ -55,7 +55,7 @@ library MintableTokenLib {
     function burn(
         TokenStorage db,
         address from,
-        uint amount
+        uint256 amount
     ) public returns (bool) {
         db.subBalance(from, amount);
         return true;
@@ -76,7 +76,7 @@ library MintableTokenLib {
     function burn(
         TokenStorage db,
         address from,
-        uint amount,
+        uint256 amount,
         bytes32 h,
         uint8 v,
         bytes32 r,

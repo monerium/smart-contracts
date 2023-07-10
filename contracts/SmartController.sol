@@ -31,7 +31,7 @@ contract SmartController is MintableController {
     SmartTokenLib.SmartStorage internal smartToken;
 
     bytes3 public ticker;
-    uint public constant INITIAL_SUPPLY = 0;
+    uint256 public constant INITIAL_SUPPLY = 0;
 
     /**
      * @dev Contract constructor.
@@ -102,7 +102,7 @@ contract SmartController is MintableController {
     function transfer_withCaller(
         address caller,
         address to,
-        uint amount
+        uint256 amount
     ) public override returns (bool) {
         require(
             smartToken.validate(caller, to, amount),
@@ -126,7 +126,7 @@ contract SmartController is MintableController {
         address caller,
         address from,
         address to,
-        uint amount
+        uint256 amount
     ) public override returns (bool) {
         require(
             smartToken.validate(from, to, amount),
