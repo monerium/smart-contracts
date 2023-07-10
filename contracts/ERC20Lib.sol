@@ -17,7 +17,6 @@
 
 pragma solidity 0.8.11;
 
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./TokenStorage.sol";
 
 /**
@@ -26,8 +25,6 @@ import "./TokenStorage.sol";
  * https://github.com/ethereum/EIPs/issues/20
  */
 library ERC20Lib {
-    using SafeMath for uint;
-
     /**
      * @dev Transfers tokens [ERC20].
      * @param db Token storage to operate on.
@@ -65,7 +62,7 @@ library ERC20Lib {
         uint allowance_ = db.getAllowed(from, caller);
         db.subBalance(from, amount);
         db.addBalance(to, amount);
-        db.setAllowed(from, caller, allowance_.sub(amount));
+        db.setAllowed(from, caller, allowance_ - amount);
         return true;
     }
 

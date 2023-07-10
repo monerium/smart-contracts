@@ -17,7 +17,6 @@
 
 pragma solidity 0.8.11;
 
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
 import "./ERC20Lib.sol";
 import "./TokenStorage.sol";
@@ -30,7 +29,6 @@ import "./TokenStorage.sol";
  */
 
 library MintableTokenLib {
-    using SafeMath for uint;
     using SignatureChecker for address;
 
     /**
