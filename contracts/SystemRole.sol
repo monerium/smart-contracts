@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-pragma solidity ^0.8.11;
+pragma solidity 0.8.11;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "./ownership/Ownable.sol";
