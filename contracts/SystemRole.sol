@@ -142,7 +142,7 @@ abstract contract SystemRole is AccessControl, Ownable {
      * @dev add system account.
      * @param account The address of the account.
      */
-    function addSystemAccount(address account) public virtual {
+    function addSystemAccount(address account) public virtual onlyOwner {
         grantRole(SYSTEM_ROLE, account);
         emit SystemAccountAdded(account);
     }
@@ -151,7 +151,7 @@ abstract contract SystemRole is AccessControl, Ownable {
      * @dev remove system account.
      * @param account The address of the account.
      */
-    function removeSystemAccount(address account) public virtual {
+    function removeSystemAccount(address account) public virtual onlyOwner {
         revokeRole(SYSTEM_ROLE, account);
         emit SystemAccountRemoved(account);
     }
@@ -160,7 +160,7 @@ abstract contract SystemRole is AccessControl, Ownable {
      * @dev add admin account.
      * @param account The address of the account.
      */
-    function addAdminAccount(address account) public virtual {
+    function addAdminAccount(address account) public virtual onlyOwner {
         grantRole(ADMIN_ROLE, account);
         emit AdminAccountAdded(account);
     }
@@ -169,7 +169,7 @@ abstract contract SystemRole is AccessControl, Ownable {
      * @dev remove admin account.
      * @param account The address of the account.
      */
-    function removeAdminAccount(address account) public virtual {
+    function removeAdminAccount(address account) public virtual onlyOwner {
         revokeRole(ADMIN_ROLE, account);
         emit AdminAccountRemoved(account);
     }
@@ -178,7 +178,7 @@ abstract contract SystemRole is AccessControl, Ownable {
      * @dev set maximum allowance for system accounts.
      * @param amount The amount of allowance.
      */
-    function setMaxMintAllowance(uint256 amount) public virtual {
+    function setMaxMintAllowance(uint256 amount) public virtual onlyOwner {
         maxMintAllowance = amount;
     }
 
@@ -195,7 +195,10 @@ abstract contract SystemRole is AccessControl, Ownable {
      * @param account The address of the account.
      * @param amount The amount of allowance.
      */
-    function setMintAllowance(address account, uint256 amount) public virtual {
+    function setMintAllowance(
+        address account,
+        uint256 amount
+    ) public virtual onlyAdminAccounts {
         require(
             amount <= maxMintAllowance,
             "SystemRole: allowance exceeds maximum setted by owner"

@@ -42,26 +42,6 @@ contract MintableController is StandardController {
     }
 
     /**
-     * @dev set maximum allowance for system accounts.
-     * @param amount the Amount of allowance.
-     */
-    function setMaxMintAllowance(uint256 amount) public override onlyOwner {
-        super.setMaxMintAllowance(amount);
-    }
-
-    /**
-     * @dev Sets the allowance for a system account.
-     * @param account The account to set the allowance for.
-     * @param amount The amount to set the allowance to.
-     */
-    function setMintAllowance(
-        address account,
-        uint256 amount
-    ) public override onlyAdminAccounts {
-        super.setMintAllowance(account, amount);
-    }
-
-    /**
      * @dev Mints new tokens.
      * @param caller Address of the caller passed through the frontend.
      * @param to Address to credit the tokens.

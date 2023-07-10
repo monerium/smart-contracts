@@ -274,32 +274,4 @@ contract StandardController is ClaimableSystemRole {
     ) external view returns (uint) {
         return token.allowance(owner, spender);
     }
-
-    /**
-     * @dev Assigns the system role to an account.
-     */
-    function addSystemAccount(address account) public override onlyOwner {
-        super.addSystemAccount(account);
-    }
-
-    /**
-     * @dev Removes the system role from an account.
-     */
-    function removeSystemAccount(address account) public override onlyOwner {
-        super.removeSystemAccount(account);
-    }
-
-    /**
-     * @dev Assigns the admin role to an account.
-     */
-    function addAdminAccount(address account) public override onlyOwner {
-        super.addAdminAccount(account);
-    }
-
-    /**
-     * @dev Removes the admin role from an account.
-     */
-    function removeAdminAccount(address account) public override onlyOwner {
-        super.removeAdminAccount(account);
-    }
 }
