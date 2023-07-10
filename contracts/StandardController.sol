@@ -37,8 +37,6 @@ contract StandardController is ClaimableSystemRole {
     address internal frontend;
     mapping(address => bool) internal bridgeFrontends;
 
-    string public name;
-    string public symbol;
     uint public decimals = 18;
 
     /**
