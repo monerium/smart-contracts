@@ -55,7 +55,7 @@ contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
      * @dev Sets the allowance for a spender.
      * @param owner Address of the owner of the tokens to spend.
      * @param spender Address of the spender.
-     * @param amount Qunatity of allowance.
+     * @param amount Quantity of allowance.
      */
     function setAllowed(
         address owner,

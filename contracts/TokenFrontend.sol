@@ -197,7 +197,7 @@ abstract contract TokenFrontend is
 
     /**
      * @dev Burns tokens from token owner.
-     * This removfes the burned tokens from circulation.
+     * This removes the burned tokens from circulation.
      * @param from Address of the token owner.
      * @param amount Number of tokens to burn.
      * @param h Hash which the token owner signed.
