@@ -73,7 +73,7 @@ contract MintableController is StandardController {
         uint amount
     )
         public
-        guarded(caller)
+        onlyFrontend
         onlyAllowedSystemAccount(caller, amount)
         returns (bool)
     {
@@ -101,7 +101,7 @@ contract MintableController is StandardController {
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) public guarded(caller) onlySystemAccount(caller) returns (bool) {
+    ) public onlyFrontend onlySystemAccount(caller) returns (bool) {
         return token.burn(from, amount, h, v, r, s);
     }
 
@@ -114,7 +114,7 @@ contract MintableController is StandardController {
     function burnFrom(
         address from,
         uint amount
-    ) public onlySystemAccount(msg.sender) returns (bool) {
+    ) public onlyFrontend onlySystemAccount(msg.sender) returns (bool) {
         return token.burn(from, amount);
     }
 }

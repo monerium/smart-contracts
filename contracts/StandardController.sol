@@ -62,18 +62,16 @@ contract StandardController is ClaimableSystemRole {
      */
     event Storage(address indexed old, address indexed current);
 
+ 
     /**
-     * @dev Modifier which prevents the function from being called by unauthorized parties.
-     * The caller must either be the sender or the function must be
-     * called via the frontend, otherwise the call is reverted.
-     * @param caller The address of the passed-in caller. Used to preserve the original caller.
-     */
-    modifier guarded(address caller) {
-        require(
-            msg.sender == caller || isFrontend(msg.sender),
-            "either caller must be sender or calling via frontend"
-        );
-        _;
+      * @dev Modifier which prevents the function from being called by unauthorized parties.
+      * The caller must be the frontend otherwise the call is reverted.
+      */
+    modifier onlyFrontend() {
+      require(
+        isFrontend(msg.sender)
+      );
+      _;
     }
 
     /**
@@ -188,7 +186,7 @@ contract StandardController is ClaimableSystemRole {
         address caller,
         address to,
         uint amount
-    ) public virtual returns (bool ok) {
+    ) public virtual onlyFrontend returns (bool ok) {
         avoidBlackholes(to);
         return token.transfer(caller, to, amount);
     }
@@ -206,7 +204,7 @@ contract StandardController is ClaimableSystemRole {
         address from,
         address to,
         uint amount
-    ) public virtual returns (bool ok) {
+    ) public virtual onlyFrontend returns (bool ok) {
         avoidBlackholes(to);
         return token.transferFrom(caller, from, to, amount);
     }
@@ -225,7 +223,7 @@ contract StandardController is ClaimableSystemRole {
         address caller,
         address spender,
         uint amount
-    ) public guarded(caller) returns (bool ok) {
+    ) public onlyFrontend returns (bool ok) {
         return token.approve(caller, spender, amount);
     }
 
@@ -242,7 +240,7 @@ contract StandardController is ClaimableSystemRole {
         address to,
         uint256 amount,
         bytes calldata data
-    ) public virtual guarded(caller) returns (bool ok) {
+    ) public virtual onlyFrontend returns (bool ok) {
         avoidBlackholes(to);
         return token.transferAndCall(caller, to, amount, data);
     }

@@ -1,11 +1,20 @@
 var truffleAssert = require("truffle-assertions");
 var MintableController = artifacts.require("./MintableController.sol");
 
+var EUR = artifacts.require("./EUR.sol");
+var StandardController = artifacts.require("./StandardController.sol");
 var ERC20Lib = artifacts.require("./ERC20Lib.sol");
 var ERC677Lib = artifacts.require("./ERC677Lib.sol");
 var MintableTokenLib = artifacts.require("./MintableTokenLib.sol");
 var TokenStorageLib = artifacts.require("./TokenStorageLib.sol");
+var SmartController = artifacts.require("./SmartController.sol");
+var StandardController = artifacts.require("./StandardController.sol");
+var ConstantSmartController = artifacts.require(
+  "./ConstantSmartController.sol"
+);
+var BlacklistValidator = artifacts.require("./BlacklistValidator.sol");
 
+var SmartTokenLib = artifacts.require("./SmartTokenLib.sol");
 const AddressZero = "0x0000000000000000000000000000000000000000";
 
 const wallet = {
@@ -24,20 +33,48 @@ contract("SystemRole", (accounts) => {
   const system = accounts[1];
   const admin = accounts[2];
   let controller;
+  let eur;
 
-  before("setup mintable controller", async () => {
-    const tokenStorageLib = await TokenStorageLib.new();
-    const erc20Lib = await ERC20Lib.new();
-    const erc677Lib = await ERC677Lib.new();
-    const mintableTokenLib = await MintableTokenLib.new();
-    await MintableController.link("TokenStorageLib", tokenStorageLib.address);
-    await MintableController.link("ERC20Lib", erc20Lib.address);
-    await MintableController.link("ERC677Lib", erc677Lib.address);
-    await MintableController.link("MintableTokenLib", mintableTokenLib.address);
+  before("setup system role eure", async () => {
+    // Link
+    mintableTokenLib = await MintableTokenLib.new();
+    smartTokenLib = await SmartTokenLib.new();
+    tokenStorageLib = await TokenStorageLib.new();
+    erc20Lib = await ERC20Lib.new();
+    erc677Lib = await ERC677Lib.new();
+    await SmartController.link("MintableTokenLib", mintableTokenLib.address);
+    await SmartController.link("SmartTokenLib", smartTokenLib.address);
+    await SmartController.link("TokenStorageLib", tokenStorageLib.address);
+    await SmartController.link("ERC20Lib", erc20Lib.address);
+    await SmartController.link("ERC677Lib", erc677Lib.address);
+
+    await StandardController.link("TokenStorageLib", tokenStorageLib.address);
+    await StandardController.link("ERC20Lib", erc20Lib.address);
+    await StandardController.link("ERC677Lib", erc677Lib.address);
+
+    await ConstantSmartController.link(
+      "MintableTokenLib",
+      mintableTokenLib.address
+    );
+    await ConstantSmartController.link("SmartTokenLib", smartTokenLib.address);
+    await ConstantSmartController.link(
+      "TokenStorageLib",
+      tokenStorageLib.address
+    );
+    await ConstantSmartController.link("ERC20Lib", erc20Lib.address);
+    await ConstantSmartController.link("ERC677Lib", erc677Lib.address);
     // Deploy
-    controller = await MintableController.new(AddressZero, 0, AddressZero);
-    await controller.addSystemAccount(system);
+    eur = await EUR.new();
+    validator = await BlacklistValidator.new();
+    controller = await SmartController.new(
+      AddressZero,
+      validator.address,
+      web3.utils.asciiToHex("EUR"),
+      eur.address
+    );
+    await eur.setController(controller.address);
     await controller.addAdminAccount(admin);
+    await controller.addSystemAccount(system);
   });
 
   it("owner should be able to add system account", async () => {
@@ -104,9 +141,9 @@ contract("SystemRole", (accounts) => {
   });
 
   it("system should be able to mint within allowances", async () => {
-    await controller.mintTo_withCaller(system, wallet.address, 99, {
+    await eur.mintTo(wallet.address, 99, {
       from: system,
-    });
+    })
     const result = await controller.balanceOf(wallet.address);
     assert.equal(result, 99, "minting within allowances was not succesfull");
   });
@@ -114,8 +151,7 @@ contract("SystemRole", (accounts) => {
   it("system should not be able to mint above allowances", async () => {
     const remaningAllowances = await controller.getMintAllowance(system);
     await truffleAssert.reverts(
-      controller.mintTo_withCaller(
-        system,
+      eur.mintTo(
         wallet.address,
         remaningAllowances + 10,
         { from: system }
@@ -128,7 +164,7 @@ contract("SystemRole", (accounts) => {
     const remaningAllowances = await controller.getMintAllowance(admin);
     assert.equal(remaningAllowances, 100, "mint allowance was not set");
     await truffleAssert.reverts(
-      controller.mintTo_withCaller(admin, wallet.address, 100, { from: admin })
+      eur.mintTo(wallet.address, 100, { from: admin })
     );
   });
 
