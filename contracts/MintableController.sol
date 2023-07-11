@@ -57,7 +57,7 @@ contract MintableController is StandardController {
         onlyAllowedSystemAccount(caller, amount)
         returns (bool)
     {
-        avoidBlackholes(to);
+        _avoidBlackholes(to);
         mintAllowances[caller] = mintAllowances[caller] - amount;
         return token.mint(to, amount);
     }

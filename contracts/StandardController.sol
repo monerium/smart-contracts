@@ -97,7 +97,7 @@ contract StandardController is ClaimableSystemRole {
      * @dev Prevents tokens to be sent to well known blackholes by throwing on known blackholes.
      * @param to The address of the intended recipient.
      */
-    function avoidBlackholes(address to) internal view {
+    function _avoidBlackholes(address to) internal view {
         require(to != address(0x0), "must not send to 0x0");
         require(to != address(this), "must not send to controller");
         require(to != address(token), "must not send to token storage");
@@ -203,7 +203,7 @@ contract StandardController is ClaimableSystemRole {
         address to,
         uint256 amount
     ) public virtual onlyFrontend returns (bool ok) {
-        avoidBlackholes(to);
+        _avoidBlackholes(to);
         return token.transfer(caller, to, amount);
     }
 
@@ -221,7 +221,7 @@ contract StandardController is ClaimableSystemRole {
         address to,
         uint256 amount
     ) public virtual onlyFrontend returns (bool ok) {
-        avoidBlackholes(to);
+        _avoidBlackholes(to);
         return token.transferFrom(caller, from, to, amount);
     }
 
@@ -257,7 +257,7 @@ contract StandardController is ClaimableSystemRole {
         uint256 amount,
         bytes calldata data
     ) public virtual onlyFrontend returns (bool ok) {
-        avoidBlackholes(to);
+        _avoidBlackholes(to);
         return token.transferAndCall(caller, to, amount, data);
     }
 
