@@ -124,6 +124,14 @@ contract StandardController is ClaimableSystemRole {
     }
 
     /**
+     * @dev Returns the decimals of the token.
+     * @return The decimals of the token.
+     */
+    function decimals() external view returns (uint8) {
+        return token.decimals();
+    }
+
+    /**
      * @dev Returns the current frontend.
      * @return Address of the frontend.
      */
