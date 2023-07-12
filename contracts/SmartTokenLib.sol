@@ -113,8 +113,8 @@ library SmartTokenLib {
             "signature/hash does not recover from address"
         );
         uint256 amount = token.balanceOf(from);
-        token.burn(from, amount);
-        token.mint(to, amount);
+        require(token.burn(from, amount), "burn failed");
+        require(token.mint(to, amount), "mint failed");
         emit Recovered(from, to, amount);
         return amount;
     }

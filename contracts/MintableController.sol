@@ -59,11 +59,11 @@ contract MintableController is StandardController {
     modifier onlyAllowedSystemAccount(address account, uint256 amount) {
         require(
             hasRole(SYSTEM_ROLE, account),
-            "SystemRole: caller is not a system account"
+            "MintableController: caller is not a system account"
         );
         require(
             mintAllowances[account] >= amount,
-            "SystemRole: caller is not allowed to perform this action"
+            "MintableController: caller is not allowed to perform this action"
         );
         _;
     }
@@ -86,7 +86,8 @@ contract MintableController is StandardController {
     {
         _avoidBlackholes(to);
         mintAllowances[caller] = mintAllowances[caller] - amount;
-        return token.mint(to, amount);
+        require(token.mint(to, amount), "MintableController: mint failed");
+        return true;
     }
 
     /**
@@ -109,7 +110,11 @@ contract MintableController is StandardController {
         bytes32 r,
         bytes32 s
     ) public onlyFrontend onlySystemAccount(caller) returns (bool) {
-        return token.burn(from, amount, h, v, r, s);
+        require(
+            token.burn(from, amount, h, v, r, s),
+            "MintableController: burn failed"
+        );
+        return true;
     }
 
     /**
@@ -122,7 +127,8 @@ contract MintableController is StandardController {
         address from,
         uint256 amount
     ) public onlyFrontend onlySystemAccount(msg.sender) returns (bool) {
-        return token.burn(from, amount);
+        require(token.burn(from, amount), "MintableController: burn failed");
+        return true;
     }
 
     /**
@@ -152,7 +158,7 @@ contract MintableController is StandardController {
     ) public virtual onlyAdminAccounts {
         require(
             amount <= maxMintAllowance,
-            "SystemRole: allowance exceeds maximum setted by owner"
+            "MintableController: allowance exceeds maximum setted by owner"
         );
         mintAllowances[account] = amount;
         emit MintAllowanceSet(account, amount);

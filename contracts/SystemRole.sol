@@ -24,8 +24,6 @@ import "./ownership/Ownable.sol";
  * @title SystemRole
  * @dev SystemRole accounts have been approved to perform operational actions (e.g. mint and burn).
  * @dev AdminRole accounts have been approved to perform administrative actions (e.g. setting allowances).
- * @notice add[role]Account and remove[role]Account are unprotected by default, i.e. anyone can call them.
- * @notice Contracts inheriting SystemRole *should* authorize the caller by overriding them.
  * @notice The contract is an abstract contract.
  */
 abstract contract SystemRole is AccessControl, Ownable {
