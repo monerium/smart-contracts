@@ -240,7 +240,7 @@ contract MintableController is StandardController {
     ) public virtual onlyAdminAccounts {
         require(
             amount <= maxMintAllowance,
-            "SystemRole: allowance exceeds maximum setted by owner"
+            "MintableController: allowance exceeds maximum setted by owner"
         );
         mintAllowances[account] = amount;
         emit MintAllowanceSet(account, amount);
