@@ -6,11 +6,9 @@ const TokenStorageLib = artifacts.require("./TokenStorageLib.sol");
 const SmartTokenLib = artifacts.require("./SmartTokenLib.sol");
 const ERC20Lib = artifacts.require("./ERC20Lib.sol");
 const ERC677Lib = artifacts.require("./ERC677Lib.sol");
-const SafeMathLib = artifacts.require("zeppelin-solidity/math/SafeMath.sol");
 
 module.exports = async function (exit) {
   // Libraries
-  var safeMathLib;
   var smartTokenLib;
   var erc20Lib;
   var erc677Lib;
@@ -19,16 +17,6 @@ module.exports = async function (exit) {
 
   try {
     // Libraries
-    if (SafeMathLib.isDeployed() == false) {
-      console.log("SafeMathLib missing, deploying...");
-      safeMathLib = await SafeMathLib.new();
-      TokenStorageLib.link("SafeMathLib", safeMathLib.address);
-      ERC20Lib.link("SafeMathLib", safeMathLib.address);
-      MintableTokenLib.link("SafeMathLib", safeMathLib.address);
-      console.log("SafeMathLib: ", safeMathLib.address);
-    } else {
-      safeMathLib = await SafeMathLib.at(SafeMathLib.address);
-    }
     if (TokenStorageLib.isDeployed() == false) {
       console.log("TokenStorageLib missing, deploying...");
       tokenStorageLib = await TokenStorageLib.new();
