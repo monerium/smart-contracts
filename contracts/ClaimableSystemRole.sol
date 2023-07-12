@@ -12,6 +12,13 @@ abstract contract ClaimableSystemRole is SystemRole {
     address public pendingOwner;
 
     /**
+      * @dev emitted when the pendingOwner address is changed 
+      * @param previousPendingOwner previous pendingOwner address
+      * @param newPendingOwner new pendingOwner address
+      */
+      event OwnershipPendingChanged(address indexed previousPendingOwner, address indexed newPendingOwner);
+    
+      /**
      * @dev Modifier throws if called by any account other than the pendingOwner.
      */
     modifier onlyPendingOwner() {
@@ -26,6 +33,7 @@ abstract contract ClaimableSystemRole is SystemRole {
     function transferOwnership(
         address newOwner
     ) public virtual override onlyOwner {
+        emit OwnershipPendingChanged(pendingOwner, newOwner);
         pendingOwner = newOwner;
     }
 
