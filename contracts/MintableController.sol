@@ -27,6 +27,9 @@ import "./MintableTokenLib.sol";
 contract MintableController is StandardController {
     using MintableTokenLib for TokenStorage;
 
+    mapping(address => uint256) internal mintAllowances;
+    uint256 internal maxMintAllowance;
+
     /**
      * @dev Contract constructor.
      * @param storage_ Address of the token storage for the controller.
@@ -39,6 +42,30 @@ contract MintableController is StandardController {
         address frontend_
     ) StandardController(storage_, initialSupply, frontend_) {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+    }
+
+    /**
+     * @dev Emitted when allowance is set.
+     * @param account The address of the account.
+     * @param amount The amount of allowance.
+     */
+    event MintAllowanceSet(address indexed account, uint256 amount);
+
+    /**
+     * @dev modifier to restrict access to system accounts with enough allowance
+     * @param account The address of the account.
+     * @param amount The amount of allowance.
+     */
+    modifier onlyAllowedSystemAccount(address account, uint256 amount) {
+        require(
+            hasRole(SYSTEM_ROLE, account),
+            "SystemRole: caller is not a system account"
+        );
+        require(
+            mintAllowances[account] >= amount,
+            "SystemRole: caller is not allowed to perform this action"
+        );
+        _;
     }
 
     /**
@@ -96,5 +123,49 @@ contract MintableController is StandardController {
         uint256 amount
     ) public onlyFrontend onlySystemAccount(msg.sender) returns (bool) {
         return token.burn(from, amount);
+    }
+
+    /**
+     * @dev set maximum allowance for system accounts.
+     * @param amount The amount of allowance.
+     */
+    function setMaxMintAllowance(uint256 amount) public virtual onlyOwner {
+        maxMintAllowance = amount;
+    }
+
+    /**
+     * @dev get maximum allowance for system accounts.
+     * @return The amount of allowance.
+     */
+    function getMaxMintAllowance() public view virtual returns (uint256) {
+        return maxMintAllowance;
+    }
+
+    /**
+     * @dev set allowance for an account.
+     * @param account The address of the account.
+     * @param amount The amount of allowance.
+     */
+    function setMintAllowance(
+        address account,
+        uint256 amount
+    ) public virtual onlyAdminAccounts {
+        require(
+            amount <= maxMintAllowance,
+            "SystemRole: allowance exceeds maximum setted by owner"
+        );
+        mintAllowances[account] = amount;
+        emit MintAllowanceSet(account, amount);
+    }
+
+    /**
+     * @dev get allowance for an account.
+     * @param account The address of the account.
+     * @return The amount of allowance.
+     */
+    function getMintAllowance(
+        address account
+    ) public view virtual returns (uint256) {
+        return mintAllowances[account];
     }
 }

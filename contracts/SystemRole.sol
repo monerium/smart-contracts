@@ -32,9 +32,6 @@ abstract contract SystemRole is AccessControl, Ownable {
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
     bytes32 public constant SYSTEM_ROLE = keccak256("SYSTEM_ROLE");
 
-    mapping(address => uint256) internal mintAllowances;
-    uint256 internal maxMintAllowance;
-
     /**
      * @dev Emitted when system account is added.
      * @param account The address of the account.
@@ -58,13 +55,6 @@ abstract contract SystemRole is AccessControl, Ownable {
      * @param account The address of the account.
      */
     event AdminAccountRemoved(address indexed account);
-
-    /**
-     * @dev Emitted when allowance is set.
-     * @param account The address of the account.
-     * @param amount The amount of allowance.
-     */
-    event MintAllowanceSet(address indexed account, uint256 amount);
 
     /**
      * @dev modifier to restrict access to system accounts.
@@ -113,23 +103,6 @@ abstract contract SystemRole is AccessControl, Ownable {
     }
 
     /**
-     * @dev modifier to restrict access to system accounts with enough allowance
-     * @param account The address of the account.
-     * @param amount The amount of allowance.
-     */
-    modifier onlyAllowedSystemAccount(address account, uint256 amount) {
-        require(
-            hasRole(SYSTEM_ROLE, account),
-            "SystemRole: caller is not a system account"
-        );
-        require(
-            mintAllowances[account] >= amount,
-            "SystemRole: caller is not allowed to perform this action"
-        );
-        _;
-    }
-
-    /**
      * @dev Checks wether an address is a system account.
      * @param account The address of the account.
      * @return true if system account.
@@ -172,49 +145,5 @@ abstract contract SystemRole is AccessControl, Ownable {
     function removeAdminAccount(address account) public virtual onlyOwner {
         revokeRole(ADMIN_ROLE, account);
         emit AdminAccountRemoved(account);
-    }
-
-    /**
-     * @dev set maximum allowance for system accounts.
-     * @param amount The amount of allowance.
-     */
-    function setMaxMintAllowance(uint256 amount) public virtual onlyOwner {
-        maxMintAllowance = amount;
-    }
-
-    /**
-     * @dev get maximum allowance for system accounts.
-     * @return The amount of allowance.
-     */
-    function getMaxMintAllowance() public view virtual returns (uint256) {
-        return maxMintAllowance;
-    }
-
-    /**
-     * @dev set allowance for an account.
-     * @param account The address of the account.
-     * @param amount The amount of allowance.
-     */
-    function setMintAllowance(
-        address account,
-        uint256 amount
-    ) public virtual onlyAdminAccounts {
-        require(
-            amount <= maxMintAllowance,
-            "SystemRole: allowance exceeds maximum setted by owner"
-        );
-        mintAllowances[account] = amount;
-        emit MintAllowanceSet(account, amount);
-    }
-
-    /**
-     * @dev get allowance for an account.
-     * @param account The address of the account.
-     * @return The amount of allowance.
-     */
-    function getMintAllowance(
-        address account
-    ) public view virtual returns (uint256) {
-        return mintAllowances[account];
     }
 }
