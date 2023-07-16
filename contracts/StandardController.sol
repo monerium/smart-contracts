@@ -55,7 +55,7 @@ contract StandardController is ClaimableSystemRole {
      * @dev Emitted when removing a Bridge frontend.
      * @param frontend Address of the Bridge frontend.
      */
-    event RemoveBridgeFrontend(address indexed frontend);
+    event BridgeFrontendRemoved(address indexed frontend);
 
     /**
      * @dev Emitted when updating the storage.
@@ -157,7 +157,7 @@ contract StandardController is ClaimableSystemRole {
      */
     function removeBridgeFrontend(address frontend_) public onlyOwner {
         bridgeFrontends[frontend_] = false;
-        emit RemoveBridgeFrontend(frontend_);
+        emit BridgeFrontendRemoved(frontend_);
     }
 
     /**

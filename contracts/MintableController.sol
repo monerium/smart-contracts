@@ -49,7 +49,13 @@ contract MintableController is StandardController {
      * @param account The address of the account.
      * @param amount The amount of allowance.
      */
-    event MintAllowanceSet(address indexed account, uint256 amount);
+    event MintAllowance(address indexed account, uint256 amount);
+
+    /**
+     * @dev Emitted when max allowance is set.
+     * @param amount The amount of allowance.
+     */
+    event MaxMintAllowance(uint256 amount);
 
     /**
      * @dev modifier to restrict access to system accounts with enough allowance
@@ -136,6 +142,7 @@ contract MintableController is StandardController {
      * @param amount The amount of allowance.
      */
     function setMaxMintAllowance(uint256 amount) public virtual onlyOwner {
+        emit MaxMintAllowance(amount);
         maxMintAllowance = amount;
     }
 
@@ -161,7 +168,7 @@ contract MintableController is StandardController {
             "MintableController: allowance exceeds maximum setted by owner"
         );
         mintAllowances[account] = amount;
-        emit MintAllowanceSet(account, amount);
+        emit MintAllowance(account, amount);
     }
 
     /**
