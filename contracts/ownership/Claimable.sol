@@ -10,13 +10,6 @@ import "./Ownable.sol";
  */
 abstract contract Claimable is Ownable {
     address public pendingOwner;
-    
-    /**
-      * @dev emitted when the pendingOwner address is changed 
-      * @param previousPendingOwner previous pendingOwner address
-      * @param newPendingOwner new pendingOwner address
-      */
-      event OwnershipPendingChanged(address indexed previousPendingOwner, address indexed newPendingOwner);
 
     /**
      * @dev emitted when the pendingOwner address is changed
@@ -43,11 +36,7 @@ abstract contract Claimable is Ownable {
     function transferOwnership(
         address newOwner
     ) public virtual override onlyOwner {
-<<<<<<< HEAD
         emit OwnershipTransferPending(pendingOwner, newOwner);
-=======
-        emit OwnershipPendingChanged(pendingOwner, newOwner);
->>>>>>> f2c706a (feat(Claimable): Adding new event for Pending state variable change)
         pendingOwner = newOwner;
     }
 
