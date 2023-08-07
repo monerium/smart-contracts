@@ -32,7 +32,6 @@ contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
     using TokenStorageLib for TokenStorageLib.TokenStorage;
 
     TokenStorageLib.TokenStorage internal tokenStorage;
-    uint8 public decimals = 18;
 
     /**
      * @dev Increases balance of an address.

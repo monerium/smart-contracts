@@ -36,6 +36,7 @@ contract StandardController is ClaimableSystemRole {
     TokenStorage internal token;
     address internal frontend;
     mapping(address => bool) internal bridgeFrontends;
+    uint8 public decimals = 18;
 
     /**
      * @dev Emitted when updating the frontend.
@@ -103,14 +104,6 @@ contract StandardController is ClaimableSystemRole {
         require(to != address(token), "must not send to token storage");
         require(to != frontend, "must not send to frontend");
         require(isFrontend(to) == false, "must not send to bridgeFrontends");
-    }
-
-    /**
-     * @dev Returns the decimals of the token.
-     * @return The decimals of the token.
-     */
-    function decimals() external view returns (uint8) {
-        return token.decimals();
     }
 
     /**
