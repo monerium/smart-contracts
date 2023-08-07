@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-pragma solidity ^0.8.11;
+pragma solidity 0.8.11;
 
 import "./ClaimableSystemRole.sol";
 import "./ownership/NoOwner.sol";
@@ -82,7 +82,7 @@ contract BlacklistValidator is
     function validate(
         address from,
         address to,
-        uint amount
+        uint256 amount
     ) external returns (bool valid) {
         if (blacklist[from]) {
             valid = false;

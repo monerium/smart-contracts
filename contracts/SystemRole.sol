@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-pragma solidity ^0.8.11;
+pragma solidity 0.8.11;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "./ownership/Ownable.sol";
@@ -24,16 +24,11 @@ import "./ownership/Ownable.sol";
  * @title SystemRole
  * @dev SystemRole accounts have been approved to perform operational actions (e.g. mint and burn).
  * @dev AdminRole accounts have been approved to perform administrative actions (e.g. setting allowances).
- * @notice add[role]Account and remove[role]Account are unprotected by default, i.e. anyone can call them.
- * @notice Contracts inheriting SystemRole *should* authorize the caller by overriding them.
  * @notice The contract is an abstract contract.
  */
 abstract contract SystemRole is AccessControl, Ownable {
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
     bytes32 public constant SYSTEM_ROLE = keccak256("SYSTEM_ROLE");
-
-    mapping(address => uint256) internal mintAllowances;
-    uint256 internal maxMintAllowance;
 
     /**
      * @dev Emitted when system account is added.
@@ -58,13 +53,6 @@ abstract contract SystemRole is AccessControl, Ownable {
      * @param account The address of the account.
      */
     event AdminAccountRemoved(address indexed account);
-
-    /**
-     * @dev Emitted when allowance is set.
-     * @param account The address of the account.
-     * @param amount The amount of allowance.
-     */
-    event MintAllowanceSet(address indexed account, uint256 amount);
 
     /**
      * @dev modifier to restrict access to system accounts.
@@ -113,23 +101,6 @@ abstract contract SystemRole is AccessControl, Ownable {
     }
 
     /**
-     * @dev modifier to restrict access to system accounts with enough allowance
-     * @param account The address of the account.
-     * @param amount The amount of allowance.
-     */
-    modifier onlyAllowedSystemAccount(address account, uint256 amount) {
-        require(
-            hasRole(SYSTEM_ROLE, account),
-            "SystemRole: caller is not a system account"
-        );
-        require(
-            mintAllowances[account] >= amount,
-            "SystemRole: caller is not allowed to perform this action"
-        );
-        _;
-    }
-
-    /**
      * @dev Checks wether an address is a system account.
      * @param account The address of the account.
      * @return true if system account.
@@ -142,7 +113,7 @@ abstract contract SystemRole is AccessControl, Ownable {
      * @dev add system account.
      * @param account The address of the account.
      */
-    function addSystemAccount(address account) public virtual {
+    function addSystemAccount(address account) public virtual onlyOwner {
         grantRole(SYSTEM_ROLE, account);
         emit SystemAccountAdded(account);
     }
@@ -151,7 +122,7 @@ abstract contract SystemRole is AccessControl, Ownable {
      * @dev remove system account.
      * @param account The address of the account.
      */
-    function removeSystemAccount(address account) public virtual {
+    function removeSystemAccount(address account) public virtual onlyOwner {
         revokeRole(SYSTEM_ROLE, account);
         emit SystemAccountRemoved(account);
     }
@@ -160,7 +131,7 @@ abstract contract SystemRole is AccessControl, Ownable {
      * @dev add admin account.
      * @param account The address of the account.
      */
-    function addAdminAccount(address account) public virtual {
+    function addAdminAccount(address account) public virtual onlyOwner {
         grantRole(ADMIN_ROLE, account);
         emit AdminAccountAdded(account);
     }
@@ -169,49 +140,8 @@ abstract contract SystemRole is AccessControl, Ownable {
      * @dev remove admin account.
      * @param account The address of the account.
      */
-    function removeAdminAccount(address account) public virtual {
+    function removeAdminAccount(address account) public virtual onlyOwner {
         revokeRole(ADMIN_ROLE, account);
         emit AdminAccountRemoved(account);
-    }
-
-    /**
-     * @dev set maximum allowance for system accounts.
-     * @param amount The amount of allowance.
-     */
-    function setMaxMintAllowance(uint256 amount) public virtual {
-        maxMintAllowance = amount;
-    }
-
-    /**
-     * @dev get maximum allowance for system accounts.
-     * @return The amount of allowance.
-     */
-    function getMaxMintAllowance() public view virtual returns (uint256) {
-        return maxMintAllowance;
-    }
-
-    /**
-     * @dev set allowance for an account.
-     * @param account The address of the account.
-     * @param amount The amount of allowance.
-     */
-    function setMintAllowance(address account, uint256 amount) public virtual {
-        require(
-            amount <= maxMintAllowance,
-            "SystemRole: allowance exceeds maximum setted by owner"
-        );
-        mintAllowances[account] = amount;
-        emit MintAllowanceSet(account, amount);
-    }
-
-    /**
-     * @dev get allowance for an account.
-     * @param account The address of the account.
-     * @return The amount of allowance.
-     */
-    function getMintAllowance(
-        address account
-    ) public view virtual returns (uint256) {
-        return mintAllowances[account];
     }
 }

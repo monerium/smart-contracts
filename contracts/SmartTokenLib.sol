@@ -41,7 +41,7 @@ library SmartTokenLib {
      * @param to Recipient address.
      * @param amount Number of tokens.
      */
-    event Recovered(address indexed from, address indexed to, uint amount);
+    event Recovered(address indexed from, address indexed to, uint256 amount);
 
     /**
      * @dev Emitted when updating the validator.
@@ -76,7 +76,7 @@ library SmartTokenLib {
         SmartStorage storage self,
         address from,
         address to,
-        uint amount
+        uint256 amount
     ) external returns (bool valid) {
         return self.validator.validate(from, to, amount);
     }
@@ -103,7 +103,7 @@ library SmartTokenLib {
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) external returns (uint) {
+    ) external returns (uint256) {
         bytes memory signature;
         if (r != bytes32(0) || s != bytes32(0)) {
             signature = bytes(abi.encodePacked(r, s, v));
@@ -112,9 +112,9 @@ library SmartTokenLib {
             from.isValidSignatureNow(h, signature),
             "signature/hash does not recover from address"
         );
-        uint amount = token.balanceOf(from);
-        token.burn(from, amount);
-        token.mint(to, amount);
+        uint256 amount = token.balanceOf(from);
+        require(token.burn(from, amount), "burn failed");
+        require(token.mint(to, amount), "mint failed");
         emit Recovered(from, to, amount);
         return amount;
     }

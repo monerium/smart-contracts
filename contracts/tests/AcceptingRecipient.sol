@@ -17,15 +17,27 @@
 
 pragma solidity 0.8.11;
 
-import "./token/ERC20/BasicToken.sol";
+import "../ownership/CanReclaimToken.sol";
+import "../IERC677Recipient.sol";
 
 /**
- * @title SimpleToken
- * @dev This simple [ERC20] compatible token is used in the test suite.
+ * @title AcceptingRecipient
+ * @dev [ERC677]-compatible contract.
+ * The contract accepts token ownership and stores data in public member variables.
  */
-contract SimpleToken is BasicToken {
-    constructor() {
-        totalSupply_ = 10000000;
-        balances[msg.sender] = totalSupply_;
+contract AcceptingRecipient is CanReclaimToken, IERC677Recipient {
+    address public from;
+    uint256 public amount;
+    bytes public data;
+
+    function onTokenTransfer(
+        address from_,
+        uint256 amount_,
+        bytes calldata data_
+    ) external returns (bool) {
+        from = from_;
+        amount = amount_;
+        data = data_;
+        return true;
     }
 }

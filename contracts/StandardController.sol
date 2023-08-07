@@ -36,10 +36,7 @@ contract StandardController is ClaimableSystemRole {
     TokenStorage internal token;
     address internal frontend;
     mapping(address => bool) internal bridgeFrontends;
-
-    string public name;
-    string public symbol;
-    uint public decimals = 18;
+    uint8 public decimals = 18;
 
     /**
      * @dev Emitted when updating the frontend.
@@ -56,22 +53,25 @@ contract StandardController is ClaimableSystemRole {
     event BridgeFrontend(address indexed frontend, string indexed title);
 
     /**
+     * @dev Emitted when removing a Bridge frontend.
+     * @param frontend Address of the Bridge frontend.
+     */
+    event BridgeFrontendRemoved(address indexed frontend);
+
+    /**
      * @dev Emitted when updating the storage.
      * @param old Address of the old storage.
      * @param current Address of the new storage.
      */
     event Storage(address indexed old, address indexed current);
 
- 
     /**
-      * @dev Modifier which prevents the function from being called by unauthorized parties.
-      * The caller must be the frontend otherwise the call is reverted.
-      */
+     * @dev Modifier which prevents the function from being called by unauthorized parties.
+     * The caller must be the frontend otherwise the call is reverted.
+     */
     modifier onlyFrontend() {
-      require(
-        isFrontend(msg.sender)
-      );
-      _;
+        require(isFrontend(msg.sender));
+        _;
     }
 
     /**
@@ -80,7 +80,7 @@ contract StandardController is ClaimableSystemRole {
      * @param initialSupply The amount of tokens to mint upon creation.
      * @param frontend_ Address of the authorized frontend.
      */
-    constructor(address storage_, uint initialSupply, address frontend_) {
+    constructor(address storage_, uint256 initialSupply, address frontend_) {
         require(
             storage_ == address(0x0) || initialSupply == 0,
             "either a token storage must be initialized or no initial supply"
@@ -98,7 +98,7 @@ contract StandardController is ClaimableSystemRole {
      * @dev Prevents tokens to be sent to well known blackholes by throwing on known blackholes.
      * @param to The address of the intended recipient.
      */
-    function avoidBlackholes(address to) internal view {
+    function _avoidBlackholes(address to) internal view {
         require(to != address(0x0), "must not send to 0x0");
         require(to != address(this), "must not send to controller");
         require(to != address(token), "must not send to token storage");
@@ -140,8 +140,17 @@ contract StandardController is ClaimableSystemRole {
         address frontend_,
         string calldata title
     ) public onlyOwner {
-        emit BridgeFrontend(frontend_, title);
         bridgeFrontends[frontend_] = true;
+        emit BridgeFrontend(frontend_, title);
+    }
+
+    /**
+     * @dev Removes a bridge frontend.
+     * @param frontend_ Address of the bridge frontend to remove.
+     */
+    function removeBridgeFrontend(address frontend_) public onlyOwner {
+        bridgeFrontends[frontend_] = false;
+        emit BridgeFrontendRemoved(frontend_);
     }
 
     /**
@@ -185,9 +194,9 @@ contract StandardController is ClaimableSystemRole {
     function transfer_withCaller(
         address caller,
         address to,
-        uint amount
+        uint256 amount
     ) public virtual onlyFrontend returns (bool ok) {
-        avoidBlackholes(to);
+        _avoidBlackholes(to);
         return token.transfer(caller, to, amount);
     }
 
@@ -203,9 +212,9 @@ contract StandardController is ClaimableSystemRole {
         address caller,
         address from,
         address to,
-        uint amount
+        uint256 amount
     ) public virtual onlyFrontend returns (bool ok) {
-        avoidBlackholes(to);
+        _avoidBlackholes(to);
         return token.transferFrom(caller, from, to, amount);
     }
 
@@ -222,7 +231,7 @@ contract StandardController is ClaimableSystemRole {
     function approve_withCaller(
         address caller,
         address spender,
-        uint amount
+        uint256 amount
     ) public onlyFrontend returns (bool ok) {
         return token.approve(caller, spender, amount);
     }
@@ -241,7 +250,7 @@ contract StandardController is ClaimableSystemRole {
         uint256 amount,
         bytes calldata data
     ) public virtual onlyFrontend returns (bool ok) {
-        avoidBlackholes(to);
+        _avoidBlackholes(to);
         return token.transferAndCall(caller, to, amount, data);
     }
 
@@ -273,33 +282,5 @@ contract StandardController is ClaimableSystemRole {
         address spender
     ) external view returns (uint) {
         return token.allowance(owner, spender);
-    }
-
-    /**
-     * @dev Assigns the system role to an account.
-     */
-    function addSystemAccount(address account) public override onlyOwner {
-        super.addSystemAccount(account);
-    }
-
-    /**
-     * @dev Removes the system role from an account.
-     */
-    function removeSystemAccount(address account) public override onlyOwner {
-        super.removeSystemAccount(account);
-    }
-
-    /**
-     * @dev Assigns the admin role to an account.
-     */
-    function addAdminAccount(address account) public override onlyOwner {
-        super.addAdminAccount(account);
-    }
-
-    /**
-     * @dev Removes the admin role from an account.
-     */
-    function removeAdminAccount(address account) public override onlyOwner {
-        super.removeAdminAccount(account);
     }
 }

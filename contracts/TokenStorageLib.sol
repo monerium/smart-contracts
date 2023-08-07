@@ -17,19 +17,15 @@
 
 pragma solidity 0.8.11;
 
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-
 /*
  * @title TokenStorageLib
  * @dev Implementation of an[external storage for tokens.
  */
 library TokenStorageLib {
-    using SafeMath for uint;
-
     struct TokenStorage {
         mapping(address => uint) balances;
         mapping(address => mapping(address => uint)) allowed;
-        uint totalSupply;
+        uint256 totalSupply;
     }
 
     /**
@@ -41,10 +37,10 @@ library TokenStorageLib {
     function addBalance(
         TokenStorage storage self,
         address to,
-        uint amount
+        uint256 amount
     ) external {
-        self.totalSupply = self.totalSupply.add(amount);
-        self.balances[to] = self.balances[to].add(amount);
+        self.totalSupply = self.totalSupply + amount;
+        self.balances[to] = self.balances[to] + amount;
     }
 
     /**
@@ -56,10 +52,10 @@ library TokenStorageLib {
     function subBalance(
         TokenStorage storage self,
         address from,
-        uint amount
+        uint256 amount
     ) external {
-        self.totalSupply = self.totalSupply.sub(amount);
-        self.balances[from] = self.balances[from].sub(amount);
+        self.totalSupply = self.totalSupply - amount;
+        self.balances[from] = self.balances[from] - amount;
     }
 
     /**
@@ -73,7 +69,7 @@ library TokenStorageLib {
         TokenStorage storage self,
         address owner,
         address spender,
-        uint amount
+        uint256 amount
     ) external {
         self.allowed[owner][spender] = amount;
     }

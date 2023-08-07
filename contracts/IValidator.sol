@@ -32,7 +32,7 @@ interface IValidator {
     event Decision(
         address indexed from,
         address indexed to,
-        uint amount,
+        uint256 amount,
         bool valid
     );
 
@@ -46,6 +46,6 @@ interface IValidator {
     function validate(
         address from,
         address to,
-        uint amount
+        uint256 amount
     ) external returns (bool valid);
 }

@@ -1,16 +1,13 @@
 /* SPDX-License-Identifier: MIT */
-pragma solidity ^0.8.0;
+pragma solidity 0.8.11;
 
 import "./ERC20Basic.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 /**
  * @title Basic token
  * @dev Basic version of StandardToken, with no allowances.
  */
 contract BasicToken is ERC20Basic {
-    using SafeMath for uint256;
-
     mapping(address => uint256) internal balances;
 
     uint256 internal totalSupply_;
@@ -34,8 +31,8 @@ contract BasicToken is ERC20Basic {
         require(_value <= balances[msg.sender]);
         require(_to != address(0));
 
-        balances[msg.sender] = balances[msg.sender].sub(_value);
-        balances[_to] = balances[_to].add(_value);
+        balances[msg.sender] = balances[msg.sender] - _value;
+        balances[_to] = balances[_to] + _value;
         emit Transfer(msg.sender, _to, _value);
         return true;
     }

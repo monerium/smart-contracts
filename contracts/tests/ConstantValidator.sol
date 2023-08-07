@@ -17,10 +17,10 @@
 
 pragma solidity 0.8.11;
 
-import "./ownership/Claimable.sol";
-import "./ownership/NoOwner.sol";
-import "./ownership/CanReclaimToken.sol";
-import "./IValidator.sol";
+import "../ownership/Claimable.sol";
+import "../ownership/NoOwner.sol";
+import "../ownership/CanReclaimToken.sol";
+import "../IValidator.sol";
 
 /**
  * @title ConstantValidator

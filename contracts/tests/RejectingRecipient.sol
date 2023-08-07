@@ -17,28 +17,20 @@
 
 pragma solidity 0.8.11;
 
-import "./ConstantValidator.sol";
-import "./SmartController.sol";
+import "../ownership/CanReclaimToken.sol";
+import "../IERC677Recipient.sol";
 
 /**
- * @title ConstantSmartController
- * @dev Constantly rejects token transfers by using a rejecting validator.
+ * @title RejectingRecipient
+ * @dev [ERC677]-compatible contract.
+ * The contract rejects token ownership.
  */
-contract ConstantSmartController is SmartController {
-    /**
-     * @dev Contract constructor.
-     * @param storage_ Address of the new storage.
-     * @param ticker 3 letter currency ticker.
-     */
-    constructor(
-        address storage_,
-        bytes3 ticker
-    )
-        SmartController(
-            storage_,
-            address(new ConstantValidator(false)),
-            ticker,
-            address(0x0)
-        )
-    {}
+contract RejectingRecipient is CanReclaimToken, IERC677Recipient {
+    function onTokenTransfer(
+        address,
+        uint256,
+        bytes calldata
+    ) external pure returns (bool) {
+        return false;
+    }
 }

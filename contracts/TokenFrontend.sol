@@ -60,7 +60,7 @@ abstract contract TokenFrontend is
     event Transfer(
         address indexed from,
         address indexed to,
-        uint amount,
+        uint256 amount,
         bytes data
     );
 
@@ -116,7 +116,7 @@ abstract contract TokenFrontend is
      * @param to Recipient address.
      * @param amount Number of tokens to transfer.
      */
-    function transfer(address to, uint amount) external returns (bool ok) {
+    function transfer(address to, uint256 amount) external returns (bool ok) {
         ok = controller.transfer_withCaller(msg.sender, to, amount);
         emit Transfer(msg.sender, to, amount);
     }
@@ -131,7 +131,7 @@ abstract contract TokenFrontend is
     function transferFrom(
         address from,
         address to,
-        uint amount
+        uint256 amount
     ) external returns (bool ok) {
         ok = controller.transferFrom_withCaller(msg.sender, from, to, amount);
         emit Transfer(from, to, amount);
@@ -146,7 +146,10 @@ abstract contract TokenFrontend is
      * @param spender The address of the future spender.
      * @param amount The allowance of the spender.
      */
-    function approve(address spender, uint amount) external returns (bool ok) {
+    function approve(
+        address spender,
+        uint256 amount
+    ) external returns (bool ok) {
         ok = controller.approve_withCaller(msg.sender, spender, amount);
         emit Approval(msg.sender, spender, amount);
     }
@@ -178,7 +181,7 @@ abstract contract TokenFrontend is
      * @param to Address to credit the tokens.
      * @param amount Number of tokens to mint.
      */
-    function mintTo(address to, uint amount) external returns (bool ok) {
+    function mintTo(address to, uint256 amount) external returns (bool ok) {
         ok = controller.mintTo_withCaller(msg.sender, to, amount);
         emit Transfer(address(0x0), to, amount);
     }
@@ -190,14 +193,17 @@ abstract contract TokenFrontend is
      * @param to Address to credit the tokens.
      * @param amount Number of tokens to mint.
      */
-    function mint(address to, uint amount) external override returns (bool ok) {
+    function mint(
+        address to,
+        uint256 amount
+    ) external override returns (bool ok) {
         require(hasRole(PREDICATE_ROLE, msg.sender), "caller is not PREDICATE");
         ok = this.mintTo(to, amount);
     }
 
     /**
      * @dev Burns tokens from token owner.
-     * This removfes the burned tokens from circulation.
+     * This removes the burned tokens from circulation.
      * @param from Address of the token owner.
      * @param amount Number of tokens to burn.
      * @param h Hash which the token owner signed.
@@ -207,7 +213,7 @@ abstract contract TokenFrontend is
      */
     function burnFrom(
         address from,
-        uint amount,
+        uint256 amount,
         bytes32 h,
         uint8 v,
         bytes32 r,
@@ -246,7 +252,7 @@ abstract contract TokenFrontend is
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) external returns (uint amount) {
+    ) external returns (uint256 amount) {
         amount = controller.recover_withCaller(
             msg.sender,
             from,

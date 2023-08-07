@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.11;
 
 import "./SystemRole.sol";
 
@@ -10,6 +10,16 @@ import "./SystemRole.sol";
  */
 abstract contract ClaimableSystemRole is SystemRole {
     address public pendingOwner;
+
+    /**
+     * @dev emitted when the pendingOwner address is changed
+     * @param previousPendingOwner previous pendingOwner address
+     * @param newPendingOwner new pendingOwner address
+     */
+    event OwnershipTransferPending(
+        address indexed previousPendingOwner,
+        address indexed newPendingOwner
+    );
 
     /**
      * @dev Modifier throws if called by any account other than the pendingOwner.
@@ -26,6 +36,7 @@ abstract contract ClaimableSystemRole is SystemRole {
     function transferOwnership(
         address newOwner
     ) public virtual override onlyOwner {
+        emit OwnershipTransferPending(pendingOwner, newOwner);
         pendingOwner = newOwner;
     }
 
