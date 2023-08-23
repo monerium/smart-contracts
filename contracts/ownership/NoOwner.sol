@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.11;
 
 import "./HasNoEther.sol";
 import "./HasNoTokens.sol";
@@ -12,4 +12,5 @@ import "./HasNoContracts.sol";
  * Owned contracts. See respective base contracts for details.
  */
 contract NoOwner is HasNoEther, HasNoTokens, HasNoContracts {
+
 }

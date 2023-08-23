@@ -15,79 +15,133 @@
  * limitations under the License.
  */
 
-pragma solidity ^0.8.11;
+pragma solidity 0.8.11;
 
-import "./ownership/Roles.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
+import "./ownership/Ownable.sol";
 
 /**
  * @title SystemRole
  * @dev SystemRole accounts have been approved to perform operational actions (e.g. mint and burn).
- * @notice addSystemAccount and removeSystemAccount are unprotected by default, i.e. anyone can call them.
- * @notice Contracts inheriting SystemRole *should* authorize the caller by overriding them.
+ * @dev AdminRole accounts have been approved to perform administrative actions (e.g. setting allowances).
  * @notice The contract is an abstract contract.
  */
-abstract contract SystemRole {
-
-  using Roles for Roles.Role;
-  Roles.Role private systemAccounts;
+abstract contract SystemRole is AccessControl, Ownable {
+    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
+    bytes32 public constant SYSTEM_ROLE = keccak256("SYSTEM_ROLE");
 
     /**
      * @dev Emitted when system account is added.
-     * @param account is a new system account.
+     * @param account The address of the account.
      */
     event SystemAccountAdded(address indexed account);
 
     /**
      * @dev Emitted when system account is removed.
-     * @param account is the old system account.
+     * @param account The address of the account.
      */
     event SystemAccountRemoved(address indexed account);
 
     /**
-     * @dev Modifier which prevents non-system accounts from calling protected functions.
+     * @dev Emitted when admin account is added.
+     * @param account The address of the account.
      */
-    modifier onlySystemAccounts() {
-        require(isSystemAccount(msg.sender));
-        _;
-    }
+    event AdminAccountAdded(address indexed account);
 
     /**
-     * @dev Modifier which prevents non-system accounts from being passed to the guard.
-     * @param account The account to check.
+     * @dev Emitted when admin account is removed.
+     * @param account The address of the account.
      */
-    modifier onlySystemAccount(address account) {
+    event AdminAccountRemoved(address indexed account);
+
+    /**
+     * @dev modifier to restrict access to system accounts.
+     */
+    modifier onlySystemAccounts() {
         require(
-            isSystemAccount(account),
-            "must be a system account"
+            hasRole(SYSTEM_ROLE, msg.sender),
+            "SystemRole: caller is not a system account"
         );
         _;
     }
 
     /**
-     * @dev Checks whether an address is a system account.
-     * @param account the address to check.
-     * @return true if system account.
+     * @dev modifier to restrict access to system accounts.
+     * @param account The address of the account.
      */
-    function isSystemAccount(address account) public view returns (bool) {
-        return systemAccounts.has(account);
+    modifier onlySystemAccount(address account) {
+        require(
+            hasRole(SYSTEM_ROLE, account),
+            "SystemRole: caller is not a system account"
+        );
+        _;
     }
 
     /**
-     * @dev Assigns the system role to an account.
-     * @notice This method is unprotected and should be authorized in the child contract.
+     * @dev modifier to restrict access to admin accounts.
      */
-    function addSystemAccount(address account) public virtual {
-        systemAccounts.add(account);
+    modifier onlyAdminAccounts() {
+        require(
+            hasRole(ADMIN_ROLE, msg.sender),
+            "SystemRole: caller is not an admin account"
+        );
+        _;
+    }
+
+    /**
+     * @dev modifier to restrict access to admin accounts.
+     * @param account The address of the account.
+     */
+    modifier onlyAdminAccount(address account) {
+        require(
+            hasRole(ADMIN_ROLE, account),
+            "SystemRole: caller is not an admin account"
+        );
+        _;
+    }
+
+    /**
+     * @dev Checks wether an address is a system account.
+     * @param account The address of the account.
+     * @return true if system account.
+     */
+    function isSystemAccount(address account) public view returns (bool) {
+        return hasRole(SYSTEM_ROLE, account);
+    }
+
+    /**
+     * @dev add system account.
+     * @param account The address of the account.
+     */
+    function addSystemAccount(address account) public virtual onlyOwner {
+        grantRole(SYSTEM_ROLE, account);
         emit SystemAccountAdded(account);
     }
 
     /**
-     * @dev Removes the system role from an account.
-     * @notice This method is unprotected and should be authorized in the child contract.
+     * @dev remove system account.
+     * @param account The address of the account.
      */
-    function removeSystemAccount(address account) public virtual {
-        systemAccounts.remove(account);
+    function removeSystemAccount(address account) public virtual onlyOwner {
+        revokeRole(SYSTEM_ROLE, account);
         emit SystemAccountRemoved(account);
     }
 
+    /**
+     * @dev add admin account.
+     * @param account The address of the account.
+     */
+    function addAdminAccount(address account) public virtual onlyOwner {
+        grantRole(ADMIN_ROLE, account);
+        emit AdminAccountAdded(account);
+    }
+
+    /**
+     * @dev remove admin account.
+     * @param account The address of the account.
+     */
+    function removeAdminAccount(address account) public virtual onlyOwner {
+        revokeRole(ADMIN_ROLE, account);
+        emit AdminAccountRemoved(account);
+    }
 }

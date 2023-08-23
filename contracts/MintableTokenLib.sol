@@ -17,7 +17,6 @@
 
 pragma solidity 0.8.11;
 
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
 import "./ERC20Lib.sol";
 import "./TokenStorage.sol";
@@ -30,9 +29,7 @@ import "./TokenStorage.sol";
  */
 
 library MintableTokenLib {
-
-  using SafeMath for uint;
-  using SignatureChecker for address;
+    using SignatureChecker for address;
 
     /**
      * @dev Mints new tokens.
@@ -43,11 +40,8 @@ library MintableTokenLib {
     function mint(
         TokenStorage db,
         address to,
-        uint amount
-    )
-        external
-        returns (bool)
-    {
+        uint256 amount
+    ) external returns (bool) {
         db.addBalance(to, amount);
         return true;
     }
@@ -61,11 +55,8 @@ library MintableTokenLib {
     function burn(
         TokenStorage db,
         address from,
-        uint amount
-    )
-        public
-        returns (bool)
-    {
+        uint256 amount
+    ) public returns (bool) {
         db.subBalance(from, amount);
         return true;
     }
@@ -85,24 +76,20 @@ library MintableTokenLib {
     function burn(
         TokenStorage db,
         address from,
-        uint amount,
+        uint256 amount,
         bytes32 h,
         uint8 v,
         bytes32 r,
         bytes32 s
-    )
-        external
-        returns (bool)
-    {
-      bytes memory signature;
-      if (r != bytes32(0) || s != bytes32(0)) {
-        signature = bytes(abi.encodePacked(r,s,v));
-      }
-      require(
-          from.isValidSignatureNow(h, signature),
-          "signature/hash does not match"
+    ) external returns (bool) {
+        bytes memory signature;
+        if (r != bytes32(0) || s != bytes32(0)) {
+            signature = bytes(abi.encodePacked(r, s, v));
+        }
+        require(
+            from.isValidSignatureNow(h, signature),
+            "signature/hash does not match"
         );
         return burn(db, from, amount);
     }
-
 }

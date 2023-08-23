@@ -29,7 +29,6 @@ import "./TokenStorageLib.sol";
  * between token upgrades.
  */
 contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
-
     using TokenStorageLib for TokenStorageLib.TokenStorage;
 
     TokenStorageLib.TokenStorage internal tokenStorage;
@@ -39,7 +38,7 @@ contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
      * @param to Address to increase.
      * @param amount Number of units to add.
      */
-    function addBalance(address to, uint amount) external onlyOwner {
+    function addBalance(address to, uint256 amount) external onlyOwner {
         tokenStorage.addBalance(to, amount);
     }
 
@@ -48,7 +47,7 @@ contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
      * @param from Address to decrease.
      * @param amount Number of units to subtract.
      */
-    function subBalance(address from, uint amount) external onlyOwner {
+    function subBalance(address from, uint256 amount) external onlyOwner {
         tokenStorage.subBalance(from, amount);
     }
 
@@ -56,9 +55,13 @@ contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
      * @dev Sets the allowance for a spender.
      * @param owner Address of the owner of the tokens to spend.
      * @param spender Address of the spender.
-     * @param amount Qunatity of allowance.
+     * @param amount Quantity of allowance.
      */
-    function setAllowed(address owner, address spender, uint amount) external onlyOwner {
+    function setAllowed(
+        address owner,
+        address spender,
+        uint256 amount
+    ) external onlyOwner {
         tokenStorage.setAllowed(owner, spender, amount);
     }
 
@@ -66,7 +69,7 @@ contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
      * @dev Returns the supply of tokens.
      * @return Total supply.
      */
-    function getSupply() external view returns (uint) {
+    function getSupply() external view returns (uint256) {
         return tokenStorage.getSupply();
     }
 
@@ -75,7 +78,7 @@ contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
      * @param who Address to lookup.
      * @return Number of units.
      */
-    function getBalance(address who) external view returns (uint) {
+    function getBalance(address who) external view returns (uint256) {
         return tokenStorage.getBalance(who);
     }
 
@@ -85,11 +88,10 @@ contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
      * @param spender Address of the spender.
      * @return Number of units.
      */
-    function getAllowed(address owner, address spender)
-        external
-        view
-        returns (uint)
-    {
+    function getAllowed(
+        address owner,
+        address spender
+    ) external view returns (uint256) {
         return tokenStorage.getAllowed(owner, spender);
     }
 
@@ -97,7 +99,9 @@ contract TokenStorage is Claimable, CanReclaimToken, NoOwner {
      * @dev Explicit override of transferOwnership from Claimable and Ownable
      * @param newOwner Address to transfer ownership to.
      */
-    function transferOwnership(address newOwner) public override(Claimable, Ownable){
-      Claimable.transferOwnership(newOwner);
+    function transferOwnership(
+        address newOwner
+    ) public override(Claimable, Ownable) {
+        Claimable.transferOwnership(newOwner);
     }
 }

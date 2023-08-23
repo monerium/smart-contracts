@@ -27,7 +27,6 @@ import "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
  * @dev This library provides functionality which is required from a regulatory perspective.
  */
 library SmartTokenLib {
-
     using ERC20Lib for TokenStorage;
     using MintableTokenLib for TokenStorage;
     using SignatureChecker for address;
@@ -42,7 +41,7 @@ library SmartTokenLib {
      * @param to Recipient address.
      * @param amount Number of tokens.
      */
-    event Recovered(address indexed from, address indexed to, uint amount);
+    event Recovered(address indexed from, address indexed to, uint256 amount);
 
     /**
      * @dev Emitted when updating the validator.
@@ -56,13 +55,13 @@ library SmartTokenLib {
      * @param self Smart storage to operate on.
      * @param validator Address of validator.
      */
-    function setValidator(SmartStorage storage self, address validator)
-        external
-    {
-      emit Validator(address(self.validator), validator);
+    function setValidator(
+        SmartStorage storage self,
+        address validator
+    ) external {
+        emit Validator(address(self.validator), validator);
         self.validator = IValidator(validator);
     }
-
 
     /**
      * @dev Approves or rejects a transfer request.
@@ -73,10 +72,12 @@ library SmartTokenLib {
      * @param to Recipient address.
      * @param amount Number of tokens.
      */
-    function validate(SmartStorage storage self, address from, address to, uint amount)
-        external
-        returns (bool valid)
-    {
+    function validate(
+        SmartStorage storage self,
+        address from,
+        address to,
+        uint256 amount
+    ) external returns (bool valid) {
         return self.validator.validate(from, to, amount);
     }
 
@@ -102,21 +103,18 @@ library SmartTokenLib {
         uint8 v,
         bytes32 r,
         bytes32 s
-    )
-        external
-        returns (uint)
-    {
-      bytes memory signature;
-      if (r != bytes32(0) || s != bytes32(0)) {
-        signature = bytes(abi.encodePacked(r,s,v));
-      }
-      require(
-          from.isValidSignatureNow(h, signature),
-          "signature/hash does not recover from address"
+    ) external returns (uint256) {
+        bytes memory signature;
+        if (r != bytes32(0) || s != bytes32(0)) {
+            signature = bytes(abi.encodePacked(r, s, v));
+        }
+        require(
+            from.isValidSignatureNow(h, signature),
+            "signature/hash does not recover from address"
         );
-        uint amount = token.balanceOf(from);
-        token.burn(from, amount);
-        token.mint(to, amount);
+        uint256 amount = token.balanceOf(from);
+        require(token.burn(from, amount), "burn failed");
+        require(token.mint(to, amount), "mint failed");
         emit Recovered(from, to, amount);
         return amount;
     }
@@ -126,12 +124,9 @@ library SmartTokenLib {
      * @param self Smart storage to operate on.
      * @return Address of validator.
      */
-    function getValidator(SmartStorage storage self)
-        external
-        view
-        returns (address)
-    {
+    function getValidator(
+        SmartStorage storage self
+    ) external view returns (address) {
         return address(self.validator);
     }
-
 }

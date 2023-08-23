@@ -26,13 +26,12 @@ import "./IValidator.sol";
  * @dev This contract adds "smart" functionality which is required from a regulatory perspective.
  */
 contract SmartController is MintableController {
-
     using SmartTokenLib for SmartTokenLib.SmartStorage;
 
     SmartTokenLib.SmartStorage internal smartToken;
 
     bytes3 public ticker;
-    uint constant public INITIAL_SUPPLY = 0;
+    uint256 public constant INITIAL_SUPPLY = 0;
 
     /**
      * @dev Contract constructor.
@@ -41,10 +40,16 @@ contract SmartController is MintableController {
      * @param ticker_ 3 letter currency ticker.
      * @param frontend_ Address of the authorized frontend.
      */
-    constructor(address storage_, address validator, bytes3 ticker_, address frontend_)
-        MintableController(storage_, INITIAL_SUPPLY, frontend_)
-    {
-        require(validator != address(0x0), "validator cannot be the null address");
+    constructor(
+        address storage_,
+        address validator,
+        bytes3 ticker_,
+        address frontend_
+    ) MintableController(storage_, INITIAL_SUPPLY, frontend_) {
+        require(
+            validator != address(0x0),
+            "validator cannot be the null address"
+        );
         smartToken.setValidator(validator);
         ticker = ticker_;
     }
@@ -53,7 +58,7 @@ contract SmartController is MintableController {
      * @dev Sets a new validator.
      * @param validator Address of validator.
      */
-    function setValidator(address validator) external onlySystemAccounts {
+    function setValidator(address validator) external onlyOwner {
         smartToken.setValidator(validator);
     }
 
@@ -72,13 +77,16 @@ contract SmartController is MintableController {
      * @param s Sigature component.
      * @return Amount recovered.
      */
-    function recover_withCaller(address caller, address from, address to, bytes32 h, uint8 v, bytes32 r, bytes32 s)
-        external
-        guarded(caller)
-        onlySystemAccount(caller)
-        returns (uint)
-    {
-        avoidBlackholes(to);
+    function recover_withCaller(
+        address caller,
+        address from,
+        address to,
+        bytes32 h,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) external onlyFrontend onlySystemAccount(caller) returns (uint) {
+        _avoidBlackholes(to);
         return SmartTokenLib.recover(token, from, to, h, v, r, s);
     }
 
@@ -91,14 +99,15 @@ contract SmartController is MintableController {
      * @param to Recipient address.
      * @param amount Number of tokens to transfer.
      */
-    function transfer_withCaller(address caller, address to, uint amount)
-        public
-        override
-        guarded(caller)
-        whenNotPaused
-        returns (bool)
-    {
-        require(smartToken.validate(caller, to, amount), "transfer request not valid");
+    function transfer_withCaller(
+        address caller,
+        address to,
+        uint256 amount
+    ) public override returns (bool) {
+        require(
+            smartToken.validate(caller, to, amount),
+            "transfer request not valid"
+        );
         return super.transfer_withCaller(caller, to, amount);
     }
 
@@ -113,14 +122,16 @@ contract SmartController is MintableController {
      * @param to Recipient address.
      * @param amount Number of tokens to transfer.
      */
-    function transferFrom_withCaller(address caller, address from, address to, uint amount)
-        public
-        override
-        guarded(caller)
-        whenNotPaused
-        returns (bool)
-    {
-        require(smartToken.validate(from, to, amount), "transferFrom request not valid");
+    function transferFrom_withCaller(
+        address caller,
+        address from,
+        address to,
+        uint256 amount
+    ) public override returns (bool) {
+        require(
+            smartToken.validate(from, to, amount),
+            "transferFrom request not valid"
+        );
         return super.transferFrom_withCaller(caller, from, to, amount);
     }
 
@@ -139,14 +150,11 @@ contract SmartController is MintableController {
         address to,
         uint256 amount,
         bytes calldata data
-    )
-        public
-        override
-        guarded(caller)
-        whenNotPaused
-        returns (bool)
-    {
-        require(smartToken.validate(caller, to, amount), "transferAndCall request not valid");
+    ) public override returns (bool) {
+        require(
+            smartToken.validate(caller, to, amount),
+            "transferAndCall request not valid"
+        );
         return super.transferAndCall_withCaller(caller, to, amount, data);
     }
 
@@ -157,5 +165,4 @@ contract SmartController is MintableController {
     function getValidator() external view returns (address) {
         return smartToken.getValidator();
     }
-
 }

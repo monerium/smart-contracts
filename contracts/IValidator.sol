@@ -22,7 +22,6 @@ pragma solidity 0.8.11;
  * @dev Contracts implementing this interface validate token transfers.
  */
 interface IValidator {
-
     /**
      * @dev Emitted when a validator makes a decision.
      * @param from Sender address.
@@ -30,7 +29,12 @@ interface IValidator {
      * @param amount Number of tokens.
      * @param valid True if transfer approved, false if rejected.
      */
-    event Decision(address indexed from, address indexed to, uint amount, bool valid);
+    event Decision(
+        address indexed from,
+        address indexed to,
+        uint256 amount,
+        bool valid
+    );
 
     /**
      * @dev Validates token transfer.
@@ -39,6 +43,9 @@ interface IValidator {
      * @param to Recipient address.
      * @param amount Number of tokens.
      */
-    function validate(address from, address to, uint amount) external returns (bool valid);
-
+    function validate(
+        address from,
+        address to,
+        uint256 amount
+    ) external returns (bool valid);
 }

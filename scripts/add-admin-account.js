@@ -1,5 +1,6 @@
 var SmartController = artifacts.require("./SmartController.sol");
 var TokenFrontend = artifacts.require("./TokenFrontend.sol");
+var BlacklistValidator = artifacts.require("./BlacklistValidator.sol");
 
 module.exports = async function (exit) {
   if (process.argv.length < 6) {
@@ -10,15 +11,23 @@ module.exports = async function (exit) {
   const len = process.argv.length;
   const address = process.argv[len - 2];
   const account = process.argv[len - 1];
-  console.log(`checking ${account}`);
+  console.log(`adding ${account}`);
 
   try {
     const token = await TokenFrontend.at(address);
     const x = await token.getController();
-    console.log(`token: ${address}, controller: ${x}`);
     const controller = await SmartController.at(x);
-    const tx = await controller.isSystemAccount(account);
+    const v = await controller.getValidator();
+    console.log(
+      `token: ${address}, controller: ${x}, BlacklistValidator: ${v}`
+    );
+    const validator = await BlacklistValidator.at(v);
+    const tx = await controller.addAdminAccount(account);
+    console.log("controller addAdminAccount: ");
     console.log(tx);
+    const tx2 = await validator.addAdminAccount(account);
+    console.log("blacklistValidator addAdminAccount: ");
+    console.log(tx2);
     exit(0);
   } catch (e) {
     exit(e);

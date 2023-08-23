@@ -17,20 +17,15 @@
 
 pragma solidity 0.8.11;
 
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-
 /*
  * @title TokenStorageLib
  * @dev Implementation of an[external storage for tokens.
  */
 library TokenStorageLib {
-
-    using SafeMath for uint;
-
     struct TokenStorage {
-        mapping (address => uint) balances;
-        mapping (address => mapping (address => uint)) allowed;
-        uint totalSupply;
+        mapping(address => uint) balances;
+        mapping(address => mapping(address => uint)) allowed;
+        uint256 totalSupply;
     }
 
     /**
@@ -39,11 +34,13 @@ library TokenStorageLib {
      * @param to Address to increase.
      * @param amount Number of units to add.
      */
-    function addBalance(TokenStorage storage self, address to, uint amount)
-        external
-    {
-        self.totalSupply = self.totalSupply.add(amount);
-        self.balances[to] = self.balances[to].add(amount);
+    function addBalance(
+        TokenStorage storage self,
+        address to,
+        uint256 amount
+    ) external {
+        self.totalSupply = self.totalSupply + amount;
+        self.balances[to] = self.balances[to] + amount;
     }
 
     /**
@@ -52,11 +49,13 @@ library TokenStorageLib {
      * @param from Address to decrease.
      * @param amount Number of units to subtract.
      */
-    function subBalance(TokenStorage storage self, address from, uint amount)
-        external
-    {
-        self.totalSupply = self.totalSupply.sub(amount);
-        self.balances[from] = self.balances[from].sub(amount);
+    function subBalance(
+        TokenStorage storage self,
+        address from,
+        uint256 amount
+    ) external {
+        self.totalSupply = self.totalSupply - amount;
+        self.balances[from] = self.balances[from] - amount;
     }
 
     /**
@@ -66,9 +65,12 @@ library TokenStorageLib {
      * @param spender Address of the spender.
      * @param amount Qunatity of allowance.
      */
-    function setAllowed(TokenStorage storage self, address owner, address spender, uint amount)
-        external
-    {
+    function setAllowed(
+        TokenStorage storage self,
+        address owner,
+        address spender,
+        uint256 amount
+    ) external {
         self.allowed[owner][spender] = amount;
     }
 
@@ -77,11 +79,7 @@ library TokenStorageLib {
      * @param self Token storage to operate on.
      * @return Total supply.
      */
-    function getSupply(TokenStorage storage self)
-        external
-        view
-        returns (uint)
-    {
+    function getSupply(TokenStorage storage self) external view returns (uint) {
         return self.totalSupply;
     }
 
@@ -91,11 +89,10 @@ library TokenStorageLib {
      * @param who Address to lookup.
      * @return Number of units.
      */
-    function getBalance(TokenStorage storage self, address who)
-        external
-        view
-        returns (uint)
-    {
+    function getBalance(
+        TokenStorage storage self,
+        address who
+    ) external view returns (uint) {
         return self.balances[who];
     }
 
@@ -106,12 +103,11 @@ library TokenStorageLib {
      * @param spender Address of the spender.
      * @return Number of units.
      */
-    function getAllowed(TokenStorage storage self, address owner, address spender)
-        external
-        view
-        returns (uint)
-    {
+    function getAllowed(
+        TokenStorage storage self,
+        address owner,
+        address spender
+    ) external view returns (uint) {
         return self.allowed[owner][spender];
     }
-
 }

@@ -20,9 +20,5 @@ pragma solidity 0.8.11;
 import "./TokenFrontend.sol";
 
 contract ISK is TokenFrontend {
-
-    constructor()
-        TokenFrontend("Monerium ISK emoney", "ISKe", "ISK")
-    { }
-
+    constructor() TokenFrontend("Monerium ISK emoney", "ISKe", "ISK") {}
 }

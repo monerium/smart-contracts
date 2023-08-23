@@ -12,6 +12,7 @@ const gnosisscanKey = process.env['GNOSISSCAN_API'];
 var url = process.env['URL'];
 var walletProvider;
 
+console.log(url);
 try {
 
   if (key != undefined || mnemonic != undefined) {
@@ -108,6 +109,15 @@ module.exports = {
       maxPriorityFeePerGas: toWei('2', 'gwei'),
       skipDryRun: true
     },
+    sepolia: {
+      provider: () => walletProvider,
+      network_id: 11155111, // Sepolia's id
+      confirmations: 1, // # of confirmations to wait between deployments. (default: 0)
+      timeoutBlocks: 200, // # of blocks before a deployment times out  (minimum/default: 50)
+      skipDryRun: true, // Skip dry run before migrations? (default: false for public nets )
+      from: address,
+      gas: 4465030,
+    },
     dashboard: {
       network_id: 1,
       // chainId: 80001,
@@ -136,7 +146,7 @@ module.exports = {
 
   plugins: [
     'truffle-plugin-verify',
-    'solidity-coverage',
+    'solidity-coverage'
   ],
 
   api_keys: {

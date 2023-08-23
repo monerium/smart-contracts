@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.11;
 
 import "./Ownable.sol";
 
@@ -10,13 +10,12 @@ import "./Ownable.sol";
  * of this contract to reclaim ownership of the contracts.
  */
 contract HasNoContracts is Ownable {
-
-  /**
-   * @dev Reclaim ownership of Ownable contracts
-   * @param _contractAddr The address of the Ownable to be reclaimed.
-   */
-  function reclaimContract(address _contractAddr) external onlyOwner {
-    Ownable contractInst = Ownable(_contractAddr);
-    contractInst.transferOwnership(owner);
-  }
+    /**
+     * @dev Reclaim ownership of Ownable contracts
+     * @param _contractAddr The address of the Ownable to be reclaimed.
+     */
+    function reclaimContract(address _contractAddr) external onlyOwner {
+        Ownable contractInst = Ownable(_contractAddr);
+        contractInst.transferOwnership(owner);
+    }
 }

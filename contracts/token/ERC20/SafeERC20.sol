@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.11;
 
 import "./ERC20Basic.sol";
 
@@ -10,13 +10,11 @@ import "./ERC20Basic.sol";
  * which allows you to call the safe operations as `token.safeTransfer(...)`, etc.
  */
 library SafeERC20 {
-  function safeTransfer(
-    ERC20Basic _token,
-    address _to,
-    uint256 _value
-  )
-    internal
-  {
-    require(_token.transfer(_to, _value));
-  }
+    function safeTransfer(
+        ERC20Basic _token,
+        address _to,
+        uint256 _value
+    ) internal {
+        require(_token.transfer(_to, _value));
+    }
 }

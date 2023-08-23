@@ -20,9 +20,14 @@ pragma solidity 0.8.11;
 import "./PolygonPosTokenFrontend.sol";
 
 contract PolygonPosUSD is PolygonPosTokenFrontend {
-
-    constructor(address childChainManagerProxy)
-      PolygonPosTokenFrontend("Monerium USD emoney", "USDe", "USD", childChainManagerProxy)
-    { }
-
+    constructor(
+        address childChainManagerProxy
+    )
+        PolygonPosTokenFrontend(
+            "Monerium USD emoney",
+            "USDe",
+            "USD",
+            childChainManagerProxy
+        )
+    {}
 }
