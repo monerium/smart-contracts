@@ -189,7 +189,7 @@ Code coverage for the token system can be checked with [solidity-coverage](https
 ## License
 
 ```text
-Copyright 2022 Monerium ehf.
+Copyright 2023 Monerium ehf.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
