@@ -45,7 +45,7 @@ Please fill out the "Partner with Monerium" form on [monerium.com](https://moner
 
 ## Token integration
 
-We at [Monerium](https://monerium.com) er really exited to talk to all developers and builders that want to use money in their applications.
+We at [Monerium](https://monerium.com) are really excited to talk to all developers and builders who want to use money in their applications.
 Go to [monerium.com](https://monerium.com) and fill out the "Partner with Monerium" form and our expert staff
 will be available to help you every step of the way, from implementation to ongoing operations.
  
@@ -70,7 +70,7 @@ contract Euro {
   // Returns the total supply.
   totalSupply()
 
-  // Returns the number tokens associated with an address.
+  // Returns the number of tokens associated with an address.
   balanceOf(who)
 
   // Returns the allowance for a spender
