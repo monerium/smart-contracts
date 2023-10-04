@@ -124,20 +124,6 @@ contract MintableController is StandardController {
     }
 
     /**
-     * @dev Burns tokens from token owner.
-     * This removes the burned tokens from circulation.
-     * @param from Address of the token owner.
-     * @param amount Number of tokens to burn.
-     */
-    function burnFrom(
-        address from,
-        uint256 amount
-    ) public onlyFrontend onlySystemAccount(msg.sender) returns (bool) {
-        require(token.burn(from, amount), "MintableController: burn failed");
-        return true;
-    }
-
-    /**
      * @dev set maximum allowance for system accounts.
      * @param amount The amount of allowance.
      */
