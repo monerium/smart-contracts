@@ -43,6 +43,7 @@ contract("USD", (accounts) => {
   const nonSystem = accounts[2];
   let validator;
   let usd;
+  let controller;
 
   before("setup usd", async () => {
     // Link
@@ -75,7 +76,7 @@ contract("USD", (accounts) => {
     // Deploy
     usd = await USD.new();
     validator = await BlacklistValidator.new();
-    const controller = await SmartController.new(
+    controller = await SmartController.new(
       AddressZero,
       validator.address,
       web3.utils.asciiToHex("USD"),
@@ -172,7 +173,7 @@ contract("USD", (accounts) => {
     it(`should burn 18 tokens from a non-system address [${name}]`, async () => {
       await usd.mintTo(wallet.address, 18, { from: system });
       const balance0 = await usd.balanceOf(wallet.address);
-
+      /*
       const sig = wallet.signature.replace(/^0x/, "");
       const r = `0x${sig.slice(0, 64)}`;
       const s = `0x${sig.slice(64, 128)}`;
@@ -182,6 +183,15 @@ contract("USD", (accounts) => {
       assert(v == 27 || v == 28);
 
       await usd.burnFrom(wallet.address, 18, hash, v, r, s, { from: system });
+
+*/
+      await controller.burnFromBytes(
+        wallet.address,
+        18,
+        hash,
+        wallet.signature,
+        { from: system }
+      );
       const balance1 = await usd.balanceOf(wallet.address);
       assert.strictEqual(
         balance1.toNumber() - balance0.toNumber(),

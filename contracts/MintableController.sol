@@ -19,6 +19,18 @@ pragma solidity 0.8.11;
 
 import "./StandardController.sol";
 import "./MintableTokenLib.sol";
+import "./BytesLib.sol";
+
+interface ITokenFrontend {
+    function burnFrom(
+        address from,
+        uint256 amount,
+        bytes32 h,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) external returns (bool);
+}
 
 /**
  * @title MintableController
@@ -26,6 +38,7 @@ import "./MintableTokenLib.sol";
  */
 contract MintableController is StandardController {
     using MintableTokenLib for TokenStorage;
+    using BytesLib for bytes;
 
     mapping(address => uint256) internal mintAllowances;
     uint256 internal maxMintAllowance;
@@ -115,10 +128,44 @@ contract MintableController is StandardController {
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) public onlyFrontend onlySystemAccount(caller) returns (bool) {
+    ) public view onlyFrontend returns (bool) {
+        // Explicitly mark parameters as unused to silence compiler warnings
+        from;
+        amount;
+        h;
+        v;
+        r;
+        s;
         require(
-            token.burn(from, amount, h, v, r, s),
+            caller == address(this),
+            "only allow this contract to be the caller"
+        );
+        return true;
+    }
+
+    /**
+     * @dev Burns tokens from token owner.
+     * This removes the burned tokens from circulation.
+     * @param from Address of the token owner.
+     * @param amount Number of tokens to burn.
+     */
+    function burnFromBytes(
+        address from,
+        uint256 amount,
+        bytes32 h,
+        bytes memory signature
+    ) public onlySystemAccount(msg.sender) returns (bool) {
+        require(
+            token.burn(from, amount, h, signature),
             "MintableController: burn failed"
+        );
+        uint8 v = uint8(signature[64]);
+        bytes32 r = signature.readBytes32(0);
+        bytes32 s = signature.readBytes32(32);
+        ITokenFrontend tokenFrontend = ITokenFrontend(frontend);
+        require(
+            tokenFrontend.burnFrom(from, amount, h, v, r, s),
+            "MintableController: TokenFrontend burn call failed"
         );
         return true;
     }

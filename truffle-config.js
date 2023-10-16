@@ -146,7 +146,9 @@ module.exports = {
 
   plugins: [
     'truffle-plugin-verify',
-    'solidity-coverage'
+    'solidity-coverage',
+    "@chainsafe/truffle-plugin-abigen"
+
   ],
 
   api_keys: {
