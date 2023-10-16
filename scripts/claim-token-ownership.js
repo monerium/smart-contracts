@@ -17,8 +17,9 @@ module.exports = async function (exit) {
     console.log(tx1);
     const x = await token.getController();
     console.log(`controller ${x}`);
-    const controller = SmartController.at(x);
+    const controller = await SmartController.at(x);
     const tx2 = await controller.claimOwnership();
+
     console.log(tx2);
     exit(0);
   } catch (e) {

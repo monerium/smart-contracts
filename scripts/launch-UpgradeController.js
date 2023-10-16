@@ -1,26 +1,24 @@
 const SmartController = artifacts.require("./SmartController.sol");
 const TokenFrontend = artifacts.require("./TokenFrontend.sol");
 const UpgradeController = artifacts.require("./UpgradeController.sol");
+const readline = require('readline');
 
 module.exports = async function (exit) {
-  if (process.argv.length <= 7) {
+  if (process.argv.length <= 9) {
     console.log(
       `Usage: ${process.argv.join(
         " "
-      )} <target frontend> <script contract> <systemkey account> <startAtStep - optional>`
+      )} <target frontend> <script contract> <owner> <systemkey account> <admin> <maxMintAllowance>`
     );
     exit(1);
   }
 
-  var len = process.argv.length;
-  var startAt = 0;
-  if (len == 10) {
-    startAt = process.argv[len - 1];
-    len = len - 1;
-  }
-  const frontend = process.argv[len - 3];
-  const scriptContract = process.argv[len - 2];
-  const systemKeyAccount = process.argv[len - 1];
+  const frontend = process.argv[process.argv.length - 6];
+  const scriptContract = process.argv[process.argv.length - 5];
+  const owner = process.argv[process.argv.length - 4];
+  const systemKeyAccount = process.argv[process.argv.length - 3];
+  const admin = process.argv[process.argv.length - 2];
+  const maxMintAllowance = process.argv[process.argv.length - 1];
 
   try {
     // Parameters
@@ -35,58 +33,61 @@ module.exports = async function (exit) {
     console.log(`Frontend: ${frontend}`);
     console.log(`Storage: ${storage}`);
     console.log(`Validator: ${validator}`);
-    console.log(`Ticker: ${ticker}`);
+    const tickerCharacterVersion = web3.utils.hexToAscii(ticker);
+    console.log(`Ticker: ${ticker} (${tickerCharacterVersion.trim()})`);
+    console.log(`Owner: ${owner}`);
+    console.log(`System Key Account: ${systemKeyAccount}`);
+    console.log(`Admin: ${admin}`);
+    console.log(`Max Mint Allowance: ${maxMintAllowance}`);
+    console.log(`Upgrader: ${scriptContract}`);
 
-    // TransferOwnership
-    if (startAt <= 0) {
-      console.log(
-        `#0 TransferOwnership of Token (${frontend}) to Contract (${scriptContract}):`
-      );
-      const tx1 = await token.transferOwnership(scriptContract);
-      console.log(tx1);
-    }
-    if (startAt <= 1) {
-      console.log(
-        `#1 TransferOwnership of Controller (${ctlAddress}) to Contract (${scriptContract}):`
-      );
-      const tx2 = await ctl.transferOwnership(scriptContract);
-      console.log(tx2);
-    }
-
+    await confirmExecution();
     // Executing script
-    if (startAt <= 2) {
-      console.log("#2 Launching solidity scripts on chain:");
-      const txScript = await script.launch(
-        ctlAddress,
-        frontend,
-        storage,
-        validator,
-        ticker,
-        systemKeyAccount
-      );
-      console.log(txScript);
-    }
-    const newCtlAddress = await script.getController();
-    console.log("new controller: ", newCtlAddress);
-    // ClaimOwnership
-    if (startAt <= 3) {
-      console.log(`#3 ClaimOwnership of Token (${frontend}):`);
-      const tx3 = await token.claimOwnership();
-      console.log(tx3);
-    }
-    if (startAt <= 4) {
-      console.log(`#4 ClaimOwnership of controller (${newCtlAddress}):`);
-      const newCtl = await SmartController.at(newCtlAddress);
-      const tx4 = await newCtl.claimOwnership();
-      console.log(tx4);
-    }
-    if (startAt <= 5) {
-      console.log(`#5 ClaimOwnership of old controller (${ctlAddress}):`);
-      const tx5 = await ctl.claimOwnership();
-      console.log(tx5);
-    }
+    console.log("#2 Launching solidity scripts on chain:");
+    const txScript = await script.launch(
+      ctlAddress,
+      frontend,
+      storage,
+      validator,
+      ticker,
+      owner,
+      systemKeyAccount,
+      admin,
+      maxMintAllowance
+    );
+    console.log(txScript);
+    
+    const newCtrl = await token.getController();
+    console.log(`New Controller: ${newCtrl}`);
+    console.log("New Controller's constructor arguments:");
+    console.log(`1. Storage(address): ${storage}`);
+    console.log(`2. Validator(address): ${validator}`);
+    console.log(`3. Ticker(bytes3): ${ticker} (${tickerCharacterVersion.trim()})`);
+    console.log(`4. Frontend(address): ${frontend}`);
+
+    console.log("\nPlease copy the logged value above for future use in contract validation");
     exit(0);
   } catch (e) {
     exit(e);
   }
 };
+
+
+function confirmExecution() {
+  return new Promise((resolve, reject) => {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout
+    });
+
+    rl.question('Do you wish to continue? (Y/n) ', answer => {
+      rl.close();
+      if (answer.toLowerCase() === 'n') {
+        exit(0);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
