@@ -42,11 +42,11 @@ module.exports = async function (exit) {
     await SmartController.link("ERC677Lib", erc677Lib.address);
     await SmartController.link("MintableTokenLib", mintableTokenLib.address);
 
-    var eur = await deployAndLog(EUR, "EUR");
     var validator = await deployAndLog(
       BlacklistValidator,
       "BlacklistValidator"
     );
+    var eur = await deployAndLog(EUR, "EUR");
     var ctrl = await SmartController.new(
       AddressZero,
       validator.address,
