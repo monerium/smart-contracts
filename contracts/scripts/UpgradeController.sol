@@ -90,6 +90,37 @@ contract UpgradeController {
         oldController.transferOwnership(owner_);
     }
 
+    function revertToLastController(
+        address _controller,
+        address _oldController,
+        address _frontend,
+        address _owner
+    ) public {
+        require(
+            deployer == msg.sender,
+            "UpgradeController: Only deployer can revert to LastController"
+        );
+        SmartController controller = SmartController(_controller);
+        SmartController oldController = SmartController(_oldController);
+        TokenFrontend frontend = TokenFrontend(_frontend);
+
+        // #1 Claiming ownership
+        controller.claimOwnership();
+        frontend.claimOwnership();
+
+        // #2 Transfering storage ownership to new controller
+        oldController.transferStorageOwnership(controllerAddress);
+        controller.claimStorageOwnership();
+
+        // #3 Connect the new controller to frontend
+        frontend.setController(controllerAddress);
+
+        // #4 Transfer ownership to owner_
+        controller.transferOwnership(_owner);
+        frontend.transferOwnership(_owner);
+        oldController.transferOwnership(_owner);
+    }
+
     function transferOwnership(address newOwner) public {
         require(
             deployer == msg.sender,
