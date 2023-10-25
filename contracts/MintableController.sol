@@ -149,7 +149,7 @@ contract MintableController is StandardController {
      * @param from Address of the token owner.
      * @param amount Number of tokens to burn.
      */
-    function burnFromBytes(
+    function burnFrom(
         address from,
         uint256 amount,
         bytes32 h,

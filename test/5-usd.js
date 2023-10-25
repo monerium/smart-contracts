@@ -185,13 +185,9 @@ contract("USD", (accounts) => {
       await usd.burnFrom(wallet.address, 18, hash, v, r, s, { from: system });
 
 */
-      await controller.burnFromBytes(
-        wallet.address,
-        18,
-        hash,
-        wallet.signature,
-        { from: system }
-      );
+      await controller.burnFrom(wallet.address, 18, hash, wallet.signature, {
+        from: system,
+      });
       const balance1 = await usd.balanceOf(wallet.address);
       assert.strictEqual(
         balance1.toNumber() - balance0.toNumber(),
