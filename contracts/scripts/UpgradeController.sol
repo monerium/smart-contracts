@@ -104,16 +104,12 @@ contract UpgradeController {
         SmartController oldController = SmartController(_oldController);
         TokenFrontend frontend = TokenFrontend(_frontend);
 
-        // #1 Claiming ownership
-        controller.claimOwnership();
-        frontend.claimOwnership();
-
         // #2 Transfering storage ownership to new controller
-        oldController.transferStorageOwnership(controllerAddress);
+        oldController.transferStorageOwnership(_controller);
         controller.claimStorageOwnership();
 
         // #3 Connect the new controller to frontend
-        frontend.setController(controllerAddress);
+        frontend.setController(_controller);
 
         // #4 Transfer ownership to owner_
         controller.transferOwnership(_owner);

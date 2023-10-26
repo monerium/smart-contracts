@@ -9,6 +9,9 @@ var BlacklistValidator = artifacts.require("./BlacklistValidator.sol");
 var AcceptingRecipient = artifacts.require("./AcceptingRecipient");
 var RejectingRecipient = artifacts.require("./RejectingRecipient");
 var SimpleToken = artifacts.require("./SimpleToken.sol");
+var FakeSmartContractWallet = artifacts.require(
+  "./FakeSmartContractWallet.sol"
+);
 
 var MintableTokenLib = artifacts.require("./MintableTokenLib.sol");
 var SmartTokenLib = artifacts.require("./SmartTokenLib.sol");
@@ -22,10 +25,6 @@ const wallets = {
   "trust wallet": {
     address: `0xB0A6Ed7Fa5C6C5cc507840924591C1494eF47D04`,
     signature: `0xb5354ef622856f2acd9926752828d609b74471fa349891c70ec4512da5b7b8695418c39d82057dc09c480e8e65c5362327e882033e670e24b6a701983d93e18e1c`,
-  },
-  "ledger s nano": {
-    address: `0x4A6bBDa876699420965147c26C3F3DF0bDc8eCab`,
-    signature: `0xbad1a0d53be0e56724d877e053a199ca732c5e6e40d129c5a0980aa7d2c6582166af81969b23004ae81694e9518dcf39eb3af71d2847409376151f03465a0bf600`,
   },
   "meta mask": {
     address: `0xFB7ce0578B4dc16803A3CB04fA0b286fCFfFF76d`,
@@ -44,8 +43,10 @@ contract("USD", (accounts) => {
   let validator;
   let usd;
   let controller;
+  let fakeSMW;
 
   before("setup usd", async () => {
+    fakeSMW = await FakeSmartContractWallet.new();
     // Link
     mintableTokenLib = await MintableTokenLib.new();
     smartTokenLib = await SmartTokenLib.new();
@@ -165,6 +166,56 @@ contract("USD", (accounts) => {
     await usd.transferAndCall(account, 3, "0x0");
     const balance = await usd.balanceOf(account);
     assert.strictEqual(balance.toNumber(), 3, "balance mismatch for account");
+  });
+
+  it("should succeed burning tokens from a multiSigWallet with empty sig", async () => {
+    console.log("fakeSMW", fakeSMW.address);
+    await usd.mintTo(fakeSMW.address, 100, { from: system });
+    const balance0 = await usd.balanceOf(fakeSMW.address);
+    const emptyBytes = Buffer.from([]);
+    await controller.burnFrom(fakeSMW.address, 100, hash, emptyBytes, {
+      from: system,
+    });
+    const balance1 = await usd.balanceOf(fakeSMW.address);
+    assert.strictEqual(
+      balance1.toNumber() - balance0.toNumber(),
+      -100,
+      "did not burn 100 tokens"
+    );
+  });
+
+  it("should succeed burning tokens from a multiSigWallet with a 32 bytes sig", async () => {
+    console.log("fakeSMW", fakeSMW.address);
+    await usd.mintTo(fakeSMW.address, 100, { from: system });
+    const balance0 = await usd.balanceOf(fakeSMW.address);
+    const filledBytes32 = Buffer.alloc(32).fill(5);
+
+    await controller.burnFrom(fakeSMW.address, 100, hash, filledBytes32, {
+      from: system,
+    });
+    const balance1 = await usd.balanceOf(fakeSMW.address);
+    assert.strictEqual(
+      balance1.toNumber() - balance0.toNumber(),
+      -100,
+      "did not burn 100 tokens"
+    );
+  });
+
+  it("should succeed burning tokens from a multiSigWallet with a 65 bytes sig", async () => {
+    console.log("fakeSMW", fakeSMW.address);
+    await usd.mintTo(fakeSMW.address, 100, { from: system });
+    const balance0 = await usd.balanceOf(fakeSMW.address);
+    const filledBytes65 = Buffer.alloc(65).fill(5);
+
+    await controller.burnFrom(fakeSMW.address, 100, hash, filledBytes65, {
+      from: system,
+    });
+    const balance1 = await usd.balanceOf(fakeSMW.address);
+    assert.strictEqual(
+      balance1.toNumber() - balance0.toNumber(),
+      -100,
+      "did not burn 100 tokens"
+    );
   });
 
   var i = 5;
