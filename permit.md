@@ -46,14 +46,14 @@ const digest = await controller.getPermitDigest(
 );
 ```
 
-## *Step 5: Sign the Digest*
+## Step 5: Sign the Digest
 Use your private key to sign the digest. This signature proves that you have authorized the transaction.
 ```js
 const signingKey = new SigningKey(<yourPrivateKey>);
 const signature = signingKey.signDigest(digest);
 ```
 
-## *Step 6: Submit the Permit Transaction*
+## Step 6: Submit the Permit Transaction
 Complete the process by submitting the permit function with the required parameters and the signature.
 ```js
 await controller.permit(
