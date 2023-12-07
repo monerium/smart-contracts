@@ -159,19 +159,9 @@ contract MintableController is StandardController {
             token.burn(from, amount, h, signature),
             "MintableController: burn failed"
         );
-        uint8 v = 0;
-        bytes32 r = 0;
-        bytes32 s = 0;
-        if (signature.length >= 65) {
-            v = uint8(signature[64]);
-            s = signature.readBytes32(32);
-        }
-        if (signature.length >= 32) {
-            r = signature.readBytes32(0);
-        }
         ITokenFrontend tokenFrontend = ITokenFrontend(frontend);
         require(
-            tokenFrontend.burnFrom(from, amount, h, v, r, s),
+            tokenFrontend.burnFrom(from, amount, h, 0, 0, 0),
             "MintableController: TokenFrontend burn call failed"
         );
         return true;
