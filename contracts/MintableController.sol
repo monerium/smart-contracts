@@ -19,7 +19,6 @@ pragma solidity 0.8.11;
 
 import "./StandardController.sol";
 import "./MintableTokenLib.sol";
-import "./BytesLib.sol";
 
 interface ITokenFrontend {
     function burnFrom(
@@ -38,7 +37,6 @@ interface ITokenFrontend {
  */
 contract MintableController is StandardController {
     using MintableTokenLib for TokenStorage;
-    using BytesLib for bytes;
 
     mapping(address => uint256) internal mintAllowances;
     uint256 internal maxMintAllowance;
