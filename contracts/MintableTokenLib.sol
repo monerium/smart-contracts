@@ -69,23 +69,15 @@ library MintableTokenLib {
      * @param from The address holding tokens.
      * @param amount The amount of tokens to burn.
      * @param h Hash which the token owner signed.
-     * @param v Signature component.
-     * @param r Signature component.
-     * @param s Sigature component.
+     * @param signature Signature component.
      */
     function burn(
         TokenStorage db,
         address from,
         uint256 amount,
         bytes32 h,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
+        bytes memory signature
     ) external returns (bool) {
-        bytes memory signature;
-        if (r != bytes32(0) || s != bytes32(0)) {
-            signature = bytes(abi.encodePacked(r, s, v));
-        }
         require(
             from.isValidSignatureNow(h, signature),
             "signature/hash does not match"

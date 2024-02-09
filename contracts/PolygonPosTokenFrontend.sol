@@ -77,12 +77,13 @@ abstract contract PolygonPosTokenFrontend is
     }
 
     /**
+     * This Function has beed left out. The controller doesn't implement this function anymore.
      * @notice Polygon Bridge Mechanism. Called when user wants to withdraw tokens back to root chain
      * @dev Should burn user's tokens. This transaction will be verified when exiting on root chain
      * @param amount amount of tokens to withdraw
      */
     function withdraw(uint256 amount) external override {
-        controller.burnFrom(msg.sender, amount);
-        emit Transfer(msg.sender, address(0x0), amount);
+        //        controller.burnFrom(msg.sender, amount);
+        //       emit Transfer(msg.sender, address(0x0), amount);
     }
 }

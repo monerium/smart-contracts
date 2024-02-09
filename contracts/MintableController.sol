@@ -20,6 +20,17 @@ pragma solidity 0.8.11;
 import "./StandardController.sol";
 import "./MintableTokenLib.sol";
 
+interface ITokenFrontend {
+    function burnFrom(
+        address from,
+        uint256 amount,
+        bytes32 h,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) external returns (bool);
+}
+
 /**
  * @title MintableController
  * @dev This contracts implements functionality allowing for minting and burning of tokens.
@@ -115,10 +126,17 @@ contract MintableController is StandardController {
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) public onlyFrontend onlySystemAccount(caller) returns (bool) {
+    ) public view onlyFrontend returns (bool) {
+        // Explicitly mark parameters as unused to silence compiler warnings
+        from;
+        amount;
+        h;
+        v;
+        r;
+        s;
         require(
-            token.burn(from, amount, h, v, r, s),
-            "MintableController: burn failed"
+            caller == address(this),
+            "only allow this contract to be the caller"
         );
         return true;
     }
@@ -131,9 +149,19 @@ contract MintableController is StandardController {
      */
     function burnFrom(
         address from,
-        uint256 amount
-    ) public onlyFrontend onlySystemAccount(msg.sender) returns (bool) {
-        require(token.burn(from, amount), "MintableController: burn failed");
+        uint256 amount,
+        bytes32 h,
+        bytes memory signature
+    ) public onlySystemAccount(msg.sender) returns (bool) {
+        require(
+            token.burn(from, amount, h, signature),
+            "MintableController: burn failed"
+        );
+        ITokenFrontend tokenFrontend = ITokenFrontend(frontend);
+        require(
+            tokenFrontend.burnFrom(from, amount, h, 0, 0, 0),
+            "MintableController: TokenFrontend burn call failed"
+        );
         return true;
     }
 
