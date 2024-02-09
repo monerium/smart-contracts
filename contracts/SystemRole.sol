@@ -110,6 +110,15 @@ abstract contract SystemRole is AccessControl, Ownable {
     }
 
     /**
+     * @dev Checks wether an address is a admin account.
+     * @param account The address of the account.
+     * @return true if admin account.
+     */
+    function isAdminAccount(address account) public view returns (bool) {
+        return hasRole(ADMIN_ROLE, account);
+    }
+
+    /**
      * @dev add system account.
      * @param account The address of the account.
      */
