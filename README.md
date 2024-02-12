@@ -1,4 +1,4 @@
-# <img src="assetslogo.svg" alt="Monerium" width="400px">
+# <img src="assets/logo.svg" alt="Monerium" width="400px">
 
 ![GitHub](https://img.shields.io/github/license/monerium/smart-contracts.svg)
 [![release](https://img.shields.io/github/v/tag/monerium/smart-contracts?label=version)](https://github.com/monerium/smart-contracts/releases)
@@ -15,19 +15,19 @@ Electronic money (e-money) has been recognized in the European Economic Area (EE
 
 | EUR | GBP | ISK | USD |
 | :----: | :----: | :----: | :----: |
-| <small><a href="https://etherscan.io/token/0x3231cb76718cdef2155fc47b5286d82e6eda273f">![EUR](assetsqr-eth-eur.png)</a><br /><a href="https://app.ens.domains/name/eur.monerium.eth">eur.monerium.eth</a></small> | <small><a href="https://etherscan.io/token/0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd">![GBP](assetsqr-eth-gbp.png)</a><br /><a href="https://app.ens.domains/name/gbp.monerium.eth">gbp.monerium.eth</a> | <small><a href="https://etherscan.io/token/0xc642549743a93674cf38d6431f75d6443f88e3e2">![ISK address](assetsqr-eth-isk.png)</a><br /><a href="https://app.ens.domains/name/isk.monerium.eth">isk.monerium.eth</a></small> | <small><a href="https://etherscan.io/token/0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52">![USD address](assetsqr-eth-usd.png)</a><br /><a href="https://app.ens.domains/name/usd.monerium.eth">usd.monerium.eth</a></small> |
+| <small><a href="https://etherscan.io/token/0x3231cb76718cdef2155fc47b5286d82e6eda273f">![EUR](assets/qr-eth-eur.png)</a><br /><a href="https://app.ens.domains/name/eur.monerium.eth">eur.monerium.eth</a></small> | <small><a href="https://etherscan.io/token/0x7ba92741bf2a568abc6f1d3413c58c6e0244f8fd">![GBP](assets/qr-eth-gbp.png)</a><br /><a href="https://app.ens.domains/name/gbp.monerium.eth">gbp.monerium.eth</a> | <small><a href="https://etherscan.io/token/0xc642549743a93674cf38d6431f75d6443f88e3e2">![ISK address](assets/qr-eth-isk.png)</a><br /><a href="https://app.ens.domains/name/isk.monerium.eth">isk.monerium.eth</a></small> | <small><a href="https://etherscan.io/token/0xbc5142e0cc5eb16b47c63b0f033d4c2480853a52">![USD address](assets/qr-eth-usd.png)</a><br /><a href="https://app.ens.domains/name/usd.monerium.eth">usd.monerium.eth</a></small> |
 
 ### Polygon PoS
 
 | EUR | GBP | ISK | USD |
 | :----: | :----: | :----: | :----: |
-| <small><a href="https://polygonscan.com/token/0x18ec0A6E18E5bc3784fDd3a3634b31245ab704F6">![EUR](assetsQR-POLY-EUR.png)</a><br /><a href="https://polygonscan.com/token/0x18ec0A6E18E5bc3784fDd3a3634b31245ab704F6">Polygon.Pos.EUR</a></small> | <small><a href="https://polygonscan.com/token/0x75792CBDb361d80ba89271a079EfeE62c29FA324">![GBP](assetsQR-POLY-GBP.png)</a><br /><a href="https://polygonscan.com/token/0x75792CBDb361d80ba89271a079EfeE62c29FA324">Polygon.Pos.GBP</a> | <small><a href="https://polygonscan.com/token/0xf1bBf27A9D659D326efBfa5D284EBaeFB803983D">![ISK address](assetsQR-POLY-ISK.png)</a><br /><a href="https://polygonscan.com/token/0xf1bBf27A9D659D326efBfa5D284EBaeFB803983D">Polygon.Pos.ISK</a></small> | <small><a href="https://polygonscan.com/token/0x64E97c1a6535afD4a313eF46F88A64a34250B719">![USD address](assetsQR-POLY-USD.png)</a><br /><a href="https://polygonscan.com/token/0x64E97c1a6535afD4a313eF46F88A64a34250B719">Polygon.Pos.USD</a></small> |
+| <small><a href="https://polygonscan.com/token/0x18ec0A6E18E5bc3784fDd3a3634b31245ab704F6">![EUR](assets/QR-POLY-EUR.png)</a><br /><a href="https://polygonscan.com/token/0x18ec0A6E18E5bc3784fDd3a3634b31245ab704F6">Polygon.Pos.EUR</a></small> | <small><a href="https://polygonscan.com/token/0x75792CBDb361d80ba89271a079EfeE62c29FA324">![GBP](assets/QR-POLY-GBP.png)</a><br /><a href="https://polygonscan.com/token/0x75792CBDb361d80ba89271a079EfeE62c29FA324">Polygon.Pos.GBP</a> | <small><a href="https://polygonscan.com/token/0xf1bBf27A9D659D326efBfa5D284EBaeFB803983D">![ISK address](assets/QR-POLY-ISK.png)</a><br /><a href="https://polygonscan.com/token/0xf1bBf27A9D659D326efBfa5D284EBaeFB803983D">Polygon.Pos.ISK</a></small> | <small><a href="https://polygonscan.com/token/0x64E97c1a6535afD4a313eF46F88A64a34250B719">![USD address](assets/QR-POLY-USD.png)</a><br /><a href="https://polygonscan.com/token/0x64E97c1a6535afD4a313eF46F88A64a34250B719">Polygon.Pos.USD</a></small> |
 
 ### Gnosischain
 
 | EUR | GBP | ISK | USD |
 | :----: | :----: | :----: | :----: |
-| <small><a href="https://gnosisscan.io/token/0xcB444e90D8198415266c6a2724b7900fb12FC56E">![EUR](assetsqr-gnosis-eur.png)</a><br /><a href="https://gnosisscan.io/token/0xcB444e90D8198415266c6a2724b7900fb12FC56E">Gnosischain.EUR</a></small> | <small><a href="https://gnosisscan.io/token/0x5Cb9073902F2035222B9749F8fB0c9BFe5527108">![GBP](assetsqr-gnosis-gbp.png)</a><br /><a href="https://gnosisscan.io/token/0x5Cb9073902F2035222B9749F8fB0c9BFe5527108">Gnosischain.GBP</a> | <small><a href="https://gnosisscan.io/token/0xD8F84BF2E036A3c8E4c0e25ed2aAe0370F3CCca8">![ISK token](assetsqr-gnosis-isk.png)</a><br /><a href="https://gnosisscan.io/token/0xD8F84BF2E036A3c8E4c0e25ed2aAe0370F3CCca8">Gnosischain.ISK</a></small> | <small><a href="https://gnosisscan.io/token/0x20E694659536C6B46e4B8BE8f6303fFCD8d1dF69">![USD token](assetsqr-gnosis-usd.png)</a><br /><a href="https://gnosisscan.io/token/0x20E694659536C6B46e4B8BE8f6303fFCD8d1dF69">Gnosischain.USD</a></small> |Monerium e-money tokens [v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3) are live on Ethereum mainnet and are [ERC20](https://eips.ethereum.org/EIPS/eip-20) and [ERC677](https://github.com/ethereum/EIPs/issues/677) compliant.
+| <small><a href="https://gnosisscan.io/token/0xcB444e90D8198415266c6a2724b7900fb12FC56E">![EUR](assets/qr-gnosis-eur.png)</a><br /><a href="https://gnosisscan.io/token/0xcB444e90D8198415266c6a2724b7900fb12FC56E">Gnosischain.EUR</a></small> | <small><a href="https://gnosisscan.io/token/0x5Cb9073902F2035222B9749F8fB0c9BFe5527108">![GBP](assets/qr-gnosis-gbp.png)</a><br /><a href="https://gnosisscan.io/token/0x5Cb9073902F2035222B9749F8fB0c9BFe5527108">Gnosischain.GBP</a> | <small><a href="https://gnosisscan.io/token/0xD8F84BF2E036A3c8E4c0e25ed2aAe0370F3CCca8">![ISK token](assets/qr-gnosis-isk.png)</a><br /><a href="https://gnosisscan.io/token/0xD8F84BF2E036A3c8E4c0e25ed2aAe0370F3CCca8">Gnosischain.ISK</a></small> | <small><a href="https://gnosisscan.io/token/0x20E694659536C6B46e4B8BE8f6303fFCD8d1dF69">![USD token](assets/qr-gnosis-usd.png)</a><br /><a href="https://gnosisscan.io/token/0x20E694659536C6B46e4B8BE8f6303fFCD8d1dF69">Gnosischain.USD</a></small> |Monerium e-money tokens [v1.0.3](https://github.com/monerium/smart-contracts/releases/tag/v1.0.3) are live on Ethereum mainnet and are [ERC20](https://eips.ethereum.org/EIPS/eip-20) and [ERC677](https://github.com/ethereum/EIPs/issues/677) compliant.
 
 ## Test tokens
 
@@ -97,7 +97,7 @@ Four cooperating Ethereum smart-contracts are deployed for each e-money currency
 * **Token Storage**: Storage of e-money token ledger.
 * **Validator**: The validator can be used by the controllers to approve and validate transactions before they are made.
 
-![token system design](assetscontracts.jpg)
+![token system design](assets/contracts.jpg)
 
 Using this design we're able to upgrade the business logic, to fix bugs or add functionality, while providing a fixed address on the blockchain and permanent access to the token bookkeeping.
 
@@ -184,7 +184,7 @@ Code coverage for the token system can be checked with [solidity-coverage](https
 # make coverage
 ```
 
-![Code coverage](assetscode-coverage.png)
+![Code coverage](assets/code-coverage.png)
 
 ## Smart contract audit
 
