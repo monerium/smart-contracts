@@ -18,7 +18,6 @@
 pragma solidity 0.8.11;
 
 import "./TokenStorage.sol";
-import "./IERC20.sol";
 import "./ERC20Lib.sol";
 import "./ERC677Lib.sol";
 import "./ClaimableSystemRole.sol";
