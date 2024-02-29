@@ -83,7 +83,5 @@ abstract contract PolygonPosTokenFrontend is
      * @param amount amount of tokens to withdraw
      */
     function withdraw(uint256 amount) external override {
-        //        controller.burnFrom(msg.sender, amount);
-        //       emit Transfer(msg.sender, address(0x0), amount);
     }
 }
