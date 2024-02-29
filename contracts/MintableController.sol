@@ -19,17 +19,7 @@ pragma solidity 0.8.11;
 
 import "./StandardController.sol";
 import "./MintableTokenLib.sol";
-
-interface ITokenFrontend {
-    function burnFrom(
-        address from,
-        uint256 amount,
-        bytes32 h,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    ) external returns (bool);
-}
+import "./ITokenFrontend.sol";
 
 /**
  * @title MintableController
