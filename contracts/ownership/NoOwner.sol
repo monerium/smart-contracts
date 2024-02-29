@@ -2,7 +2,6 @@
 pragma solidity 0.8.11;
 
 import "./HasNoEther.sol";
-import "./HasNoTokens.sol";
 import "./HasNoContracts.sol";
 
 /**
@@ -11,6 +10,6 @@ import "./HasNoContracts.sol";
  * @dev Solves a class of errors where a contract accidentally becomes owner of Ether, Tokens or
  * Owned contracts. See respective base contracts for details.
  */
-contract NoOwner is HasNoEther, HasNoTokens, HasNoContracts {
+contract NoOwner is HasNoEther, HasNoContracts {
 
 }
