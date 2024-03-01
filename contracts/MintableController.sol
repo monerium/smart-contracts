@@ -101,29 +101,16 @@ contract MintableController is StandardController {
      * @dev Burns tokens from token owner.
      * This removes the burned tokens from circulation.
      * @param caller Address of the caller passed through the frontend.
-     * @param from Address of the token owner.
-     * @param amount Number of tokens to burn.
-     * @param h Hash which the token owner signed.
-     * @param v Signature component.
-     * @param r Signature component.
-     * @param s Sigature component.
      */
     function burnFrom_withCaller(
         address caller,
-        address from,
-        uint256 amount,
-        bytes32 h,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
+        address,
+        uint256,
+        bytes32,
+        uint8,
+        bytes32,
+        bytes32
     ) public view onlyFrontend returns (bool) {
-        // Explicitly mark parameters as unused to silence compiler warnings
-        from;
-        amount;
-        h;
-        v;
-        r;
-        s;
         require(
             caller == address(this),
             "only allow this contract to be the caller"
