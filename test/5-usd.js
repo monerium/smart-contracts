@@ -9,6 +9,9 @@ var BlacklistValidator = artifacts.require("./BlacklistValidator.sol");
 var AcceptingRecipient = artifacts.require("./AcceptingRecipient");
 var RejectingRecipient = artifacts.require("./RejectingRecipient");
 var SimpleToken = artifacts.require("./SimpleToken.sol");
+var FakeSmartContractWallet = artifacts.require(
+  "./FakeSmartContractWallet.sol"
+);
 
 var MintableTokenLib = artifacts.require("./MintableTokenLib.sol");
 var SmartTokenLib = artifacts.require("./SmartTokenLib.sol");
@@ -20,18 +23,22 @@ const AddressZero = "0x0000000000000000000000000000000000000000";
 const hash = `0xa1de988600a42c4b4ab089b619297c17d53cffae5d5120d82d8a92d0bb3b78f2`;
 const wallets = {
   "trust wallet": {
+    name: "trust wallet",
     address: `0xB0A6Ed7Fa5C6C5cc507840924591C1494eF47D04`,
     signature: `0xb5354ef622856f2acd9926752828d609b74471fa349891c70ec4512da5b7b8695418c39d82057dc09c480e8e65c5362327e882033e670e24b6a701983d93e18e1c`,
   },
   "ledger s nano": {
+    name: "ledger s nano",
     address: `0x4A6bBDa876699420965147c26C3F3DF0bDc8eCab`,
     signature: `0xbad1a0d53be0e56724d877e053a199ca732c5e6e40d129c5a0980aa7d2c6582166af81969b23004ae81694e9518dcf39eb3af71d2847409376151f03465a0bf600`,
   },
   "meta mask": {
+    name: "meta mask",
     address: `0xFB7ce0578B4dc16803A3CB04fA0b286fCFfFF76d`,
     signature: `0x1e1769b8ca9ca3d7d4b747f15336c185aac391c89cd9b9bfaf26f0a38631690e64ccd925382278c055c527a58ffab853a9734d889a6bae2b920544645f8ce4361c`,
   },
   trezor: {
+    name: "trezor",
     address: `0xbc89Bea7B6156be4514f5D429e30240F4C2600e4`,
     signature: `0x884d210ebc1437a56e4507c47a5fadcf1076ef366d37d23937a515e8af63075605fbb6be98a9c9dd41bfc68b57795c79375ef10e34a8bf90701a2200ff5cc59d1b`,
   },
@@ -43,8 +50,11 @@ contract("USD", (accounts) => {
   const nonSystem = accounts[2];
   let validator;
   let usd;
+  let controller;
+  let fakeSMW;
 
   before("setup usd", async () => {
+    fakeSMW = await FakeSmartContractWallet.new();
     // Link
     mintableTokenLib = await MintableTokenLib.new();
     smartTokenLib = await SmartTokenLib.new();
@@ -75,7 +85,7 @@ contract("USD", (accounts) => {
     // Deploy
     usd = await USD.new();
     validator = await BlacklistValidator.new();
-    const controller = await SmartController.new(
+    controller = await SmartController.new(
       AddressZero,
       validator.address,
       web3.utils.asciiToHex("USD"),
@@ -89,7 +99,65 @@ contract("USD", (accounts) => {
       from: nonSystem,
     });
   });
+  /*
+  it("should print the actual gas used for various operations", async () => {
+    // Mint tokens
+    let mintResult = await usd.mintTo(accounts[0], 1000, { from: system });
+    console.log("Actual gas used for minting: ", mintResult.receipt.gasUsed);
 
+    // Transfer tokens
+    let transferResult = await usd.transfer(accounts[1], 100, {
+      from: accounts[0],
+    });
+    console.log(
+      "Actual gas used for transferring: ",
+      transferResult.receipt.gasUsed
+    );
+
+    // Approve tokens
+    let approveResult = await usd.approve(accounts[1], 100, {
+      from: accounts[0],
+    });
+    console.log(
+      "Actual gas used for approving: ",
+      approveResult.receipt.gasUsed
+    );
+
+    // TransferFrom tokens
+    let transferFromResult = await usd.transferFrom(
+      accounts[0],
+      accounts[1],
+      100,
+      { from: accounts[1] }
+    );
+    console.log(
+      "Actual gas used for transferFrom: ",
+      transferFromResult.receipt.gasUsed
+    );
+
+    // Burn tokens (Assuming burnFrom requires a prior approve call)
+    const sig = wallets.trezor.signature.replace(/^0x/, "");
+    const r = `0x${sig.slice(0, 64)}`;
+    const s = `0x${sig.slice(64, 128)}`;
+    var v = web3.utils.hexToNumber(`0x${sig.slice(128, 130)}`);
+    if (v < 27) v += 27;
+    const rebuiltSig = `0x${r.slice(2)}${s.slice(2)}${v.toString(16)}`;
+
+    // Mint tokens
+    await usd.mintTo(wallets.trezor.address, 1000, { from: system });
+    // Burn tokens using the signature
+    let burnResult = await controller.burnFrom(
+      wallets.trezor.address,
+      100,
+      hash,
+      rebuiltSig,
+      {
+        from: system,
+      }
+    );
+    console.log("Actual gas used for burning: ", burnResult.receipt.gasUsed);
+  });
+  */
   it("should start with zero tokens", async () => {
     const supply = await usd.totalSupply();
     assert.equal(supply.valueOf(), 0, "initial supply is not 0");
@@ -166,6 +234,56 @@ contract("USD", (accounts) => {
     assert.strictEqual(balance.toNumber(), 3, "balance mismatch for account");
   });
 
+  it("should succeed burning tokens from a multiSigWallet with empty sig", async () => {
+    console.log("fakeSMW", fakeSMW.address);
+    await usd.mintTo(fakeSMW.address, 100, { from: system });
+    const balance0 = await usd.balanceOf(fakeSMW.address);
+    const emptyBytes = Buffer.from([]);
+    await controller.burnFrom(fakeSMW.address, 100, hash, emptyBytes, {
+      from: system,
+    });
+    const balance1 = await usd.balanceOf(fakeSMW.address);
+    assert.strictEqual(
+      balance1.toNumber() - balance0.toNumber(),
+      -100,
+      "did not burn 100 tokens"
+    );
+  });
+
+  it("should succeed burning tokens from a multiSigWallet with a 32 bytes sig", async () => {
+    console.log("fakeSMW", fakeSMW.address);
+    await usd.mintTo(fakeSMW.address, 100, { from: system });
+    const balance0 = await usd.balanceOf(fakeSMW.address);
+    const filledBytes32 = Buffer.alloc(32).fill(5);
+
+    await controller.burnFrom(fakeSMW.address, 100, hash, filledBytes32, {
+      from: system,
+    });
+    const balance1 = await usd.balanceOf(fakeSMW.address);
+    assert.strictEqual(
+      balance1.toNumber() - balance0.toNumber(),
+      -100,
+      "did not burn 100 tokens"
+    );
+  });
+
+  it("should succeed burning tokens from a multiSigWallet with a 65 bytes sig", async () => {
+    console.log("fakeSMW", fakeSMW.address);
+    await usd.mintTo(fakeSMW.address, 100, { from: system });
+    const balance0 = await usd.balanceOf(fakeSMW.address);
+    const filledBytes65 = Buffer.alloc(65).fill(5);
+
+    await controller.burnFrom(fakeSMW.address, 100, hash, filledBytes65, {
+      from: system,
+    });
+    const balance1 = await usd.balanceOf(fakeSMW.address);
+    assert.strictEqual(
+      balance1.toNumber() - balance0.toNumber(),
+      -100,
+      "did not burn 100 tokens"
+    );
+  });
+
   var i = 5;
   for (var name in wallets) {
     const wallet = wallets[name];
@@ -177,11 +295,15 @@ contract("USD", (accounts) => {
       const r = `0x${sig.slice(0, 64)}`;
       const s = `0x${sig.slice(64, 128)}`;
       var v = web3.utils.hexToNumber(`0x${sig.slice(128, 130)}`);
-
       if (v < 27) v += 27;
       assert(v == 27 || v == 28);
 
-      await usd.burnFrom(wallet.address, 18, hash, v, r, s, { from: system });
+      //      await usd.burnFrom(wallet.address, 18, hash, v, r, s, { from: system });
+      const rebuiltSig = `0x${r.slice(2)}${s.slice(2)}${v.toString(16)}`;
+
+      await controller.burnFrom(wallet.address, 18, hash, rebuiltSig, {
+        from: system,
+      });
       const balance1 = await usd.balanceOf(wallet.address);
       assert.strictEqual(
         balance1.toNumber() - balance0.toNumber(),

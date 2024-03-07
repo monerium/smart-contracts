@@ -89,6 +89,14 @@ Once approved, your contract can call the `transferFrom` method in the Monerium 
 
 `transferAndCall` transfers money and calls the receiving contract's `onTokenTransfer` method with additional data and triggers an event Transfer.
 
+### ERC2612: Permit
+ERC2612 introduces a method for token holders to approve spenders with a signed permission, streamlining transactions without on-chain approve calls. This functionality enables efficient gas-less approvals, leveraging EIP-712 signed messages for secure delegation of spending rights.
+
+The Permit function, while not directly accessible through the Token interface, can be invoked via the `controller`.
+
+For a step-by-step implementation guide, refer to the detailed tutorial in [Permit Function Documentation](./docs/permit.md).
+
+
 ## Token design
 
 Four cooperating Ethereum smart-contracts are deployed for each e-money currency token that is [ERC20](https://eips.ethereum.org/EIPS/eip-20) compliant.

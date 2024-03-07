@@ -18,7 +18,6 @@
 pragma solidity 0.8.11;
 
 import "./TokenStorage.sol";
-import "./IERC20.sol";
 import "./ERC20Lib.sol";
 import "./ERC677Lib.sol";
 import "./ClaimableSystemRole.sol";
@@ -37,6 +36,9 @@ contract StandardController is ClaimableSystemRole {
     address internal frontend;
     mapping(address => bool) internal bridgeFrontends;
     uint8 public decimals = 18;
+  
+    bytes32 private constant PERMIT_TYPEHASH =
+        keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
 
     /**
      * @dev Emitted when updating the frontend.
@@ -74,6 +76,17 @@ contract StandardController is ClaimableSystemRole {
         _;
     }
 
+    /*//////////////////////////////////////////////////////////////
+                            EIP-2612 STORAGE
+    //////////////////////////////////////////////////////////////*/
+
+    uint256 internal immutable INITIAL_CHAIN_ID;
+
+    bytes32 internal immutable INITIAL_DOMAIN_SEPARATOR;
+
+    mapping(address => uint256) public nonces;
+
+
     /**
      * @dev Contract constructor.
      * @param storage_ Address of the token storage for the controller.
@@ -92,6 +105,9 @@ contract StandardController is ClaimableSystemRole {
             token = TokenStorage(storage_);
         }
         frontend = frontend_;
+
+        INITIAL_CHAIN_ID = block.chainid;
+        INITIAL_DOMAIN_SEPARATOR = computeDomainSeparator();
     }
 
     /**
@@ -234,6 +250,89 @@ contract StandardController is ClaimableSystemRole {
         uint256 amount
     ) public onlyFrontend returns (bool ok) {
         return token.approve(caller, spender, amount);
+    }
+
+    function getPermitDigest(
+        address owner,
+        address spender,
+        uint256 value,
+        uint256 nonce,
+        uint256 deadline
+    ) public view returns (bytes32) {
+        return keccak256(
+            abi.encodePacked(
+                "\x19\x01",
+                DOMAIN_SEPARATOR(),
+                keccak256(
+                    abi.encode(
+                        PERMIT_TYPEHASH,
+                        owner,
+                        spender,
+                        value,
+                        nonce,
+                        deadline
+                    )
+                )
+            )
+        );
+    }
+
+    function permit(
+        address owner,
+        address spender,
+        uint256 value,
+        uint256 deadline,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) public virtual {
+        require(deadline >= block.timestamp, "PERMIT_DEADLINE_EXPIRED");
+
+        // Unchecked because the only math done is incrementing
+        // the owner's nonce which cannot realistically overflow.
+        unchecked {
+            address recoveredAddress = ecrecover(
+                keccak256(
+                    abi.encodePacked(
+                        "\x19\x01",
+                        DOMAIN_SEPARATOR(),
+                        keccak256(
+                            abi.encode(
+                                PERMIT_TYPEHASH,
+                                owner,
+                                spender,
+                                value,
+                                nonces[owner]++,
+                                deadline
+                            )
+                        )
+                    )
+                ),
+                v,
+                r,
+                s
+            );
+        
+            require(recoveredAddress != address(0) && recoveredAddress == owner, "INVALID_SIGNER");
+        }
+        token.approve(owner, spender, value);
+    }
+
+    function DOMAIN_SEPARATOR() public view virtual returns (bytes32) {
+        return block.chainid == INITIAL_CHAIN_ID ? INITIAL_DOMAIN_SEPARATOR : computeDomainSeparator();
+    }
+
+    function computeDomainSeparator() internal view virtual returns (bytes32) {
+        return
+            keccak256(
+                abi.encode(
+                    keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"),
+                    keccak256(bytes("standardController")),
+                    keccak256("1"),
+                    block.chainid,
+                    address(this)
+                )
+            );
     }
 
     /**
