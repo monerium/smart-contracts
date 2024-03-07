@@ -197,7 +197,7 @@ Code coverage for the token system can be checked with [solidity-coverage](https
 
 ## Smart contract audit
 
-The smart contracts were audited by [Ackee Blockchain Security](https://ackeeblockchain.com). The report is available [here](audits/ackee-blockchain-monerium-smart-contracts-report-1.2.pdf).
+The smart contracts were audited by [Ackee Blockchain Security](https://ackeeblockchain.com). The report is available [here](audits/v1.2.1-ackee-blockchain-monerium-smart-contracts-report-2.1.pdf).
 
 ## License
 
