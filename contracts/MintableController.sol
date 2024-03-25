@@ -89,6 +89,7 @@ contract MintableController is StandardController {
         public
         onlyFrontend
         onlyAllowedSystemAccount(caller, amount)
+        whenNotPaused
         returns (bool)
     {
         _avoidBlackholes(to);
@@ -129,7 +130,7 @@ contract MintableController is StandardController {
         uint256 amount,
         bytes32 h,
         bytes memory signature
-    ) public onlySystemAccount(msg.sender) returns (bool) {
+    ) public onlySystemAccount(msg.sender) whenNotPaused returns (bool) {
         require(
             token.burn(from, amount, h, signature),
             "MintableController: burn failed"

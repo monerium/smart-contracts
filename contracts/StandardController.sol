@@ -21,6 +21,7 @@ import "./TokenStorage.sol";
 import "./ERC20Lib.sol";
 import "./ERC677Lib.sol";
 import "./ClaimableSystemRole.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
 
 /**
  * @title StandardController
@@ -28,7 +29,7 @@ import "./ClaimableSystemRole.sol";
  * to their respective library implementations.
  * The controller is primarily intended to be interacted with via a token frontend.
  */
-contract StandardController is ClaimableSystemRole {
+contract StandardController is ClaimableSystemRole, Pausable {
     using ERC20Lib for TokenStorage;
     using ERC677Lib for TokenStorage;
 
@@ -381,5 +382,19 @@ contract StandardController is ClaimableSystemRole {
         address spender
     ) external view returns (uint) {
         return token.allowance(owner, spender);
+    }
+
+    /**
+     * @dev pausable function to pause the contract
+     */ 
+    function pause() public onlyOwner {
+        _pause();
+    }
+
+    /**
+     * @dev pausable function to unpause the contract
+     */
+    function unpause() public onlyOwner {
+        _unpause();
     }
 }
