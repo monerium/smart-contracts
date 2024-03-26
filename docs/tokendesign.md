@@ -25,6 +25,8 @@ Monerium's token is being managed by three roles which own responsibilities over
   * Can be multiple addresses.
   * EOA address used by Monerium's infrastructure to issue or redeem e-money tokens by minting and burning.
 
+Monerium's token management includes transparent role modifications, tracked by events like `SystemAccountAdded`, `SystemAccountRemoved`, `AdminAccountAdded`, and `AdminAccountRemoved`. 
+
 ## ERC20 
 
 All four tokens implement the standard method of the ERC-20 interface.
