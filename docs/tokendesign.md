@@ -29,6 +29,18 @@ Monerium's token is being managed by three roles which own responsibilities over
 
 All four tokens implement the standard method of the ERC-20 interface.
 
+- `totalSupply()`
+- `balanceOf(address _owner)`
+- `transfer(address _to, uint256 _value)`
+- `transferFrom(address _from, address _to, uint256 _value)`
+- `approve(address _spender, uint256 _value)`
+- `allowance(address _owner, address _spender)`
+
 ## Issuing and Redeeming Tokens 
 
 Monerium tokens as a 1:1 backed e-money, Issuing and Redeeming money happens when the money comes and go into your monerium's account through your Monerium's IBAN.
+
+### Fund Recovery Process
+
+If access to a wallet is lost, Monerium provides a mechanism to recover funds thanks to the initial signature provided by the wallet owner at linkage. This capability is embodied in the `recover` function, allowing the secure transfer of funds from an inaccessible wallet to a new one. 
+
