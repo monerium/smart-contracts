@@ -18,7 +18,8 @@ Monerium EMI is an Electronic Money Institution, currently the only financial en
   - [Upgradeable](#upgradeable)
   - [Blacklist](#blacklist)
   - [Minting and Burning](#minting-and-burning)
-
+- [Additional Documentations](#additional-documentations)
+  
 ## Architecture 
 
 The token architecture employs OpenZeppelin's [UUPS Proxy Pattern](https://docs.openzeppelin.com/contracts/4.x/api/proxy#UUPSUpgradeable) for Upgradability. Each deployment environment  features a distinct instance of the implementation contract( [Token.sol](./src/Token.sol) ) alongside four proxy contracts ( [ERC1967Proxy.sol](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.9.5/contracts/proxy/ERC1967/ERC1967Proxy.sol) ), corresponding to each e-money token Monerium introduces, delegating function calls to the implementation contract while using their respective storage.
@@ -60,4 +61,9 @@ The `admin` addresses will control how much each `system` is allowed to mint. Th
 
 The `admin` address corresponds to a Gnosis MultiSig wallet, operated by Monerium's administrative personnel. They perform daily evaluations and adjustments to the mint allowance.
 
+## Additional Documentations
+
+  * Deployment process
+  * Token Design
+  * Permit [ERC-2612]
 
