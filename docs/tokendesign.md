@@ -42,5 +42,5 @@ Monerium tokens as a 1:1 backed e-money, Issuing and Redeeming money happens whe
 
 ### Fund Recovery Process
 
-If access to a wallet is lost, Monerium provides a mechanism to recover funds thanks to the initial signature provided by the wallet owner at linkage. This capability is embodied in the `recover` function, allowing the secure transfer of funds from an inaccessible wallet to a new one. 
+If access to a wallet is lost, Monerium provides a mechanism to recover funds thanks to the initial signature provided by the wallet owner at linkage. This capability is embodied in the [recover](https://github.com/monerium/smart-contracts/blob/0dba368cb2c7c037cbc80326e5b8eb61cf5f2b1e/src/Token.sol#L86) function, allowing the secure transfer of funds from an inaccessible wallet to a new one. 
 
