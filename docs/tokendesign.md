@@ -40,7 +40,15 @@ All four tokens implement the standard method of the ERC-20 interface.
 
 ## Issuing and Redeeming Tokens 
 
-Monerium tokens as a 1:1 backed e-money, Issuing and Redeeming money happens when the money comes and go into your monerium's account through your Monerium's IBAN.
+Monerium tokens are a 1:1 backed e-money, Issuing and Redeeming money happens when the money comes and goes into your Monerium's account through your Monerium's IBAN.
+
+### Minting Process
+
+When funds are received on a user's associated Monerium IBAN, it enables token minting by system role accounts, with mint allowances controlled by admin accounts through a Gnosis MultiSig wallet.
+
+### Burning Process
+
+Token burning occurs upon redemption, requiring the token holder's signature for validation. This secure approach ensures that only user-authorized redemptions proceed.
 
 ### Fund Recovery Process
 
