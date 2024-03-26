@@ -68,10 +68,11 @@ const { SigningKey } = require("@ethersproject/signing-key");
 // Replace the following with your contract's ABI and addresses
 const tokenABI = [...] // token ABI goes here
 const tokenProxyAddress = "<token_proxy_contract_address>"; // token Proxy contract address
+const RPC_URL = "http://<your_rpc>"
 
 async function permitFunction(yourAddress, spenderAddress, value, yourPrivateKey) {
   // Provider and signer would be set up here (e.g., using ethers.js)
-  const provider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
+  const provider = new ethers.providers.JsonRpcProvider(RPC_URL);
   const signer = new ethers.Wallet(yourPrivateKey, provider);
 
   // Instantiate the contracts
