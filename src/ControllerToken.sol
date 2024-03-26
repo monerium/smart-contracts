@@ -3,23 +3,12 @@ pragma solidity 0.8.20;
 //SPDX-License-Identifier: APACHE-2.0
 
 import "./Token.sol";
+import "./interfaces/IERC677Recipient.sol";
 import "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
 
-
-interface IERC677Recipient {
-    /**
-     * @dev Receives notification from [ERC677] transferAndCall.
-     * @param from Sender address.
-     * @param amount Number of tokens.
-     * @param data Additional data.
-     */
-    function onTokenTransfer(
-        address from,
-        uint256 amount,
-        bytes calldata data
-    ) external returns (bool);
-}
-
+// The ControllerToken contract acts as a bridge to ensure compatibility between the Smart-Contract v2 and the v1 TokenFrontend.
+// It allows the v2's proxy to function as the controller for the v1 TokenFrontend.
+// The ambition is to allow the v2's proxy to be the only contract that needs to be upgraded in the future.
 contract ControllerToken is Token {
     struct ControllerTokenStorage {
         address frontend;

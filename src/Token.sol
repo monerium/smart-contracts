@@ -46,7 +46,7 @@ contract Token is
         string memory name,
         string memory symbol,
         address _validator
-    ) public initializer virtual {
+    ) public virtual initializer {
         // Those line replaces the inheritance call in the constructor, as we are using the upgradeable pattern.
         // In the upgradeable pattern, the 'initialize' function replaces the constructor. It's not called automatically.
         // The proxy contract calls this function using delegatecall.
@@ -133,7 +133,7 @@ contract Token is
         return super.transferFrom(from, to, amount);
     }
 
-    // setMaxMintAllowance is only callable by the owner 
+    // setMaxMintAllowance is only callable by the owner
     function setMaxMintAllowance(uint256 amount) public onlyOwner {
         _setMaxMintAllowance(amount);
     }
@@ -161,7 +161,9 @@ contract Token is
                     _domainSeparatorV4(),
                     keccak256(
                         abi.encode(
-                            PERMIT_TYPEHASH,
+                            keccak256(
+                                "Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)"
+                            ),
                             owner,
                             spender,
                             value,
@@ -181,9 +183,7 @@ contract EURe is Token {
         _disableInitializers();
     }
 
-    function initialize(
-        address _validator
-    ) public initializer  {
+    function initialize(address _validator) public initializer {
         super.initialize("EUR", "EURe", _validator);
     }
 }
@@ -194,9 +194,7 @@ contract GBPe is Token {
         _disableInitializers();
     }
 
-    function initialize(
-        address _validator
-    ) public initializer  {
+    function initialize(address _validator) public initializer {
         super.initialize("GBP", "GBPe", _validator);
     }
 }
@@ -207,9 +205,7 @@ contract ISKe is Token {
         _disableInitializers();
     }
 
-    function initialize(
-        address _validator
-    ) public initializer{
+    function initialize(address _validator) public initializer {
         super.initialize("ISK", "ISKe", _validator);
     }
 }
@@ -220,9 +216,7 @@ contract USDe is Token {
         _disableInitializers();
     }
 
-    function initialize(
-        address _validator
-    ) public initializer {
+    function initialize(address _validator) public initializer {
         super.initialize("USD", "USDe", _validator);
     }
 }
