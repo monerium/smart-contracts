@@ -10,7 +10,7 @@ import "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
-import "./MintAllowance.sol";
+import "./MintAllowanceUpgradeable.sol";
 import "./SystemRoleUpgradeable.sol";
 import "./IValidator.sol";
 
