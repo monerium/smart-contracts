@@ -161,9 +161,7 @@ contract Token is
                     _domainSeparatorV4(),
                     keccak256(
                         abi.encode(
-                            keccak256(
-                                "Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)"
-                            ),
+                            PERMIT_TYPEHASH,
                             owner,
                             spender,
                             value,
