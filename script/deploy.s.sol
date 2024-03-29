@@ -19,6 +19,7 @@ contract All is Script {
             abi.encodeWithSelector(BlacklistValidatorUpgradeable.initialize.selector)
         );
 
+        // Deploy only one implementation of the Token contract for all currencies.
         Token implementation = new Token();
 
         deployTokenProxy(implementation, "Monerium EUR emoney", "EURe", address(validatorProxy));
