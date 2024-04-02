@@ -1,4 +1,6 @@
-v1) to the new version presents complexities. 
+# Migrating from Contract v1 to v2
+
+In the evolution of our smart contract environment, we embark on deploying a more stable and robust version 2 (v2). However, the path to directly transfer user balances from the original contract (v1) to the new version presents complexities. 
 
 This document outlines a  plan to migrate funds safely from v1 to v2, ensuring the v1 token frontend's address remains operational as a legacy interface. 
 
@@ -8,7 +10,7 @@ Our aim is to facilitate a seamless transition, maintaining continuity for our u
 To proceed with the migration process, ensure the following prerequisites are met:
 
 - [ ] The SmartController is upgraded to version **1.2.2**, incorporating the `pausable` feature.
-- [ ] Possession of the `TokenFrontend `address.
+- [ ] Possession of the `TokenFrontend` address.
 - [ ] Access to the **version 2 (v2) foundry repository**, including all dependencies.
 
 ## Versions
@@ -23,10 +25,12 @@ To proceed with the migration process, ensure the following prerequisites are me
 
 ## Architectural Overview
 *Legacy V1 architecture VS the new V2 architecture*
-![[Pasted image 20240329134835.png]]
+
+![Pasted image 20240329134835](https://github.com/monerium/smart-contracts/assets/17710875/42f6b845-28c0-44aa-8be0-cd9b63a8535f)
 
 *V2 architecture with retro compatibility with the legacy V1 frontend*
-![[Screenshot 2024-03-29 at 13.49.49.png]]
+![Screenshot 2024-03-29 at 13 49 49](https://github.com/monerium/smart-contracts/assets/17710875/51e96b4d-014d-4f11-9a2e-262f85fcbd3b)
+
 
 The objective is to migrate the assets currently held within `TokenStorage` to the storage system of the `Proxy`
 
@@ -49,7 +53,7 @@ To initiate the deployment of the V2 contract, follow these steps within the V2 
 
 1. Set the following environment variables in your terminal:
 
-```
+```sh
 export PRIVATE_KEY=<your_key>
 export RPC_URL=<your_provider>
 export ETHERSCAN_API_KEY=<your_api_key>
@@ -60,11 +64,12 @@ export ETHERSCAN_API_KEY=<your_api_key>
 ```sh
 forge script script/deploy.s.sol:ControllerEUR --rpc-url $RPC_URL --broadcast --etherscan-api-key $ETHERSCAN_API_KEY --verify $VERIFIER_URL
 ```
-3. Your V2 `Proxy` and `Implementation` contracts are now deployed and verified on the blockchain explorer.
+
+Your V2 `Proxy` and `Implementation` contracts are now deployed and verified on the blockchain explorer.
 
 ### 2. Configuring the `V2` contract.
 
-Provide `admin` and `system` roles to the `wallet` used for the migration (the same one used for deployment). These roles are crucial early in the fund migration process for adding `MintAllowance`.
+Provide `admin` and `system` roles to the `wallet` used for the migration (the same one used for deployment). These roles are crucial early in the fund migration process to set `MintAllowance`.
 
 1. Set the following environment variables in your terminal:
 ```sh
@@ -77,7 +82,8 @@ Provide `admin` and `system` roles to the `wallet` used for the migration (the s
 ```sh
 forge script script/setAdminAndSystem.s.sol --rpc-url $RPC_URL --broadcast
 ```
-3. Your `V2` contract is now ready to launch the Migration script. 
+
+Your `V2` contract is now ready to launch the Migration script. 
 
 ### 3. Pause the `V1` token
 
@@ -102,7 +108,7 @@ A JavaScript script crafts a Solidity script by using `V1` and `V2` token addres
 The generated Solidity script then sets `V2`'s mint allowance to equal `V1`'s `totalSupply`.
 For each holder, the script uses `V1`'s `balanceOf` function to determine the amount to mint in `V2`.
 
-The process concludes with `toalSupply` check between `V2` and `V1`. 
+The process concludes with `totalSupply` check between `V2` and `V1`. 
 
 1. To create the migration script, execute the following command:
 ```sh
@@ -131,7 +137,6 @@ With the funds successfully migrated to the `V2` contract, the next step involve
 ```
 2. Configure the `V2` token with `admins`, `system` and `maxMintAllowance`
 ```sh
-export PRIVATE_KEY=<owner_key>
 export TOKEN_ADDRESS=<proxy_address>
 export SYSTEM_ADDRESS=<system_address>
 export ADMIN_ADDRESS=<admin_address>
@@ -140,11 +145,10 @@ forge script script/configureToken.s.sol --rpc-url $RPC_URL --broadcast
  ```
 4. Configure the `V2` token with minting allowance
 
-Refer to this page.
+ Use the `admin safe` to set mint allowance. 
 
 5. Connect the `V2` proxy as `controller` for the `V1` `TokenFrontend`
 ```sh
-export PRIVATE_KEY=<owner_key>
 export TOKEN_ADDRESS=<v2_proxy_address>
 export FRONTEND_ADDRESS=<v1_frontend_address>
 export OWNER_ADDRESS=<final_owner_address>
