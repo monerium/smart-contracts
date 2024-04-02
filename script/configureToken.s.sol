@@ -12,7 +12,7 @@ contract All is Script {
         address tokenAddress = vm.envAddress("TOKEN_ADDRESS");
         address system = vm.envAddress("SYSTEM_ADDRESS");
         address admin = vm.envAddress("ADMIN_ADDRESS");
-        uint256 allowance = vm.envUint("ALLOWANCE");
+        uint256 allowance = vm.envUint("MAX_MINT_ALLOWANCE");
         if (allowance == 0) {
             allowance = 50000000000000000000000000; // Default value if not provided
         }

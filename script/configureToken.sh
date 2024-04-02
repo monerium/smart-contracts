@@ -21,7 +21,7 @@ allowance=$4
 export TOKEN_ADDRESS=$tokenAddress
 export SYSTEM_ADDRESS=$system
 export ADMIN_ADDRESS=$admin
-export ALLOWANCE=$allowance
+export MAX_MINT_ALLOWANCE=$allowance
 
 # Call the Forge script
 echo "configure tokens"
