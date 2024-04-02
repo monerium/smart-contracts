@@ -1,17 +1,17 @@
 # Migrating from Contract v1 to v2
 
-In the evolution of our smart contract environment, we embark on deploying a more stable and robust version 2 (v2). However, the path to directly transfer user balances from the original contract (v1) to the new version presents complexities. 
+In the evolution of our smart contract environment, we embark on deploying a more stable and robust version 2 (`V2`). However, the path to directly transfer user balances from the original contract (`V1`) to the new version presents complexities. 
 
-This document outlines a  plan to migrate funds safely from v1 to v2, ensuring the v1 token frontend's address remains operational as a legacy interface. 
+This document outlines a  plan to migrate funds safely from `V1` to `V2`, ensuring the `V1` token frontend's address remains operational as a legacy interface. 
 
-Our aim is to facilitate a seamless transition, maintaining continuity for our users while leveraging the enhancements of v2.
+Our aim is to facilitate a seamless transition, maintaining continuity for our users while leveraging the enhancements of `V2`.
 ## Requirements
 
 To proceed with the migration process, ensure the following prerequisites are met:
 
 - [ ] The SmartController is upgraded to version **1.2.2**, incorporating the `pausable` feature.
 - [ ] Possession of the `TokenFrontend` address.
-- [ ] Access to the **version 2 (v2) foundry repository**, including all dependencies.
+- [ ] Access to the **version 2 (`V2`) foundry repository**, including all dependencies.
 
 ## Versions
 
