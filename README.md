@@ -65,4 +65,5 @@ The `admin` address corresponds to a Gnosis MultiSig wallet, operated by Moneriu
 
   * [Token Design](./docs/tokendesign.md)
   * [Permit [ERC-2612]](./docs/permit.md)
+  * [Migrating from `V1` to `V2`](./docs/migrating_V1_to_V2.md)
 
