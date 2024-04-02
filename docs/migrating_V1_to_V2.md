@@ -122,7 +122,7 @@ node script/generateBatchMint.js <v2-address> <v1-address> holders.csv
 ```sh
 forge script script/BatchMint-{v1-address}.s.sol  --rpc-url $RPC_URL --broadcast
 ```
-3. The funds have been successfully migrated to your `V2` contract.
+3. The funds have been successfully migrated to the `V2` contract.
 
 > Note: It's crucial to understand that the funds in `V1` remain unchanged. Instead, the migration process duplicates the balances into the `V2` contract. 
 > The `V1` contract will be discontinued in favor of `V2`, hence the state of `V1` is preserved and not altered during this transition.
