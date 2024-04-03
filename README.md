@@ -26,6 +26,8 @@ The token architecture employs OpenZeppelin's [UUPS Proxy Pattern](https://docs.
 
 Additionally, all four tokens also hold access to a shared Blacklist validator ( [BlacklistValidatorUpgradeable.sol](./src/BlacklistValidatorUpgradeable.sol) ). 
 
+![Screenshot 2024-04-03 at 12 48 12](https://github.com/monerium/smart-contracts/assets/17710875/326177b6-0754-47c7-8098-4a420421bded)
+
 ## Deployment
 
 For detailed setup, deployment, and testing instructions, visit [this dedicated page](./docs/deployment.md).
