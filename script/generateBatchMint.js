@@ -1,57 +1,96 @@
-const fs = require("fs");
+const { Web3 } = require("web3");
+const BigNumber = require("bignumber.js");
 const path = require("path");
-const Web3 = require("web3");
+const fs = require("fs");
+const queryStep = new BigNumber(400000); // Number of blocks to query at a time
 
-// Initialize Web3
-const web3 = new Web3();
+async function main(rpcURL, contractAddress, startBlock, target) {
+  const web3 = new Web3(new Web3.providers.HttpProvider(rpcURL));
+  const contract = new web3.eth.Contract(erc20ABI, contractAddress);
+  const latestBlock = await web3.eth.getBlockNumber();
 
-// Verify command line arguments
-if (process.argv.length !== 5) {
-  console.log(
-    "Usage: node generateBatchMint.js <tokenAddress> <targetAddress> <path_to_csv_file>"
+  const holdersSet = await fetchTokenHolders(contract, startBlock, latestBlock);
+
+  const { totalSum, holderBalances } = await fetchBalancesAndTotalSum(
+    contract,
+    holdersSet
   );
-  process.exit(1);
+
+  const totalSupply = await fetchTokenSupply(contract);
+
+  console.log(
+    `Number of holders with balances > 0: ${Object.keys(holderBalances).length}`
+  );
+
+  console.log(
+    `Total sum vs total supply: ${totalSum.toFixed()} == ${totalSupply} == ${
+      totalSum.toFixed() == totalSupply
+    } `
+  );
+
+  generateScript(web3, holderBalances, contractAddress, target);
 }
 
-// Extract command line arguments
-const [tokenAddress, targetAddress, csvFilePath] = process.argv.slice(2);
+async function fetchTokenHolders(contract, startBlock, latestBlock) {
+  let currentBlock = new BigNumber(startBlock);
+  const endBlock = new BigNumber(latestBlock);
 
-// Validate CSV file existence
-if (!fs.existsSync(csvFilePath)) {
-  console.log("CSV file does not exist.");
-  process.exit(1);
+  const holdersSet = new Set();
+  while (currentBlock.lt(endBlock)) {
+    let toBlock = BigNumber.min(currentBlock.plus(queryStep), endBlock);
+    console.log(
+      `Querying blocks ${currentBlock.toString()} to ${toBlock.toString()}...`
+    );
+
+    const events = await contract.getPastEvents("Transfer", {
+      fromBlock: currentBlock.toString(),
+      toBlock: toBlock.toString(),
+    });
+
+    events.forEach((event) => {
+      holdersSet.add(event.returnValues.from);
+      holdersSet.add(event.returnValues.to);
+    });
+
+    currentBlock = toBlock.plus(1);
+  }
+
+  return holdersSet;
 }
 
-// Read CSV file and skip the first line
-const csvData = fs.readFileSync(csvFilePath, "utf8").split("\n").slice(1);
+async function fetchBalancesAndTotalSum(contract, holdersSet) {
+  let totalSum = new BigNumber(0);
+  const holderBalances = {};
+  let iterator = 0;
 
-// Extract addresses and convert them to checksum addresses, removing any quotes
-const addresses = csvData
-  .map((line) => {
-    const [address] = line.split(",");
-    if (!address || address.trim() === "") return null; // Skip empty lines or addresses
-    try {
-      return web3.utils.toChecksumAddress(address.replace(/\"/g, ""));
-    } catch (error) {
-      console.error(
-        `Skipping invalid address: ${address}. Error: ${error.message}`
-      );
-      return null;
+  for (let holder of holdersSet) {
+    if (iterator % 50 === 0) {
+      console.log(`Fetching balance for holder ${iterator}...`);
     }
-  })
-  .filter(Boolean); // Remove null values resulting from skipped lines
-const count = addresses.length;
+    const balance = await contract.methods.balanceOf(holder).call();
+    const balanceBN = new BigNumber(balance);
+    iterator++;
+    if (!balanceBN.isZero()) {
+      holderBalances[holder] = balanceBN;
+      totalSum = totalSum.plus(balanceBN);
+    }
+  }
 
-// Initialize the recipients string
-let recipientsString = addresses
-  .map((address, index) => {
-    // Append a comma to all but the last address
-    return `            ${address}${index < addresses.length - 1 ? "," : ""}`;
-  })
-  .join("\n");
+  return { totalSum, holderBalances };
+}
 
-// Create the Solidity file content
-let solidityContent = `// SPDX-License-Identifier: UNLICENSED
+async function fetchTokenSupply(contract) {
+  return await contract.methods.totalSupply().call();
+}
+
+async function generateScript(web3, holders, newToken, target) {
+  let mints = Object.entries(holders)
+    .map(([address, balances]) => {
+      return `        token.mint(${address}, ${balances.toFixed()});`;
+    })
+    .join("\n");
+
+  let solidityContent = `// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.20;
 
 import "forge-std/Script.sol";
@@ -63,11 +102,8 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 contract BatchMint is Script {
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
-        address tokenAddress = ${web3.utils.toChecksumAddress(tokenAddress)};
-        address targetAddress = ${web3.utils.toChecksumAddress(targetAddress)};
-        address[${count}] memory recipients = [
-${recipientsString}
-        ];
+        address tokenAddress = ${web3.utils.toChecksumAddress(newToken)};
+        address targetAddress = ${web3.utils.toChecksumAddress(target)};
 
         vm.startBroadcast(deployerPrivateKey);
 
@@ -79,9 +115,7 @@ ${recipientsString}
         token.setMintAllowance(targetAddress, target.totalSupply());
         console.log("mint allowance set successfully.");
 
-        for (uint256 i = 0; i < recipients.length; i++) {
-            token.mint(recipients[i], target.balanceOf(recipients[i]));
-        }
+${mints}
 
         console.log("minting completed successfully.");
         bool success = token.totalSupply() == target.totalSupply();
@@ -90,9 +124,50 @@ ${recipientsString}
     }
 }`;
 
-// Write the Solidity script to a file
-const outputPath = path.join(__dirname, `BatchMint-${targetAddress}.s.sol`);
-fs.writeFileSync(outputPath, solidityContent, "utf8");
-console.log(
-  `Solidity script BatchMint.sol has been generated at ${outputPath}.`
-);
+  // Write the Solidity script to a file
+  const outputPath = path.join(__dirname, `BatchMint-${target}.s.sol`);
+  fs.writeFileSync(outputPath, solidityContent, "utf8");
+  console.log(
+    `Solidity script BatchMint.sol has been generated at ${outputPath}.`
+  );
+}
+
+const erc20ABI = [
+  {
+    constant: true,
+    inputs: [{ name: "_owner", type: "address" }],
+    name: "balanceOf",
+    outputs: [{ name: "balance", type: "uint256" }],
+    payable: false,
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: "totalSupply",
+    outputs: [{ name: "", type: "uint256" }],
+    payable: false,
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, name: "from", type: "address" },
+      { indexed: true, name: "to", type: "address" },
+      { indexed: false, name: "value", type: "uint256" },
+    ],
+    name: "Transfer",
+    type: "event",
+  },
+];
+
+if (process.argv.length < 6) {
+  console.error(
+    "Usage: node script.js <rpcURL> <contractAddress> <startBlock> <target>"
+  );
+  process.exit(1);
+}
+
+main(process.argv[2], process.argv[3], process.argv[4], process.argv[5]);
