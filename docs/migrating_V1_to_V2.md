@@ -91,24 +91,17 @@ Your `V2` contract is now ready to launch the Migration script.
 
 During the migration, we will fetch a list of holders from `Etherscan`. To ensure this list remains unchanged, it's crucial to **pause** all operations such as `transfer`, `mint`, and `burn` on the `V1` token. This action will freeze the state of the token, securing the integrity of holder balances throughout the transition process to `V2`.
 
-### 4. Download the `Holders` list
+### 4. Generate the migration script
 
-To obtain the list of current token holders, follow these steps:
+A JavaScript script crafts a Solidity script by using `V1` and `V2` token addresses.
 
-1. Navigate to the  Etherscan page by replacing `{YOUR-TOKEN-ADDRESS}` with your actual token `V1` contract address in the URL below:
-```
-https://etherscan.io/exportData?type=tokenholders&contract={YOUR-TOKEN-ADDRESS}&decimal=18
-```
-2. Choose `Token Holders (ERC-20)` as the export type from the available options.
-3. Ensure the Token Contract Address displayed is accurate and corresponds to your `V1` token.
-4. Download the `csv` file provided and move it to the `V2` foundry repository
+The script compiles a list of `V1` token holders from `Transfer` logs, then creates a mapping of holders to their balances using `V1`'s `balanceOf` call.
 
-### 5. Generate the migration script
-
-A JavaScript script crafts a Solidity script by using `V1` and `V2` token addresses and hardcoding the `csv`-derived holder addresses. 
+> Note: Holders with a `balanceOf` 0 are excluded from the migration.
 
 The generated Solidity script then sets `V2`'s mint allowance to equal `V1`'s `totalSupply`.
-For each holder, the script uses `V1`'s `balanceOf` function to determine the amount to mint in `V2`.
+
+For each holder, it mints their `V1` balance into the new `V2` token.
 
 The process concludes with `totalSupply` check between `V2` and `V1`. 
 
@@ -127,7 +120,7 @@ forge script script/BatchMint-{v1-address}.s.sol  --rpc-url $RPC_URL --broadcast
 > Note: It's crucial to understand that the funds in `V1` remain unchanged. Instead, the migration process duplicates the balances into the `V2` contract. 
 > The `V1` contract will be discontinued in favor of `V2`, hence the state of `V1` is preserved and not altered during this transition.
 
-### 6. Redirecting `V1` `TokenFrontend` Calls to `V2` `Proxy`
+### 5. Redirecting `V1` `TokenFrontend` Calls to `V2` `Proxy`
 
 With the funds successfully migrated to the `V2` contract, the next step involves setting up `V2`'s configurations—specifically, its roles and ownership. Additionally, we need to establish a connection between `V1`'s `TokenFrontend` and `V2`'s `Proxy`.
 
