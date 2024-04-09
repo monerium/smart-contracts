@@ -65,7 +65,7 @@ contract ControllerToken is Token {
         return _getControllerStorage().ticker;
     }
 
-    function setFrontend(address _address) public {
+    function setFrontend(address _address) public onlyOwner {
         _getControllerStorage().frontend = _address;
     }
 
