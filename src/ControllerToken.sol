@@ -148,5 +148,8 @@ contract ControllerToken is Token {
       revert("deprecated");
     }
 
+    function claimOwnership() external onlyFrontend {
+        acceptOwnership();
+    }
 }
 
