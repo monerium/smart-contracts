@@ -107,7 +107,7 @@ The process concludes with `totalSupply` check between `V2` and `V1`.
 
 1. To create the migration script, execute the following command:
 ```sh
-node script/generateBatchMint.js <RPC> <v1-address> <startBlock> <v2-address>
+node script/generateBatchMint.js <RPC> <v2-address> <startBlock> <v1-address>
 ```
 > Note:  the generated script will be located in the `script` directory, named `BatchMint-{v1-address}.s.sol`.
 
