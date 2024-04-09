@@ -4,9 +4,9 @@ const path = require("path");
 const fs = require("fs");
 const queryStep = new BigNumber(400000); // Number of blocks to query at a time
 
-async function main(rpcURL, contractAddress, startBlock, target) {
+async function main(rpcURL, V2Address, startBlock, V1Address) {
   const web3 = new Web3(new Web3.providers.HttpProvider(rpcURL));
-  const contract = new web3.eth.Contract(erc20ABI, contractAddress);
+  const contract = new web3.eth.Contract(erc20ABI, V1Address);
   const latestBlock = await web3.eth.getBlockNumber();
 
   const holdersSet = await fetchTokenHolders(contract, startBlock, latestBlock);
@@ -28,7 +28,7 @@ async function main(rpcURL, contractAddress, startBlock, target) {
     } `
   );
 
-  generateScript(web3, holderBalances, contractAddress, target);
+  generateScript(web3, holderBalances, V2Address, V1Address);
 }
 
 async function fetchTokenHolders(contract, startBlock, latestBlock) {
@@ -104,6 +104,7 @@ contract BatchMint is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         address tokenAddress = ${web3.utils.toChecksumAddress(newToken)};
         address targetAddress = ${web3.utils.toChecksumAddress(target)};
+        address system = vm.addr(deployerPrivateKey);
 
         vm.startBroadcast(deployerPrivateKey);
 
@@ -112,14 +113,14 @@ contract BatchMint is Script {
         ERC20 target = ERC20(targetAddress);
 
         token.setMaxMintAllowance(target.totalSupply());
-        token.setMintAllowance(targetAddress, target.totalSupply());
+        token.setMintAllowance(system, target.totalSupply());
         console.log("mint allowance set successfully.");
 
 ${mints}
 
         console.log("minting completed successfully.");
-        bool success = token.totalSupply() == target.totalSupply();
-        console.log("balances are fully copied: ", success);
+        require(token.totalSupply() == target.totalSupply(), "balances are not fully copied.");
+        console.log("balances are fully copied");
         vm.stopBroadcast();
     }
 }`;
@@ -163,9 +164,9 @@ const erc20ABI = [
   },
 ];
 
-if (process.argv.length < 6) {
+if (process.argv.length < 7) {
   console.error(
-    "Usage: node script.js <rpcURL> <contractAddress> <startBlock> <target>"
+    "Usage: node script.js <rpcURL> <V2Address> <startBlock> <V1Address> "
   );
   process.exit(1);
 }
