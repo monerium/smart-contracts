@@ -6,8 +6,7 @@
 
 The [Monerium](https://monerium.com) e-money offers programmable fiat money on blockchains, an indispensable building block for the nascent blockchain economy.
 
-Monerium EMI is an Electronic Money Institution, currently the only financial entity licenced to issue e-money on blockchains. 
-Electronic money (e-money) has been recognized in the European Economic Area (EEA) as a digital alternative to cash since 2000 when the first e-money Directive was introduced. Monerium e-money is 1:1 backed in fully segregated, unencumbered, high-quality liquid assets and unconditionally redeemable on demand. [Read more about e-money here](https://monerium.com/monerium/2019/06/28/e-money-the-digital-alternative-to-cash.html).
+Monerium EMI is the first Electronic Money Institution authorized to issue e-money tokens on blockchains. Electronic money (e-money) has been recognized in the [European Economic Area](https://en.wikipedia.org/wiki/European_Economic_Area) (EEA) as a digital alternative to cash since 2000. The [Market in Crypto-Assets regulations](https://eur-lex.europa.eu/EN/legal-content/summary/european-crypto-assets-regulation-mica.html) (MiCA) require fiat-backed stablecoins to be issued as e-money tokens. Monerium e-money tokens are overcollateralized 102% and backed by segregated, unencumbered, high-quality liquid assets, unconditionally redeemable on demand. [Read more about e-money here](https://monerium.com/blog/2023/what-is-emoney/).
 
 ## Tokens
 
