@@ -33,15 +33,6 @@ contract MintAllowanceUpgradeable {
      */
     event MaxMintAllowance(uint256 amount);
 
-    modifier onlyAllowedMinter(address account, uint256 amount) {
-        MintAllowanceStorage storage s = _getMintAllowanceStorage();
-        require(
-            s._mintAllowance[account] >= amount,
-            "MintAllowance: not allowed to mint more than allowed"
-        );
-        _;
-    }
-
     function getMintAllowance(address account) public view returns (uint256) {
         MintAllowanceStorage storage s = _getMintAllowanceStorage();
         return s._mintAllowance[account];

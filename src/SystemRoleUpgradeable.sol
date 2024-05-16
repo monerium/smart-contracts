@@ -65,17 +65,6 @@ abstract contract SystemRoleUpgradeable is
     }
 
     /**
-     * @dev modifier to restrict access to admin account.
-     */
-    modifier onlyAdminAccount(address account) {
-        require(
-            hasRole(ADMIN_ROLE, account),
-            "SystemRole: caller is not an admin account"
-        );
-        _;
-    }
-
-    /**
      * @dev modifier to restrict access to system account.
      */
     modifier onlySystemAccount(address account) {
