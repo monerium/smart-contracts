@@ -32,23 +32,6 @@ contract DeploymentTest is Test {
         new ERC1967Proxy(address(implementation), initData);
     }
 
-    function test_deploy_one_EURe() public {
-        EURe implementation = new EURe();
-        BlacklistValidatorUpgradeable blacklistValidator = new BlacklistValidatorUpgradeable();
-        bytes memory initDataProxy = abi.encodeWithSelector(
-            BlacklistValidatorUpgradeable.initialize.selector
-        );
-        ERC1967Proxy validatorProxy = new ERC1967Proxy(
-            address(blacklistValidator),
-            initDataProxy
-        );
-
-        bytes memory initData = abi.encodeWithSelector(
-            EURe.initialize.selector,
-            address(validatorProxy)
-        );
-        new ERC1967Proxy(address(implementation), initData);
-    }
 
     function test_deploy_all_tokens() public {
         BlacklistValidatorUpgradeable blacklistValidator = new BlacklistValidatorUpgradeable();
@@ -95,45 +78,6 @@ contract DeploymentTest is Test {
             address(validatorProxy)
         );
         new ERC1967Proxy(address(implementation_ISK), initData_ISK);
-    }
-
-    function test_deploy_all_named_tokens() public {
-        BlacklistValidatorUpgradeable blacklistValidator = new BlacklistValidatorUpgradeable();
-        bytes memory initDataProxy = abi.encodeWithSelector(
-            BlacklistValidatorUpgradeable.initialize.selector
-        );
-        ERC1967Proxy validatorProxy = new ERC1967Proxy(
-            address(blacklistValidator),
-            initDataProxy
-        );
-
-        EURe implementationEUR = new EURe();
-        bytes memory initDataEUR = abi.encodeWithSelector(
-            EURe.initialize.selector,
-            address(validatorProxy)
-        );
-        new ERC1967Proxy(address(implementationEUR), initDataEUR);
-
-        GBPe implementationGBP = new GBPe();
-        bytes memory initDataGBP = abi.encodeWithSelector(
-            GBPe.initialize.selector,
-            address(validatorProxy)
-        );
-        new ERC1967Proxy(address(implementationGBP), initDataGBP);
-
-        ISKe implementationISK = new ISKe();
-        bytes memory initDataISK = abi.encodeWithSelector(
-            ISKe.initialize.selector,
-            address(validatorProxy)
-        );
-        new ERC1967Proxy(address(implementationISK), initDataISK);
-
-        USDe implementationUSD = new USDe();
-        bytes memory initDataUSD = abi.encodeWithSelector(
-            USDe.initialize.selector,
-            address(validatorProxy)
-        );
-        new ERC1967Proxy(address(implementationUSD), initDataUSD);
     }
 
     // Deploy one implementation and 4 proxy, one for each token.
