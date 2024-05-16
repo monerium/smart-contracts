@@ -64,9 +64,9 @@ abstract contract SystemRoleUpgradeable is
         _;
     }
 
-  /**
-    * @dev modifier to restrict access to admin account.
-    */
+    /**
+     * @dev modifier to restrict access to admin account.
+     */
     modifier onlyAdminAccount(address account) {
         require(
             hasRole(ADMIN_ROLE, account),
@@ -138,5 +138,10 @@ abstract contract SystemRoleUpgradeable is
     function removeAdminAccount(address account) public virtual onlyOwner {
         revokeRole(ADMIN_ROLE, account);
         emit AdminAccountRemoved(account);
+    }
+
+    // Override renounceOwnership to prevent renouncing ownership
+    function renounceOwnership() public override onlyOwner {
+        revert("Ownership cannot be renounced");
     }
 }

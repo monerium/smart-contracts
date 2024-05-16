@@ -177,6 +177,7 @@ contract Token is
             );
     }
 
+
 }
 
 contract EURe is Token {
