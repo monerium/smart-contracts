@@ -8,6 +8,10 @@ import "../src/tests/tokenfrontend.sol";
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import "forge-std/console.sol";
 
+import "../src/EthereumControllerToken.sol";
+import "../src/PolygonControllerToken.sol";
+import "../src/GnosisControllerToken.sol";
+
 //import "forge-std/Vm.sol";
 
 contract ControllerTokenTest is Test {
@@ -86,6 +90,93 @@ contract ControllerTokenTest is Test {
 
     function test_ticker() public {
         assertEq(token.ticker(), bytes3("EUR"));
+    }
+
+    function test_ethereum_eur_should_return_right_frontend() public {
+        bytes memory initData = abi.encodeWithSelector(
+            EthereumControllerToken.initialize.selector,
+            "Monerium EUR emoney",
+            "EURE",
+            bytes3("EUR"),
+            address(validator)
+        );
+
+        EthereumControllerToken implementation = new EthereumControllerToken();
+        EthereumControllerToken p = EthereumControllerToken(
+            address(new ERC1967Proxy(address(implementation), initData))
+        );
+        EthereumControllerToken ethereumToken = EthereumControllerToken(
+            address(p)
+        );
+        assertEq(
+            ethereumToken.getFrontend(),
+            0x3231Cb76718CDeF2155FC47b5286d82e6eDA273f
+        );
+    }
+    function test_ethereum_usd_should_return_right_frontend() public {
+        bytes memory initData = abi.encodeWithSelector(
+            EthereumControllerToken.initialize.selector,
+            "Monerium USD emoney",
+            "USDE",
+            bytes3("USD"),
+            address(validator)
+        );
+
+        EthereumControllerToken implementation = new EthereumControllerToken();
+        EthereumControllerToken p = EthereumControllerToken(
+            address(new ERC1967Proxy(address(implementation), initData))
+        );
+        EthereumControllerToken ethereumToken = EthereumControllerToken(
+            address(p)
+        );
+        assertEq(
+            ethereumToken.getFrontend(),
+            0xBc5142e0CC5eB16b47c63B0f033d4c2480853a52
+        );
+    }
+
+    function test_ethereum_gbp_should_return_right_frontend() public {
+        bytes memory initData = abi.encodeWithSelector(
+            EthereumControllerToken.initialize.selector,
+            "Monerium GBP emoney",
+            "GBPE",
+            bytes3("GBP"),
+            address(validator)
+        );
+
+        EthereumControllerToken implementation = new EthereumControllerToken();
+        EthereumControllerToken p = EthereumControllerToken(
+            address(new ERC1967Proxy(address(implementation), initData))
+        );
+        EthereumControllerToken ethereumToken = EthereumControllerToken(
+            address(p)
+        );
+        assertEq(
+            ethereumToken.getFrontend(),
+            0x7ba92741Bf2A568abC6f1D3413c58c6e0244F8fD
+        );
+    }
+
+    function test_ethereum_isk_should_return_right_frontend() public {
+        bytes memory initData = abi.encodeWithSelector(
+            EthereumControllerToken.initialize.selector,
+            "Monerium ISK emoney",
+            "ISKE",
+            bytes3("ISK"),
+            address(validator)
+        );
+
+        EthereumControllerToken implementation = new EthereumControllerToken();
+        EthereumControllerToken p = EthereumControllerToken(
+            address(new ERC1967Proxy(address(implementation), initData))
+        );
+        EthereumControllerToken ethereumToken = EthereumControllerToken(
+            address(p)
+        );
+        assertEq(
+            ethereumToken.getFrontend(),
+            0xC642549743A93674cf38D6431f75d6443F88E3E2
+        );
     }
 
     function test_shouldTransfer() public {

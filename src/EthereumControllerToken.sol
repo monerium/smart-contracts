@@ -5,15 +5,11 @@ pragma solidity 0.8.20;
 import "./Token.sol";
 import "./interfaces/IERC677Recipient.sol";
 
-// This contract is used for local testing.
-// In production please used the network specific ControllerToken contract. i.e. EthereumControllerToken, PolygonControllerToken, etc.
-
-// The ControllerToken contract acts as a bridge to ensure compatibility between the Smart-Contract v2 and the v1 TokenFrontend.
+// The EthereumControllerToken contract acts as a bridge to ensure compatibility between the Smart-Contract v2 and the v1 TokenFrontend.
 // It allows the v2's proxy to function as the controller for the v1 TokenFrontend.
 // The ambition is to allow the v2's proxy to be the only contract that needs to be upgraded in the future.
-contract ControllerToken is Token {
+contract EthereumControllerToken is Token {
     struct ControllerTokenStorage {
-        address frontend;
         bytes3 ticker;
     }
 
@@ -41,8 +37,9 @@ contract ControllerToken is Token {
         bytes3 _ticker,
         address _validator
     ) public initializer {
+        ControllerTokenStorage storage $ = _getControllerStorage();
         super.initialize(name, symbol, _validator);
-        _getControllerStorage().ticker = _ticker;
+        $.ticker = _ticker;
     }
 
     modifier onlyFrontend() {
@@ -54,19 +51,30 @@ contract ControllerToken is Token {
     }
 
     function isFrontend(address _address) public view returns (bool) {
-        return _getControllerStorage().frontend == _address;
+        return (_address == getFrontend());
     }
 
     function getFrontend() public view returns (address) {
-        return _getControllerStorage().frontend;
+        bytes3 t = ticker();
+        if (t == 0x455552) {
+            // EUR
+            return 0x3231Cb76718CDeF2155FC47b5286d82e6eDA273f;
+        } else if (t == 0x474250) {
+            // GBP
+            return 0x7ba92741Bf2A568abC6f1D3413c58c6e0244F8fD;
+        } else if (t == 0x555344) {
+            // USD
+            return 0xBc5142e0CC5eB16b47c63B0f033d4c2480853a52;
+        } else if (t == 0x49534b) {
+            // ISK
+            return 0xC642549743A93674cf38D6431f75d6443F88E3E2;
+        } else {
+            revert("Unsupported ticker");
+        }
     }
 
     function ticker() public view returns (bytes3) {
         return _getControllerStorage().ticker;
-    }
-
-    function setFrontend(address _address) public onlyOwner {
-        _getControllerStorage().frontend = _address;
     }
 
     function transfer_withCaller(
