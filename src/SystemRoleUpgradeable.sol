@@ -141,7 +141,7 @@ abstract contract SystemRoleUpgradeable is
     }
 
     // Override renounceOwnership to prevent renouncing ownership
-    function renounceOwnership() public override onlyOwner {
+    function renounceOwnership() public view override onlyOwner {
         revert("Ownership cannot be renounced");
     }
 }

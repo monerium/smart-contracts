@@ -4,7 +4,6 @@ pragma solidity 0.8.20;
 
 import "./Token.sol";
 import "./interfaces/IERC677Recipient.sol";
-import "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
 
 // The ControllerToken contract acts as a bridge to ensure compatibility between the Smart-Contract v2 and the v1 TokenFrontend.
 // It allows the v2's proxy to function as the controller for the v1 TokenFrontend.
@@ -27,8 +26,6 @@ contract ControllerToken is Token {
             $.slot := ControllerStorageLocation
         }
     }
-
-    using SignatureChecker for address;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
