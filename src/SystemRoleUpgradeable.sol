@@ -15,7 +15,6 @@ abstract contract SystemRoleUpgradeable is
         __Ownable2Step_init();
         __Ownable_init(_msgSender());
         __AccessControl_init();
-        _grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
     }
 
     /**
@@ -98,7 +97,7 @@ abstract contract SystemRoleUpgradeable is
      * @param account The address of the account.
      */
     function addSystemAccount(address account) public virtual onlyOwner {
-        grantRole(SYSTEM_ROLE, account);
+        _grantRole(SYSTEM_ROLE, account);
         emit SystemAccountAdded(account);
     }
 
@@ -107,7 +106,7 @@ abstract contract SystemRoleUpgradeable is
      * @param account The address of the account.
      */
     function removeSystemAccount(address account) public virtual onlyOwner {
-        revokeRole(SYSTEM_ROLE, account);
+        _revokeRole(SYSTEM_ROLE, account);
         emit SystemAccountRemoved(account);
     }
 
@@ -116,7 +115,7 @@ abstract contract SystemRoleUpgradeable is
      * @param account The address of the account.
      */
     function addAdminAccount(address account) public virtual onlyOwner {
-        grantRole(ADMIN_ROLE, account);
+        _grantRole(ADMIN_ROLE, account);
         emit AdminAccountAdded(account);
     }
 
@@ -125,7 +124,7 @@ abstract contract SystemRoleUpgradeable is
      * @param account The address of the account.
      */
     function removeAdminAccount(address account) public virtual onlyOwner {
-        revokeRole(ADMIN_ROLE, account);
+        _revokeRole(ADMIN_ROLE, account);
         emit AdminAccountRemoved(account);
     }
 
