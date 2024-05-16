@@ -20,6 +20,8 @@ contract BlacklistValidatorUpgradeable is
     IValidator
 {
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
+    // keccak256("monerium.validator")
+    bytes32 private constant ID = 0x5341d189213c4172d0c7256f80bc5f8e6350af3aaff7a029625d8dd94f0f82a5;
 
     struct BlacklistValidatorStorage {
         mapping(address => bool) blacklist;
@@ -82,6 +84,11 @@ contract BlacklistValidatorUpgradeable is
     function _authorizeUpgrade(
         address newImplementation
     ) internal override onlyOwner {}
+
+    // CONTRACT_ID returns the contract identifier.
+    function CONTRACT_ID() public pure returns (bytes32) {
+        return ID;
+    }
 
     /**
      * @dev Adds an address to the blacklist.

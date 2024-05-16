@@ -32,4 +32,10 @@ interface IValidator {
         address to,
         uint256 amount
     ) external returns (bool valid);
+
+    /**
+     * @dev Returns the contract identifier.
+     */ 
+     function CONTRACT_ID() external view returns (bytes32);
+
 }

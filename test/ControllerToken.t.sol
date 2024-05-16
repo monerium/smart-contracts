@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import "forge-std/Test.sol";
 import "../src/ControllerToken.sol";
 import "../src/BlacklistValidatorUpgradeable.sol";
-import "../src/tokenfrontend.sol";
+import "../src/tests/tokenfrontend.sol";
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import "forge-std/console.sol";
 
@@ -107,20 +107,6 @@ contract ControllerTokenTest is Test {
         vm.prank(user1);
         vm.expectRevert("Transfer not validated");
         frontend.transfer(user2, 1);
-    }
-
-    function test_from_banned_user_should_not_transferFrom() public {
-        // Add user1 to blacklist
-        vm.prank(admin);
-        validator.ban(user1);
-        assertTrue(validator.isBan(user1));
-
-        vm.prank(user1);
-        frontend.approve(user2, 1e18);
-
-        vm.prank(user2);
-        vm.expectRevert("Transfer not validated");
-        frontend.transferFrom(user1, user2, 1);
     }
 
     function test_from_banned_user_should_not_transferFrom() public {

@@ -56,6 +56,7 @@ contract Token is
         __UUPSUpgradeable_init();
         __SystemRole_init();
         validator = IValidator(_validator);
+        require(validator.CONTRACT_ID() == keccak256("monerium.validator"), "Not Monerium Validator Contract");
     }
 
     // _authorizeUpgrade is a crucial part of the UUPS upgrade pattern in OpenZeppelin.
@@ -109,6 +110,7 @@ contract Token is
     // Function to set the validator, restricted to owner
     function setValidator(address _validator) public onlyOwner {
         validator = IValidator(_validator);
+        require(validator.CONTRACT_ID() == keccak256("monerium.validator"), "Not Monerium Validator Contract");
     }
 
     // Override transfer function to invoke validator

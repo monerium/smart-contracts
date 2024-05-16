@@ -4,6 +4,7 @@ pragma solidity ^0.8.20;
 import "forge-std/Test.sol";
 import "../src/Token.sol";
 import "../src/BlacklistValidatorUpgradeable.sol";
+import "../src/tests/NotAMoneriumValidator.sol";
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import "forge-std/console.sol";
 
@@ -13,6 +14,7 @@ contract BlackListValidatorTest is Test {
     Token public token;
     ERC1967Proxy public proxy;
     BlacklistValidatorUpgradeable public validator;
+    NotAMoneriumValidator public notAMoneriumValidator;
 
     address owner = address(this);
 
@@ -25,6 +27,7 @@ contract BlackListValidatorTest is Test {
         // Deploy the implementation contract
         Token implementation = new Token();
         BlacklistValidatorUpgradeable blacklistValidator = new BlacklistValidatorUpgradeable();
+        notAMoneriumValidator = new NotAMoneriumValidator();
 
         // Deploy the proxy contract
         bytes memory initDataProxy = abi.encodeWithSelector(
@@ -66,6 +69,26 @@ contract BlackListValidatorTest is Test {
         token.mint(user1, 1e18);
         token.mint(user2, 1e18);
         vm.stopPrank();
+    }
+
+    function test_shouldNotAcceptANotMoneriumValidator() public {
+        vm.expectRevert("Not Monerium Validator Contract");
+        token.setValidator(address(notAMoneriumValidator));
+    }
+
+    function test_shouldNotAcceptANotMoneriumValidatorAtInitialization() public {
+        // Deploy the implementation contract
+        Token implementation = new Token();
+
+        bytes memory initData = abi.encodeWithSelector(
+            Token.initialize.selector,
+            "token",
+            "EURE",
+            address(notAMoneriumValidator)
+        );
+
+        vm.expectRevert("Not Monerium Validator Contract");
+        new ERC1967Proxy(address(implementation), initData);
     }
 
     function test_ban() public {
