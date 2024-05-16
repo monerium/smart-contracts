@@ -68,6 +68,12 @@ contract BlacklistValidatorUpgradeable is
      */
     event AdminAccountRemoved(address indexed account);
 
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
+
+
     /**
      * @dev Initializes the contract.
      */
