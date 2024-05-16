@@ -98,6 +98,45 @@ contract ControllerTokenTest is Test {
         assertEq(frontend.balanceOf(user2), 2e18);
     }
 
+    function test_shouldNotTransferIfBlacklisted() public {
+        // Add user2 to blacklist
+        vm.prank(admin);
+        validator.ban(user1);
+        assertTrue(validator.isBan(user1));
+
+        vm.prank(user1);
+        vm.expectRevert("Transfer not validated");
+        frontend.transfer(user2, 1);
+    }
+
+    function test_from_banned_user_should_not_transferFrom() public {
+        // Add user1 to blacklist
+        vm.prank(admin);
+        validator.ban(user1);
+        assertTrue(validator.isBan(user1));
+
+        vm.prank(user1);
+        frontend.approve(user2, 1e18);
+
+        vm.prank(user2);
+        vm.expectRevert("Transfer not validated");
+        frontend.transferFrom(user1, user2, 1);
+    }
+
+    function test_from_banned_user_should_not_transferFrom() public {
+        // Add user1 to blacklist
+        vm.prank(admin);
+        validator.ban(user1);
+        assertTrue(validator.isBan(user1));
+
+        vm.prank(user1);
+        frontend.approve(user2, 1e18);
+
+        vm.prank(user2);
+        vm.expectRevert("Transfer not validated");
+        frontend.transferFrom(user1, user2, 1);
+    }
+
     function testFail_shouldNotTransferIfNotFromFrontend() public {
         vm.prank(user1);
         token.transfer_withCaller(user1, user2, 1e18);

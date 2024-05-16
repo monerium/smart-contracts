@@ -47,7 +47,7 @@ contract ControllerToken is Token {
 
     modifier onlyFrontend() {
         require(
-          isFrontend(msg.sender),
+            isFrontend(msg.sender),
             "ControllerToken: caller is not the frontend"
         );
         _;
@@ -74,6 +74,10 @@ contract ControllerToken is Token {
         address to,
         uint256 amount
     ) external onlyFrontend returns (bool) {
+        require(
+            validator.validate(caller, to, amount),
+            "Transfer not validated"
+        );
         _transfer(caller, to, amount);
         return true;
     }
@@ -84,6 +88,7 @@ contract ControllerToken is Token {
         address to,
         uint256 amount
     ) external onlyFrontend returns (bool) {
+        require(validator.validate(from, to, amount), "Transfer not validated");
         _spendAllowance(from, caller, amount);
         _transfer(from, to, amount);
         return true;
@@ -104,13 +109,17 @@ contract ControllerToken is Token {
         uint256 amount,
         bytes calldata data
     ) external onlyFrontend returns (bool) {
-      _transfer(caller, to, amount);
-      IERC677Recipient recipient = IERC677Recipient(to);
-      require(
-        recipient.onTokenTransfer(caller, amount, data),
-        "token handler returns false"
-      );
-      return true;
+        require(
+            validator.validate(caller, to, amount),
+            "Transfer not validated"
+        );
+        _transfer(caller, to, amount);
+        IERC677Recipient recipient = IERC677Recipient(to);
+        require(
+            recipient.onTokenTransfer(caller, amount, data),
+            "token handler returns false"
+        );
+        return true;
     }
 
     function mintTo_withCaller(
@@ -126,14 +135,14 @@ contract ControllerToken is Token {
 
     function burnFrom_withCaller(
         address caller,
-        address ,//from
-        uint256 ,//amount
-        bytes32 ,//h
-        uint8 ,//v
-        bytes32 ,//r
+        address, //from
+        uint256, //amount
+        bytes32, //h
+        uint8, //v
+        bytes32, //r
         bytes32 //s
     ) external view onlyFrontend onlySystemAccount(caller) returns (bool) {
-      revert("deprecated");
+        revert("deprecated");
     }
 
     function recover_withCaller(
@@ -145,7 +154,7 @@ contract ControllerToken is Token {
         bytes32, //r
         bytes32 //s
     ) external view onlyFrontend onlySystemAccount(caller) returns (uint256) {
-      revert("deprecated");
+        revert("deprecated");
     }
 
     function claimOwnership() external onlyFrontend {
