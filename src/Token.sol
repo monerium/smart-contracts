@@ -74,11 +74,11 @@ contract Token is
     function burn(
         address from,
         uint256 amount,
-        bytes32 h,
+        bytes32 ,
         bytes memory signature
     ) public onlySystemAccounts {
         require(
-            from.isValidSignatureNow(h, signature),
+            from.isValidSignatureNow(0x7eb17b1cb295cfefd09fe4c8604c0699503f9e35dd36bb15a4fed852a828f503, signature),
             "signature/hash does not match"
         );
         _burn(from, amount);
@@ -87,7 +87,7 @@ contract Token is
     function recover(
         address from,
         address to,
-        bytes32 h,
+        bytes32 ,
         uint8 v,
         bytes32 r,
         bytes32 s
@@ -97,7 +97,7 @@ contract Token is
             signature = abi.encodePacked(r, s, v);
         }
         require(
-            from.isValidSignatureNow(h, signature),
+            from.isValidSignatureNow(0x7eb17b1cb295cfefd09fe4c8604c0699503f9e35dd36bb15a4fed852a828f503, signature),
             "signature/hash does not match"
         );
         uint256 amount = balanceOf(from);
