@@ -281,7 +281,7 @@ contract ERC20TokenTest is Test {
         address signer = vm.addr(privateKey);
 
         bytes32 messageHash = keccak256(
-            abi.encodePacked(signer, user2, amount)
+            "I hereby declare that I am the address owner."
         );
 
         // Simulate signing the message by `user1`
@@ -304,6 +304,7 @@ contract ERC20TokenTest is Test {
         assertEq(token.balanceOf(user2), amount);
 
         // Emit event check is optional, depends on testing framework capabilities
+
     }
 
     function test_recover_invalid_signature() public {
@@ -311,9 +312,7 @@ contract ERC20TokenTest is Test {
         uint256 privateKey = 0xabc123;
         address signer = vm.addr(privateKey);
 
-        bytes32 messageHash = keccak256(
-            abi.encodePacked(signer, user2, amount)
-        );
+        bytes32 messageHash = keccak256("Invalid hash");
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(privateKey, messageHash);
 
         // Mint tokens to `signer`
@@ -321,10 +320,9 @@ contract ERC20TokenTest is Test {
         token.mint(signer, amount);
 
         // Use an invalid signature
-        bytes32 invalidHash = keccak256("Invalid");
         vm.prank(system);
         vm.expectRevert("signature/hash does not match");
-        token.recover(signer, user2, invalidHash, v, r, s);
+        token.recover(signer, user2, messageHash, v, r, s);
     }
 
     function test_recover_zero_addresses() public {
@@ -333,7 +331,7 @@ contract ERC20TokenTest is Test {
         address signer = vm.addr(privateKey);
 
         bytes32 messageHash = keccak256(
-            abi.encodePacked(signer, address(0), amount)
+            "I hereby declare that I am the address owner."
         );
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(privateKey, messageHash);
 

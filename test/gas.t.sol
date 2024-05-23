@@ -84,7 +84,7 @@ contract ERC20TokenTest is Test {
         console.log("gasUsed for transferFrom", gasUsed);
 
         address user = vm.addr(0xabc123);
-        bytes32 hash = keccak256("burn");
+        bytes32 hash = keccak256("I hereby declare that I am the address owner.");
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(0xabc123, hash);
         bytes memory signature = abi.encodePacked(r, s, v);
 

@@ -123,7 +123,7 @@ contract MintableTokenTest is Test {
         test_system_account_can_mint_tokens();
 
         address user = vm.addr(userPrivateKey);
-        bytes32 hash = keccak256("burn");
+        bytes32 hash = keccak256("I hereby declare that I am the address owner.");
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPrivateKey, hash);
         bytes memory signature = abi.encodePacked(r, s, v);
 
@@ -140,7 +140,7 @@ contract MintableTokenTest is Test {
         test_system_account_can_mint_tokens();
 
         address user = vm.addr(userPrivateKey);
-        bytes32 hash = keccak256("burn");
+        bytes32 hash = keccak256("I hereby declare that I am the address owner.");
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPrivateKey, hash);
         bytes memory signature = abi.encodePacked(r, s, v);
 
@@ -156,9 +156,8 @@ contract MintableTokenTest is Test {
         test_system_account_can_mint_tokens();
 
         address user = vm.addr(userPrivateKey);
-        bytes32 hash = keccak256("burn");
-        bytes32 hash2 = keccak256("burn2");
-        (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPrivateKey, hash);
+        bytes32 hash2 = keccak256("Invalid burn");
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPrivateKey, hash2);
         bytes memory signature = abi.encodePacked(r, s, v);
 
         vm.startPrank(system);
