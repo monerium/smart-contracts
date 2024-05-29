@@ -1,8 +1,11 @@
 # Smart Contract Permit Function Tutorial
-The permit function allows a spender to transfer tokens on behalf of the token holder with a signed permission. This tutorial breaks down the use of the permit function into digestible steps.
+
+Developers should use [ERC-2612 Permit](https://eips.ethereum.org/EIPS/eip-2612) instead of [ERC-20 Approve](https://eips.ethereum.org/EIPS/eip-20) because it allows for gasless token approvals through off-chain signatures, eliminating the need for a separate on-chain approval transaction. This not only reduces transaction costs but also streamlines user experience by enabling approvals and transfers to happen in a single transaction. By using Permit, developers can create more efficient and user-friendly applications, enhancing security and flexibility within the Ethereum ecosystem.
+
+This tutorial breaks down the use of the permit function into digestible steps.
 
 ## Step 1: Import Required Modules
-Import the SigningKey module for signing the permit digest.
+Import the SigningKey module to sign the permit digest.
 
 ```js
 const { SigningKey } = require("@ethersproject/signing-key");
