@@ -43,7 +43,7 @@ This strategy allows us to present our partners and users with a modernized entr
 
 ## Step-by-Step Migration Guide
 
-The migration process involves a `JavaScript` script that creates a `Foundry` Solidity script, utilizing a list of users acquired from an `Etherscan` service.
+The migration process involves a `JavaScript` script that creates a `Foundry` Solidity script, utilizing a list of users acquired from compiling logs.
 
 After completion, we will use one `wallet` to deploy and run the migration and set the final `roles` and `owners`.
 
