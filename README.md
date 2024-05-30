@@ -13,6 +13,8 @@ Monerium stablecoins are also MICA compliant.
 * Main website: [https://monerium.com](https://monerium.com)
 * Developer portal: [https://monerium.dev](https://monerium.dev)
 * [Token addresses and related information](https://monerium.dev/docs/tokens)
+* Join our [Telegram channel](https://t.me/+W7efXd4p4zQyZjFk) for technical support. 
+
 
 ## Table of Contents
 
@@ -39,10 +41,6 @@ Additionally, all four tokens also hold access to a shared Blacklist validator (
 For detailed setup, deployment, and testing instructions, visit [this dedicated page](./docs/deployment.md).
 
 ## Token Features
-
-We at Monerium are excited to talk to all developers and builders who want to use money in their applications.
-Go to [monerium.com](https://monerium.com) and fill out the "Partner with Monerium" form and our expert staff
-will be available to help you every step of the way, from implementation to ongoing operations.
 
 ### ERC20 
 
