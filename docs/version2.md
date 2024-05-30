@@ -74,7 +74,7 @@ In V1,  four Ethereum smart contracts were deployed to work together for each to
 * **Validator**: Used by the controllers to validate transactions.
 
 <p align="center" style="margin: 30px 0;">
-    <img src="../assets/v1-contracts.png" title="V1 Token design" style="max-width:500px;" /><br />
+    <img src="../assets/500/v1-contracts.png" title="V1 Token design" style="max-width:500px;" /><br />
     <em>Figure: V1 Token design</em>
 </p>
 
@@ -85,7 +85,7 @@ The V2 token architecture uses OpenZeppelin's [UUPS Proxy Pattern](https://docs.
 * **Validator**: Used by the Implementation contract to approve and validate transactions before they are made. 
 
 <p align="center" style="margin: 30px 0;">
-    <img src="../assets/v2-contracts.png" alt="V2 Token design" style="max-width: 500px;" /><br />
+    <img src="../assets/500/v2-contracts.png" alt="V2 Token design" style="max-width: 500px;" /><br />
     <em>Figure: V2 Token design</em>
 </p>
 
