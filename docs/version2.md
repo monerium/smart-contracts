@@ -18,7 +18,7 @@ The new contract includes optimized functions that significantly reducing gas co
         <tr>
             <th>
                 Function<br />
-                <small style="white-space: nowrap;">gas used</small>
+                <small style="white-space: nowrap;">ERC20 function</small>
             </th>
             <th>
                 V1<br />
@@ -80,19 +80,19 @@ In V1,  four Ethereum smart contracts were deployed to work together for each to
 
 The V2 token architecture uses OpenZeppelin's [UUPS Proxy Pattern](https://docs.openzeppelin.com/contracts/4.x/api/proxy#UUPSUpgradeable) for Upgradability. 
 
-* Proxy (ERC1967Proxy.sol):  Similar to the front end and storage in V1, the proxy contract provides the permanent Ethereum address for the token and delegates the function calls to the implementation contract. In addition it keeps track of all of the balances, like the storage in V1. The four proxy contracts corresponding to each token (EURe, GBPe, USDe, and ISKe) share the same implementation contract.
-* Implementation (Token.sol): Similar to the controller in V1,the Implementation contract is responsible for the business logic.
-* Validator: Used by the Implementation contract to approve and validate transactions before they are made. 
+* **Proxy (ERC1967Proxy.sol)**:  Similar to the front end and storage in V1, the proxy contract provides the permanent Ethereum address for the token and delegates the function calls to the implementation contract. In addition it keeps track of all of the balances, like the storage in V1. The four proxy contracts corresponding to each token (EURe, GBPe, USDe, and ISKe) share the same implementation contract.
+* **Implementation (Token.sol)**: Similar to the controller in V1,the Implementation contract is responsible for the business logic.
+* **Validator**: Used by the Implementation contract to approve and validate transactions before they are made. 
 
 <p align="center" style="margin: 30px 0;">
-    <img src="../assets/v2-contracts.png" title="V2 Token design" style="max-width:500px;" /><br />
+    <img src="../assets/v2-contracts.png" alt="V2 Token design" style="max-width: 500px;" /><br />
     <em>Figure: V2 Token design</em>
 </p>
 
 The V1 front end will now utilize the V2 Proxy as its controller. Whether you use the V1 front end or V2 Proxy when importing the token to your wallet, you will experience reduced gas costs and see the same balance.
 
 <p align="center" style="margin: 30px 0;">
-    <img src="../assets/v1-frontend-v2-tokens.png" title="V1 Frontend using V2 Proxy as controller" style="max-width:500px;" /><br />
+    <img src="../assets/v1-frontend-v2-tokens.png" alt="V1 Frontend using V2 Proxy as controller" style="max-width: 500px;" /><br />
     <em>Figure: V1 Frontend using V2 Proxy as controller</em>
 </p>
 
