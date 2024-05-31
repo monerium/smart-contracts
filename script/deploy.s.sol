@@ -50,6 +50,51 @@ contract All is Script {
     }
 }
 
+contract AllController is Script {
+    function run() external {
+        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
+
+        vm.startBroadcast(deployerPrivateKey);
+
+        BlacklistValidatorUpgradeable blacklistValidator = new BlacklistValidatorUpgradeable();
+        ERC1967Proxy validatorProxy = new ERC1967Proxy(
+            address(blacklistValidator),
+            abi.encodeWithSelector(BlacklistValidatorUpgradeable.initialize.selector)
+        );
+
+        // Deploy only one implementation of the Token contract for all currencies.
+        ControllerToken implementation = new ControllerToken();
+
+        deployTokenProxy(implementation, "Monerium EURe", "EURe", bytes3("EUR"), address(validatorProxy));
+        deployTokenProxy(implementation, "Monerium GBPe", "GBPe", bytes3("GBP"), address(validatorProxy));
+        deployTokenProxy(implementation, "Monerium ISKe", "ISKe", bytes3("ISK") ,address(validatorProxy));
+        deployTokenProxy(implementation, "Monerium USDe", "USDe", bytes3("USD") ,address(validatorProxy));
+
+        vm.stopBroadcast();
+    }
+
+    function deployTokenProxy(
+        ControllerToken implementation,
+        string memory name,
+        string memory symbol,
+        bytes3 _ticker,
+        address validatorProxy
+    ) internal {
+        ERC1967Proxy proxy = new ERC1967Proxy(
+            address(implementation),
+            abi.encodeWithSelector(
+                ControllerToken.initialize.selector,
+                name,
+                symbol,
+                _ticker,
+                validatorProxy
+            )
+        );
+
+        console.log("Deployed", symbol, "at", address(proxy));
+    }
+}
+
 contract ControllerEUR is Script {
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
