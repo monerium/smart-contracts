@@ -78,7 +78,7 @@ contract Token is
         bytes memory signature
     ) public onlySystemAccounts {
         require(
-            from.isValidSignatureNow(0x7eb17b1cb295cfefd09fe4c8604c0699503f9e35dd36bb15a4fed852a828f503, signature),
+            from.isValidSignatureNow(0xb77c35c892a1b24b10a2ce49b424e578472333ee8d2456234fff90626332c50f, signature),
             "signature/hash does not match"
         );
         _burn(from, amount);
@@ -97,7 +97,7 @@ contract Token is
             signature = abi.encodePacked(r, s, v);
         }
         require(
-            from.isValidSignatureNow(0x7eb17b1cb295cfefd09fe4c8604c0699503f9e35dd36bb15a4fed852a828f503, signature),
+            from.isValidSignatureNow(0xb77c35c892a1b24b10a2ce49b424e578472333ee8d2456234fff90626332c50f, signature),
             "signature/hash does not match"
         );
         uint256 amount = balanceOf(from);

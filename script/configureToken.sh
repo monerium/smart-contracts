@@ -25,6 +25,6 @@ export MAX_MINT_ALLOWANCE=$allowance
 
 # Call the Forge script
 echo "configure tokens"
-forge script script/configureToken.s.sol --rpc-url $RPC_URL --broadcast --etherscan-api-key $ETHERSCAN_API_KEY
+forge script script/configureToken.s.sol --rpc-url $RPC_URL --broadcast --etherscan-api-key $ETHERSCAN_API_KEY --legacy
 
 

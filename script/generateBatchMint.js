@@ -164,7 +164,7 @@ const erc20ABI = [
   },
 ];
 
-if (process.argv.length < 7) {
+if (process.argv.length < 6) {
   console.error(
     "Usage: node script.js <rpcURL> <V2Address> <startBlock> <V1Address> "
   );
