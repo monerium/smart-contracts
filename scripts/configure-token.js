@@ -33,7 +33,7 @@ module.exports = async function (exit) {
     await controller.setMaxMintAllowance(allowance);
     console.log("Max mint allowance set successfully.");
 
-    if (system == owner) {
+    if (admin == owner) {
       await controller.setMintAllowance(system, allowance);
       console.log("Mint allowance set successfully for system as owner.");
     }

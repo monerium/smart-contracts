@@ -1,27 +1,25 @@
-const HDWalletProvider = require('@truffle/hdwallet-provider');
-const toWei = new require('web3').utils.toWei;
+const HDWalletProvider = require("@truffle/hdwallet-provider");
+const toWei = new require("web3").utils.toWei;
 
-const address = process.env['ADDRESS'];
-const key = process.env['KEY'];
-const mnemonic = process.env['MNEMONIC'];
-const poahost = process.env['POA_HOST'];
-const etherscanKey = process.env['ETHERSCAN_API'];
-const polygonscanKey = process.env['POLYGONSCAN_API'];
-const gnosisscanKey = process.env['GNOSISSCAN_API'];
+const address = process.env["ADDRESS"];
+const key = process.env["KEY"];
+const mnemonic = process.env["MNEMONIC"];
+const poahost = process.env["POA_HOST"];
+const etherscanKey = process.env["ETHERSCAN_API"];
+const polygonscanKey = process.env["POLYGONSCAN_API"];
+const gnosisscanKey = process.env["GNOSISSCAN_API"];
 
-var url = process.env['URL'];
+var url = process.env["URL"];
 var walletProvider;
 
 console.log(url);
 try {
-
   if (key != undefined || mnemonic != undefined) {
-
     if (address == undefined) {
-      throw Error('ADDRESS not set');
+      throw Error("ADDRESS not set");
     }
     if (url == undefined) {
-      throw Error('URL not set');
+      throw Error("URL not set");
     }
 
     walletProvider = new HDWalletProvider({
@@ -35,22 +33,19 @@ try {
     if (walletAddress != address.toLowerCase()) {
       throw Error(`Wallet address ${walletAddress} does not match ${address}`);
     }
-
   } else {
     console.log("WARNING: both KEY and MNEMONIC undefined");
   }
-
 } catch (e) {
   console.log(e.toString());
   process.exit();
 }
 
 module.exports = {
-
   networks: {
     development: {
       host: "localhost",
-      port: 9545,
+      port: 8545,
       network_id: "*", // Match any network id
     },
     poa: {
@@ -63,7 +58,7 @@ module.exports = {
       network_id: 5,
       gas: 5000000,
       from: address,
-      gasPrice: toWei('10', 'gwei'),
+      gasPrice: toWei("10", "gwei"),
       timeoutBlocks: 200,
       skipDryRun: true,
     },
@@ -72,16 +67,16 @@ module.exports = {
       network_id: 1,
       gas: 6800000,
       from: address,
-      gasPrice: toWei('15', 'gwei'),
+      gasPrice: toWei("15", "gwei"),
     },
-    polygon_pos_mumbai: {
+    polygon_pos_amoy: {
       provider: () => walletProvider,
-      network_id: 80001,
+      network_id: 80002,
       confirmation: 2,
       timeoutBlocks: 200,
       // chainId: 80001,
-      gas: 4465030,
-      gasPrice: toWei('41', 'gwei'),
+      gas: 6800000,
+      gasPrice: toWei("15", "gwei"),
     },
     polygon_pos_mainnet: {
       provider: () => walletProvider,
@@ -95,9 +90,9 @@ module.exports = {
       provider: walletProvider,
       network_id: 10200,
       from: address,
-      gasPrice: toWei('2', 'gwei'),
+      gasPrice: toWei("2", "gwei"),
       timeoutBlocks: 200,
-      skipDryRun: true
+      skipDryRun: true,
     },
     gnosischain_mainnet: {
       provider: walletProvider,
@@ -105,9 +100,9 @@ module.exports = {
       from: address,
       // gasPrice: toWei('2', 'gwei'),
       timeoutBlocks: 200,
-      maxFeePerGas: toWei('15', 'gwei'),
-      maxPriorityFeePerGas: toWei('2', 'gwei'),
-      skipDryRun: true
+      maxFeePerGas: toWei("15", "gwei"),
+      maxPriorityFeePerGas: toWei("2", "gwei"),
+      skipDryRun: true,
     },
     sepolia: {
       provider: () => walletProvider,
@@ -116,7 +111,7 @@ module.exports = {
       timeoutBlocks: 200, // # of blocks before a deployment times out  (minimum/default: 50)
       skipDryRun: true, // Skip dry run before migrations? (default: false for public nets )
       from: address,
-      gas: 4465030,
+      gas: 6800000,
     },
     dashboard: {
       network_id: 1,
@@ -127,27 +122,25 @@ module.exports = {
       from: address,
       // gasLimit: 30000000,
       gas: 4465030,
-      maxFeePerGas: toWei('20', 'gwei'),
-      maxPriorityFeePerGas: toWei('4', 'gwei'),
+      maxFeePerGas: toWei("20", "gwei"),
+      maxPriorityFeePerGas: toWei("4", "gwei"),
     },
   },
 
   compilers: {
     solc: {
-      version: "0.8.11",    // fetch exact version from solc-bin (default: truffle's version)
-      settings: {           // see the solidity docs for advice about optimization and evmVersion
+      version: "0.8.11", // fetch exact version from solc-bin (default: truffle's version)
+      settings: {
+        // see the solidity docs for advice about optimization and evmVersion
         optimizer: {
           enabled: true,
-          runs: 1000
+          runs: 1000,
         },
       },
     },
   },
 
-  plugins: [
-    'truffle-plugin-verify',
-    'solidity-coverage'
-  ],
+  plugins: ["truffle-plugin-verify", "solidity-coverage"],
 
   api_keys: {
     etherscan: etherscanKey,
@@ -156,10 +149,9 @@ module.exports = {
   },
 
   mocha: {
-    reporter: 'eth-gas-reporter',
+    reporter: "eth-gas-reporter",
     reporterOptions: {
-      excludeContracts: ['Migrations'],
+      excludeContracts: ["Migrations"],
     },
   },
-
 };
