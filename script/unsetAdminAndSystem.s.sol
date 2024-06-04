@@ -16,11 +16,11 @@ contract All is Script {
 
         Token token = Token(tokenAddress);
 
-        token.addAdminAccount(wallet);
-        console.log("Admin account added successfully.");
+        token.removeAdminAccount(wallet);
+        console.log("Admin account removed successfully.");
 
-        token.addSystemAccount(wallet);
-        console.log("System account added successfully.");
+        token.removeSystemAccount(wallet);
+        console.log("System account removed successfully.");
 
         vm.stopBroadcast();
     }
