@@ -138,7 +138,9 @@ export ADMIN_ADDRESS=<admin_address>
 export MAX_MINT_ALLOWANCE=<amount_in_wei>
 forge script script/configureToken.s.sol --rpc-url $RPC_URL --broadcast
  ```
-4. Configure the `V2` token with a minting allowance
+3. Transfer ownership of the `V1` token and `Controller` to the dev key
+  
+5. Configure the `V2` token with a minting allowance
 
  Use the `admin safe` to set the mint allowance. 
 
