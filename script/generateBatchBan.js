@@ -9,6 +9,7 @@ async function fetchTokenHolders(contract, startBlock, latestBlock) {
   const endBlock = new BigNumber(latestBlock);
 
   const holdersSet = new Set();
+  console.log(startBlock);
   while (currentBlock.lt(endBlock)) {
     let toBlock = BigNumber.min(currentBlock.plus(queryStep), endBlock);
     console.log(
@@ -82,7 +83,6 @@ ${bans}
 }
 async function main(rpcURL, target, v1, owner, startBlock) {
   const web3 = new Web3(new Web3.providers.HttpProvider(rpcURL));
-  console.log("v1: ", v1);
   const contract = new web3.eth.Contract(BlacklistValidatorABI, v1);
   const latestBlock = await web3.eth.getBlockNumber();
 
@@ -264,4 +264,10 @@ const BlacklistValidatorABI = [
   },
 ];
 
-main(process.argv[2], process.argv[3], process.argv[4], process.argv[5]);
+main(
+  process.argv[2],
+  process.argv[3],
+  process.argv[4],
+  process.argv[5],
+  process.argv[6]
+);
