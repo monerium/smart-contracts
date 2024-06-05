@@ -26,7 +26,6 @@ contract All is Script {
         frontend.claimOwnership();
 
         // Connecting Token proxy as a controller.
-        token.setFrontend(frontendAddress);
         frontend.setController(tokenAddress);
 
         // Transfer ownership of Token and TokenFrontend to the new owner

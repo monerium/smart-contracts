@@ -58,6 +58,33 @@ async function fetchTokenHolders(contract, startBlock, latestBlock) {
   return holdersSet;
 }
 
+async function fetchTokenHolders(contract, startBlock, latestBlock) {
+  let currentBlock = new BigNumber(startBlock);
+  const endBlock = new BigNumber(latestBlock);
+
+  const holdersSet = new Set();
+  while (currentBlock.lt(endBlock)) {
+    let toBlock = BigNumber.min(currentBlock.plus(queryStep), endBlock);
+    console.log(
+      `Querying blocks ${currentBlock.toString()} to ${toBlock.toString()}...`
+    );
+
+    const events = await contract.getPastEvents("Transfer", {
+      fromBlock: currentBlock.toString(),
+      toBlock: toBlock.toString(),
+    });
+
+    events.forEach((event) => {
+      holdersSet.add(event.returnValues.from);
+      holdersSet.add(event.returnValues.to);
+    });
+
+    currentBlock = toBlock.plus(1);
+  }
+
+  return holdersSet;
+}
+
 async function fetchBalancesAndTotalSum(contract, holdersSet) {
   let totalSum = new BigNumber(0);
   const holderBalances = {};
@@ -104,16 +131,21 @@ contract BatchMint is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         address tokenAddress = ${web3.utils.toChecksumAddress(newToken)};
         address targetAddress = ${web3.utils.toChecksumAddress(target)};
-        address system = vm.addr(deployerPrivateKey);
-
+        address devKey = vm.addr(deployerPrivateKey);
+        
         vm.startBroadcast(deployerPrivateKey);
-
+  
         // Assuming Token and SmartController are already deployed and their ABIs are known
         Token token = Token(tokenAddress);
         ERC20 target = ERC20(targetAddress);
+        
+        // Set Admin And System
+        console.log("Setting dev key as admin and system");
+        token.addAdminAccount(devKey);
+        token.addSystemAccount(devKey);
 
         token.setMaxMintAllowance(target.totalSupply());
-        token.setMintAllowance(system, target.totalSupply());
+        token.setMintAllowance(devKey, target.totalSupply());
         console.log("mint allowance set successfully.");
 
 ${mints}
@@ -121,6 +153,10 @@ ${mints}
         console.log("minting completed successfully.");
         require(token.totalSupply() == target.totalSupply(), "balances are not fully copied.");
         console.log("balances are fully copied");
+        
+        console.log("removing dev key as admin and system");
+        token.removeAdminAccount(devKey);
+        token.removeSystemAccount(devKey);
         vm.stopBroadcast();
     }
 }`;

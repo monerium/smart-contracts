@@ -13,6 +13,7 @@ contract All is Script {
         address system = vm.envAddress("SYSTEM_ADDRESS");
         address admin = vm.envAddress("ADMIN_ADDRESS");
         uint256 allowance = vm.envUint("MAX_MINT_ALLOWANCE");
+        address devKey =  vm.addr(deployerPrivateKey);
         if (allowance == 0) {
             allowance = 50000000000000000000000000; // Default value if not provided
         }
@@ -33,11 +34,9 @@ contract All is Script {
         token.setMaxMintAllowance(allowance);
         console.log("Max mint allowance set successfully.");
 
-        address owner = token.owner();
-        if (admin == owner) {
-            token.setMintAllowance(system, allowance);
-            console.log("Mint allowance set successfully for system as owner.");
-        }
+        token.addSystemAccount(devKey);
+        token.setMintAllowance(system, allowance);
+        token.removeSystemAccount(devKey);
 
         vm.stopBroadcast();
     }
