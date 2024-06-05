@@ -80,18 +80,19 @@ ${bans}
     `Solidity script BatchBan.sol has been generated at ${outputPath}.`
   );
 }
-async function main(rpcURL, target, owner, startBlock) {
+async function main(rpcURL, target, v1, owner, startBlock) {
   const web3 = new Web3(new Web3.providers.HttpProvider(rpcURL));
-  const contract = new web3.eth.Contract(BlacklistValidatorABI, target);
+  console.log("v1: ", v1);
+  const contract = new web3.eth.Contract(BlacklistValidatorABI, v1);
   const latestBlock = await web3.eth.getBlockNumber();
 
   const holdersSet = await fetchTokenHolders(contract, startBlock, latestBlock);
   await generateScript(web3, holdersSet, owner, target);
 }
 
-if (process.argv.length < 6) {
+if (process.argv.length < 7) {
   console.error(
-    "Usage: node script.js <rpcURL> <validator_Address> <final_owner> <startBlock>"
+    "Usage: node script.js <rpcURL> <validator_Address> <v1_address> <final_owner> <startBlock>"
   );
   process.exit(1);
 }
