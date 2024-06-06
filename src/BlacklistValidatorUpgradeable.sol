@@ -164,7 +164,7 @@ contract BlacklistValidatorUpgradeable is
      * @dev add admin account.
      * @param account The address of the account.
      */
-    function addAdminAccount(address account) public virtual  {
+    function addAdminAccount(address account) public virtual onlyOwner {
         grantRole(ADMIN_ROLE, account);
         emit AdminAccountAdded(account);
     }
