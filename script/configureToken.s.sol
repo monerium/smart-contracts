@@ -36,6 +36,7 @@ contract All is Script {
 
         token.addAdminAccount(devKey);
         token.setMintAllowance(system, allowance);
+        console.log("mint allowance set successfully.");
         token.removeAdminAccount(devKey);
         vm.stopBroadcast();
     }
