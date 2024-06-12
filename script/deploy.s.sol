@@ -54,6 +54,23 @@ contract All is Script {
     }
 }
 
+contract BlacklistValidator is Script {
+    function run() external {
+        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
+
+        vm.startBroadcast(deployerPrivateKey);
+
+        BlacklistValidatorUpgradeable blacklistValidator = new BlacklistValidatorUpgradeable();
+        ERC1967Proxy proxy = new ERC1967Proxy(
+            address(blacklistValidator),
+            abi.encodeWithSelector(BlacklistValidatorUpgradeable.initialize.selector)
+        );
+
+        console.log("Deployed", "Validator", "at", address(proxy));
+        vm.stopBroadcast();
+    }
+}
+
 contract AllControllerGnosis is Script {
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");

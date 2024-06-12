@@ -123,7 +123,7 @@ contract MintableTokenTest is Test {
         test_system_account_can_mint_tokens();
 
         address user = vm.addr(userPrivateKey);
-        bytes32 hash = keccak256("I hereby declare that I am the address owner.");
+        bytes32 hash = 0xb77c35c892a1b24b10a2ce49b424e578472333ee8d2456234fff90626332c50f;
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPrivateKey, hash);
         bytes memory signature = abi.encodePacked(r, s, v);
 

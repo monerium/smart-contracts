@@ -76,7 +76,9 @@ contract BlackListValidatorTest is Test {
         token.setValidator(address(notAMoneriumValidator));
     }
 
-    function test_shouldNotAcceptANotMoneriumValidatorAtInitialization() public {
+    function test_shouldNotAcceptANotMoneriumValidatorAtInitialization()
+        public
+    {
         // Deploy the implementation contract
         Token implementation = new Token();
 
@@ -113,6 +115,39 @@ contract BlackListValidatorTest is Test {
     function test_non_admin_cannot_ban() public {
         vm.expectRevert(abi.encodeWithSignature("Unauthorized()"));
         validator.ban(user1);
+    }
+
+    function test_owner_can_add_admin() public {
+        assertTrue(validator.owner() == address(this));
+        validator.addAdminAccount(user1);
+        assertTrue(validator.isAdminAccount(user1));
+    }
+
+    function test_non_owner_cannot_add_admin() public {
+        vm.startPrank(user1);
+        assertTrue(validator.owner() != user1);
+        vm.expectRevert(
+            abi.encodeWithSignature("OwnableUnauthorizedAccount(address)", address(user1))
+        );
+        validator.addAdminAccount(user1);
+    }
+
+    function test_owner_can_remove_admin() public {
+        assertTrue(validator.owner() == address(this));
+        validator.addAdminAccount(user1);
+        assertTrue(validator.isAdminAccount(user1));
+        validator.removeAdminAccount(user1);
+        assertTrue(!validator.isAdminAccount(user1));
+    }
+
+    function test_non_owner_cannot_remove_admin() public {
+        vm.startPrank(user1);
+        assertTrue(validator.owner() != user1);
+        assertTrue(validator.isAdminAccount(admin));
+        vm.expectRevert(
+            abi.encodeWithSignature("OwnableUnauthorizedAccount(address)", address(user1))
+        );
+        validator.removeAdminAccount(admin);
     }
 
     function test_can_remove_admin() public {

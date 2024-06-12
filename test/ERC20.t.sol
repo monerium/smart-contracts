@@ -280,9 +280,7 @@ contract ERC20TokenTest is Test {
         uint256 privateKey = 0xabc123; // Assuming this private key corresponds to `user1`.
         address signer = vm.addr(privateKey);
 
-        bytes32 messageHash = keccak256(
-            "I hereby declare that I am the address owner."
-        );
+        bytes32 messageHash = 0xb77c35c892a1b24b10a2ce49b424e578472333ee8d2456234fff90626332c50f;
 
         // Simulate signing the message by `user1`
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(privateKey, messageHash);
@@ -330,9 +328,7 @@ contract ERC20TokenTest is Test {
         uint256 privateKey = 0xabc123;
         address signer = vm.addr(privateKey);
 
-        bytes32 messageHash = keccak256(
-            "I hereby declare that I am the address owner."
-        );
+        bytes32 messageHash = 0xb77c35c892a1b24b10a2ce49b424e578472333ee8d2456234fff90626332c50f;
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(privateKey, messageHash);
 
         vm.prank(system);
