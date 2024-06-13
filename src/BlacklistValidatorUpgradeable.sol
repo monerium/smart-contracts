@@ -81,7 +81,6 @@ contract BlacklistValidatorUpgradeable is
         __Ownable2Step_init();
         __Ownable_init(_msgSender());
         __AccessControl_init();
-        _grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
     }
 
     // _authorizeUpgrade is a crucial part of the UUPS upgrade pattern in OpenZeppelin.
