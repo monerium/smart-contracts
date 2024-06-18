@@ -22,7 +22,7 @@ contract All is Script {
             address(blacklistValidator),
             abi.encodeWithSelector(BlacklistValidatorUpgradeable.initialize.selector)
         );
-
+        console.log("Deployed BlacklistValidatorUpgradeable at ", address(validatorProxy));
         // Deploy only one implementation of the Token contract for all currencies.
         Token implementation = new Token();
 
@@ -86,6 +86,7 @@ contract AllControllerGnosis is Script {
         // Deploy only one implementation of the Token contract for all currencies.
         GnosisControllerToken implementation = new GnosisControllerToken();
 
+        console.log("Deployed BlacklistValidatorUpgradeable at ", address(validatorProxy));
         deployTokenProxy(implementation, "Monerium EURe", "EURe", bytes3("EUR"), address(validatorProxy));
         deployTokenProxy(implementation, "Monerium GBPe", "GBPe", bytes3("GBP"), address(validatorProxy));
         deployTokenProxy(implementation, "Monerium ISKe", "ISKe", bytes3("ISK") ,address(validatorProxy));
@@ -132,6 +133,7 @@ contract AllControllerPolygon is Script {
         // Deploy only one implementation of the Token contract for all currencies.
         PolygonControllerToken implementation = new PolygonControllerToken();
 
+        console.log("Deployed BlacklistValidatorUpgradeable at ", address(validatorProxy));
         deployTokenProxy(implementation, "Monerium EURe", "EURe", bytes3("EUR"), address(validatorProxy));
         deployTokenProxy(implementation, "Monerium GBPe", "GBPe", bytes3("GBP"), address(validatorProxy));
         deployTokenProxy(implementation, "Monerium ISKe", "ISKe", bytes3("ISK") ,address(validatorProxy));
@@ -177,6 +179,7 @@ contract AllControllerEthereum is Script {
         // Deploy only one implementation of the Token contract for all currencies.
         EthereumControllerToken implementation = new EthereumControllerToken();
 
+        console.log("Deployed BlacklistValidatorUpgradeable at ", address(validatorProxy));
         deployTokenProxy(implementation, "Monerium EURe", "EURe", bytes3("EUR"), address(validatorProxy));
         deployTokenProxy(implementation, "Monerium GBPe", "GBPe", bytes3("GBP"), address(validatorProxy));
         deployTokenProxy(implementation, "Monerium ISKe", "ISKe", bytes3("ISK") ,address(validatorProxy));

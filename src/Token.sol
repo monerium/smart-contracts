@@ -25,7 +25,7 @@ contract Token is
     SystemRoleUpgradeable
 {
     // Subsequent contract versions must retain this variable to avoid storage conflicts with the proxy.
-    IValidator internal validator;
+    IValidator public validator;
     using SignatureChecker for address;
 
     /**
