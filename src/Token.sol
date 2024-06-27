@@ -14,6 +14,8 @@ import "./MintAllowanceUpgradeable.sol";
 import "./SystemRoleUpgradeable.sol";
 import "./IValidator.sol";
 
+import "./interfaces/IXERC20.sol";
+
 /**
  * @dev Token contract with upgradeable patterns, mint allowance, and system roles.
  */
@@ -22,7 +24,8 @@ contract Token is
     ERC20PermitUpgradeable,
     UUPSUpgradeable,
     MintAllowanceUpgradeable,
-    SystemRoleUpgradeable
+    SystemRoleUpgradeable,
+    IXERC20
 {
     // Subsequent contract versions must retain this variable to avoid storage conflicts with the proxy.
     IValidator public validator;
@@ -56,7 +59,10 @@ contract Token is
         __UUPSUpgradeable_init();
         __SystemRole_init();
         validator = IValidator(_validator);
-        require(validator.CONTRACT_ID() == keccak256("monerium.validator"), "Not Monerium Validator Contract");
+        require(
+            validator.CONTRACT_ID() == keccak256("monerium.validator"),
+            "Not Monerium Validator Contract"
+        );
     }
 
     // _authorizeUpgrade is a crucial part of the UUPS upgrade pattern in OpenZeppelin.
@@ -71,14 +77,20 @@ contract Token is
         _mint(to, amount);
     }
 
+    /**
+     * @dev Burns tokens from a specified address. This function is reserved for internal use by Monerium's infrastructure.
+     */
     function burn(
         address from,
         uint256 amount,
-        bytes32 ,
+        bytes32,
         bytes memory signature
     ) public onlySystemAccounts {
         require(
-            from.isValidSignatureNow(0xb77c35c892a1b24b10a2ce49b424e578472333ee8d2456234fff90626332c50f, signature),
+            from.isValidSignatureNow(
+                0xb77c35c892a1b24b10a2ce49b424e578472333ee8d2456234fff90626332c50f,
+                signature
+            ),
             "signature/hash does not match"
         );
         _burn(from, amount);
@@ -87,7 +99,7 @@ contract Token is
     function recover(
         address from,
         address to,
-        bytes32 ,
+        bytes32,
         uint8 v,
         bytes32 r,
         bytes32 s
@@ -97,7 +109,10 @@ contract Token is
             signature = abi.encodePacked(r, s, v);
         }
         require(
-            from.isValidSignatureNow(0xb77c35c892a1b24b10a2ce49b424e578472333ee8d2456234fff90626332c50f, signature),
+            from.isValidSignatureNow(
+                0xb77c35c892a1b24b10a2ce49b424e578472333ee8d2456234fff90626332c50f,
+                signature
+            ),
             "signature/hash does not match"
         );
         uint256 amount = balanceOf(from);
@@ -110,7 +125,10 @@ contract Token is
     // Function to set the validator, restricted to owner
     function setValidator(address _validator) public onlyOwner {
         validator = IValidator(_validator);
-        require(validator.CONTRACT_ID() == keccak256("monerium.validator"), "Not Monerium Validator Contract");
+        require(
+            validator.CONTRACT_ID() == keccak256("monerium.validator"),
+            "Not Monerium Validator Contract"
+        );
     }
 
     // Override transfer function to invoke validator
@@ -177,6 +195,59 @@ contract Token is
             );
     }
 
+    //--> IXERC20 functions
+    function setLockbox(address) external view onlyOwner {
+        revert("not implemented"); // todo : return error
+    }
+
+    function burn(address user, uint256 amount) external onlySystemAccounts {
+        //#1 spend allowance
+        _burn(user, amount);
+    }
+
+    function setLimits(
+        address bridge,
+        uint256 mintingLimit,
+        uint256 burningLimit
+    ) external onlyAdminAccounts {
+        if (
+            mintingLimit > (type(uint256).max / 2) ||
+            burningLimit > (type(uint256).max / 2)
+        ) {
+            revert IXERC20_LimitsTooHigh();
+        }
+
+        _setMaxMintAllowance(mintingLimit);
+        _setMintAllowance(bridge, mintingLimit);
+
+        _setMaxBurnAllowance(bridge, )
+        // burnAllowance?
+        emit BridgeLimitsSet(mintingLimit, burningLimit, bridge);
+    }
+
+    function burningCurrentLimitOf(
+        address bridge
+    ) external view returns (uint256 limit) {
+        return 0;
+    }
+
+    function burningMaxLimitOf(
+        address bridge
+    ) external view returns (uint256 limit) {
+        return 0;
+    }
+
+    function mintingCurrentLimitOf(
+        address minter
+    ) external view returns (uint256 limit) {
+        return 0;
+    }
+
+    function mintingMaxLimitOf(
+        address minter
+    ) external view returns (uint256 limit) {
+        return 0;
+    }
 
 }
 
