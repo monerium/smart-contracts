@@ -6,14 +6,16 @@ contract RateLimitsUpgradeable {
      *
      * @param timestamp The timestamp of the last mint/burn
      * @param ratePerSecond The rate per second one can mint/burn
-     * @param maxLimit The max limit
+     * @param dailyLimit The max limit per day
      * @param currentLimit The current limit
+     * @param maxLimit the maximum someone can set the currentLimit to;
      */
     struct RateLimitParameters {
         uint256 timestamp;
         uint256 ratePerSecond;
-        uint256 maxLimit;
+        uint256 dailyLimit;
         uint256 currentLimit;
+        uint256 maxLimit; // Should we cap this ? it is so that an admin can set a current higher than the daily but only up to a certain amount.
     }
 
     /**
@@ -51,6 +53,32 @@ contract RateLimitsUpgradeable {
     }
 
     /**
+     * @notice set the maxlimit of a minter
+     * @param account The address of the minter who is being changed
+     * @param newMax The new maxLimit
+     */
+    function _setMinterMaxLimit(address account, uint256 newMax) internal {
+        RateLimitParameters storage m = _getRateLimitsStorage()
+            ._limits[account]
+            .mint;
+
+        m.maxLimit = newMax;
+    }
+
+    /**
+     * @notice set the maxlimit of a burner
+     * @param account The address of the burner who is being changed
+     * @param newMax The new maxLimit
+     */
+    function _setBurnerMaxLimit(address account, uint256 newMax) internal {
+        RateLimitParameters storage b = _getRateLimitsStorage()
+            ._limits[account]
+            .burn;
+
+        b.maxLimit = newMax;
+    }
+
+    /**
      * @notice Uses the limit of a minter
      * @param account The address of the minter who is being changed
      * @param change The change in the limit
@@ -81,6 +109,44 @@ contract RateLimitsUpgradeable {
     }
 
     /**
+     * @notice Resets the minting limit for a given account to a specified value
+     * @param account The address of the minter whose limit is to be reset
+     * @param limit The new current limit to be set for minting
+     */
+    function _resetMinterCurrentLimit(
+        address account,
+        uint256 limit
+    ) internal {
+        RateLimitParameters storage m = _getRateLimitsStorage()
+            ._limits[account]
+            .mint;
+
+        require(limit <= m.maxLimit, "too high");
+
+        m.currentLimit = limit;
+        m.timestamp = block.timestamp;
+    }
+
+    /**
+     * @notice Resets the burning limit for a given account to a specified value
+     * @param account The address of the burner whose limit is to be reset
+     * @param limit The new current limit to be set for burning
+     */
+    function _resetBurnerCurrentLimit(
+        address account,
+        uint256 limit
+    ) internal {
+        RateLimitParameters storage b = _getRateLimitsStorage()
+            ._limits[account]
+            .burn;
+
+        require(limit <= b.maxLimit, "too high");
+
+        b.currentLimit = limit;
+        b.timestamp = block.timestamp;
+    }
+
+    /**
      * @notice Updates the limit of a minter
      * @param account The address of the minter we are setting the limit too
      * @param limit The updated limit we are setting to the minter
@@ -90,9 +156,11 @@ contract RateLimitsUpgradeable {
             ._limits[account]
             .mint;
 
-        uint256 oldLimit = m.maxLimit;
+        require(limit <= m.maxLimit, "too high");
+
+        uint256 oldLimit = m.dailyLimit;
         uint256 currentLimit = mintingCurrentLimitOf(account);
-        m.maxLimit = limit;
+        m.dailyLimit = limit;
 
         m.currentLimit = _calculateNewCurrentLimit(
             limit,
@@ -114,9 +182,11 @@ contract RateLimitsUpgradeable {
             ._limits[account]
             .burn;
 
-        uint256 oldLimit = b.maxLimit;
+        require(limit <= b.maxLimit, "too high");
+
+        uint256 oldLimit = b.dailyLimit;
         uint256 currentLimit = burningCurrentLimitOf(account);
-        b.maxLimit = limit;
+        b.dailyLimit = limit;
 
         b.currentLimit = _calculateNewCurrentLimit(
             limit,
@@ -140,7 +210,7 @@ contract RateLimitsUpgradeable {
         RateLimitParameters storage m = _getRateLimitsStorage()
             ._limits[account]
             .mint;
-        limit = m.maxLimit;
+        limit = m.dailyLimit;
     }
 
     /**
@@ -155,7 +225,7 @@ contract RateLimitsUpgradeable {
         RateLimitParameters storage b = _getRateLimitsStorage()
             ._limits[account]
             .burn;
-        limit = b.maxLimit;
+        limit = b.dailyLimit;
     }
 
     /**
@@ -172,7 +242,7 @@ contract RateLimitsUpgradeable {
             .mint;
         limit = _getCurrentLimit(
             m.currentLimit,
-            m.maxLimit,
+            m.dailyLimit,
             m.timestamp,
             m.ratePerSecond
         );
@@ -192,7 +262,7 @@ contract RateLimitsUpgradeable {
             .burn;
         limit = _getCurrentLimit(
             b.currentLimit,
-            b.maxLimit,
+            b.dailyLimit,
             b.timestamp,
             b.ratePerSecond
         );
@@ -228,27 +298,27 @@ contract RateLimitsUpgradeable {
      * @notice Gets the current limit
      *
      * @param _currentLimit The current limit
-     * @param _maxLimit The max limit
+     * @param _dailyLimit The max limit
      * @param _timestamp The timestamp of the last update
      * @param _ratePerSecond The rate per second
      * @return _limit The current limit
      */
     function _getCurrentLimit(
         uint256 _currentLimit,
-        uint256 _maxLimit,
+        uint256 _dailyLimit,
         uint256 _timestamp,
         uint256 _ratePerSecond
     ) internal view returns (uint256 _limit) {
         _limit = _currentLimit;
-        if (_limit == _maxLimit) {
+        if (_limit >= _dailyLimit) {
             return _limit;
         } else if (_timestamp + _DURATION <= block.timestamp) {
-            _limit = _maxLimit;
+            _limit = _dailyLimit;
         } else if (_timestamp + _DURATION > block.timestamp) {
             uint256 _timePassed = block.timestamp - _timestamp;
             uint256 _calculatedLimit = _limit + (_timePassed * _ratePerSecond);
-            _limit = _calculatedLimit > _maxLimit
-                ? _maxLimit
+            _limit = _calculatedLimit > _dailyLimit
+                ? _dailyLimit
                 : _calculatedLimit;
         }
     }
