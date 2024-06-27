@@ -34,6 +34,16 @@ contract RateLimitsUpgradeable {
     }
 
     /**
+     * @notice Reverts when a user with too low of a limit tries to call mint/burn
+     */
+    error RateLimit_NotHighEnoughLimits();
+
+    /**
+     * @notice Reverts when limits are too high
+     */
+    error RateLimit_LimitsTooHigh();
+
+    /**
      * @notice The duration it takes for the limits to fully replenish
      */
     uint256 private constant _DURATION = 1 days;
@@ -81,31 +91,33 @@ contract RateLimitsUpgradeable {
     /**
      * @notice Uses the limit of a minter
      * @param account The address of the minter who is being changed
-     * @param change The change in the limit
+     * @param amount The amount of the limit to be used
      */
-    function _useMinterLimits(address account, uint256 change) internal {
+    function _useMinterLimits(address account, uint256 amount) internal {
         RateLimitParameters storage m = _getRateLimitsStorage()
             ._limits[account]
             .mint;
 
         uint256 currentLimit = mintingCurrentLimitOf(account);
+        if (currentLimit < amount) revert RateLimit_NotHighEnoughLimits();
         m.timestamp = block.timestamp;
-        m.currentLimit = currentLimit - change;
+        m.currentLimit = currentLimit - amount;
     }
 
     /**
      * @notice Uses the limit of a burner
      * @param account The address of the burner who is being changed
-     * @param change The change in the limit
+     * @param amount The amount of the limit to be used
      */
-    function _useBurnerLimits(address account, uint256 change) internal {
+    function _useBurnerLimits(address account, uint256 amount) internal {
         RateLimitParameters storage b = _getRateLimitsStorage()
             ._limits[account]
             .burn;
 
         uint256 currentLimit = burningCurrentLimitOf(account);
+        if (currentLimit < amount) revert RateLimit_NotHighEnoughLimits();
         b.timestamp = block.timestamp;
-        b.currentLimit = currentLimit - change;
+        b.currentLimit = currentLimit - amount;
     }
 
     /**
@@ -113,15 +125,12 @@ contract RateLimitsUpgradeable {
      * @param account The address of the minter whose limit is to be reset
      * @param limit The new current limit to be set for minting
      */
-    function _resetMinterCurrentLimit(
-        address account,
-        uint256 limit
-    ) internal {
+    function _resetMinterCurrentLimit(address account, uint256 limit) internal {
         RateLimitParameters storage m = _getRateLimitsStorage()
             ._limits[account]
             .mint;
 
-        require(limit <= m.maxLimit, "too high");
+        if (limit > m.maxLimit) revert RateLimit_LimitsTooHigh();
 
         m.currentLimit = limit;
         m.timestamp = block.timestamp;
@@ -132,69 +141,69 @@ contract RateLimitsUpgradeable {
      * @param account The address of the burner whose limit is to be reset
      * @param limit The new current limit to be set for burning
      */
-    function _resetBurnerCurrentLimit(
-        address account,
-        uint256 limit
-    ) internal {
+    function _resetBurnerCurrentLimit(address account, uint256 limit) internal {
         RateLimitParameters storage b = _getRateLimitsStorage()
             ._limits[account]
             .burn;
 
-        require(limit <= b.maxLimit, "too high");
+        if (limit > b.maxLimit) revert RateLimit_LimitsTooHigh();
 
         b.currentLimit = limit;
         b.timestamp = block.timestamp;
     }
 
     /**
-     * @notice Updates the limit of a minter
+     * @notice Updates the daily limit of a minter
      * @param account The address of the minter we are setting the limit too
-     * @param limit The updated limit we are setting to the minter
+     * @param newDailyLimit The updated limit we are setting to the minter
      */
-    function _changeMinterLimit(address account, uint256 limit) internal {
+    function _changeMinterLimit(address account, uint256 newDailyLimit) internal {
         RateLimitParameters storage m = _getRateLimitsStorage()
             ._limits[account]
             .mint;
 
-        require(limit <= m.maxLimit, "too high");
+        if (newDailyLimit > m.maxLimit) revert RateLimit_LimitsTooHigh();
 
         uint256 oldLimit = m.dailyLimit;
         uint256 currentLimit = mintingCurrentLimitOf(account);
-        m.dailyLimit = limit;
+        m.dailyLimit = newDailyLimit;
 
         m.currentLimit = _calculateNewCurrentLimit(
-            limit,
+            newDailyLimit,
             oldLimit,
             currentLimit
         );
 
-        m.ratePerSecond = limit / _DURATION;
+        m.ratePerSecond = newDailyLimit / _DURATION;
         m.timestamp = block.timestamp;
     }
 
     /**
      * @notice Updates the limit of a burner
      * @param account The address of the minter we are setting the limit too
-     * @param limit The updated limit we are setting to the minter
+     * @param newDailyLimit The updated daily limit we are setting to the minter
      */
-    function _changeBurnerLimit(address account, uint256 limit) internal {
+    function _changeBurnerLimit(
+        address account,
+        uint256 newDailyLimit
+    ) internal {
         RateLimitParameters storage b = _getRateLimitsStorage()
             ._limits[account]
             .burn;
 
-        require(limit <= b.maxLimit, "too high");
+        if (newDailyLimit > b.maxLimit) revert RateLimit_LimitsTooHigh();
 
         uint256 oldLimit = b.dailyLimit;
         uint256 currentLimit = burningCurrentLimitOf(account);
-        b.dailyLimit = limit;
+        b.dailyLimit = newDailyLimit;
 
         b.currentLimit = _calculateNewCurrentLimit(
-            limit,
+            newDailyLimit,
             oldLimit,
             currentLimit
         );
 
-        b.ratePerSecond = limit / _DURATION;
+        b.ratePerSecond = newDailyLimit / _DURATION;
         b.timestamp = block.timestamp;
     }
 
@@ -298,7 +307,7 @@ contract RateLimitsUpgradeable {
      * @notice Gets the current limit
      *
      * @param _currentLimit The current limit
-     * @param _dailyLimit The max limit
+     * @param _dailyLimit The max limit per day
      * @param _timestamp The timestamp of the last update
      * @param _ratePerSecond The rate per second
      * @return _limit The current limit
