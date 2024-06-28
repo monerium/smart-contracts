@@ -45,11 +45,11 @@ contract MintableTokenTest is Test {
     }
 
     function test_owner_can_set_max_mint_allowance() public {
-        token.setMaxMintAllowance(1000);
         token.addMinterAndBurner(system, 1000);
-        assertEq(token.getMaxMintAllowance(), 1000);
+        assertEq(token.mintingMaxLimitOf(system), 1000);
     }
 
+    /*
     function test_non_owner_cannot_set_max_mint_allowance() public {
         vm.startPrank(user1);
         vm.expectRevert(
@@ -60,19 +60,18 @@ contract MintableTokenTest is Test {
         );
         token.setMaxMintAllowance(1000);
         vm.stopPrank();
-    }
+    }*/
 
     function test_admin_can_set_mint_allowance() public {
         test_owner_can_set_max_mint_allowance();
         token.addAdminAccount(admin);
         vm.startPrank(admin);
-        token.setMintAllowance(system, 500);
         token.setLimits(system, 500, 500);
         vm.stopPrank();
 
-        assertEq(token.getMintAllowance(system), 500);
+        assertEq(token.mintingCurrentLimitOf(system), 500);
     }
-
+/*
     function test_admin_cannot_set_mint_allowance_above_max_mint_allowance()
         public
     {
@@ -83,7 +82,7 @@ contract MintableTokenTest is Test {
         token.setMintAllowance(system, 1500);
         vm.stopPrank();
     }
-
+*/
     function test_non_admin_cannot_set_mint_allowance() public {
         vm.expectRevert("SystemRole: caller is not an admin account");
         token.setMintAllowance(user1, 500);

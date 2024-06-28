@@ -28,14 +28,10 @@ contract All is Script {
         token.addAdminAccount(admin);
         console.log("Admin account added successfully.");
 
-        token.addSystemAccount(system);
-        console.log("System account added successfully.");
-
-        token.setMaxMintAllowance(allowance);
-        console.log("Max mint allowance set successfully.");
+        token.addMinterAndBurner(system, allowance);
 
         token.addAdminAccount(devKey);
-        token.setMintAllowance(system, allowance);
+        token.setLimits(system, allowance, 0);
         console.log("mint allowance set successfully.");
         token.removeAdminAccount(devKey);
         vm.stopBroadcast();

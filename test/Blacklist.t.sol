@@ -62,11 +62,9 @@ contract BlackListValidatorTest is Test {
         token.addAdminAccount(admin);
         assertTrue(token.isSystemAccount(system));
         assertTrue(token.isAdminAccount(admin));
-        token.setMaxMintAllowance(2e18);
         token.addMinterAndBurner(system, 2e18);
         vm.startPrank(admin);
         token.setLimits(system, 2e18, 2e18);
-        token.setMintAllowance(system, 2e18);
         vm.stopPrank();
         vm.startPrank(system);
         token.mint(user1, 1e18);

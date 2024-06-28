@@ -23,7 +23,6 @@ contract Token is
     Initializable,
     ERC20PermitUpgradeable,
     UUPSUpgradeable,
-    MintAllowanceUpgradeable,
     RateLimitsUpgradeable,
     SystemRoleUpgradeable,
     IXERC20
@@ -73,7 +72,6 @@ contract Token is
     ) internal override onlyOwner {}
 
     function mint(address to, uint256 amount) public onlySystemAccounts {
-        _useMintAllowance(_msgSender(), amount);
         _useMinterLimits(_msgSender(), amount);
         _mint(to, amount);
     }
@@ -149,19 +147,6 @@ contract Token is
     ) public override returns (bool) {
         require(validator.validate(from, to, amount), "Transfer not validated");
         return super.transferFrom(from, to, amount);
-    }
-
-    // setMaxMintAllowance is only callable by the owner
-    function setMaxMintAllowance(uint256 amount) public onlyOwner {
-        _setMaxMintAllowance(amount);
-    }
-
-    // setMintAllowance is only callable by the admins
-    function setMintAllowance(
-        address account,
-        uint256 amount
-    ) public onlyAdminAccounts {
-        _setMintAllowance(account, amount);
     }
 
     /**
