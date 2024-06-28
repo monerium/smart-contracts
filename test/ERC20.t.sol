@@ -50,8 +50,11 @@ contract ERC20TokenTest is Test {
         assertTrue(token.isSystemAccount(system));
         assertTrue(token.isAdminAccount(admin));
         token.setMaxMintAllowance(1e18);
-        vm.prank(admin);
+        token.addMinterAndBurner(system, 1e18);
+        vm.startPrank(admin);
         token.setMintAllowance(system, 1e18);
+        token.setLimits(system, 1e18, 1e18);
+        vm.stopPrank();
     }
 
     function test_invariant_metadata() public {

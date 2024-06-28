@@ -46,6 +46,7 @@ contract MintableTokenTest is Test {
 
     function test_owner_can_set_max_mint_allowance() public {
         token.setMaxMintAllowance(1000);
+        token.addMinterAndBurner(system, 1000);
         assertEq(token.getMaxMintAllowance(), 1000);
     }
 
@@ -66,6 +67,7 @@ contract MintableTokenTest is Test {
         token.addAdminAccount(admin);
         vm.startPrank(admin);
         token.setMintAllowance(system, 500);
+        token.setLimits(system, 500, 500);
         vm.stopPrank();
 
         assertEq(token.getMintAllowance(system), 500);
@@ -140,7 +142,9 @@ contract MintableTokenTest is Test {
         test_system_account_can_mint_tokens();
 
         address user = vm.addr(userPrivateKey);
-        bytes32 hash = keccak256("I hereby declare that I am the address owner.");
+        bytes32 hash = keccak256(
+            "I hereby declare that I am the address owner."
+        );
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPrivateKey, hash);
         bytes memory signature = abi.encodePacked(r, s, v);
 

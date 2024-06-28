@@ -32,7 +32,6 @@ contract DeploymentTest is Test {
         new ERC1967Proxy(address(implementation), initData);
     }
 
-
     function test_deploy_all_tokens() public {
         BlacklistValidatorUpgradeable blacklistValidator = new BlacklistValidatorUpgradeable();
         bytes memory initDataProxy = abi.encodeWithSelector(
@@ -167,8 +166,11 @@ contract DeploymentTest is Test {
         assertTrue(token.isSystemAccount(system));
         assertTrue(token.isAdminAccount(admin));
         token.setMaxMintAllowance(amount * 3);
-        vm.prank(admin);
+        token.addMinterAndBurner(system, amount * 3);
+        vm.startPrank(admin);
         token.setMintAllowance(system, amount * 3);
+        token.setLimits(system, amount * 3, amount * 3);
+        vm.stopPrank();
         vm.startPrank(system);
         token.mint(user1, amount);
         token.mint(user2, amount * 2);
