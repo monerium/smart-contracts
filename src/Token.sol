@@ -160,8 +160,8 @@ contract Token is
         _setLimitCap(limitCap);
     }
 
-    function getLimitCap() public view returns(uint256){
-      return _getLimitCap();
+    function getLimitCap() public view returns (uint256) {
+        return _getLimitCap();
     }
     /*
      * @notice Updates the daily limit of a minter
@@ -172,6 +172,7 @@ contract Token is
         address minter,
         uint256 limit
     ) public onlyAdminAccounts {
+        if (_getLimitCap() < limit) revert IXERC20_LimitsTooHigh();
         _changeMinterLimit(minter, limit);
     }
 
@@ -184,6 +185,7 @@ contract Token is
         address minter,
         uint256 limit
     ) public onlyAdminAccounts {
+        if (_getLimitCap() < limit) revert IXERC20_LimitsTooHigh();
         _setMinterCurrentLimit(minter, limit);
     }
 
@@ -317,6 +319,7 @@ contract Token is
     function burn(address user, uint256 amount) external onlySystemAccounts {
         if (RateLimitsUpgradeable.burningCurrentLimitOf(_msgSender()) < amount)
             revert IXERC20_NotHighEnoughLimits(); // This is a double verification. Since there is the same condition but with a different eventType I don't know where I should verify.
+
         if (_msgSender() != user) {
             _spendAllowance(user, _msgSender(), amount);
         }
