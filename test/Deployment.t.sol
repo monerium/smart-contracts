@@ -165,7 +165,7 @@ contract DeploymentTest is Test {
         token.addAdminAccount(admin);
         assertTrue(token.isSystemAccount(system));
         assertTrue(token.isAdminAccount(admin));
-        token.addMinterAndBurner(system, amount * 3);
+        token.setLimitCap(amount * 3);
         vm.startPrank(admin);
         token.setLimits(system, amount * 3, amount * 3);
         vm.stopPrank();

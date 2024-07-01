@@ -15,7 +15,6 @@ contract RateLimitsUpgradeable {
         uint256 ratePerSecond;
         uint256 maxLimit;
         uint256 currentLimit;
-        uint256 limitCap; // Should we cap this ? it is so that an admin can set a current higher than the daily but only up to a certain amount.
     }
 
     /**
@@ -31,6 +30,7 @@ contract RateLimitsUpgradeable {
 
     struct RateLimitsStorage {
         mapping(address => Limits) _limits;
+        uint256 limitCap; // Should we cap this ? it is so that an admin can set a current higher than the daily but only up to a certain amount.
     }
 
     /**
@@ -63,29 +63,17 @@ contract RateLimitsUpgradeable {
     }
 
     /**
-     * @notice set the maxlimit of a minter
-     * @param account The address of the minter who is being changed
-     * @param newMax The new limitCap
+     * @notice set the limitCap
+     * @param newCap The new limitCap
      */
-    function _setMinterMaxLimit(address account, uint256 newMax) internal {
-        RateLimitParameters storage m = _getRateLimitsStorage()
-            ._limits[account]
-            .mint;
+    function _setLimitCap(uint256 newCap) internal {
+        RateLimitsStorage storage $ = _getRateLimitsStorage();
 
-        m.limitCap = newMax;
+        $.limitCap = newCap;
     }
 
-    /**
-     * @notice set the maxlimit of a burner
-     * @param account The address of the burner who is being changed
-     * @param newMax The new limitCap
-     */
-    function _setBurnerMaxLimit(address account, uint256 newMax) internal {
-        RateLimitParameters storage b = _getRateLimitsStorage()
-            ._limits[account]
-            .burn;
-
-        b.limitCap = newMax;
+    function _getLimitCap() internal view returns(uint256 limitCap) {
+      limitCap = _getRateLimitsStorage().limitCap;
     }
 
     /**
@@ -121,32 +109,34 @@ contract RateLimitsUpgradeable {
     }
 
     /**
-     * @notice Resets the minting limit for a given account to a specified value
+     * @notice sets the minting limit for a given account to a specified value
      * @param account The address of the minter whose limit is to be reset
      * @param limit The new current limit to be set for minting
      */
-    function _resetMinterCurrentLimit(address account, uint256 limit) internal {
-        RateLimitParameters storage m = _getRateLimitsStorage()
+    function _setMinterCurrentLimit(address account, uint256 limit) internal {
+        RateLimitsStorage storage $ = _getRateLimitsStorage();
+        RateLimitParameters storage m = $
             ._limits[account]
             .mint;
 
-        if (limit > m.limitCap) revert RateLimit_LimitsTooHigh();
+        if (limit > $.limitCap) revert RateLimit_LimitsTooHigh();
 
         m.currentLimit = limit;
         m.timestamp = block.timestamp;
     }
 
     /**
-     * @notice Resets the burning limit for a given account to a specified value
+     * @notice sets the burning limit for a given account to a specified value
      * @param account The address of the burner whose limit is to be reset
      * @param limit The new current limit to be set for burning
      */
-    function _resetBurnerCurrentLimit(address account, uint256 limit) internal {
-        RateLimitParameters storage b = _getRateLimitsStorage()
+    function _setBurnerCurrentLimit(address account, uint256 limit) internal {
+        RateLimitsStorage storage $ = _getRateLimitsStorage();
+        RateLimitParameters storage b = $
             ._limits[account]
             .burn;
 
-        if (limit > b.limitCap) revert RateLimit_LimitsTooHigh();
+        if (limit > $.limitCap) revert RateLimit_LimitsTooHigh();
 
         b.currentLimit = limit;
         b.timestamp = block.timestamp;
@@ -158,11 +148,12 @@ contract RateLimitsUpgradeable {
      * @param newDailyLimit The updated limit we are setting to the minter
      */
     function _changeMinterLimit(address account, uint256 newDailyLimit) internal {
-        RateLimitParameters storage m = _getRateLimitsStorage()
+        RateLimitsStorage storage $ = _getRateLimitsStorage();
+        RateLimitParameters storage m = $
             ._limits[account]
             .mint;
 
-        if (newDailyLimit > m.limitCap) revert RateLimit_LimitsTooHigh();
+        if (newDailyLimit > $.limitCap) revert RateLimit_LimitsTooHigh();
 
         uint256 oldLimit = m.maxLimit;
         uint256 currentLimit = mintingCurrentLimitOf(account);
@@ -187,11 +178,12 @@ contract RateLimitsUpgradeable {
         address account,
         uint256 newDailyLimit
     ) internal {
-        RateLimitParameters storage b = _getRateLimitsStorage()
+        RateLimitsStorage storage $ = _getRateLimitsStorage();
+        RateLimitParameters storage b = $
             ._limits[account]
             .burn;
 
-        if (newDailyLimit > b.limitCap) revert RateLimit_LimitsTooHigh();
+        if (newDailyLimit > $.limitCap) revert RateLimit_LimitsTooHigh();
 
         uint256 oldLimit = b.maxLimit;
         uint256 currentLimit = burningCurrentLimitOf(account);

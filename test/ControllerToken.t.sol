@@ -79,7 +79,7 @@ contract ControllerTokenTest is Test {
         token.addAdminAccount(admin);
         assertTrue(token.isSystemAccount(system));
         assertTrue(token.isAdminAccount(admin));
-        token.addMinterAndBurner(system, 3e18);
+        token.setLimitCap(3e18);
         vm.startPrank(admin);
         token.setLimits(system, 3e18, 3e18);
         vm.stopPrank();

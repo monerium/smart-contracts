@@ -28,7 +28,7 @@ contract All is Script {
         token.addAdminAccount(admin);
         console.log("Admin account added successfully.");
 
-        token.addMinterAndBurner(system, allowance);
+        token.setLimitCap( allowance);
 
         token.addAdminAccount(devKey);
         token.setLimits(system, allowance, 0);

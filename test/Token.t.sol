@@ -45,11 +45,9 @@ contract TokenTest is Test {
         token.addAdminAccount(admin);
         assertTrue(token.isSystemAccount(system));
         assertTrue(token.isAdminAccount(admin));
-        token.setMaxMintAllowance(1e18);
-        token.addMinterAndBurner(system, 1e18);
+        token.setLimitCap( 1e18);
         vm.startPrank(admin);
-        token.setMintAllowance(system, 1e18);
-        token.setLimits(system, 1e18, 1e18);
+        token.setMintingLimit(system, 1e18);
         vm.stopPrank();
     }
 
@@ -128,7 +126,7 @@ contract TokenTest is Test {
 
     function test_keep_mint_allowance_after_upgrade() public {
         // Check initial mint allowance
-        assertEq(token.getMintAllowance(system), 1e18);
+        assertEq(token.mintingCurrentLimitOf(system), 1e18);
 
         // Upgrade the contract
         bytes memory data = "";
@@ -138,12 +136,12 @@ contract TokenTest is Test {
         Token newToken = Token(address(proxy));
 
         // Check mint allowance after upgrade
-        assertEq(newToken.getMintAllowance(system), 1e18);
+        assertEq(newToken.mintingCurrentLimitOf(system), 1e18);
     }
 
     function test_keep_max_mint_allowance_after_upgrade() public {
         // Check initial max mint allowance
-        assertEq(token.getMaxMintAllowance(), 1e18);
+        assertEq(token.getLimitCap(), 1e18);
 
         // Upgrade the contract
         bytes memory data = "";
@@ -153,6 +151,6 @@ contract TokenTest is Test {
         Token newToken = Token(address(proxy));
 
         // Check max mint allowance after upgrade
-        assertEq(newToken.getMaxMintAllowance(), 1e18);
+        assertEq(newToken.getLimitCap(), 1e18);
     }
 }

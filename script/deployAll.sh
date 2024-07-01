@@ -34,6 +34,14 @@ elif [ "$1" == "--gnosis-chiado" ]; then
     echo $VERIFIER_URL
     forge script script/deploy.s.sol:AllControllerGnosis --rpc-url $RPC_URL --broadcast --verify $VERIFIER_URL -vvvv --legacy
     exit 0
+elif [ "$1" == "--gnosis-mainnet" ]; then
+    echo "Deploying to Gnosis Mainnet..."
+    RPC_URL=$GNOSIS_MAINNET_RPC
+    ETHERSCAN_API_KEY=$GNOSISSCAN_API
+    VERIFIER_URL="--verifier-url $GNOSISSCAN_URL --chain-id $GNOSIS_MAINNET_CHAIN_ID"
+    echo $VERIFIER_URL
+    forge script script/deploy.s.sol:All --rpc-url $RPC_URL --broadcast --etherscan-api-key $ETHERSCAN_API_KEY --verify $VERIFIER_URL -vvvv --legacy
+    exit 0
 elif [ "$1" == "--polygon-amoy" ]; then
     echo "Deploying to Polygon Amoy..."
     RPC_URL=$POLYGON_AMOY_RPC

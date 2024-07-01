@@ -45,11 +45,10 @@ contract MintableTokenTest is Test {
     }
 
     function test_owner_can_set_max_mint_allowance() public {
-        token.addMinterAndBurner(system, 1000);
-        assertEq(token.mintingMaxLimitOf(system), 1000);
+        token.setLimitCap(1000);
+        assertEq(token.getLimitCap(), 1000);
     }
 
-    /*
     function test_non_owner_cannot_set_max_mint_allowance() public {
         vm.startPrank(user1);
         vm.expectRevert(
@@ -58,34 +57,34 @@ contract MintableTokenTest is Test {
                 user1
             )
         );
-        token.setMaxMintAllowance(1000);
+        token.setLimitCap(1000);
         vm.stopPrank();
-    }*/
+    }
 
     function test_admin_can_set_mint_allowance() public {
         test_owner_can_set_max_mint_allowance();
         token.addAdminAccount(admin);
         vm.startPrank(admin);
-        token.setLimits(system, 500, 500);
+        token.setMintingLimit(system, 500);
         vm.stopPrank();
-
         assertEq(token.mintingCurrentLimitOf(system), 500);
     }
-/*
+
     function test_admin_cannot_set_mint_allowance_above_max_mint_allowance()
         public
     {
         test_owner_can_set_max_mint_allowance();
         token.addAdminAccount(admin);
         vm.startPrank(admin);
-        vm.expectRevert("MintAllowance: cannot set allowance higher than max");
-        token.setMintAllowance(system, 1500);
+        vm.expectRevert(abi.encodeWithSignature("RateLimit_LimitsTooHigh()"));
+        token.setMintingLimit(system, 1500);
         vm.stopPrank();
     }
-*/
+
     function test_non_admin_cannot_set_mint_allowance() public {
         vm.expectRevert("SystemRole: caller is not an admin account");
-        token.setMintAllowance(user1, 500);
+
+        token.setMintingLimit(user1, 500);
     }
 
     function test_system_account_can_mint_tokens() public {
@@ -108,7 +107,8 @@ contract MintableTokenTest is Test {
         token.addSystemAccount(system);
         address user = vm.addr(userPrivateKey);
         vm.startPrank(system);
-        vm.expectRevert("MintAllowance: not allowed to mint more than allowed");
+        
+        vm.expectRevert(abi.encodeWithSignature("IXERC20_NotHighEnoughLimits()"));
         token.mint(user, 1000);
         vm.stopPrank();
     }

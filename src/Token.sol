@@ -49,7 +49,8 @@ contract Token is
         string memory name,
         string memory symbol,
         address _validator
-    ) public virtual initializer { // Those line replaces the inheritance call in the constructor, as we are using the upgradeable pattern.
+    ) public virtual initializer {
+        // Those line replaces the inheritance call in the constructor, as we are using the upgradeable pattern.
         // In the upgradeable pattern, the 'initialize' function replaces the constructor. It's not called automatically.
         // The proxy contract calls this function using delegatecall.
         // This results in storing all new variables from ERC20, Ownable, etc., in the proxy's storage.
@@ -72,6 +73,8 @@ contract Token is
     ) internal override onlyOwner {}
 
     function mint(address to, uint256 amount) public onlySystemAccounts {
+        if (RateLimitsUpgradeable.mintingCurrentLimitOf(_msgSender()) < amount)
+            revert IXERC20_NotHighEnoughLimits(); // This is a double verification. Since there is the same condition but with a different eventType I don't know where I should verify.
         _useMinterLimits(_msgSender(), amount);
         _mint(to, amount);
     }
@@ -147,6 +150,41 @@ contract Token is
     ) public override returns (bool) {
         require(validator.validate(from, to, amount), "Transfer not validated");
         return super.transferFrom(from, to, amount);
+    }
+
+    /**
+     * @notice Sets the maximum an admin can set the minting limit to
+     * @param limitCap the maximum value a minting limit can be set to
+     */
+    function setLimitCap(uint256 limitCap) public onlyOwner {
+        _setLimitCap(limitCap);
+    }
+
+    function getLimitCap() public view returns(uint256){
+      return _getLimitCap();
+    }
+    /*
+     * @notice Updates the daily limit of a minter
+     * @param minter The address of the minter we are setting the limit too
+     * @param limit The updated limit we are setting to the minter
+     */
+    function setMintingLimit(
+        address minter,
+        uint256 limit
+    ) public onlyAdminAccounts {
+        _changeMinterLimit(minter, limit);
+    }
+
+    /**
+     * @notice sets the minting limit for a given account to a specified value
+     * @param minter The address of the minter whose limit is to be reset
+     * @param limit The new current limit to be set for minting
+     */
+    function setMintingCurrentLimit(
+        address minter,
+        uint256 limit
+    ) public onlyAdminAccounts {
+        _setMinterCurrentLimit(minter, limit);
     }
 
     /**
@@ -245,15 +283,8 @@ contract Token is
                 )
             );
     }
-
-
-    function addMinterAndBurner(address account, uint256 limitCap) external onlyOwner {
-      addSystemAccount(account);
-      _setMinterMaxLimit(account, limitCap);
-      _setBurnerMaxLimit(account, limitCap);
-    }
-
     // IXERC20
+
     function setLockbox(address) external pure {
         revert("Not Implemented");
     }
@@ -270,8 +301,11 @@ contract Token is
         uint256 mintingLimit,
         uint256 burningLimit
     ) external onlyAdminAccounts {
+        if (_getLimitCap() < mintingLimit) revert IXERC20_LimitsTooHigh();
         _changeMinterLimit(bridge, mintingLimit);
         _changeBurnerLimit(bridge, burningLimit);
+
+        emit BridgeLimitsSet(mintingLimit, burningLimit, bridge);
     }
 
     /**
@@ -281,12 +315,14 @@ contract Token is
      * @param amount The amount of tokens being burned
      */
     function burn(address user, uint256 amount) external onlySystemAccounts {
-      if (_msgSender() !=  user){
-        _spendAllowance(user, _msgSender(), amount);
-      }
+        if (RateLimitsUpgradeable.burningCurrentLimitOf(_msgSender()) < amount)
+            revert IXERC20_NotHighEnoughLimits(); // This is a double verification. Since there is the same condition but with a different eventType I don't know where I should verify.
+        if (_msgSender() != user) {
+            _spendAllowance(user, _msgSender(), amount);
+        }
 
-      _useBurnerLimits(_msgSender(), amount);
-      _burn(user, amount);
+        _useBurnerLimits(_msgSender(), amount);
+        _burn(user, amount);
     }
 
 }
