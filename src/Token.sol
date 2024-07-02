@@ -10,9 +10,10 @@ import "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
-import "./MintAllowanceUpgradeable.sol";
+import "./RateLimitsUpgradeable.sol";
 import "./SystemRoleUpgradeable.sol";
 import "./IValidator.sol";
+import "./interfaces/IXERC20.sol";
 
 /**
  * @dev Token contract with upgradeable patterns, mint allowance, and system roles.
@@ -21,8 +22,9 @@ contract Token is
     Initializable,
     ERC20PermitUpgradeable,
     UUPSUpgradeable,
-    MintAllowanceUpgradeable,
-    SystemRoleUpgradeable
+    RateLimitsUpgradeable,
+    SystemRoleUpgradeable,
+    IXERC20
 {
     // Subsequent contract versions must retain this variable to avoid storage conflicts with the proxy.
     IValidator public validator;
@@ -56,7 +58,10 @@ contract Token is
         __UUPSUpgradeable_init();
         __SystemRole_init();
         validator = IValidator(_validator);
-        require(validator.CONTRACT_ID() == keccak256("monerium.validator"), "Not Monerium Validator Contract");
+        require(
+            validator.CONTRACT_ID() == keccak256("monerium.validator"),
+            "Not Monerium Validator Contract"
+        );
     }
 
     // _authorizeUpgrade is a crucial part of the UUPS upgrade pattern in OpenZeppelin.
@@ -66,28 +71,68 @@ contract Token is
         address newImplementation
     ) internal override onlyOwner {}
 
+    /**
+     * @dev This mint function is restricted to access by Monerium's system and authorized XERC20 bridges only.
+     * It enforces a daily rate limit on minting per minter, which is set and can be modified by Monerium's administrator.
+     *
+     * @param to The address to which the tokens will be minted.
+     * @param amount The amount of tokens to mint.
+     */
     function mint(address to, uint256 amount) public onlySystemAccounts {
-        _useMintAllowance(_msgSender(), amount);
+        if (RateLimitsUpgradeable.mintingCurrentLimitOf(_msgSender()) < amount)
+            revert IXERC20_NotHighEnoughLimits(); // This is a double verification. Since there is the same condition but with a different eventType I don't know where I should verify.
+        _useMinterLimits(_msgSender(), amount);
         _mint(to, amount);
     }
 
+    /**
+     * @dev This burn function is exclusively accessible by Monerium's system accounts and is used
+     * to burn tokens from Monerium's KYC-approved users' wallets. The operation requires a signature
+     * that was obtained during the wallet linking process
+     *
+     * This function does not impose any rate limits on the burning process, allowing system
+     * accounts to burn tokens as needed without constraints.
+     *
+     * @param from The address from which the tokens will be burned.
+     * @param amount The amount of tokens to burn.
+     * @param signature The signature from the wallet linking process, verifying the authorization for the burn.
+     */
     function burn(
         address from,
         uint256 amount,
-        bytes32 ,
+        bytes32,
         bytes memory signature
     ) public onlySystemAccounts {
         require(
-            from.isValidSignatureNow(0xb77c35c892a1b24b10a2ce49b424e578472333ee8d2456234fff90626332c50f, signature),
+            from.isValidSignatureNow(
+                0xb77c35c892a1b24b10a2ce49b424e578472333ee8d2456234fff90626332c50f,
+                signature
+            ),
             "signature/hash does not match"
         );
         _burn(from, amount);
     }
 
+    /**
+     * @dev This recover function is exclusively accessible by Monerium's system accounts. It is used
+     * to transfer the full token balance from one KYC-approved user's wallet to another, typically
+     * in scenarios where the user's original wallet may be compromised or inaccessible.
+     *
+     * The function validates the operation using a signature obtained during the
+     * wallet linking process, similar to the one used for the burn function. This ensures that only
+     * previously authenticated and linked wallets can initiate a recovery.
+     *
+     * @param from The address from which the tokens will be recovered.
+     * @param to The address to which the tokens will be transferred.
+     * @param v The recovery ID component of the signature.
+     * @param r The first 32 bytes of the cryptographic signature.
+     * @param s The second 32 bytes of the cryptographic signature.
+     * @return The amount of tokens that were recovered and transferred.
+     */
     function recover(
         address from,
         address to,
-        bytes32 ,
+        bytes32,
         uint8 v,
         bytes32 r,
         bytes32 s
@@ -97,7 +142,10 @@ contract Token is
             signature = abi.encodePacked(r, s, v);
         }
         require(
-            from.isValidSignatureNow(0xb77c35c892a1b24b10a2ce49b424e578472333ee8d2456234fff90626332c50f, signature),
+            from.isValidSignatureNow(
+                0xb77c35c892a1b24b10a2ce49b424e578472333ee8d2456234fff90626332c50f,
+                signature
+            ),
             "signature/hash does not match"
         );
         uint256 amount = balanceOf(from);
@@ -110,7 +158,10 @@ contract Token is
     // Function to set the validator, restricted to owner
     function setValidator(address _validator) public onlyOwner {
         validator = IValidator(_validator);
-        require(validator.CONTRACT_ID() == keccak256("monerium.validator"), "Not Monerium Validator Contract");
+        require(
+            validator.CONTRACT_ID() == keccak256("monerium.validator"),
+            "Not Monerium Validator Contract"
+        );
     }
 
     // Override transfer function to invoke validator
@@ -135,17 +186,114 @@ contract Token is
         return super.transferFrom(from, to, amount);
     }
 
-    // setMaxMintAllowance is only callable by the owner
-    function setMaxMintAllowance(uint256 amount) public onlyOwner {
-        _setMaxMintAllowance(amount);
+    /**
+     * @notice Sets the maximum an admin can set the minting and burning limit to
+     * @param limitCap the maximum value a minting and burning limit can be set to
+     */
+    function setLimitCap(uint256 limitCap) public onlyOwner {
+        _setLimitCap(limitCap);
     }
 
-    // setMintAllowance is only callable by the admins
-    function setMintAllowance(
-        address account,
-        uint256 amount
+    /**
+     * @dev Returns the maximum value that an administrator can set for the daily minting or burning limit.
+     *
+     * @return The maximum limit cap for minting or burning operations.
+     */
+    function getLimitCap() public view returns (uint256) {
+        return _getLimitCap();
+    }
+    /*
+     * @notice Updates the daily limit of a minter
+     * @param minter The address of the minter we are setting the limit too
+     * @param limit The updated limit we are setting to the minter
+     */
+    function setMintingLimit(
+        address minter,
+        uint256 limit
     ) public onlyAdminAccounts {
-        _setMintAllowance(account, amount);
+        if (_getLimitCap() < limit) revert IXERC20_LimitsTooHigh();
+        _changeMinterLimit(minter, limit);
+    }
+
+    /**
+     * @notice sets the minting limit for a given account to a specified value
+     * @param minter The address of the minter whose limit is to be reset
+     * @param limit The new current limit to be set for minting
+     */
+    function setMintingCurrentLimit(
+        address minter,
+        uint256 limit
+    ) public onlyAdminAccounts {
+        if (_getLimitCap() < limit) revert IXERC20_LimitsTooHigh();
+        _setMinterCurrentLimit(minter, limit);
+    }
+
+    /**
+     * @notice Returns the max limit of a minter
+     *
+     * @param minter The minter we are viewing the limits of
+     *  @return limit The limit the minter has daily
+     */
+    function mintingMaxLimitOf(
+        address minter
+    )
+        public
+        view
+        override(IXERC20, RateLimitsUpgradeable)
+        returns (uint256 limit)
+    {
+        limit = super.mintingMaxLimitOf(minter);
+    }
+
+    /**
+     * @notice Returns the daily limit of a burner
+     *
+     * @param burner the bridge we are viewing the limits of
+     * @return limit The limit the burner has daily
+     */
+    function burningMaxLimitOf(
+        address burner
+    )
+        public
+        view
+        override(IXERC20, RateLimitsUpgradeable)
+        returns (uint256 limit)
+    {
+        limit = super.burningMaxLimitOf(burner);
+    }
+
+    /**
+     * @notice Returns the current limit of a minter
+     *
+     * @param minter The minter we are viewing the limits of
+     * @return limit The limit the minter has
+     */
+    function mintingCurrentLimitOf(
+        address minter
+    )
+        public
+        view
+        override(IXERC20, RateLimitsUpgradeable)
+        returns (uint256 limit)
+    {
+        limit = super.mintingCurrentLimitOf(minter);
+    }
+
+    /**
+     * @notice Returns the current limit of a burner
+     *
+     * @param burner the burner we are viewing the limits of
+     * @return limit The limit the bridge has
+     */
+    function burningCurrentLimitOf(
+        address burner
+    )
+        public
+        view
+        override(IXERC20, RateLimitsUpgradeable)
+        returns (uint256 limit)
+    {
+        limit = super.burningCurrentLimitOf(burner);
     }
 
     // EIP-2612 helper
@@ -176,7 +324,71 @@ contract Token is
                 )
             );
     }
+    // IXERC20
 
+    function setLockbox(address) external pure {
+        revert("Not Implemented");
+    }
 
+    /**
+     * @notice Updates the limits of any bridge
+     * @dev Can only be called by the owner
+     * @param mintingLimit The updated minting limit we are setting to the bridge
+     * @param burningLimit The updated burning limit we are setting to the bridge
+     * @param bridge The address of the bridge we are setting the limits too
+     */
+    function setLimits(
+        address bridge,
+        uint256 mintingLimit,
+        uint256 burningLimit
+    ) external onlyAdminAccounts {
+        if (_getLimitCap() < mintingLimit) revert IXERC20_LimitsTooHigh();
+        _changeMinterLimit(bridge, mintingLimit);
+        _changeBurnerLimit(bridge, burningLimit);
+
+        emit BridgeLimitsSet(mintingLimit, burningLimit, bridge);
+    }
+
+    /**
+     * @dev This burn function is specifically designed for use by authorized XERC20 bridges,
+     * allowing them to burn tokens from users' wallets. The function is accessible only to
+     * system accounts and enforces a rate limit similar to the minting process.
+     *
+     * Before a bridge can execute this burn operation, the user must have explicitly granted
+     * permission by calling the "approve" function. This approval mechanism ensures that tokens
+     * are burned only with user consent and within the constraints of allowed amounts.
+     *
+     * @param user The address from which tokens will be burned.
+     * @param amount The amount of tokens to be burned.
+     *
+     * Reverts if the burning limit is exceeded or if the caller does not have sufficient allowance
+     * when they are not the token owner.
+     */ function burn(
+        address user,
+        uint256 amount
+    ) external onlySystemAccounts {
+        if (RateLimitsUpgradeable.burningCurrentLimitOf(_msgSender()) < amount)
+            revert IXERC20_NotHighEnoughLimits();
+
+        if (_msgSender() != user) {
+            _spendAllowance(user, _msgSender(), amount);
+        }
+
+        _useBurnerLimits(_msgSender(), amount);
+        _burn(user, amount);
+    }
+
+    /**
+     * @notice sets the burning limit for a given account to a specified value
+     * @param burner The address of the burner whose limit is to be reset
+     * @param limit The new current limit to be set for burning
+     */
+    function setBurningCurrentLimit(
+        address burner,
+        uint256 limit
+    ) public onlyAdminAccounts {
+        if (_getLimitCap() < limit) revert IXERC20_LimitsTooHigh();
+        _setBurnerCurrentLimit(burner, limit);
+    }
 }
 

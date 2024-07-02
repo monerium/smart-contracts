@@ -127,7 +127,9 @@ contract ControllerToken is Token {
         address to,
         uint256 amount
     ) external onlyFrontend onlySystemAccount(caller) returns (bool) {
-        _useMintAllowance(caller, amount);
+        if (RateLimitsUpgradeable.mintingCurrentLimitOf(caller) < amount)
+            revert IXERC20_NotHighEnoughLimits(); // This is a double verification. Since there is the same condition but with a different eventType I don't know where I should verify.
+        _useMinterLimits(caller, amount);
         _mint(to, amount);
 
         return true;

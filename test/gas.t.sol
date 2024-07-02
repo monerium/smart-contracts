@@ -49,9 +49,10 @@ contract ERC20TokenTest is Test {
         token.addAdminAccount(admin);
         assertTrue(token.isSystemAccount(system));
         assertTrue(token.isAdminAccount(admin));
-        token.setMaxMintAllowance(100e18);
-        vm.prank(admin);
-        token.setMintAllowance(system, 100e18);
+        token.setLimitCap( 100e18);
+        vm.startPrank(admin);
+        token.setLimits(system, 100e18, 100e18);
+        vm.stopPrank();
     }
 
     function test_gas_recording() public {
