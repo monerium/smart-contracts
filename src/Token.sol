@@ -187,8 +187,8 @@ contract Token is
     }
 
     /**
-     * @notice Sets the maximum an admin can set the minting limit to
-     * @param limitCap the maximum value a minting limit can be set to
+     * @notice Sets the maximum an admin can set the minting and burning limit to
+     * @param limitCap the maximum value a minting and burning limit can be set to
      */
     function setLimitCap(uint256 limitCap) public onlyOwner {
         _setLimitCap(limitCap);

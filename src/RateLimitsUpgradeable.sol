@@ -8,7 +8,6 @@ contract RateLimitsUpgradeable {
      * @param ratePerSecond The rate per second one can mint/burn
      * @param maxLimit The max limit per day
      * @param currentLimit The current limit
-     * @param limitCap the maximum someone can set the currentLimit to;
      */
     struct RateLimitParameters {
         uint256 timestamp;
@@ -20,8 +19,8 @@ contract RateLimitsUpgradeable {
     /**
      * @notice Contains the full minting and burning data for a particular minter/burner
      *
-     * @param minterParams The minting parameters
-     * @param burnerParams The burning parameters
+     * @param mint The minting parameters
+     * @param burn The burning parameters
      */
     struct Limits {
         RateLimitParameters mint;
@@ -30,7 +29,7 @@ contract RateLimitsUpgradeable {
 
     struct RateLimitsStorage {
         mapping(address => Limits) _limits;
-        uint256 limitCap; // Should we cap this ? it is so that an admin can set a current higher than the daily but only up to a certain amount.
+        uint256 _limitCap; // Should we cap this ? it is so that an admin can set a current higher than the daily but only up to a certain amount.
     }
 
     /**
@@ -69,11 +68,11 @@ contract RateLimitsUpgradeable {
     function _setLimitCap(uint256 newCap) internal {
         RateLimitsStorage storage $ = _getRateLimitsStorage();
 
-        $.limitCap = newCap;
+        $._limitCap = newCap;
     }
 
     function _getLimitCap() internal view returns (uint256 limitCap) {
-        limitCap = _getRateLimitsStorage().limitCap;
+        limitCap = _getRateLimitsStorage()._limitCap;
     }
 
     /**
@@ -117,7 +116,7 @@ contract RateLimitsUpgradeable {
         RateLimitsStorage storage $ = _getRateLimitsStorage();
         RateLimitParameters storage m = $._limits[account].mint;
 
-        if (limit > $.limitCap) revert RateLimit_LimitsTooHigh();
+        if (limit > $._limitCap) revert RateLimit_LimitsTooHigh();
 
         m.currentLimit = limit;
         m.timestamp = block.timestamp;
@@ -132,7 +131,7 @@ contract RateLimitsUpgradeable {
         RateLimitsStorage storage $ = _getRateLimitsStorage();
         RateLimitParameters storage b = $._limits[account].burn;
 
-        if (limit > $.limitCap) revert RateLimit_LimitsTooHigh();
+        if (limit > $._limitCap) revert RateLimit_LimitsTooHigh();
 
         b.currentLimit = limit;
         b.timestamp = block.timestamp;
@@ -150,7 +149,7 @@ contract RateLimitsUpgradeable {
         RateLimitsStorage storage $ = _getRateLimitsStorage();
         RateLimitParameters storage m = $._limits[account].mint;
 
-        if (newDailyLimit > $.limitCap) revert RateLimit_LimitsTooHigh();
+        if (newDailyLimit > $._limitCap) revert RateLimit_LimitsTooHigh();
 
         uint256 oldLimit = m.maxLimit;
         uint256 currentLimit = mintingCurrentLimitOf(account);
@@ -178,7 +177,7 @@ contract RateLimitsUpgradeable {
         RateLimitsStorage storage $ = _getRateLimitsStorage();
         RateLimitParameters storage b = $._limits[account].burn;
 
-        if (newDailyLimit > $.limitCap) revert RateLimit_LimitsTooHigh();
+        if (newDailyLimit > $._limitCap) revert RateLimit_LimitsTooHigh();
 
         uint256 oldLimit = b.maxLimit;
         uint256 currentLimit = burningCurrentLimitOf(account);
