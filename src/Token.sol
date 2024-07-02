@@ -10,7 +10,6 @@ import "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
-import "./MintAllowanceUpgradeable.sol";
 import "./RateLimitsUpgradeable.sol";
 import "./SystemRoleUpgradeable.sol";
 import "./IValidator.sol";
@@ -72,6 +71,13 @@ contract Token is
         address newImplementation
     ) internal override onlyOwner {}
 
+    /**
+     * @dev This mint function is restricted to access by Monerium's system and authorized XERC20 bridges only.
+     * It enforces a daily rate limit on minting per minter, which is set and can be modified by Monerium's administrator.
+     *
+     * @param to The address to which the tokens will be minted.
+     * @param amount The amount of tokens to mint.
+     */
     function mint(address to, uint256 amount) public onlySystemAccounts {
         if (RateLimitsUpgradeable.mintingCurrentLimitOf(_msgSender()) < amount)
             revert IXERC20_NotHighEnoughLimits(); // This is a double verification. Since there is the same condition but with a different eventType I don't know where I should verify.
@@ -79,6 +85,18 @@ contract Token is
         _mint(to, amount);
     }
 
+    /**
+     * @dev This burn function is exclusively accessible by Monerium's system accounts and is used
+     * to burn tokens from Monerium's KYC-approved users' wallets. The operation requires a signature
+     * that was obtained during the wallet linking process
+     *
+     * This function does not impose any rate limits on the burning process, allowing system
+     * accounts to burn tokens as needed without constraints.
+     *
+     * @param from The address from which the tokens will be burned.
+     * @param amount The amount of tokens to burn.
+     * @param signature The signature from the wallet linking process, verifying the authorization for the burn.
+     */
     function burn(
         address from,
         uint256 amount,
@@ -95,6 +113,22 @@ contract Token is
         _burn(from, amount);
     }
 
+    /**
+     * @dev This recover function is exclusively accessible by Monerium's system accounts. It is used
+     * to transfer the full token balance from one KYC-approved user's wallet to another, typically
+     * in scenarios where the user's original wallet may be compromised or inaccessible.
+     *
+     * The function validates the operation using a signature obtained during the
+     * wallet linking process, similar to the one used for the burn function. This ensures that only
+     * previously authenticated and linked wallets can initiate a recovery.
+     *
+     * @param from The address from which the tokens will be recovered.
+     * @param to The address to which the tokens will be transferred.
+     * @param v The recovery ID component of the signature.
+     * @param r The first 32 bytes of the cryptographic signature.
+     * @param s The second 32 bytes of the cryptographic signature.
+     * @return The amount of tokens that were recovered and transferred.
+     */
     function recover(
         address from,
         address to,
@@ -160,6 +194,11 @@ contract Token is
         _setLimitCap(limitCap);
     }
 
+    /**
+     * @dev Returns the maximum value that an administrator can set for the daily minting or burning limit.
+     *
+     * @return The maximum limit cap for minting or burning operations.
+     */
     function getLimitCap() public view returns (uint256) {
         return _getLimitCap();
     }
@@ -311,14 +350,25 @@ contract Token is
     }
 
     /**
-     * @notice Burns tokens for a user
-     * @dev Can only be called by a minter
-     * @param user The address of the user who needs tokens burned
-     * @param amount The amount of tokens being burned
-     */
-    function burn(address user, uint256 amount) external onlySystemAccounts {
+     * @dev This burn function is specifically designed for use by authorized XERC20 bridges,
+     * allowing them to burn tokens from users' wallets. The function is accessible only to
+     * system accounts and enforces a rate limit similar to the minting process.
+     *
+     * Before a bridge can execute this burn operation, the user must have explicitly granted
+     * permission by calling the "approve" function. This approval mechanism ensures that tokens
+     * are burned only with user consent and within the constraints of allowed amounts.
+     *
+     * @param user The address from which tokens will be burned.
+     * @param amount The amount of tokens to be burned.
+     *
+     * Reverts if the burning limit is exceeded or if the caller does not have sufficient allowance
+     * when they are not the token owner.
+     */ function burn(
+        address user,
+        uint256 amount
+    ) external onlySystemAccounts {
         if (RateLimitsUpgradeable.burningCurrentLimitOf(_msgSender()) < amount)
-            revert IXERC20_NotHighEnoughLimits(); // This is a double verification. Since there is the same condition but with a different eventType I don't know where I should verify.
+            revert IXERC20_NotHighEnoughLimits();
 
         if (_msgSender() != user) {
             _spendAllowance(user, _msgSender(), amount);
