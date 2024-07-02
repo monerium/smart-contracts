@@ -72,8 +72,8 @@ contract RateLimitsUpgradeable {
         $.limitCap = newCap;
     }
 
-    function _getLimitCap() internal view returns(uint256 limitCap) {
-      limitCap = _getRateLimitsStorage().limitCap;
+    function _getLimitCap() internal view returns (uint256 limitCap) {
+        limitCap = _getRateLimitsStorage().limitCap;
     }
 
     /**
@@ -115,9 +115,7 @@ contract RateLimitsUpgradeable {
      */
     function _setMinterCurrentLimit(address account, uint256 limit) internal {
         RateLimitsStorage storage $ = _getRateLimitsStorage();
-        RateLimitParameters storage m = $
-            ._limits[account]
-            .mint;
+        RateLimitParameters storage m = $._limits[account].mint;
 
         if (limit > $.limitCap) revert RateLimit_LimitsTooHigh();
 
@@ -132,9 +130,7 @@ contract RateLimitsUpgradeable {
      */
     function _setBurnerCurrentLimit(address account, uint256 limit) internal {
         RateLimitsStorage storage $ = _getRateLimitsStorage();
-        RateLimitParameters storage b = $
-            ._limits[account]
-            .burn;
+        RateLimitParameters storage b = $._limits[account].burn;
 
         if (limit > $.limitCap) revert RateLimit_LimitsTooHigh();
 
@@ -147,11 +143,12 @@ contract RateLimitsUpgradeable {
      * @param account The address of the minter we are setting the limit too
      * @param newDailyLimit The updated limit we are setting to the minter
      */
-    function _changeMinterLimit(address account, uint256 newDailyLimit) internal {
+    function _changeMinterLimit(
+        address account,
+        uint256 newDailyLimit
+    ) internal {
         RateLimitsStorage storage $ = _getRateLimitsStorage();
-        RateLimitParameters storage m = $
-            ._limits[account]
-            .mint;
+        RateLimitParameters storage m = $._limits[account].mint;
 
         if (newDailyLimit > $.limitCap) revert RateLimit_LimitsTooHigh();
 
@@ -179,9 +176,7 @@ contract RateLimitsUpgradeable {
         uint256 newDailyLimit
     ) internal {
         RateLimitsStorage storage $ = _getRateLimitsStorage();
-        RateLimitParameters storage b = $
-            ._limits[account]
-            .burn;
+        RateLimitParameters storage b = $._limits[account].burn;
 
         if (newDailyLimit > $.limitCap) revert RateLimit_LimitsTooHigh();
 

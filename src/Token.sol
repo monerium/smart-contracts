@@ -328,5 +328,17 @@ contract Token is
         _burn(user, amount);
     }
 
+    /**
+     * @notice sets the burning limit for a given account to a specified value
+     * @param burner The address of the burner whose limit is to be reset
+     * @param limit The new current limit to be set for burning
+     */
+    function setBurningCurrentLimit(
+        address burner,
+        uint256 limit
+    ) public onlyAdminAccounts {
+        if (_getLimitCap() < limit) revert IXERC20_LimitsTooHigh();
+        _setBurnerCurrentLimit(burner, limit);
+    }
 }
 
