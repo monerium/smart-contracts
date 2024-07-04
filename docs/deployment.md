@@ -49,27 +49,6 @@ npx hardhat test
 
 ## Deployment and Upgrades
 
-### Token Deployment hardhat Task (un-optimized)
-The deploy task allows for the flexible deployment of specified tokens. It can deploy a list of tokens provided as arguments, or all tokens if no arguments are specified. The task includes a confirmation step before proceeding with deployment.
-
-To run the deployment task, use the command:
-
-```bash
-npx hardhat deploy [token1 token2 ...]
-```
-
-For example, to deploy only EUR and GBP tokens, use:
-
-```bash
-npx hardhat deploy eur gbp
-```
-
-To deploy all available tokens, simply run:
-
-```bash
-npx hardhat deploy
-```
-
 ### Token Deployment foundry script (optimized)
 Our smart contract deployment script offers multiple options for deploying tokens. It leverages an optimized approach by using a single implementation contract for all tokens, which is more efficient and cost-effective.
 
