@@ -77,6 +77,9 @@ To deploy all tokens (GBP, ISK, EUR, USD) using a single implementation, use the
 forge script script/deploy.s.sol:All --rpc-url $RPC_URL --broadcast --etherscan-api-key $ETHERSCAN_API_KEY --verify -vvvv
 
 ```
+
+> for local deployment, the etherscan-api-key flag is unnecessary.
+
 #### Deploying individual Tokens
 To deploy each token individually, with each its own implementation contract, use the corresponding commands:
 
