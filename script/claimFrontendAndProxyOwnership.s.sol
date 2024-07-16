@@ -5,7 +5,7 @@ import "forge-std/Script.sol";
 import "../src/ControllerToken.sol";
 import "../src/BlacklistValidatorUpgradeable.sol";
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
-import "../src/tests/tokenfrontend.sol";
+import "../src/tests/TokenFrontend.sol";
 
 
 contract All is Script {
