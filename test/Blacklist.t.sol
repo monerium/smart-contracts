@@ -62,9 +62,10 @@ contract BlackListValidatorTest is Test {
         token.addAdminAccount(admin);
         assertTrue(token.isSystemAccount(system));
         assertTrue(token.isAdminAccount(admin));
-        token.setMaxMintAllowance(2e18);
-        vm.prank(admin);
-        token.setMintAllowance(system, 2e18);
+        token.setLimitCap( 2e18);
+        vm.startPrank(admin);
+        token.setLimits(system, 2e18, 2e18);
+        vm.stopPrank();
         vm.startPrank(system);
         token.mint(user1, 1e18);
         token.mint(user2, 1e18);
@@ -127,7 +128,10 @@ contract BlackListValidatorTest is Test {
         vm.startPrank(user1);
         assertTrue(validator.owner() != user1);
         vm.expectRevert(
-            abi.encodeWithSignature("OwnableUnauthorizedAccount(address)", address(user1))
+            abi.encodeWithSignature(
+                "OwnableUnauthorizedAccount(address)",
+                address(user1)
+            )
         );
         validator.addAdminAccount(user1);
     }
@@ -145,7 +149,10 @@ contract BlackListValidatorTest is Test {
         assertTrue(validator.owner() != user1);
         assertTrue(validator.isAdminAccount(admin));
         vm.expectRevert(
-            abi.encodeWithSignature("OwnableUnauthorizedAccount(address)", address(user1))
+            abi.encodeWithSignature(
+                "OwnableUnauthorizedAccount(address)",
+                address(user1)
+            )
         );
         validator.removeAdminAccount(admin);
     }

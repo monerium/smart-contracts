@@ -135,7 +135,7 @@ contract GnosisControllerToken is Token {
         address to,
         uint256 amount
     ) external onlyFrontend onlySystemAccount(caller) returns (bool) {
-        _useMintAllowance(caller, amount);
+        _useMinterLimits(_msgSender(), amount);
         _mint(to, amount);
 
         return true;

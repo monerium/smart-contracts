@@ -42,14 +42,17 @@ contract MintableTokenTest is Test {
 
         assertEq(token.name(), "token");
         assertEq(token.owner(), address(this));
+
+        token.addSystemAccount(system);
+        token.addAdminAccount(admin);
     }
 
-    function test_owner_can_set_max_mint_allowance() public {
-        token.setMaxMintAllowance(1000);
-        assertEq(token.getMaxMintAllowance(), 1000);
+    function test_owner_can_set_limit_cap() public {
+        token.setLimitCap(200 ether);
+        assertEq(token.getLimitCap(), 200 ether);
     }
 
-    function test_non_owner_cannot_set_max_mint_allowance() public {
+    function test_non_owner_cannot_set_limit_cap() public {
         vm.startPrank(user1);
         vm.expectRevert(
             abi.encodeWithSignature(
@@ -57,69 +60,66 @@ contract MintableTokenTest is Test {
                 user1
             )
         );
-        token.setMaxMintAllowance(1000);
+        token.setLimitCap(100 ether);
         vm.stopPrank();
     }
 
-    function test_admin_can_set_mint_allowance() public {
-        test_owner_can_set_max_mint_allowance();
-        token.addAdminAccount(admin);
+    function test_admin_can_set_minting_limit() public {
+        test_owner_can_set_limit_cap();
         vm.startPrank(admin);
-        token.setMintAllowance(system, 500);
+        token.setMintingLimit(system, 100 ether);
         vm.stopPrank();
-
-        assertEq(token.getMintAllowance(system), 500);
+        assertEq(token.mintingCurrentLimitOf(system), 100 ether);
     }
 
-    function test_admin_cannot_set_mint_allowance_above_max_mint_allowance()
-        public
-    {
-        test_owner_can_set_max_mint_allowance();
-        token.addAdminAccount(admin);
+    function test_admin_cannot_set_minting_limit_above_limit_cap() public {
+        test_owner_can_set_limit_cap();
         vm.startPrank(admin);
-        vm.expectRevert("MintAllowance: cannot set allowance higher than max");
-        token.setMintAllowance(system, 1500);
+        vm.expectRevert(abi.encodeWithSignature("IXERC20_LimitsTooHigh()"));
+        token.setMintingLimit(system, 250 ether);
         vm.stopPrank();
     }
 
-    function test_non_admin_cannot_set_mint_allowance() public {
+    function test_non_admin_cannot_set_minting_limit() public {
         vm.expectRevert("SystemRole: caller is not an admin account");
-        token.setMintAllowance(user1, 500);
+
+        token.setMintingLimit(user1, 50 ether);
     }
 
     function test_system_account_can_mint_tokens() public {
-        test_owner_can_set_max_mint_allowance();
-        test_admin_can_set_mint_allowance();
-        token.addSystemAccount(system);
+        test_owner_can_set_limit_cap();
+        test_admin_can_set_minting_limit();
         address user = vm.addr(userPrivateKey);
         vm.startPrank(system);
-        token.mint(user, 100);
+        token.mint(user, 100 ether);
         vm.stopPrank();
 
-        assertEq(token.balanceOf(user), 100);
+        assertEq(token.balanceOf(user), 100 ether);
     }
 
-    function test_system_account_cannot_mint_tokens_above_mint_allowance()
+    function test_system_account_cannot_mint_tokens_above_minting_limit()
         public
     {
-        test_owner_can_set_max_mint_allowance();
-        test_admin_can_set_mint_allowance();
-        token.addSystemAccount(system);
+        test_owner_can_set_limit_cap();
+        test_admin_can_set_minting_limit();
         address user = vm.addr(userPrivateKey);
         vm.startPrank(system);
-        vm.expectRevert("MintAllowance: not allowed to mint more than allowed");
-        token.mint(user, 1000);
+
+        vm.expectRevert(
+            abi.encodeWithSignature("IXERC20_NotHighEnoughLimits()")
+        );
+        token.mint(user, 101 ether);
         vm.stopPrank();
     }
 
     function test_non_system_account_cannot_mint_tokens() public {
         vm.expectRevert("SystemRole: caller is not a system account");
-        token.mint(user1, 100);
+        token.mint(user1, 100 ether);
     }
 
     function test_system_account_can_burn_tokens() public {
-        test_owner_can_set_max_mint_allowance();
-        test_admin_can_set_mint_allowance();
+        test_owner_can_set_limit_cap();
+        test_admin_can_set_minting_limit();
         test_system_account_can_mint_tokens();
 
         address user = vm.addr(userPrivateKey);
@@ -128,31 +128,33 @@ contract MintableTokenTest is Test {
         bytes memory signature = abi.encodePacked(r, s, v);
 
         vm.startPrank(system);
-        token.burn(user, 50, hash, signature);
+        token.burn(user, 50 ether, hash, signature);
         vm.stopPrank();
 
-        assertEq(token.balanceOf(user), 50);
+        assertEq(token.balanceOf(user), 50 ether);
     }
 
     function test_non_system_account_cannot_burn_tokens() public {
-        test_owner_can_set_max_mint_allowance();
-        test_admin_can_set_mint_allowance();
+        test_owner_can_set_limit_cap();
+        test_admin_can_set_minting_limit();
         test_system_account_can_mint_tokens();
 
         address user = vm.addr(userPrivateKey);
-        bytes32 hash = keccak256("I hereby declare that I am the address owner.");
+        bytes32 hash = keccak256(
+            "I hereby declare that I am the address owner."
+        );
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPrivateKey, hash);
         bytes memory signature = abi.encodePacked(r, s, v);
 
         vm.expectRevert("SystemRole: caller is not a system account");
-        token.burn(user, 50, hash, signature);
+        token.burn(user, 50 ether, hash, signature);
     }
 
     function test_system_account_cannot_burn_tokens_with_invalid_signature()
         public
     {
-        test_owner_can_set_max_mint_allowance();
-        test_admin_can_set_mint_allowance();
+        test_owner_can_set_limit_cap();
+        test_admin_can_set_minting_limit();
         test_system_account_can_mint_tokens();
 
         address user = vm.addr(userPrivateKey);
@@ -162,7 +164,256 @@ contract MintableTokenTest is Test {
 
         vm.startPrank(system);
         vm.expectRevert("signature/hash does not match");
-        token.burn(user, 50, hash2, signature);
+        token.burn(user, 50 ether, hash2, signature);
+        vm.stopPrank();
+    }
+
+    function test_can_get_maxLimit() public {
+        test_owner_can_set_limit_cap();
+
+        vm.startPrank(admin);
+        token.setMintingLimit(system, 100 ether);
+
+        assertEq(
+            token.mintingCurrentLimitOf(system),
+            token.mintingMaxLimitOf(system)
+        );
+    }
+
+    function test_changing_maxLimit_updates_current_limit() public {
+        test_owner_can_set_limit_cap();
+        vm.startPrank(admin);
+
+        token.setMintingLimit(system, 100 ether);
+
+        assertEq(token.mintingCurrentLimitOf(system), 100 ether);
+
+        token.setMintingLimit(system, 50 ether);
+        vm.stopPrank();
+
+        assertEq(token.mintingCurrentLimitOf(system), 50 ether);
+    }
+
+    function test_changing_maxLimit_when_limit_is_used_updates_current_limit()
+        public
+    {
+        test_owner_can_set_limit_cap();
+        vm.prank(admin);
+        token.setMintingLimit(system, 100 ether);
+
+        assertEq(token.mintingCurrentLimitOf(system), 100 ether);
+
+        address user = vm.addr(userPrivateKey);
+        vm.prank(system);
+        token.mint(user, 100 ether);
+
+        assertEq(token.mintingCurrentLimitOf(system), 0);
+
+        vm.prank(admin);
+        token.setMintingLimit(system, 50 ether);
+
+        assertEq(token.mintingCurrentLimitOf(system), 0);
+    }
+
+    function test_chaning_partial_maxLimit_updates_currentLimit_when_used()
+        public
+    {
+        test_owner_can_set_limit_cap();
+
+        vm.prank(admin);
+        token.setMintingLimit(system, 100 ether);
+
+        address user = vm.addr(userPrivateKey);
+        vm.prank(system);
+        token.mint(user, 10 ether);
+
+        vm.prank(admin);
+        token.setMintingLimit(system, 50 ether);
+
+        assertEq(token.mintingCurrentLimitOf(system), 40 ether);
+    }
+
+    function test_chaning_partial_maxLimit_updates_currentLimit_whith_increase()
+        public
+    {
+        test_owner_can_set_limit_cap();
+
+        vm.prank(admin);
+        token.setMintingLimit(system, 100 ether);
+
+        address user = vm.addr(userPrivateKey);
+        vm.prank(system);
+        token.mint(user, 10 ether);
+
+        vm.prank(admin);
+        token.setMintingLimit(system, 120 ether);
+
+        assertEq(token.mintingCurrentLimitOf(system), 110 ether);
+    }
+
+    function test_currentLimit_is_updated_with_time() public {
+        test_owner_can_set_limit_cap();
+
+        vm.prank(admin);
+        token.setMintingLimit(system, 100 ether);
+
+        address user = vm.addr(userPrivateKey);
+        vm.prank(system);
+        token.mint(user, 100 ether);
+
+        vm.warp(block.timestamp + 12 hours);
+
+        assertApproxEqRel(
+            token.mintingCurrentLimitOf(system),
+            100 ether / 2,
+            0.1 ether
+        );
+    }
+
+    function test_currentLimit_is_max_after_duration() public {
+        test_owner_can_set_limit_cap();
+
+        vm.prank(admin);
+        token.setMintingLimit(system, 100 ether);
+
+        address user = vm.addr(userPrivateKey);
+        vm.prank(system);
+        token.mint(user, 100 ether);
+
+        vm.warp(block.timestamp + 25 hours);
+
+        assertEq(token.mintingCurrentLimitOf(system), 100 ether);
+    }
+
+    function test_currentLimit_is_max_after_half_use_and_half_duration()
+        public
+    {
+        test_owner_can_set_limit_cap();
+
+        vm.prank(admin);
+        token.setMintingLimit(system, 100 ether);
+
+        address user = vm.addr(userPrivateKey);
+        vm.prank(system);
+        token.mint(user, 50 ether);
+
+        vm.warp(block.timestamp + 12.1 hours);
+        assertEq(token.mintingCurrentLimitOf(system), 100 ether);
+
+    }
+
+    function test_currentLimit_is_same_if_unused() public {
+        test_owner_can_set_limit_cap();
+
+        vm.prank(admin);
+        token.setMintingLimit(system, 100 ether);
+
+        vm.warp(block.timestamp + 12 hours);
+
+        assertEq(token.mintingCurrentLimitOf(system), 100 ether);
+    }
+
+    function test_currentLimit_can_be_set() public {
+        test_owner_can_set_limit_cap();
+
+        vm.prank(admin);
+        token.setMintingLimit(system, 100 ether);
+
+        address user = vm.addr(userPrivateKey);
+        vm.prank(system);
+        token.mint(user, 100 ether);
+
+        assertEq(token.mintingCurrentLimitOf(system), 0 ether);
+
+        vm.prank(admin);
+        token.setMintingCurrentLimit(system, 100 ether);
+
+        assertEq(token.mintingCurrentLimitOf(system), 100 ether);
+    }
+
+    function test_currentLimit_can_be_set_regardless_of_time() public {
+        test_owner_can_set_limit_cap();
+
+        vm.prank(admin);
+        token.setMintingLimit(system, 100 ether);
+
+        address user = vm.addr(userPrivateKey);
+        vm.prank(system);
+        token.mint(user, 100 ether);
+
+        assertEq(token.mintingCurrentLimitOf(system), 0 ether);
+
+        vm.prank(admin);
+        token.setMintingCurrentLimit(system, 100 ether);
+
+        vm.warp(block.timestamp + 12 hours);
+
+        assertEq(token.mintingCurrentLimitOf(system), 100 ether);
+    }
+
+    function test_currentLimit_can_be_set_above_minter_maxLimit_up_to_limitCap()
+        public
+    {
+        test_owner_can_set_limit_cap();
+
+        vm.prank(admin);
+        token.setMintingLimit(system, 100 ether);
+
+        address user = vm.addr(userPrivateKey);
+        vm.prank(system);
+        token.mint(user, 100 ether);
+
+        assertEq(token.mintingCurrentLimitOf(system), 0 ether);
+
+        uint256 cap = token.getLimitCap();
+        vm.prank(admin);
+        token.setMintingCurrentLimit(system, cap);
+
+        assertEq(token.mintingCurrentLimitOf(system), cap);
+    }
+
+    function test_currentLimit_can_stay_higher_than_maxLimit_regardless_of_time()
+        public
+    {
+        test_owner_can_set_limit_cap();
+
+        vm.prank(admin);
+        token.setMintingLimit(system, 100 ether);
+
+        address user = vm.addr(userPrivateKey);
+        vm.prank(system);
+        token.mint(user, 100 ether);
+
+        assertEq(token.mintingCurrentLimitOf(system), 0 ether);
+
+        uint256 cap = token.getLimitCap();
+        vm.prank(admin);
+        token.setMintingCurrentLimit(system, cap);
+
+        assertEq(token.mintingCurrentLimitOf(system), cap);
+
+        vm.warp(block.timestamp + 25 hours);
+
+        assertEq(token.mintingCurrentLimitOf(system), cap);
+    }
+
+    function test_currentLimit_canot_be_set_above_limitCap() public {
+        test_owner_can_set_limit_cap();
+
+        vm.prank(admin);
+        token.setMintingLimit(system, 100 ether);
+
+        address user = vm.addr(userPrivateKey);
+        vm.prank(system);
+        token.mint(user, 100 ether);
+
+        assertEq(token.mintingCurrentLimitOf(system), 0 ether);
+
+        uint256 cap = token.getLimitCap();
+
+        vm.startPrank(admin);
+        vm.expectRevert(abi.encodeWithSignature("IXERC20_LimitsTooHigh()"));
+        token.setMintingCurrentLimit(system, cap + 0.1 ether);
         vm.stopPrank();
     }
 }

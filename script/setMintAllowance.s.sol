@@ -22,7 +22,7 @@ contract All is Script {
         // Assuming Token and SmartController are already deployed and their ABIs are known
         Token token = Token(tokenAddress);
 
-        token.setMintAllowance(system, allowance);
+        token.setLimits(system, allowance, 0);
         console.log("Mint allowance set successfully for system as owner.");
 
         vm.stopBroadcast();

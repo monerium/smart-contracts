@@ -12,15 +12,14 @@ contract All is Script {
         address tokenAddress = vm.envAddress("TOKEN_ADDRESS");
         address system = vm.envAddress("SYSTEM_ADDRESS");
         address admin = vm.envAddress("ADMIN_ADDRESS");
-        uint256 allowance = vm.envUint("MAX_MINT_ALLOWANCE");
-        address devKey =  vm.addr(deployerPrivateKey);
+        uint256 allowance = vm.envUint("LIMIT_CAP");
+        address devKey = vm.addr(deployerPrivateKey);
         if (allowance == 0) {
             allowance = 50000000000000000000000000; // Default value if not provided
         }
 
         vm.startBroadcast(deployerPrivateKey);
-        console.log("Configuring with Token:");//, tokenAddress, "System:", system, "Admin:", admin, "Allowance:", allowance);
-
+        console.log("Configuring with Token:"); //, tokenAddress, "System:", system, "Admin:", admin, "Allowance:", allowance);
 
         // Assuming Token and SmartController are already deployed and their ABIs are known
         Token token = Token(tokenAddress);
@@ -31,13 +30,21 @@ contract All is Script {
         token.addSystemAccount(system);
         console.log("System account added successfully.");
 
-        token.setMaxMintAllowance(allowance);
-        console.log("Max mint allowance set successfully.");
+        token.setLimitCap(allowance);
 
-        token.addAdminAccount(devKey);
-        token.setMintAllowance(system, allowance);
-        console.log("mint allowance set successfully.");
-        token.removeAdminAccount(devKey);
+        if (devKey != admin) {
+            token.addAdminAccount(devKey);
+            console.log("Developer account added successfully.");
+        }
+
+        token.setLimits(system, allowance, allowance);
+        console.log("Rate Limit set successfully.");
+
+        if (devKey != admin) {
+            token.removeAdminAccount(devKey);
+            console.log("Developer account removed successfully.");
+        }
+
         vm.stopBroadcast();
     }
 }
