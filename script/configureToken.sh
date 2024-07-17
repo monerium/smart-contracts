@@ -22,7 +22,7 @@ allowance=$5
 export TOKEN_ADDRESS=$tokenAddress
 export SYSTEM_ADDRESS=$system
 export ADMIN_ADDRESS=$admin
-export MAX_MINT_ALLOWANCE=$allowance
+export LIMIT_CAP=$allowance
 
 
 # Call the Forge script
