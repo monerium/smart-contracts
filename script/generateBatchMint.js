@@ -8,7 +8,6 @@ async function main(rpcURL, V2Address, startBlock, V1Address) {
   const web3 = new Web3(new Web3.providers.HttpProvider(rpcURL));
   const contract = new web3.eth.Contract(erc20ABI, V1Address);
   const latestBlock = await web3.eth.getBlockNumber();
-
   const holdersSet = await fetchTokenHolders(contract, startBlock, latestBlock);
 
   const { totalSum, holderBalances } = await fetchBalancesAndTotalSum(
@@ -47,6 +46,12 @@ async function fetchTokenHolders(contract, startBlock, latestBlock) {
       toBlock: toBlock.toString(),
     });
 
+    if (holdersSet.size === 0 && events.length > 0) {
+      console.log(
+        `Found Transfer events in the first query. Adding holders to the set...`
+      );
+      console.log(`block number: ${currentBlock.toString()}`);
+    }
     events.forEach((event) => {
       holdersSet.add(event.returnValues.from);
       holdersSet.add(event.returnValues.to);
@@ -55,34 +60,25 @@ async function fetchTokenHolders(contract, startBlock, latestBlock) {
     currentBlock = toBlock.plus(1);
   }
 
+  console.log("holdersSet: ", holdersSet.size);
   return holdersSet;
 }
-
-async function fetchTokenHolders(contract, startBlock, latestBlock) {
-  let currentBlock = new BigNumber(startBlock);
-  const endBlock = new BigNumber(latestBlock);
-
-  const holdersSet = new Set();
-  while (currentBlock.lt(endBlock)) {
-    let toBlock = BigNumber.min(currentBlock.plus(queryStep), endBlock);
-    console.log(
-      `Querying blocks ${currentBlock.toString()} to ${toBlock.toString()}...`
-    );
-
-    const events = await contract.getPastEvents("Transfer", {
-      fromBlock: currentBlock.toString(),
-      toBlock: toBlock.toString(),
-    });
-
-    events.forEach((event) => {
-      holdersSet.add(event.returnValues.from);
-      holdersSet.add(event.returnValues.to);
-    });
-
-    currentBlock = toBlock.plus(1);
+async function fetchBalanceWithRetry(contract, holder, retries = 3) {
+  let attempts = 0;
+  while (attempts < retries) {
+    try {
+      const balance = await contract.methods.balanceOf(holder).call();
+      return new BigNumber(balance);
+    } catch (error) {
+      attempts++;
+      if (attempts === retries) {
+        throw error;
+      }
+      console.warn(
+        `Attempt ${attempts} failed for holder ${holder}. Retrying...`
+      );
+    }
   }
-
-  return holdersSet;
 }
 
 async function fetchBalancesAndTotalSum(contract, holdersSet) {
@@ -94,12 +90,18 @@ async function fetchBalancesAndTotalSum(contract, holdersSet) {
     if (iterator % 50 === 0) {
       console.log(`Fetching balance for holder ${iterator}...`);
     }
-    const balance = await contract.methods.balanceOf(holder).call();
-    const balanceBN = new BigNumber(balance);
-    iterator++;
-    if (!balanceBN.isZero()) {
-      holderBalances[holder] = balanceBN;
-      totalSum = totalSum.plus(balanceBN);
+
+    try {
+      const balanceBN = await fetchBalanceWithRetry(contract, holder);
+      iterator++;
+      if (!balanceBN.isZero()) {
+        holderBalances[holder] = balanceBN;
+        totalSum = totalSum.plus(balanceBN);
+      }
+    } catch (error) {
+      console.error(
+        `Failed to fetch balance for holder ${holder} after multiple attempts.`
+      );
     }
   }
 
@@ -110,8 +112,14 @@ async function fetchTokenSupply(contract) {
   return await contract.methods.totalSupply().call();
 }
 
+function orderHoldersByAmount(holders) {
+  return Object.entries(holders).sort(([, a], [, b]) => b - a);
+}
+
 async function generateScript(web3, holders, newToken, target) {
-  let mints = Object.entries(holders)
+  const orderedHolders = orderHoldersByAmount(holders);
+
+  let mints = orderedHolders
     .map(([address, balances]) => {
       return `        token.mint(${address}, ${balances.toFixed()});`;
     })

@@ -26,10 +26,10 @@ contract All is Script {
         // Deploy only one implementation of the Token contract for all currencies.
         Token implementation = new Token();
 
-        deployTokenProxy(implementation, "Monerium EUR emoney", "EURe", address(validatorProxy));
-        deployTokenProxy(implementation, "Monerium GBP emoney", "GBPe", address(validatorProxy));
-        deployTokenProxy(implementation, "Monerium ISK emoney", "ISKe", address(validatorProxy));
-        deployTokenProxy(implementation, "Monerium USD emoney", "USDe", address(validatorProxy));
+        deployTokenProxy(implementation, "Monerium EURe", "EURe", address(validatorProxy));
+        deployTokenProxy(implementation, "Monerium GBPe", "GBPe", address(validatorProxy));
+        deployTokenProxy(implementation, "Monerium ISKe", "ISKe", address(validatorProxy));
+        deployTokenProxy(implementation, "Monerium USDe", "USDe", address(validatorProxy));
 
         vm.stopBroadcast();
     }

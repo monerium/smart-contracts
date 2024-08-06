@@ -34,11 +34,27 @@ elif [ "$1" == "--gnosis-chiado" ]; then
     echo $VERIFIER_URL
     forge script script/deploy.s.sol:AllControllerGnosis --rpc-url $RPC_URL --broadcast --verify $VERIFIER_URL -vvvv --legacy
     exit 0
+elif [ "$1" == "--gnosis" ]; then
+    echo "Deploying to Gnosis..."
+    RPC_URL=$GNOSIS_RPC 
+    ETHERSCAN_API_KEY=$GNOSISSCAN_API
+    VERIFIER_URL="--verifier-url $GNOSISSCAN_URL --chain-id $GNOSIS_CHAIN_ID"
+    echo $VERIFIER_URL
+    forge script script/deploy.s.sol:AllControllerGnosis --rpc-url $RPC_URL --broadcast --etherscan-api-key $ETHERSCAN_API_KEY  --verify $VERIFIER_URL -vvvv --legacy
+    exit 0
 elif [ "$1" == "--polygon-amoy" ]; then
     echo "Deploying to Polygon Amoy..."
     RPC_URL=$POLYGON_AMOY_RPC
     ETHERSCAN_API_KEY=$POLYGONSCAN_API
-    VERIFIER_URL="--verifier-url $POLYGONSCAN_URL --chain-id $POLYGON_AMOY_CHAIN_ID"
+    VERIFIER_URL="--verifier-url $POLYGONSCAN_AMOY_URL --chain-id $POLYGON_AMOY_CHAIN_ID"
+    echo $VERIFIER_URL
+    forge script script/deploy.s.sol:AllControllerPolygon --rpc-url $RPC_URL --broadcast --etherscan-api-key $ETHERSCAN_API_KEY --verify $VERIFIER_URL -vvvv --legacy
+    exit 0
+elif [ "$1" == "--polygon" ]; then
+    echo "Deploying to Polygon..."
+    RPC_URL=$POLYGON_RPC
+    ETHERSCAN_API_KEY=$POLYGONSCAN_API
+    VERIFIER_URL="--verifier-url $POLYGONSCAN_URL --chain-id $POLYGON_CHAIN_ID"
     echo $VERIFIER_URL
     forge script script/deploy.s.sol:AllControllerPolygon --rpc-url $RPC_URL --broadcast --etherscan-api-key $ETHERSCAN_API_KEY --verify $VERIFIER_URL -vvvv --legacy
     exit 0
