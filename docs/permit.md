@@ -1,8 +1,11 @@
 # Smart Contract Permit Function Tutorial
-The permit function allows a spender to transfer tokens on behalf of the token holder with a signed permission. This tutorial breaks down the use of the permit function into digestible steps.
+
+Developers should use [ERC-2612 Permit](https://eips.ethereum.org/EIPS/eip-2612) instead of [ERC-20 Approve](https://eips.ethereum.org/EIPS/eip-20) because it allows for gasless token approvals through off-chain signatures, eliminating the need for a separate on-chain approval transaction. This not only reduces transaction costs but also streamlines user experience by enabling approvals and transfers to happen in a single transaction. By using Permit, developers can create more efficient and user-friendly applications, enhancing security and flexibility within the Ethereum ecosystem.
+
+This tutorial breaks down the use of the permit function into digestible steps.
 
 ## Step 1: Import Required Modules
-Import the SigningKey module for signing the permit digest.
+Import the SigningKey module to sign the permit digest.
 
 ```js
 const { SigningKey } = require("@ethersproject/signing-key");
@@ -15,29 +18,22 @@ Create instances of the smart contracts by using the ABI and address. Obtain the
 const { ethers } = require("ethers");
 
 // EUR contract instantiation
-const eurABI = [...] // EUR ABI goes here
-const eurAddress = "<eur_contract_address>";
-const eurContract = new ethers.Contract(eurAddress, eurABI, signer);
-
-// Fetch the controller address from the EUR contract
-const ctrlAddress = await eurContract.getController();
-
-// Controller contract instantiation
-const controllerABI = [...] // SmartController ABI goes here
-const controller = new ethers.Contract(ctrlAddress, controllerABI, signer);
+const tokenABI = [...] // token ABI goes here
+const tokenProxyAddress = "<token_proxy_contract_address>";
+const token = new ethers.Contract(tokenProxyAddress, tokenABI, signer);
 ```
 	
 ## Step 3: Prepare the Permit Details
 Define the nonce and deadline for the permit function.
 ```js
-const nonce = await controller.nonce(<yourAddress>);
+const nonce = await token.nonce(<yourAddress>);
 const deadline = Math.floor(Date.now() / 1000) + 60 * 60; // 1 hour from now
 ```
 
 ## Step 4: Create the Permit Digest
 Generate the digest that the permit function will use for transaction verification.
 ```js
-const digest = await controller.getPermitDigest(
+const digest = await token.getPermitDigest(
   <yourAddress>,
   <spenderAddress>,
   <value>,
@@ -56,7 +52,7 @@ const signature = signingKey.signDigest(digest);
 ## Step 6: Submit the Permit Transaction
 Complete the process by submitting the permit function with the required parameters and the signature.
 ```js
-await controller.permit(
+await token.permit(
   <yourAddress>,
   <spenderAddress>,
   <value>,
@@ -73,26 +69,24 @@ const { ethers } = require("ethers");
 const { SigningKey } = require("@ethersproject/signing-key");
 
 // Replace the following with your contract's ABI and addresses
-const eurABI = [...] // EUR ABI goes here
-const eurAddress = "<eur_contract_address>"; // EUR contract address
-const controllerABI = [...] // SmartController ABI goes here
+const tokenABI = [...] // token ABI goes here
+const tokenProxyAddress = "<token_proxy_contract_address>"; // token Proxy contract address
+const rpc = "http://<your_rpc>"
 
 async function permitFunction(yourAddress, spenderAddress, value, yourPrivateKey) {
   // Provider and signer would be set up here (e.g., using ethers.js)
-  const provider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
+  const provider = new ethers.providers.JsonRpcProvider(rpc);
   const signer = new ethers.Wallet(yourPrivateKey, provider);
 
   // Instantiate the contracts
-  const eurContract = new ethers.Contract(eurAddress, eurABI, signer);
-  const ctrlAddress = await eurContract.getController();
-  const controller = new ethers.Contract(ctrlAddress, controllerABI, signer);
+  const token = new ethers.Contract(tokenProxyAddress, tokenABI, signer);
 
   // Prepare the permit details
-  const nonce = await controller.nonce(yourAddress);
+  const nonce = await token.nonce(yourAddress);
   const deadline = Math.floor(Date.now() / 1000) + 60 * 60; // 1 hour from now
 
   // Create the permit digest
-  const digest = await controller.getPermitDigest(
+  const digest = await token.getPermitDigest(
     yourAddress,
     spenderAddress,
     value,
@@ -105,7 +99,7 @@ async function permitFunction(yourAddress, spenderAddress, value, yourPrivateKey
   const signature = signingKey.signDigest(digest);
 
   // Submit the permit transaction
-  const tx = await controller.permit(
+  const tx = await token.permit(
     yourAddress,
     spenderAddress,
     value,
