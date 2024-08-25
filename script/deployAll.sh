@@ -3,7 +3,7 @@
 # Source environment variables
 echo "sourcing local env."
 source .env.local
-export PRIVATE_KEY=$KEY2
+export PRIVATE_KEY=$PRIVATE_KEY
 # Run validation
 echo "Running validation..."
 npm run validate
