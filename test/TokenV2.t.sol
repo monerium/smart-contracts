@@ -130,4 +130,45 @@ contract TokenTest is Test {
         assertEq(upgradedToken.allowance(from[2], to[2]), values[2]);
     }
 
+    function test_BatchApprove_withAlreadySetAllowance() public {
+        // Deploy the new TokenV2 implementation contract
+        TokenV2 newImplementation = new TokenV2();
+
+        // Upgrade the proxy to use the new implementation contract
+        bytes memory data = "";
+        tokenV2.upgradeToAndCall(address(newImplementation), data);
+
+        // Cast the proxy address to the TokenV2 interface
+        TokenV2 upgradedToken = TokenV2(address(proxy));
+
+        // Create dummy addresses and values for testing
+        address[] memory from = new address[](3);
+        address[] memory to = new address[](3);
+        uint256[] memory values = new uint256[](3);
+
+        from[0] = address(0x123);
+        from[1] = address(0x456);
+        from[2] = address(0x789);
+
+        to[0] = address(0xabc);
+        to[1] = address(0xdef);
+        to[2] = address(0xded);
+
+        values[0] = 100;
+        values[1] = 200;
+        values[2] = 300;
+
+        // Set initial allowance
+        vm.prank(address(0x123));
+        upgradedToken.approve(to[0], 666);
+
+        // Call batchApprove function
+        upgradedToken.batchApprove(from, to, values);
+
+        // Verify the approvals
+        assertEq(upgradedToken.allowance(from[0], to[0]), 666);
+        assertEq(upgradedToken.allowance(from[1], to[1]), values[1]);
+        assertEq(upgradedToken.allowance(from[2], to[2]), values[2]);
+    }
+
 }
