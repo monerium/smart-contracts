@@ -264,7 +264,7 @@ contract EUR is Script {
                 address(validatorProxy)
             )
         );
-
+  
         console.log("Deployed", "EURe", "at", address(proxy));
         vm.stopBroadcast();
     }
