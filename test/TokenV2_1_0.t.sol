@@ -10,10 +10,11 @@ import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 contract TokenV2_1_0Test is Test {
     Token public token;
     ERC1967Proxy public proxy;
+    Token public implementation;
     address public deployerAddress;
 
     function deployToken() public returns (Token) {
-        Token implementation = new Token();
+        Token newImplementation = new Token();
         BlacklistValidatorUpgradeable blacklistValidator = new BlacklistValidatorUpgradeable();
 
         // Deploy the validator proxy contract
@@ -30,7 +31,7 @@ contract TokenV2_1_0Test is Test {
             address(validatorProxy)
         );
         ERC1967Proxy newProxy = new ERC1967Proxy(
-            address(implementation),
+            address(newImplementation),
             initData
         );
         return Token(address(newProxy));
@@ -38,7 +39,7 @@ contract TokenV2_1_0Test is Test {
 
     function setUp() public {
         // Deploy the initial implementation contract
-        Token implementation = new Token();
+        implementation = new Token();
         BlacklistValidatorUpgradeable blacklistValidator = new BlacklistValidatorUpgradeable();
 
         // Deploy the validator proxy contract
@@ -80,6 +81,40 @@ contract TokenV2_1_0Test is Test {
         // Verify the upgrade was successful
         assertEq(upgradedToken.name(), "token");
         assertEq(upgradedToken.symbol(), "EURe");
+    }
+
+    function testUpgradeToV2AndRollBack() public {
+        // Verify initial state
+        assertEq(token.name(), "token");
+        assertEq(token.symbol(), "EURe");
+
+        // Deploy the new TokenV2 implementation contract
+        TokenV2_1_0 newImplementation = new TokenV2_1_0();
+        Token source = deployToken();
+
+        // Empty data since there is no initialize method in TokenV2_1_0
+        bytes memory data = "";
+        // Upgrade the proxy to use the new implementation contract
+        token.upgradeToAndCall(address(newImplementation), data);
+
+        // Cast the proxy address to the TokenV2 interface
+        TokenV2_1_0 upgradedToken = TokenV2_1_0(address(proxy));
+
+        // Verify the upgrade was successful
+        assertEq(upgradedToken.name(), "token");
+        assertEq(upgradedToken.symbol(), "EURe");
+        // The batchApprove should exist in the new implementation.
+        address[] memory owners = new address[](0);
+        address[] memory spenders = new address[](0);
+        vm.prank(deployerAddress);
+        upgradedToken.batchApprove(address(source), owners, spenders);
+
+        // Rollback to the previous implementation.
+        // We shouldn't call the Initializer a second time so we're not passing any data
+        token.upgradeToAndCall(address(implementation), data);
+        Token rolledBackToken = Token(address(proxy));
+        assertEq(rolledBackToken.name(), "token");
+        assertEq(rolledBackToken.symbol(), "EURe");
     }
 
     function testBatchApproveWithWrongInputSize() public {
@@ -159,7 +194,7 @@ contract TokenV2_1_0Test is Test {
         assertEq(upgradedToken.allowance(owners[2], spenders[2]), 3e18);
     }
 
-    function test_BatchApproveShouldFailIfNotOwner() public {
+    function test_BatchApproveShouldFailIfNotDeployer() public {
         // Deploy the new TokenV2 implementation contract
         TokenV2_1_0 newImplementation = new TokenV2_1_0();
         // using a token as 'source' for the batchApprove function. In production we will use the last V1 controller
