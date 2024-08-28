@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 import "./Token.sol";
 
-contract TokenV2 is Token {
+contract TokenV2_1_BatchApprove is Token {
     function batchApprove(
         address[] calldata _owner,
         address[] calldata _spender,
