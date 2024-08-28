@@ -82,6 +82,41 @@ contract TokenV2_1_0Test is Test {
         assertEq(upgradedToken.symbol(), "EURe");
     }
 
+    function testBatchApproveWithWrongInputSize() public {
+        // Deploy the new TokenV2 implementation contract
+        TokenV2_1_0 newImplementation = new TokenV2_1_0();
+        // using a token as 'source' for the batchApprove function. In production we will use the last V1 controller
+        Token source = deployToken();
+
+        // Upgrade the proxy to use the new implementation contract
+        bytes memory data = "";
+        token.upgradeToAndCall(address(newImplementation), data);
+
+        // Cast the proxy address to the TokenV2 interface
+        TokenV2_1_0 upgradedToken = TokenV2_1_0(address(proxy));
+
+        // Create dummy addresses and values for testing
+        address[] memory owners = new address[](3);
+        address[] memory spenders = new address[](2);
+
+        owners[0] = address(0x123);
+        owners[1] = address(0x456);
+        owners[2] = address(0x789);
+
+        spenders[0] = address(0xabc);
+        spenders[1] = address(0xdef);
+
+        // Set initial allowance
+        vm.prank(owners[0]);
+        source.approve(spenders[0], 1e18);
+        vm.prank(owners[1]);
+        source.approve(spenders[1], 2e18);
+        // Call batchApprove function
+        vm.prank(deployerAddress);
+        vm.expectRevert("input variables have different lengths");
+        upgradedToken.batchApprove(address(source), owners, spenders);
+    }
+
     function testBatchApprove() public {
         // Deploy the new TokenV2 implementation contract
         TokenV2_1_0 newImplementation = new TokenV2_1_0();

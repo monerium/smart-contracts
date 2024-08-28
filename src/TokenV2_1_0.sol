@@ -18,10 +18,12 @@ contract TokenV2_1_0 is Token {
     ) external {
         IController controller = IController(_controller);
 
+        // Protecting from unauthorized access.
         require(
             _msgSender() == 0xc5F3370131bB7ce0D28D83735447576aAeD1b993,
             "the caller is not the address used to deploy the contract"
         );
+
         require(
             _owner.length == _spender.length,
             "input variables have different lengths"
