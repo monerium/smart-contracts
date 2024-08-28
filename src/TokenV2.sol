@@ -5,9 +5,12 @@ import "./Token.sol";
 
 
 contract TokenV2 is Token {
-    function initializeV2() public virtual reinitializer(2) {
-      // Add hardcoded allowance here.
-      _approve(address(66), address(99), 12e18);
 
+  function batchApprove(address[] calldata _from, address[] calldata _to, uint256[] calldata _value) external {
+    require(_from.length == _to.length && _to.length == _value.length, "Invalid input");
+    for (uint256 i = 0; i < _from.length; i++) {
+      _approve(_from[i], _to[i], _value[i]);
     }
+  }
+
 }

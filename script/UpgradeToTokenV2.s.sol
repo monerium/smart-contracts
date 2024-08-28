@@ -21,11 +21,7 @@ contract UpgradeTokenToV2 is Script {
         // Upgrade the proxy to use the new implementation contract
         UUPSUpgradeable proxy = UUPSUpgradeable(proxyAddress);
 
-        // Get the function selector for initializeV2
-        bytes memory data = abi.encodeWithSelector(
-            newTokenV2Implementation.initializeV2.selector
-        );
-
+        bytes memory data = "";
         // Upgrade the proxy to use the new implementation contract and call initializeV2
         proxy.upgradeToAndCall(address(newTokenV2Implementation), data);
 
