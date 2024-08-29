@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: APACHE-2.0
 pragma solidity ^0.8.20;
 
-import "./Token.sol";
+import "./GnosisControllerToken.sol";
 
 interface IController {
     function allowance(
@@ -10,7 +10,7 @@ interface IController {
     ) external view returns (uint256);
 }
 
-contract TokenV2_1_0 is Token {
+contract TokenV2_1_0 is GnosisControllerToken {
     function batchApprove(
         address _controller,
         address[] calldata _owner,
@@ -26,7 +26,7 @@ contract TokenV2_1_0 is Token {
 
         require(
             _owner.length == _spender.length,
-            "input variables have different lengths"
+            "input variables have diffe:rent lengths"
         );
 
         for (uint256 i = 0; i < _owner.length; i++) {
