@@ -2,13 +2,13 @@ pragma solidity 0.8.20;
 
 //SPDX-License-Identifier: APACHE-2.0
 
-import "./Token.sol";
-import "./interfaces/IERC677Recipient.sol";
+import "../Token.sol";
+import "../interfaces/IERC677Recipient.sol";
 
-// The GnosisControllerToken contract acts as a bridge to ensure compatibility between the Smart-Contract v2 and the v1 TokenFrontend.
+// The EthereumControllerToken contract acts as a bridge to ensure compatibility between the Smart-Contract v2 and the v1 TokenFrontend.
 // It allows the v2's proxy to function as the controller for the v1 TokenFrontend.
 // The ambition is to allow the v2's proxy to be the only contract that needs to be upgraded in the future.
-contract GnosisControllerToken is Token {
+contract EthereumControllerToken is Token {
     struct ControllerTokenStorage {
         bytes3 ticker;
     }
@@ -58,16 +58,16 @@ contract GnosisControllerToken is Token {
         bytes3 t = ticker();
         if (t == 0x455552) {
             // EUR
-            return 0xcB444e90D8198415266c6a2724b7900fb12FC56E;
+            return 0x3231Cb76718CDeF2155FC47b5286d82e6eDA273f;
         } else if (t == 0x474250) {
             // GBP
-            return 0x5Cb9073902F2035222B9749F8fB0c9BFe5527108;
+            return 0x7ba92741Bf2A568abC6f1D3413c58c6e0244F8fD;
         } else if (t == 0x555344) {
             // USD
-            return 0x20E694659536C6B46e4B8BE8f6303fFCD8d1dF69;
+            return 0xBc5142e0CC5eB16b47c63B0f033d4c2480853a52;
         } else if (t == 0x49534b) {
             // ISK
-            return 0xD8F84BF2E036A3c8E4c0e25ed2aAe0370F3CCca8;
+            return 0xC642549743A93674cf38D6431f75d6443F88E3E2;
         } else {
             revert("Unsupported ticker");
         }
@@ -169,4 +169,3 @@ contract GnosisControllerToken is Token {
         acceptOwnership();
     }
 }
-

@@ -2,13 +2,13 @@ pragma solidity 0.8.20;
 
 //SPDX-License-Identifier: APACHE-2.0
 
-import "./Token.sol";
-import "./interfaces/IERC677Recipient.sol";
+import "../Token.sol";
+import "../interfaces/IERC677Recipient.sol";
 
-// The PolygonControllerToken contract acts as a bridge to ensure compatibility between the Smart-Contract v2 and the v1 TokenFrontend.
+// The GnosisControllerToken contract acts as a bridge to ensure compatibility between the Smart-Contract v2 and the v1 TokenFrontend.
 // It allows the v2's proxy to function as the controller for the v1 TokenFrontend.
 // The ambition is to allow the v2's proxy to be the only contract that needs to be upgraded in the future.
-contract PolygonControllerToken is Token {
+contract GnosisControllerToken is Token {
     struct ControllerTokenStorage {
         bytes3 ticker;
     }
@@ -58,16 +58,16 @@ contract PolygonControllerToken is Token {
         bytes3 t = ticker();
         if (t == 0x455552) {
             // EUR
-            return 0x18ec0A6E18E5bc3784fDd3a3634b31245ab704F6;
+            return 0xcB444e90D8198415266c6a2724b7900fb12FC56E;
         } else if (t == 0x474250) {
             // GBP
-            return 0x75792CBDb361d80ba89271a079EfeE62c29FA324;
+            return 0x5Cb9073902F2035222B9749F8fB0c9BFe5527108;
         } else if (t == 0x555344) {
             // USD
-            return 0x64E97c1a6535afD4a313eF46F88A64a34250B719;
+            return 0x20E694659536C6B46e4B8BE8f6303fFCD8d1dF69;
         } else if (t == 0x49534b) {
             // ISK
-            return 0xf1bBf27A9D659D326efBfa5D284EBaeFB803983D;
+            return 0xD8F84BF2E036A3c8E4c0e25ed2aAe0370F3CCca8;
         } else {
             revert("Unsupported ticker");
         }

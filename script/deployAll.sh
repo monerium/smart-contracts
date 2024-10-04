@@ -62,7 +62,7 @@ fi
 
 # Deploying all tokens
 echo "Deploying all tokens..."
-forge script script/deploy.s.sol:AllControllerEthereum --rpc-url $RPC_URL --broadcast --etherscan-api-key $ETHERSCAN_API_KEY --verify $VERIFIER_URL -vvvv --legacy
+forge script script/deploy.s.sol:EUR --rpc-url $RPC_URL --broadcast --etherscan-api-key $ETHERSCAN_API_KEY --verify $VERIFIER_URL -vvvv --legacy
 
 
 echo "Deployment process completed."

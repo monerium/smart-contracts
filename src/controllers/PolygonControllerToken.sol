@@ -2,13 +2,13 @@ pragma solidity 0.8.20;
 
 //SPDX-License-Identifier: APACHE-2.0
 
-import "./Token.sol";
-import "./interfaces/IERC677Recipient.sol";
+import "../Token.sol";
+import "../interfaces/IERC677Recipient.sol";
 
-// The EthereumControllerToken contract acts as a bridge to ensure compatibility between the Smart-Contract v2 and the v1 TokenFrontend.
+// The PolygonControllerToken contract acts as a bridge to ensure compatibility between the Smart-Contract v2 and the v1 TokenFrontend.
 // It allows the v2's proxy to function as the controller for the v1 TokenFrontend.
 // The ambition is to allow the v2's proxy to be the only contract that needs to be upgraded in the future.
-contract EthereumControllerToken is Token {
+contract PolygonControllerToken is Token {
     struct ControllerTokenStorage {
         bytes3 ticker;
     }
@@ -58,16 +58,16 @@ contract EthereumControllerToken is Token {
         bytes3 t = ticker();
         if (t == 0x455552) {
             // EUR
-            return 0x3231Cb76718CDeF2155FC47b5286d82e6eDA273f;
+            return 0x18ec0A6E18E5bc3784fDd3a3634b31245ab704F6;
         } else if (t == 0x474250) {
             // GBP
-            return 0x7ba92741Bf2A568abC6f1D3413c58c6e0244F8fD;
+            return 0x75792CBDb361d80ba89271a079EfeE62c29FA324;
         } else if (t == 0x555344) {
             // USD
-            return 0xBc5142e0CC5eB16b47c63B0f033d4c2480853a52;
+            return 0x64E97c1a6535afD4a313eF46F88A64a34250B719;
         } else if (t == 0x49534b) {
             // ISK
-            return 0xC642549743A93674cf38D6431f75d6443F88E3E2;
+            return 0xf1bBf27A9D659D326efBfa5D284EBaeFB803983D;
         } else {
             revert("Unsupported ticker");
         }
@@ -169,4 +169,3 @@ contract EthereumControllerToken is Token {
         acceptOwnership();
     }
 }
-

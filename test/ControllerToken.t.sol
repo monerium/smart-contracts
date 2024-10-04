@@ -8,9 +8,9 @@ import "../src/tests/TokenFrontend.sol";
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import "forge-std/console.sol";
 
-import "../src/EthereumControllerToken.sol";
-import "../src/PolygonControllerToken.sol";
-import "../src/GnosisControllerToken.sol";
+import "../src/controllers/EthereumControllerToken.sol";
+import "../src/controllers/PolygonControllerToken.sol";
+import "../src/controllers/GnosisControllerToken.sol";
 
 //import "forge-std/Vm.sol";
 
@@ -113,6 +113,7 @@ contract ControllerTokenTest is Test {
             0x3231Cb76718CDeF2155FC47b5286d82e6eDA273f
         );
     }
+
     function test_ethereum_usd_should_return_right_frontend() public {
         bytes memory initData = abi.encodeWithSelector(
             EthereumControllerToken.initialize.selector,
@@ -328,6 +329,4 @@ contract ControllerTokenTest is Test {
         vm.prank(system);
         token.burnFrom_withCaller(system, user, 1e18, hash, v, r, s);
     }
-
 }
-
