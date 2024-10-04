@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 import "forge-std/Script.sol";
 import "../src/ControllerToken.sol";
-import "../src/tests/TokenFrontend.sol";
+import "../src/tests/tokenFrontend.sol";
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
 contract All is Script {
@@ -35,4 +35,3 @@ contract All is Script {
         vm.stopBroadcast();
     }
 }
-

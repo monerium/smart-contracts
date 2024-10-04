@@ -5,8 +5,7 @@ import "forge-std/Script.sol";
 import "../src/ControllerToken.sol";
 import "../src/BlacklistValidatorUpgradeable.sol";
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
-import "../src/tests/TokenFrontend.sol";
-
+import "../src/tests/tokenFrontend.sol";
 
 contract All is Script {
     function run() external {
@@ -14,8 +13,7 @@ contract All is Script {
         address tokenAddress = vm.envAddress("TOKEN_ADDRESS");
 
         vm.startBroadcast(deployerPrivateKey);
-        console.log("Configuring with Token:");//, tokenAddress, "System:", system, "Admin:", admin, "Allowance:", allowance);
-
+        console.log("Configuring with Token:"); //, tokenAddress, "System:", system, "Admin:", admin, "Allowance:", allowance);
 
         // Assuming Token and SmartController are already deployed and their ABIs are known
         ControllerToken token = ControllerToken(tokenAddress);
@@ -26,4 +24,3 @@ contract All is Script {
         vm.stopBroadcast();
     }
 }
-
