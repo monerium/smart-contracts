@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import "forge-std/Test.sol";
 import "../src/ControllerToken.sol";
 import "../src/BlacklistValidatorUpgradeable.sol";
-import "../src/tests/tokenFrontend.sol";
+import "../src/tests/tokenfrontend.sol";
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import "forge-std/console.sol";
 
