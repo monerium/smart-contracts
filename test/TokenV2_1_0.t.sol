@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "forge-std/Test.sol";
 import "../src/Token.sol";
-import "../src/TokenV2_1_0.sol";
+import "../src/v2_1_0/GnosisControllerTokenV2_1_0.sol";
 import "../src/BlacklistValidatorUpgradeable.sol";
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
@@ -68,7 +68,7 @@ contract TokenV2_1_0Test is Test {
         assertEq(token.symbol(), "EURe");
 
         // Deploy the new TokenV2 implementation contract
-        TokenV2_1_0 newImplementation = new TokenV2_1_0();
+        GnosisControllerTokenV2_1_0 newImplementation = new GnosisControllerTokenV2_1_0();
 
         // Empty data since there is no initialize method in TokenV2_1_0
         bytes memory data = "";
@@ -76,7 +76,9 @@ contract TokenV2_1_0Test is Test {
         token.upgradeToAndCall(address(newImplementation), data);
 
         // Cast the proxy address to the TokenV2 interface
-        TokenV2_1_0 upgradedToken = TokenV2_1_0(address(proxy));
+        GnosisControllerTokenV2_1_0 upgradedToken = GnosisControllerTokenV2_1_0(
+            address(proxy)
+        );
 
         // Verify the upgrade was successful
         assertEq(upgradedToken.name(), "token");
@@ -89,7 +91,7 @@ contract TokenV2_1_0Test is Test {
         assertEq(token.symbol(), "EURe");
 
         // Deploy the new TokenV2 implementation contract
-        TokenV2_1_0 newImplementation = new TokenV2_1_0();
+        GnosisControllerTokenV2_1_0 newImplementation = new GnosisControllerTokenV2_1_0();
         Token source = deployToken();
 
         // Empty data since there is no initialize method in TokenV2_1_0
@@ -98,7 +100,9 @@ contract TokenV2_1_0Test is Test {
         token.upgradeToAndCall(address(newImplementation), data);
 
         // Cast the proxy address to the TokenV2 interface
-        TokenV2_1_0 upgradedToken = TokenV2_1_0(address(proxy));
+        GnosisControllerTokenV2_1_0 upgradedToken = GnosisControllerTokenV2_1_0(
+            address(proxy)
+        );
 
         // Verify the upgrade was successful
         assertEq(upgradedToken.name(), "token");
@@ -119,7 +123,7 @@ contract TokenV2_1_0Test is Test {
 
     function testBatchApproveWithWrongInputSize() public {
         // Deploy the new TokenV2 implementation contract
-        TokenV2_1_0 newImplementation = new TokenV2_1_0();
+        GnosisControllerTokenV2_1_0 newImplementation = new GnosisControllerTokenV2_1_0();
         // using a token as 'source' for the batchApprove function. In production we will use the last V1 controller
         Token source = deployToken();
 
@@ -128,7 +132,9 @@ contract TokenV2_1_0Test is Test {
         token.upgradeToAndCall(address(newImplementation), data);
 
         // Cast the proxy address to the TokenV2 interface
-        TokenV2_1_0 upgradedToken = TokenV2_1_0(address(proxy));
+        GnosisControllerTokenV2_1_0 upgradedToken = GnosisControllerTokenV2_1_0(
+            address(proxy)
+        );
 
         // Create dummy addresses and values for testing
         address[] memory owners = new address[](3);
@@ -154,7 +160,7 @@ contract TokenV2_1_0Test is Test {
 
     function testBatchApprove() public {
         // Deploy the new TokenV2 implementation contract
-        TokenV2_1_0 newImplementation = new TokenV2_1_0();
+        GnosisControllerTokenV2_1_0 newImplementation = new GnosisControllerTokenV2_1_0();
         // using a token as 'source' for the batchApprove function. In production we will use the last V1 controller
         Token source = deployToken();
 
@@ -163,7 +169,9 @@ contract TokenV2_1_0Test is Test {
         token.upgradeToAndCall(address(newImplementation), data);
 
         // Cast the proxy address to the TokenV2 interface
-        TokenV2_1_0 upgradedToken = TokenV2_1_0(address(proxy));
+        GnosisControllerTokenV2_1_0 upgradedToken = GnosisControllerTokenV2_1_0(
+            address(proxy)
+        );
 
         // Create dummy addresses and values for testing
         address[] memory owners = new address[](3);
@@ -196,7 +204,7 @@ contract TokenV2_1_0Test is Test {
 
     function test_BatchApproveShouldFailIfNotDeployer() public {
         // Deploy the new TokenV2 implementation contract
-        TokenV2_1_0 newImplementation = new TokenV2_1_0();
+        GnosisControllerTokenV2_1_0 newImplementation = new GnosisControllerTokenV2_1_0();
         // using a token as 'source' for the batchApprove function. In production we will use the last V1 controller
         Token source = deployToken();
 
@@ -205,7 +213,9 @@ contract TokenV2_1_0Test is Test {
         token.upgradeToAndCall(address(newImplementation), data);
 
         // Cast the proxy address to the TokenV2 interface
-        TokenV2_1_0 upgradedToken = TokenV2_1_0(address(proxy));
+        GnosisControllerTokenV2_1_0 upgradedToken = GnosisControllerTokenV2_1_0(
+            address(proxy)
+        );
 
         // Create dummy addresses and values for testing
         address[] memory owners = new address[](3);
@@ -237,7 +247,7 @@ contract TokenV2_1_0Test is Test {
 
     function test_BatchApprove_withAlreadySetAllowance() public {
         // Deploy the new TokenV2 implementation contract
-        TokenV2_1_0 newImplementation = new TokenV2_1_0();
+        GnosisControllerTokenV2_1_0 newImplementation = new GnosisControllerTokenV2_1_0();
         // using a token as 'source' for the batchApprove function. In production we will use the last V1 controller
         Token source = deployToken();
 
@@ -246,7 +256,9 @@ contract TokenV2_1_0Test is Test {
         token.upgradeToAndCall(address(newImplementation), data);
 
         // Cast the proxy address to the TokenV2 interface
-        TokenV2_1_0 upgradedToken = TokenV2_1_0(address(proxy));
+        GnosisControllerTokenV2_1_0 upgradedToken = GnosisControllerTokenV2_1_0(
+            address(proxy)
+        );
 
         // Create dummy addresses and values for testing
         address[] memory owners = new address[](3);

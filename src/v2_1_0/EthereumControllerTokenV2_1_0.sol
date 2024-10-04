@@ -1,16 +1,21 @@
 // SPDX-License-Identifier: APACHE-2.0
 pragma solidity ^0.8.20;
 
-import "./GnosisControllerToken.sol";
+import "../interfaces/IController.sol";
+import "../controllers/EthereumControllerToken.sol";
 
-interface IController {
-    function allowance(
-        address owner,
-        address spender
-    ) external view returns (uint256);
-}
-
-contract TokenV2_1_0 is GnosisControllerToken {
+/**
+ * @notice This is a temporary upgrade to Token v2.1.0 to facilitate the migration
+ *         of allowance data from the legacy v1 Token to the new v2 Token implementation.
+ *
+ * @notice Key changes in this version:
+ *         - Added a `batchApprove` function to allow batch updating of allowances.
+ *         - Implemented logic to check for existing allowances and avoid overwriting them.
+ *
+ * @notice Once the migration is complete, the codebase has to be reverted to the standard
+ *         v2.0 version.
+ */
+contract EthereumControllerTokenV2_1_0 is EthereumControllerToken {
     function batchApprove(
         address _controller,
         address[] calldata _owner,
