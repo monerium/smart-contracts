@@ -478,3 +478,90 @@ contract ISK is Script {
         vm.stopBroadcast();
     }
 }
+
+// Used in our local development environment
+// Deployer key is configured as admin and system account
+// Allowance can be configured to 0 to create a token with near infinite minting capabilities
+contract Dev is Script {
+    uint256 private allowance;
+    address private devKey;
+
+    function run() external {
+        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
+        devKey = vm.addr(deployerPrivateKey);
+        allowance = vm.envUint("ALLOWANCE");
+        if (allowance == 0) {
+            allowance = type(uint256).max;
+        }
+
+        vm.startBroadcast(deployerPrivateKey);
+
+        BlacklistValidatorUpgradeable blacklistValidator = new BlacklistValidatorUpgradeable();
+        ERC1967Proxy validatorProxy = new ERC1967Proxy(
+            address(blacklistValidator),
+            abi.encodeWithSelector(
+                BlacklistValidatorUpgradeable.initialize.selector
+            )
+        );
+        console.log(
+            "Deployed BlacklistValidatorUpgradeable at ",
+            address(validatorProxy)
+        );
+        // Deploy only one implementation of the Token contract for all currencies.
+        Token implementation = new Token();
+
+        deployTokenProxy(
+            implementation,
+            "Monerium EURe",
+            "EURe",
+            address(validatorProxy)
+        );
+        deployTokenProxy(
+            implementation,
+            "Monerium GBPe",
+            "GBPe",
+            address(validatorProxy)
+        );
+        deployTokenProxy(
+            implementation,
+            "Monerium ISKe",
+            "ISKe",
+            address(validatorProxy)
+        );
+        deployTokenProxy(
+            implementation,
+            "Monerium USDe",
+            "USDe",
+            address(validatorProxy)
+        );
+
+        vm.stopBroadcast();
+    }
+
+    function deployTokenProxy(
+        Token implementation,
+        string memory name,
+        string memory symbol,
+        address validatorProxy
+    ) internal {
+        ERC1967Proxy proxy = new ERC1967Proxy(
+            address(implementation),
+            abi.encodeWithSelector(
+                implementation.initialize.selector,
+                name,
+                symbol,
+                validatorProxy
+            )
+        );
+
+        configureToken(Token(address(proxy)));
+        console.log("Deployed", symbol, "at", address(proxy));
+    }
+
+    function configureToken(Token token) internal {
+        token.addAdminAccount(devKey);
+        token.addSystemAccount(devKey);
+        token.setMaxMintAllowance(allowance);
+        token.setMintAllowance(devKey, allowance);
+    }
+}
