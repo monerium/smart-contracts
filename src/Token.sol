@@ -56,7 +56,10 @@ contract Token is
         __UUPSUpgradeable_init();
         __SystemRole_init();
         validator = IValidator(_validator);
-        require(validator.CONTRACT_ID() == keccak256("monerium.validator"), "Not Monerium Validator Contract");
+        require(
+            validator.CONTRACT_ID() == keccak256("monerium.validator"),
+            "Not Monerium Validator Contract"
+        );
     }
 
     // _authorizeUpgrade is a crucial part of the UUPS upgrade pattern in OpenZeppelin.
@@ -74,11 +77,14 @@ contract Token is
     function burn(
         address from,
         uint256 amount,
-        bytes32 ,
+        bytes32,
         bytes memory signature
     ) public onlySystemAccounts {
         require(
-            from.isValidSignatureNow(0xb77c35c892a1b24b10a2ce49b424e578472333ee8d2456234fff90626332c50f, signature),
+            from.isValidSignatureNow(
+                0xb77c35c892a1b24b10a2ce49b424e578472333ee8d2456234fff90626332c50f,
+                signature
+            ),
             "signature/hash does not match"
         );
         _burn(from, amount);
@@ -87,7 +93,7 @@ contract Token is
     function recover(
         address from,
         address to,
-        bytes32 ,
+        bytes32,
         uint8 v,
         bytes32 r,
         bytes32 s
@@ -97,7 +103,10 @@ contract Token is
             signature = abi.encodePacked(r, s, v);
         }
         require(
-            from.isValidSignatureNow(0xb77c35c892a1b24b10a2ce49b424e578472333ee8d2456234fff90626332c50f, signature),
+            from.isValidSignatureNow(
+                0xb77c35c892a1b24b10a2ce49b424e578472333ee8d2456234fff90626332c50f,
+                signature
+            ),
             "signature/hash does not match"
         );
         uint256 amount = balanceOf(from);
@@ -110,7 +119,10 @@ contract Token is
     // Function to set the validator, restricted to owner
     function setValidator(address _validator) public onlyOwner {
         validator = IValidator(_validator);
-        require(validator.CONTRACT_ID() == keccak256("monerium.validator"), "Not Monerium Validator Contract");
+        require(
+            validator.CONTRACT_ID() == keccak256("monerium.validator"),
+            "Not Monerium Validator Contract"
+        );
     }
 
     // Override transfer function to invoke validator
@@ -118,6 +130,10 @@ contract Token is
         address to,
         uint256 amount
     ) public override returns (bool) {
+        require(
+            to != address(this),
+            "Transfer to the token contract is not allowed"
+        );
         require(
             validator.validate(_msgSender(), to, amount),
             "Transfer not validated"
@@ -131,6 +147,10 @@ contract Token is
         address to,
         uint256 amount
     ) public override returns (bool) {
+        require(
+            to != address(this),
+            "Transfer to the token contract is not allowed"
+        );
         require(validator.validate(from, to, amount), "Transfer not validated");
         return super.transferFrom(from, to, amount);
     }
@@ -176,7 +196,4 @@ contract Token is
                 )
             );
     }
-
-
 }
-
