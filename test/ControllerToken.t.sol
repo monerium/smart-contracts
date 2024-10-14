@@ -198,6 +198,14 @@ contract ControllerTokenTest is Test {
         frontend.transfer(address(frontend), 1e18);
     }
 
+    function test_should_not_transferFrom_to_token_or_frontend() public {
+        vm.prank(user1);
+        vm.expectRevert("Transfer to the token contract is not allowed");
+        frontend.transferFrom(user1, address(token), 1e18);
+        vm.expectRevert("Transfer to the token contract is not allowed");
+        frontend.transferFrom(user1, address(frontend), 1e18);
+    }
+
     function test_shouldNotTransferIfBlacklisted() public {
         // Add user2 to blacklist
         vm.prank(admin);
