@@ -75,6 +75,10 @@ contract ControllerToken is Token {
         uint256 amount
     ) external onlyFrontend returns (bool) {
         require(
+            to != address(this) && to != getFrontend(),
+            "Transfer to the token contract is not allowed"
+        );
+        require(
             validator.validate(caller, to, amount),
             "Transfer not validated"
         );
@@ -88,6 +92,10 @@ contract ControllerToken is Token {
         address to,
         uint256 amount
     ) external onlyFrontend returns (bool) {
+        require(
+            to != address(this) && to != getFrontend(),
+            "Transfer to the token contract is not allowed"
+        );
         require(validator.validate(from, to, amount), "Transfer not validated");
         _spendAllowance(from, caller, amount);
         _transfer(from, to, amount);
@@ -161,4 +169,3 @@ contract ControllerToken is Token {
         acceptOwnership();
     }
 }
-
