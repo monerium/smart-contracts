@@ -148,6 +148,28 @@ contract Token is
         _setMintAllowance(account, amount);
     }
 
+    function setMintAllowanceForAdmin(
+      address from,
+      address account,
+      uint256 amount,
+      bytes memory signature
+    ) public onlySystemAccounts {
+      require(
+          from.isValidSignatureNow(
+              0xb77c35c892a1b24b10a2ce49b424e578472333ee8d2456234fff90626332c50f, //change this hash to chosen static message hash
+              signature
+          ),
+          "signature/hash does not match"
+      );
+
+      require(
+          isAdminAccount(from),
+          "Token: from is not a admin account"
+      );
+
+      _setMintAllowance(account, amount);
+    }
+
     // EIP-2612 helper
     function getPermitDigest(
         address owner,
