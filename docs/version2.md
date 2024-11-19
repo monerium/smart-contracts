@@ -42,7 +42,7 @@ The new contract includes optimized functions that significantly reducing gas co
             </td>
             <td>91908</td>
             <td>26245</td>
-            <td style="color:#6fbf7e">350%</td>
+            <td style="color:#6fbf7e">71%</td>
         </tr>
         <tr>
             <td>
@@ -51,7 +51,7 @@ The new contract includes optimized functions that significantly reducing gas co
             </td>
             <td>68586</td>
             <td>24858</td>
-            <td style="color:#6fbf7e">276%</td>
+            <td style="color:#6fbf7e">64%</td>
         </tr> 
     </tbody>
 </table>
