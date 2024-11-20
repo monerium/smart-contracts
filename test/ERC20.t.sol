@@ -79,6 +79,38 @@ contract ERC20TokenTest is Test {
         assertEq(token.balanceOf(user2), 1e18);
     }
 
+    function test_should_not_transfer_to_blackhole() public {
+        vm.prank(system);
+        token.mint(user1, 1e18);
+
+        vm.prank(user1);
+        vm.expectRevert(
+            abi.encodeWithSignature("ERC20InvalidReceiver(address)", address(0))
+        );
+        token.transfer(address(0), 1e18);
+    }
+
+    function test_should_not_transfer_to_token() public {
+        vm.prank(system);
+        token.mint(user1, 1e18);
+
+        vm.prank(user1);
+        vm.expectRevert("Transfer to the token contract is not allowed");
+        token.transfer(address(token), 1e18);
+    }
+
+    function test_should_not_transferFrom_to_token() public {
+        vm.prank(system);
+        token.mint(user1, 1e18);
+
+        vm.prank(user1);
+        token.approve(user2, 1e18);
+
+        vm.prank(user2);
+        vm.expectRevert("Transfer to the token contract is not allowed");
+        token.transferFrom(user1, address(token), 1e18);
+    }
+
     function test_transferFrom() public {
         vm.prank(system);
         token.mint(user1, 1e18);
@@ -302,7 +334,6 @@ contract ERC20TokenTest is Test {
         assertEq(token.balanceOf(user2), amount);
 
         // Emit event check is optional, depends on testing framework capabilities
-
     }
 
     function test_recover_invalid_signature() public {
