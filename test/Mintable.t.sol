@@ -99,6 +99,89 @@ contract MintableTokenTest is Test {
         assertEq(token.balanceOf(user), 100);
     }
 
+
+    function test_system_account_can_set_mint_allowance_for_an_admin()
+      public 
+    {
+        test_owner_can_set_max_mint_allowance();
+        address user = vm.addr(userPrivateKey);
+
+        token.addAdminAccount(user);
+        token.addSystemAccount(system);
+
+        bytes32 hash = 0xb77c35c892a1b24b10a2ce49b424e578472333ee8d2456234fff90626332c50f;
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPrivateKey, hash);
+        bytes memory signature = abi.encodePacked(r, s, v);
+
+        vm.startPrank(system);
+        token.setMintAllowanceForAdmin(user, system, 1000, signature);
+        vm.stopPrank();
+
+        assertEq(token.getMintAllowance(system), 1000);
+
+    }
+
+    function test_system_account_cannot_set_mint_allowance_for_an_admin_with_wrong_signature()
+      public 
+    {
+        test_owner_can_set_max_mint_allowance();
+        address user = vm.addr(userPrivateKey);
+
+        token.addAdminAccount(user);
+        token.addSystemAccount(system);
+
+        bytes32 hash = 0xb77c35c892a1b24b10a2ce49b424e578472333ee8d2456234fff90626332c50f;
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPrivateKey, hash);
+        r = bytes32(uint256(r) ^ 1);  // Flip one bit in `r` to invalidate the signature
+        bytes memory signature = abi.encodePacked(r, s, v);
+
+
+        vm.startPrank(system);
+        vm.expectRevert("signature/hash does not match");
+        token.setMintAllowanceForAdmin(user, system, 1000, signature);
+        vm.stopPrank();
+    }
+
+    function test_system_account_cannot_set_mint_allowance_for_an_admin_with_wrong_messae()
+      public 
+    {
+        test_owner_can_set_max_mint_allowance();
+        address user = vm.addr(userPrivateKey);
+
+        token.addAdminAccount(user);
+        token.addSystemAccount(system);
+
+        bytes32 hash = 0x0000000000000000000000000000000000000000000000000000000000001234;
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPrivateKey, hash);
+        r = bytes32(uint256(r) ^ 1);  // Flip one bit in `r` to invalidate the signature
+        bytes memory signature = abi.encodePacked(r, s, v);
+
+
+        vm.startPrank(system);
+        vm.expectRevert("signature/hash does not match");
+        token.setMintAllowanceForAdmin(user, system, 1000, signature);
+        vm.stopPrank();
+    }
+
+    function test_system_account_cannot_set_mint_allowance_for_a_non_admin()
+      public 
+    {
+        test_owner_can_set_max_mint_allowance();
+        address user = vm.addr(userPrivateKey);
+
+        // Not adding the user as admin
+        token.addSystemAccount(system);
+
+        bytes32 hash = 0xb77c35c892a1b24b10a2ce49b424e578472333ee8d2456234fff90626332c50f;
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPrivateKey, hash);
+        bytes memory signature = abi.encodePacked(r, s, v);
+
+        vm.startPrank(system);
+        vm.expectRevert("Token: from is not a admin account");
+        token.setMintAllowanceForAdmin(user, system, 1000, signature);
+        vm.stopPrank();
+    }
+
     function test_system_account_cannot_mint_tokens_above_mint_allowance()
         public
     {

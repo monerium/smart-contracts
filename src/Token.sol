@@ -148,6 +148,46 @@ contract Token is
         _setMintAllowance(account, amount);
     }
 
+    /**
+     * @notice Allows a system account to set the mint allowance for an admin account, using an admin's signature for authorization.
+     * 
+     * The message expected to be signed by the admin is currently hardcoded with a static hash 
+     * (`0xb77c35c892a1b24b10a2ce49b424e578472333ee8d2456234fff90626332c50f`). This choice could be updated in future 
+     * implementations to allow for dynamic messages, depending on design requirements.
+     * 
+     * Requirements:
+     * - `from` must provide a valid signature matching the hardcoded hash to confirm authorization.
+     * - `from` must be a recognized admin account.
+     * - The function can only be called by accounts designated as system accounts.
+     * 
+     * @param from The address of the admin providing authorization for setting the mint allowance.
+     * @param account The address of the account for which the mint allowance is to be set.
+     * @param amount The new mint allowance to be assigned to the specified account.
+     * @param signature The signature of the admin (`from`), authorizing this allowance adjustment.
+    */
+
+    function setMintAllowanceForAdmin(
+      address from,
+      address account,
+      uint256 amount,
+      bytes memory signature
+    ) public onlySystemAccounts {
+      require(
+          from.isValidSignatureNow(
+              0xb77c35c892a1b24b10a2ce49b424e578472333ee8d2456234fff90626332c50f, //change this hash to chosen static message hash
+              signature
+          ),
+          "signature/hash does not match"
+      );
+
+      require(
+          isAdminAccount(from),
+          "Token: from is not a admin account"
+      );
+
+      _setMintAllowance(account, amount);
+    }
+
     // EIP-2612 helper
     function getPermitDigest(
         address owner,
