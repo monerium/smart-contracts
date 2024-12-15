@@ -72,6 +72,22 @@ elif [ "$1" == "--linea-sepolia" ]; then
     -vvvv \
     --legacy
   exit 0
+elif [ "$1" == "--camino-columbus" ]; then
+  echo "Deploying to Camino Columbus..."
+  RPC_URL=$CAMINO_COLUMBUS_RPC
+  PRIVATE_KEY=$CAMINO_COLUMBUS_PRIVATE_KEY
+  VERIFIER_URL="--verifier blockscout --verifier-url $CAMINOSCAN_COLUMBUS_URL --chain-id $CAMINO_COLUMBUS_CHAIN_ID"
+  echo $VERIFIER_URL
+  # Note: Since Camino Columbus uses a different private key format, we need to handle it specially
+  forge script script/deploy.s.sol:All \
+    --rpc-url $RPC_URL \
+    --broadcast \
+    --gas-limit 8000000 \
+    --verify \
+    $VERIFIER_URL \
+    -vvvv \
+    --legacy
+  exit 0
 fi
 
 # Deploying all tokens
