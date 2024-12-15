@@ -23,7 +23,9 @@ contract All is Script {
         if (token.pendingOwner() == address(this)) {
             token.acceptOwnership();
         }
-        //        frontend.claimOwnership();
+        if (frontend.pendingOwner() == address(this)) {
+            frontend.claimOwnership();
+        }
 
         // Connecting Token proxy as a controller.
         frontend.setController(tokenAddress);
