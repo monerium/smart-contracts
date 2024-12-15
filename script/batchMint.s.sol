@@ -7,7 +7,7 @@ import "../src/BlacklistValidatorUpgradeable.sol";
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract BatchMint is Script {
+contract BatchMinter is Script {
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         address tokenAddress = 0xd58C5Db52B5B3Eb24EE38AF287d2cb0F424172A5;
