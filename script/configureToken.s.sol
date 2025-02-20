@@ -16,6 +16,8 @@ contract All is Script {
         address devKey =  vm.addr(deployerPrivateKey);
         if (allowance == 0) {
             allowance = 50000000000000000000000000; // Default value if not provided
+        } else if (allowance == 1) {
+          allowance = type(uint256).max;
         }
 
         vm.startBroadcast(deployerPrivateKey);

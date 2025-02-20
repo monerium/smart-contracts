@@ -88,6 +88,14 @@ elif [ "$1" == "--camino-columbus" ]; then
     -vvvv \
     --legacy
   exit 0
+elif [ "$1" == "--scroll-sepolia" ]; then
+  echo "Deploying to Scroll Sepolia..."
+  RPC_URL=$SCROLL_SEPOLIA_RPC
+  ETHERSCAN_API_KEY=$SCROLLSCAN_API_KEY
+  VERIFIER_URL="--verifier-url $SCROLLSCAN_SEPOLIA_URL --chain-id $SCROLL_SEPOLIA_CHAIN_ID"
+  echo $VERIFIER_URL
+  forge script script/deploy.s.sol:All --rpc-url $RPC_URL --broadcast --etherscan-api-key $ETHERSCAN_API_KEY --verify $VERIFIER_URL -vvvv --legacy
+  exit 0
 fi
 
 # Deploying all tokens
