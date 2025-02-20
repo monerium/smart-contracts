@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.20;
 import "forge-std/Script.sol";
 import "../src/Token.sol";
@@ -13,18 +14,25 @@ contract All is Script {
         address devKey = vm.addr(deployerPrivateKey);
         uint256 allowance = vm.envUint("MINT_ALLOWANCE");
 
+        // Convert values from ether to wei before the max check
+        MaxAllowance = MaxAllowance * 1e18;
+        allowance = allowance * 1e18;
+        
         // Get the number of admins from environment
         uint256 adminCount = vm.envUint("ADMIN_COUNT");
         
-        if (MaxAllowance == 1) {
+        // After conversion, check if we want max values
+        if (MaxAllowance == 1e18) { // 1 ether in wei
             MaxAllowance = type(uint256).max;
         }
-        if (allowance == 1) {
+        if (allowance == 1e18) { // 1 ether in wei
             allowance = type(uint256).max;
         }
 
         vm.startBroadcast(deployerPrivateKey);
         console.log("Configuring Token with admins");
+        console.log("Max Allowance (wei):", MaxAllowance);
+        console.log("Mint Allowance (wei):", allowance);
         
         Token token = Token(tokenAddress);
         
