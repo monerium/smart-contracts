@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# Source environment variables
-echo "sourcing local env."
-source .env.local
-export PRIVATE_KEY=$PRIVATE_KEY
-
 # Initialize verifier URL variable
 VERIFIER_URL=""
 

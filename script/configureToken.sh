@@ -1,28 +1,35 @@
 #!/bin/bash
-
-# Check if all arguments are provided
-if [ "$#" -ne 5 ]; then
-  echo "Usage: $0 <RPC> <tokenAddress> <system> <admin> <allowance>"
+# Check if minimum arguments are provided (at least 4: RPC, tokenAddress, system, allowance)
+if [ "$#" -lt 4 ]; then
+  echo "Usage: $0 <RPC> <tokenAddress> <MaxAllowance> <system> <admin1> [admin2] [admin3] ..."
   exit 1
 fi
 
-echo "sourcing local env."
-source .env.local
-export PRIVATE_KEY=$PRIVATE_KEY
+# Assign fixed arguments to variables
+rpc="$1"
+tokenAddress="$2"
+allowance="$3"
+system="$4"
 
-# Assign arguments to variables
-rpc=$1
-tokenAddress=$2
-system=$3
-admin=$4
-allowance=$5
+# Remove the first 4 arguments to leave only admin addresses
+shift 4
 
-# Export the variables as environment variables
-export TOKEN_ADDRESS=$tokenAddress
-export SYSTEM_ADDRESS=$system
-export ADMIN_ADDRESS=$admin
-export MAX_MINT_ALLOWANCE=$allowance
+# Export the fixed variables
+export TOKEN_ADDRESS="$tokenAddress"
+export SYSTEM_ADDRESS="$system"
+export MAX_MINT_ALLOWANCE="$allowance"
+
+# Export the number of admins
+export ADMIN_COUNT=$#
+
+# Export each admin address with an index
+index=0
+for admin in "$@"; do
+  export "ADMIN_ADDRESS_$index=$admin"
+  echo "Configured admin $index: $admin"
+  index=$((index + 1))
+done
 
 # Call the Forge script
 echo "configure tokens"
-forge script script/configureToken.s.sol --rpc-url $rpc --broadcast --delay 5 --retries 4 --slow --legacy -vvvv
+forge script script/configureToken.s.sol:All --rpc-url "$rpc" --broadcast --legacy -vvvv
