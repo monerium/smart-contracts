@@ -10,7 +10,7 @@ Before beginning the deployment process, ensure you have:
 - Sufficient native tokens in your EOA to cover deployment costs
 - Access to the required environment variables and API keys
   - JSON-RPC URL
-  - Blockchain explorer API Key (if required)
+  - Blockchain explorer API Key and API URL (if required)
   - Chain ID (if required)
 
 ## Environment Setup
