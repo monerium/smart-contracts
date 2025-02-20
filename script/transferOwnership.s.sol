@@ -13,7 +13,6 @@ contract All is Script {
         address ownerAddress = vm.envAddress("OWNER");
 
         vm.startBroadcast(deployerPrivateKey);
-        console.log("Configuring with Token:");//, tokenAddress, "System:", system, "Admin:", admin, "Allowance:", allowance);
 
         Token token = Token(tokenAddress);
 
