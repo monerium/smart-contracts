@@ -9,15 +9,17 @@ contract All is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         address tokenAddress = vm.envAddress("TOKEN_ADDRESS");
         address system = vm.envAddress("SYSTEM_ADDRESS");
-        uint256 allowance = vm.envUint("MAX_MINT_ALLOWANCE");
+        uint256 MaxAllowance = vm.envUint("MAX_MINT_ALLOWANCE");
         address devKey = vm.addr(deployerPrivateKey);
+        uint256 allowance = vm.envUint("MINT_ALLOWANCE");
 
         // Get the number of admins from environment
         uint256 adminCount = vm.envUint("ADMIN_COUNT");
         
-        if (allowance == 0) {
-            allowance = 50000000000000000000000000; // Default value if not provided
-        } else if (allowance == 1) {
+        if (MaxAllowance == 1) {
+            MaxAllowance = type(uint256).max;
+        }
+        if (allowance == 1) {
             allowance = type(uint256).max;
         }
 
@@ -36,7 +38,7 @@ contract All is Script {
 
         token.addSystemAccount(system);
         console.log("System account added successfully.");
-        token.setMaxMintAllowance(allowance);
+        token.setMaxMintAllowance(MaxAllowance);
         console.log("Max mint allowance set successfully.");
         token.addAdminAccount(devKey);
         token.setMintAllowance(system, allowance);
