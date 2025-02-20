@@ -57,6 +57,13 @@ PRIVATE_KEY=<key> forge script script/deploy.s.sol:All --rpc-url $RPC_URL --broa
 
 ```
 
+Linea May require you too add an additional configuration because the chain is unknown to foundry. You should add this configuration to your `foundry.toml`
+
+```toml
+[etherscan]
+unknown_chain = { key = "${LINEASCAN_API_KEY}", chain = 59141, url = "https://api-sepolia.lineascan.build/api" }
+```
+
 After successful deployment, your tokens should be verified and visible on the blockchain explorer!
 
 > The logs will print you the newly deployed token addresses
