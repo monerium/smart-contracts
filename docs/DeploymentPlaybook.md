@@ -64,6 +64,8 @@ Linea May require you too add an additional configuration because the chain is u
 unknown_chain = { key = "${LINEASCAN_API_KEY}", chain = 59141, url = "https://api-sepolia.lineascan.build/api" }
 ```
 
+> This configuration is for Linea Sepolia, you should replace the `url` if you're deploying on mainnet
+
 After successful deployment, your tokens should be verified and visible on the blockchain explorer!
 
 > The logs will print you the newly deployed token addresses
@@ -84,7 +86,7 @@ Use the configuration script with this syntax:
 
 ```bash
 
-PRIVATE_KEY=<key> sh script/configureToken.sh \
+  PRIVATE_KEY=<key> sh script/configureToken.sh \
 
 $RPC_URL \
 
