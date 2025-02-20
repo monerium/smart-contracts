@@ -6,7 +6,7 @@ This document provides a comprehensive guide for deploying and configuring token
 
 Before beginning the deployment process, ensure you have:
 
-- An Externally Owned Account (EOA) with deployment permissions
+- A new Externally Owned Account (EOA) 
 - Sufficient native tokens in your EOA to cover deployment costs
 - Access to the required environment variables and API keys
   - JSON-RPC URL
