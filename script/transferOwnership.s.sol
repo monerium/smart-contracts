@@ -15,7 +15,6 @@ contract All is Script {
         vm.startBroadcast(deployerPrivateKey);
         console.log("Configuring with Token:");//, tokenAddress, "System:", system, "Admin:", admin, "Allowance:", allowance);
 
-        // Assuming Token and SmartController are already deployed and their ABIs are known
         Token token = Token(tokenAddress);
 
         token.transferOwnership(ownerAddress);
