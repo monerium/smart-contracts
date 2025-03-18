@@ -1,0 +1,81 @@
+version: "3"
+
+# Main Taskfile that includes other task files
+includes:
+  deploy: ./Taskfile.deploy.yml
+  token: ./Taskfile.token.yml
+
+# Load environment variables from .env file
+dotenv: [".env"]
+
+# Global variables and defaults
+vars:
+  # Network defaults
+  NETWORK: '{{.NETWORK | default "localhost"}}'
+
+  # Standard parameters
+  VERBOSITY: '{{.VERBOSITY | default "vvv"}}'
+  SKIP_CONFIRM: '{{.SKIP_CONFIRM | default "false"}}'
+
+# Common tasks and utilities
+tasks:
+  # Default task that lists available tasks - using task itself
+  default:
+    desc: List available tasks
+    cmds:
+      - task --list
+      - cmd: |
+          exit 0 # Ensure no error is shown
+
+  # Informational tasks
+  networks:
+    desc: List available networks
+    silent: true
+    cmds:
+      - echo "📋 Available networks:"
+      - printf "  ethereum         - Ethereum Mainnet\n"
+      - printf "  sepolia          - Ethereum Sepolia Testnet\n"
+      - printf "  arbitrum         - Arbitrum Mainnet\n"
+      - printf "  arbitrum-sepolia - Arbitrum Sepolia Testnet\n"
+      - printf "  optimism         - Optimism Mainnet\n"
+      - printf "  optimism-sepolia - Optimism Sepolia Testnet\n"
+      - printf "  avalanche        - Avalanche Mainnet\n"
+      - printf "  avalanche-fuji   - Avalanche Fuji Testnet\n"
+      - printf "  gnosis           - Gnosis Chain\n"
+      - printf "  gnosis-chiado    - Gnosis Chiado Testnet\n"
+      - printf "  polygon          - Polygon Mainnet\n"
+      - printf "  polygon-amoy     - Polygon Amoy Testnet\n"
+      - printf "  linea            - Linea Mainnet\n"
+      - printf "  linea-sepolia    - Linea Sepolia Testnet\n"
+      - printf "  scroll           - Scroll Mainnet\n"
+      - printf "  scroll-sepolia   - Scroll Sepolia Testnet\n"
+      - printf "  localhost        - Local development network\n"
+
+  contracts:
+    desc: List available contracts to deploy
+    silent: true
+    cmds:
+      - echo "📋 Available contracts to deploy:"
+      - printf "  All                   - Deploy all tokens (EUR, GBP, USD, ISK)\n"
+      - printf "  EUR                   - Deploy only EUR token\n"
+      - printf "  GBP                   - Deploy only GBP token\n"
+      - printf "  USD                   - Deploy only USD token\n"
+      - printf "  ISK                   - Deploy only ISK token\n"
+      - printf "  Dev                   - Deploy all tokens with developer configuration\n"
+      - printf "  AllControllerGnosis   - Deploy all tokens with Gnosis controller\n"
+      - printf "  AllControllerPolygon  - Deploy all tokens with Polygon controller\n"
+      - printf "  AllControllerEthereum - Deploy all tokens with Ethereum controller\n"
+      - printf "  BlacklistValidator    - Deploy only the validator\n"
+
+  # Helper task to explain how to use parameters
+  help:
+    desc: Show how to use task parameters
+    cmds:
+      - echo "🔍 How to use task parameters:"
+      - echo ""
+      - echo "Parameters in Task are passed without dashes. For example:"
+      - echo "  ✅ task token:owner ADDRESS=0x123... NETWORK=sepolia"
+      - echo "  ❌ task token:owner --ADDRESS=0x123... --NETWORK=sepolia"
+      - echo ""
+      - echo "This is different from many CLI tools, but it's how Task works."
+      - echo "If you see 'unknown flag' errors, remember to remove the '--' prefix."
