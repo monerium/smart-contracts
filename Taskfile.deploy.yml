@@ -32,6 +32,7 @@ tasks:
           echo ""
           echo "Available contracts: (run 'task contracts' for details)"
           echo "  All, EUR, GBP, USD, ISK, Dev, AllControllerGnosis, etc."
+        silent: true
 
   # Main deployment task
   default:
@@ -39,10 +40,9 @@ tasks:
     cmds:
       - cmd: |
           if [ -z "{{.NETWORK}}" ]; then
-            echo "❌ Missing required NETWORK parameter"
             echo "Usage: task deploy NETWORK=<network> [CONTRACT=<contract>]"
             echo "Run 'task deploy help' for more details"
-            exit 1
+            exit 0
           fi
 
           # Get network-specific RPC URL
@@ -83,6 +83,7 @@ tasks:
             --gas-limit {{.GAS_LIMIT}} \
             -{{.VERBOSITY}} \
             {{.LEGACY}}
+        silent: true
 
   # Convenience commands
   local:
@@ -113,39 +114,7 @@ tasks:
               exit 1
             fi
           fi
-      - task: default
-        vars:
-          NETWORK: "{{.NETWORK}}"
-          CONTRACT: '{{.CONTRACT | default "All"}}'
-
-  mainnet:
-    desc: Deploy to a mainnet with additional safety checks
-    cmds:
-      - cmd: |
-          if [ -z "{{.NETWORK}}" ]; then
-            echo "❌ Missing required NETWORK parameter"
-            echo "Usage: task deploy:mainnet NETWORK=<mainnet> [CONTRACT=<contract>]"
-            exit 1
-          fi
-
-          echo "🔴 MAINNET DEPLOYMENT ALERT 🔴"
-          echo ""
-          echo "You are about to deploy to {{.NETWORK}} MAINNET!"
-          echo "This is a production environment where mistakes can be costly."
-          echo ""
-          echo "Please verify the following information:"
-          echo "- Network: {{.NETWORK}}"
-          echo "- Contract: {{.CONTRACT | default \"All\"}}"
-          echo ""
-          echo "To proceed, type 'CONFIRM MAINNET DEPLOY' (all caps): "
-          read -r confirmation
-
-          if [ "$confirmation" != "CONFIRM MAINNET DEPLOY" ]; then
-            echo "Deployment cancelled."
-            exit 1
-          fi
-
-          echo "✓ Confirmation received. Proceeding with deployment..."
+        silent: true
       - task: default
         vars:
           NETWORK: "{{.NETWORK}}"
@@ -170,6 +139,7 @@ tasks:
             --rpc-url ${!RPC_VAR} \
             -{{.VERBOSITY}} \
             --gas-report
+        silent: true
 
   # Specialized deployments
   validator:
