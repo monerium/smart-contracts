@@ -3,6 +3,11 @@ version: "3"
 # Taskfile for token operations
 
 tasks:
+  default:
+    desc: Show token command usage (alias for token:help)
+    cmds:
+      - task: help
+
   # Help command
   help:
     desc: Show token command usage
@@ -39,9 +44,10 @@ tasks:
           echo "  set-validator       - Set validator address"
           echo ""
           echo "Examples:"
-          echo "  task token owner ADDRESS=0x123... NETWORK=mainnet"
-          echo "  task token balance ADDRESS=0x123... ACCOUNT=0x456... NETWORK=sepolia"
-          echo "  task token mint ADDRESS=0x123... TO=0x456... AMOUNT=1000000000000000000 NETWORK=sepolia"
+          echo "  task token:owner ADDRESS=0x123... NETWORK=mainnet"
+          echo "  task token:balance ADDRESS=0x123... ACCOUNT=0x456... NETWORK=sepolia"
+          echo "  task token:mint ADDRESS=0x123... TO=0x456... AMOUNT=1000000000000000000 NETWORK=sepolia"
+        silent: true
 
   # OWNERSHIP COMMANDS
   owner:
@@ -49,9 +55,8 @@ tasks:
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ]; then
-            echo "❌ Missing required ADDRESS parameter"
             echo "Usage: task token owner ADDRESS=0xContractAddress [NETWORK=sepolia]"
-            exit 1
+            exit 0
           fi
 
           # Get network-specific RPC URL
@@ -61,15 +66,15 @@ tasks:
             --sig "run(address)" {{.ADDRESS}} \
             --rpc-url ${!RPC_VAR} \
             -{{.VERBOSITY}}
+        silent: true
 
   pending-owner:
     desc: Get pending owner of a contract
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ]; then
-            echo "❌ Missing required ADDRESS parameter"
             echo "Usage: task token pending-owner ADDRESS=0xContractAddress [NETWORK=sepolia]"
-            exit 1
+            exit 0
           fi
 
           # Get network-specific RPC URL
@@ -79,15 +84,15 @@ tasks:
             --sig "run(address)" {{.ADDRESS}} \
             --rpc-url ${!RPC_VAR} \
             -{{.VERBOSITY}}
+        silent: true
 
   transfer-ownership:
     desc: Transfer ownership of a contract
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ] || [ -z "{{.NEW_OWNER}}" ]; then
-            echo "❌ Missing required parameters"
             echo "Usage: task token transfer-ownership ADDRESS=0xContractAddress NEW_OWNER=0xNewOwnerAddress [NETWORK=sepolia]"
-            exit 1
+            exit 0
           fi
 
           # Get network-specific RPC URL
@@ -117,9 +122,8 @@ tasks:
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ]; then
-            echo "❌ Missing required ADDRESS parameter"
             echo "Usage: task token accept-ownership ADDRESS=0xContractAddress [NETWORK=sepolia]"
-            exit 1
+            exit 0
           fi
 
           # Get network-specific RPC URL
@@ -150,9 +154,8 @@ tasks:
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ]; then
-            echo "❌ Missing required parameters"
             echo "Usage: task token balance ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
-            exit 1
+            exit 0
           fi
 
           # Get network-specific RPC URL
@@ -168,9 +171,8 @@ tasks:
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ]; then
-            echo "❌ Missing required ADDRESS parameter"
             echo "Usage: task token supply ADDRESS=0xTokenAddress [NETWORK=sepolia]"
-            exit 1
+            exit 0
           fi
 
           # Get network-specific RPC URL
@@ -186,9 +188,8 @@ tasks:
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ] || [ -z "{{.TO}}" ] || [ -z "{{.AMOUNT}}" ]; then
-            echo "❌ Missing required parameters"
             echo "Usage: task token mint ADDRESS=0xTokenAddress TO=0xRecipientAddress AMOUNT=<amount> [NETWORK=sepolia]"
-            exit 1
+            exit 0
           fi
 
           # Get network-specific RPC URL
@@ -218,9 +219,8 @@ tasks:
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ] || [ -z "{{.FROM}}" ] || [ -z "{{.AMOUNT}}" ] || [ -z "{{.SIG}}" ]; then
-            echo "❌ Missing required parameters"
             echo "Usage: task token burn ADDRESS=0xTokenAddress FROM=0xFromAddress AMOUNT=<amount> SIG=<signature> [NETWORK=sepolia]"
-            exit 1
+            exit 0
           fi
 
           # Get network-specific RPC URL
@@ -250,9 +250,8 @@ tasks:
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ]; then
-            echo "❌ Missing required parameters"
             echo "Usage: task token get-allowance ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
-            exit 1
+            exit 0
           fi
 
           # Get network-specific RPC URL
@@ -268,9 +267,8 @@ tasks:
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ] || [ -z "{{.AMOUNT}}" ]; then
-            echo "❌ Missing required parameters"
             echo "Usage: task token set-allowance ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress AMOUNT=<amount> [NETWORK=sepolia]"
-            exit 1
+            exit 0
           fi
 
           # Get network-specific RPC URL
@@ -300,9 +298,8 @@ tasks:
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ] || [ -z "{{.AMOUNT}}" ]; then
-            echo "❌ Missing required parameters"
             echo "Usage: task token set-max-allowance ADDRESS=0xTokenAddress AMOUNT=<amount> [NETWORK=sepolia]"
-            exit 1
+            exit 0
           fi
 
           # Get network-specific RPC URL
@@ -333,9 +330,8 @@ tasks:
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ]; then
-            echo "❌ Missing required parameters"
             echo "Usage: task token check-admin ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
-            exit 1
+            exit 0
           fi
 
           # Get network-specific RPC URL
@@ -351,9 +347,8 @@ tasks:
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ]; then
-            echo "❌ Missing required parameters"
             echo "Usage: task token check-system ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
-            exit 1
+            exit 0
           fi
 
           # Get network-specific RPC URL
@@ -369,9 +364,8 @@ tasks:
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ]; then
-            echo "❌ Missing required parameters"
             echo "Usage: task token add-admin ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
-            exit 1
+            exit 0
           fi
 
           # Get network-specific RPC URL
@@ -401,9 +395,8 @@ tasks:
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ]; then
-            echo "❌ Missing required parameters"
             echo "Usage: task token remove-admin ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
-            exit 1
+            exit 0
           fi
 
           # Get network-specific RPC URL

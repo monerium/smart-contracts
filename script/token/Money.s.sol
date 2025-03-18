@@ -26,9 +26,6 @@ contract Balance is Script {
         // Display raw balance (useful for technical purposes)
         console2.log("Balance raw:", rawBalance);
         
-        // Display full decimal balance (using all decimals)
-        string memory fullDecimalStr = _formatWithDecimals(rawBalance, decimals, decimals);
-        console2.log(string.concat("Balance decimal ", vm.toString(decimals), ":", fullDecimalStr));
         
         // Display balance with 2 decimal places (common format)
         string memory twoDecimalStr = _formatWithDecimals(rawBalance, decimals, 2);
