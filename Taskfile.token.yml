@@ -3,433 +3,412 @@ version: "3"
 # Taskfile for token operations
 
 tasks:
-  # Internal task for confirmation
-  _confirm:
-    internal: true
-    silent: true
+  # Help command
+  help:
+    desc: Show token command usage
     cmds:
       - cmd: |
+          echo "🔶 Token Operations"
+          echo ""
+          echo "Usage:"
+          echo "  task token <command> [parameters]"
+          echo ""
+          echo "OWNERSHIP COMMANDS:"
+          echo "  owner               - Get current owner"
+          echo "  pending-owner       - Get pending owner"
+          echo "  transfer-ownership  - Transfer ownership to new address"
+          echo "  accept-ownership    - Accept pending ownership"
+          echo ""
+          echo "MONEY COMMANDS:"
+          echo "  balance             - Check token balance"
+          echo "  supply              - Check total supply"
+          echo "  mint                - Mint tokens to address"
+          echo "  burn                - Burn tokens (requires signature)"
+          echo "  get-allowance       - Get mint allowance"
+          echo "  set-allowance       - Set mint allowance for account"
+          echo "  set-max-allowance   - Set maximum mint allowance"
+          echo ""
+          echo "ROLE MANAGEMENT:"
+          echo "  check-admin         - Check if account has admin role"
+          echo "  check-system        - Check if account has system role"
+          echo "  add-admin           - Add account to admin role"
+          echo "  remove-admin        - Remove account from admin role"
+          echo "  add-system          - Add account to system role"
+          echo "  remove-system       - Remove account from system role"
+          echo "  get-validator       - Get current validator address"
+          echo "  set-validator       - Set validator address"
+          echo ""
+          echo "Examples:"
+          echo "  task token owner ADDRESS=0x123... NETWORK=mainnet"
+          echo "  task token balance ADDRESS=0x123... ACCOUNT=0x456... NETWORK=sepolia"
+          echo "  task token mint ADDRESS=0x123... TO=0x456... AMOUNT=1000000000000000000 NETWORK=sepolia"
+
+  # OWNERSHIP COMMANDS
+  owner:
+    desc: Get current owner of a contract
+    cmds:
+      - cmd: |
+          if [ -z "{{.ADDRESS}}" ]; then
+            echo "❌ Missing required ADDRESS parameter"
+            echo "Usage: task token owner ADDRESS=0xContractAddress [NETWORK=sepolia]"
+            exit 1
+          fi
+
+          # Get network-specific RPC URL
+          RPC_VAR="{{.NETWORK | upper}}_RPC"
+
+          forge script script/token/Owner.s.sol:Owner \
+            --sig "run(address)" {{.ADDRESS}} \
+            --rpc-url ${!RPC_VAR} \
+            -{{.VERBOSITY}}
+
+  pending-owner:
+    desc: Get pending owner of a contract
+    cmds:
+      - cmd: |
+          if [ -z "{{.ADDRESS}}" ]; then
+            echo "❌ Missing required ADDRESS parameter"
+            echo "Usage: task token pending-owner ADDRESS=0xContractAddress [NETWORK=sepolia]"
+            exit 1
+          fi
+
+          # Get network-specific RPC URL
+          RPC_VAR="{{.NETWORK | upper}}_RPC"
+
+          forge script script/token/Owner.s.sol:PendingOwner \
+            --sig "run(address)" {{.ADDRESS}} \
+            --rpc-url ${!RPC_VAR} \
+            -{{.VERBOSITY}}
+
+  transfer-ownership:
+    desc: Transfer ownership of a contract
+    cmds:
+      - cmd: |
+          if [ -z "{{.ADDRESS}}" ] || [ -z "{{.NEW_OWNER}}" ]; then
+            echo "❌ Missing required parameters"
+            echo "Usage: task token transfer-ownership ADDRESS=0xContractAddress NEW_OWNER=0xNewOwnerAddress [NETWORK=sepolia]"
+            exit 1
+          fi
+
+          # Get network-specific RPC URL
+          RPC_VAR="{{.NETWORK | upper}}_RPC"
+
+          # Confirmation for write operation
           if [ "{{.SKIP_CONFIRM}}" != "true" ]; then
-            echo -e "\n⚠️  WARNING: You are about to {{.ACTION}} on {{.NETWORK}} network"
-            {{if .DETAILS}}echo -e "Details: {{.DETAILS}}"{{end}}
+            echo -e "\n⚠️  WARNING: You are about to transfer ownership of {{.ADDRESS}} to {{.NEW_OWNER}} on {{.NETWORK}} network"
             echo -e "\nContinue? (y/N): "
             read -r response
             if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
               echo "Operation cancelled."
               exit 1
             fi
-            echo "Proceeding with operation..."
+            echo "Proceeding with ownership transfer..."
           fi
 
-  # Helper function to extract Ethereum address from EVM return value
-  _format-address:
-    internal: true
-    silent: true
-    cmds:
-      - cmd: |
-          # Extract the address part (last 40 hex chars) and add 0x prefix
-          formatted_address="0x$(echo "{{.RAW_ADDRESS}}" | grep -o '[0-9a-fA-F]\{40\}$')"
-          echo "$formatted_address"
-
-  # Ownership management
-  owner:
-    desc: Check current owner of a contract
-    silent: true
-    cmds:
-      - cmd: |
-          if [ -z "{{.ADDRESS}}" ]; then
-            echo "❌ Missing required ADDRESS parameter"
-            echo ""
-            echo "Usage:"
-            echo "  task token:owner ADDRESS=0xYourContractAddress [NETWORK=sepolia]"
-            exit 1
-          fi
-
-          RPC_VAR="{{.NETWORK | upper}}_RPC"
-          echo "Using RPC: ${!RPC_VAR}"
-          raw_address=$(cast call {{.ADDRESS}} "owner()" --rpc-url ${!RPC_VAR})
-
-          # Extract the actual address (last 40 hex chars)
-          owner_address="0x$(echo "$raw_address" | grep -o '[0-9a-fA-F]\{40\}$')"
-          echo "Current owner: $owner_address"
-
-  pending-owner:
-    desc: Check pending owner of a contract
-    silent: true
-    cmds:
-      - cmd: |
-          if [ -z "{{.ADDRESS}}" ]; then
-            echo "❌ Missing required ADDRESS parameter"
-            echo ""
-            echo "Usage:"
-            echo "  task token:pending-owner ADDRESS=0xYourContractAddress [NETWORK=sepolia]"
-            exit 1
-          fi
-
-          RPC_VAR="{{.NETWORK | upper}}_RPC"
-          echo "Using RPC: ${!RPC_VAR}"
-          raw_address=$(cast call {{.ADDRESS}} "pendingOwner()" --rpc-url ${!RPC_VAR})
-
-          # Extract the actual address (last 40 hex chars)
-          pending_owner="0x$(echo "$raw_address" | grep -o '[0-9a-fA-F]\{40\}$')"
-          echo "Pending owner: $pending_owner"
-
-  transfer-ownership:
-    desc: Transfer ownership of a contract
-    silent: true
-    cmds:
-      - cmd: |
-          if [ -z "{{.ADDRESS}}" ] || [ -z "{{.NEW_OWNER}}" ]; then
-            echo "❌ Missing required parameters"
-            echo ""
-            echo "Usage:"
-            echo "  task token:transfer-ownership ADDRESS=0xYourContractAddress NEW_OWNER=0xNewOwnerAddress [NETWORK=sepolia]"
-            exit 1
-          fi
-      - task: _confirm
-        vars:
-          ACTION: "transfer ownership"
-          DETAILS: "of contract {{.ADDRESS}} to {{.NEW_OWNER}}"
-      - cmd: |
-          RPC_VAR="{{.NETWORK | upper}}_RPC"
-          echo "Using RPC: ${!RPC_VAR}"
-          forge script script/Ownership.s.sol:Transfer \
+          forge script script/token/Owner.s.sol:TransferOwnership \
+            --sig "run(address,address)" {{.ADDRESS}} {{.NEW_OWNER}} \
             --rpc-url ${!RPC_VAR} \
             --private-key $PRIVATE_KEY \
             --broadcast \
-            --sig "run(address,address)" {{.ADDRESS}} {{.NEW_OWNER}} \
             -{{.VERBOSITY}}
 
   accept-ownership:
     desc: Accept ownership of a contract
-    silent: true
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ]; then
             echo "❌ Missing required ADDRESS parameter"
-            echo ""
-            echo "Usage:"
-            echo "  task token:accept-ownership ADDRESS=0xYourContractAddress [NETWORK=sepolia]"
+            echo "Usage: task token accept-ownership ADDRESS=0xContractAddress [NETWORK=sepolia]"
             exit 1
           fi
-      - task: _confirm
-        vars:
-          ACTION: "accept ownership"
-          DETAILS: "of contract {{.ADDRESS}}"
-      - cmd: |
+
+          # Get network-specific RPC URL
           RPC_VAR="{{.NETWORK | upper}}_RPC"
-          echo "Using RPC: ${!RPC_VAR}"
-          forge script script/Ownership.s.sol:Accept \
+
+          # Confirmation for write operation
+          if [ "{{.SKIP_CONFIRM}}" != "true" ]; then
+            echo -e "\n⚠️  WARNING: You are about to accept ownership of {{.ADDRESS}} on {{.NETWORK}} network"
+            echo -e "\nContinue? (y/N): "
+            read -r response
+            if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
+              echo "Operation cancelled."
+              exit 1
+            fi
+            echo "Proceeding with accepting ownership..."
+          fi
+
+          forge script script/token/Owner.s.sol:AcceptOwnership \
+            --sig "run(address)" {{.ADDRESS}} \
             --rpc-url ${!RPC_VAR} \
             --private-key $PRIVATE_KEY \
             --broadcast \
-            --sig "run(address)" {{.ADDRESS}} \
             -{{.VERBOSITY}}
 
-  # Basic token operations
+  # MONEY OPERATIONS
   balance:
     desc: Check token balance for an address
-    silent: true
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ]; then
             echo "❌ Missing required parameters"
-            echo ""
-            echo "Usage:"
-            echo "  task token:balance ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
+            echo "Usage: task token balance ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
             exit 1
           fi
 
+          # Get network-specific RPC URL
           RPC_VAR="{{.NETWORK | upper}}_RPC"
-          echo "Using RPC: ${!RPC_VAR}"
 
-          # Get balance in raw format
-          balance=$(cast call {{.ADDRESS}} "balanceOf(address)" {{.ACCOUNT}} --rpc-url ${!RPC_VAR})
-
-          # Get token decimals
-          decimals=$(cast call {{.ADDRESS}} "decimals()" --rpc-url ${!RPC_VAR})
-          decimals_value=$(printf "%d" $decimals)
-
-          # Get token symbol
-          symbol=$(cast call {{.ADDRESS}} "symbol()" --rpc-url ${!RPC_VAR} | tr -d '\0')
-
-          # Format balance in both raw and human-readable form
-          human_balance=$(cast --from-wei "$balance" --decimals "$decimals_value" 2>/dev/null || echo "N/A")
-
-          echo "Balance for {{.ACCOUNT}} on contract {{.ADDRESS}}:"
-          echo "  Raw: $balance"
-          echo "  Formatted: $human_balance $symbol"
+          forge script script/token/Money.s.sol:Balance \
+            --sig "run(address,address)" {{.ADDRESS}} {{.ACCOUNT}} \
+            --rpc-url ${!RPC_VAR} \
+            -{{.VERBOSITY}}
 
   supply:
     desc: Check total supply of a token
-    silent: true
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ]; then
             echo "❌ Missing required ADDRESS parameter"
-            echo ""
-            echo "Usage:"
-            echo "  task token:supply ADDRESS=0xTokenAddress [NETWORK=sepolia]"
+            echo "Usage: task token supply ADDRESS=0xTokenAddress [NETWORK=sepolia]"
             exit 1
           fi
 
+          # Get network-specific RPC URL
           RPC_VAR="{{.NETWORK | upper}}_RPC"
-          echo "Using RPC: ${!RPC_VAR}"
 
-          # Get total supply in raw format
-          supply=$(cast call {{.ADDRESS}} "totalSupply()" --rpc-url ${!RPC_VAR})
-
-          # Get token decimals
-          decimals=$(cast call {{.ADDRESS}} "decimals()" --rpc-url ${!RPC_VAR})
-          decimals_value=$(printf "%d" $decimals)
-
-          # Get token symbol
-          symbol=$(cast call {{.ADDRESS}} "symbol()" --rpc-url ${!RPC_VAR} | tr -d '\0')
-
-          # Format supply in both raw and human-readable form
-          human_supply=$(cast --from-wei "$supply" --decimals "$decimals_value" 2>/dev/null || echo "N/A")
-
-          echo "Total supply of contract {{.ADDRESS}}:"
-          echo "  Raw: $supply"
-          echo "  Formatted: $human_supply $symbol"
+          forge script script/token/Money.s.sol:Supply \
+            --sig "run(address)" {{.ADDRESS}} \
+            --rpc-url ${!RPC_VAR} \
+            -{{.VERBOSITY}}
 
   mint:
-    desc: Mint tokens
-    silent: true
+    desc: Mint tokens to an address
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ] || [ -z "{{.TO}}" ] || [ -z "{{.AMOUNT}}" ]; then
             echo "❌ Missing required parameters"
-            echo ""
-            echo "Usage:"
-            echo "  task token:mint ADDRESS=0xTokenAddress TO=0xRecipientAddress AMOUNT=1000000000000000000 [NETWORK=sepolia]"
+            echo "Usage: task token mint ADDRESS=0xTokenAddress TO=0xRecipientAddress AMOUNT=<amount> [NETWORK=sepolia]"
             exit 1
           fi
-      - task: _confirm
-        vars:
-          ACTION: "mint {{.AMOUNT}} tokens"
-          DETAILS: "from contract {{.ADDRESS}} to {{.TO}}"
-      - cmd: |
+
+          # Get network-specific RPC URL
           RPC_VAR="{{.NETWORK | upper}}_RPC"
-          echo "Using RPC: ${!RPC_VAR}"
-          cast send {{.ADDRESS}} "mint(address,uint256)" {{.TO}} {{.AMOUNT}} \
+
+          # Confirmation for write operation
+          if [ "{{.SKIP_CONFIRM}}" != "true" ]; then
+            echo -e "\n⚠️  WARNING: You are about to mint {{.AMOUNT}} tokens to {{.TO}} from contract {{.ADDRESS}} on {{.NETWORK}} network"
+            echo -e "\nContinue? (y/N): "
+            read -r response
+            if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
+              echo "Operation cancelled."
+              exit 1
+            fi
+            echo "Proceeding with minting..."
+          fi
+
+          forge script script/token/Money.s.sol:Mint \
+            --sig "run(address,address,uint256)" {{.ADDRESS}} {{.TO}} {{.AMOUNT}} \
             --rpc-url ${!RPC_VAR} \
-            --private-key $PRIVATE_KEY
+            --private-key $PRIVATE_KEY \
+            --broadcast \
+            -{{.VERBOSITY}}
 
   burn:
     desc: Burn tokens (requires signature)
-    silent: true
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ] || [ -z "{{.FROM}}" ] || [ -z "{{.AMOUNT}}" ] || [ -z "{{.SIG}}" ]; then
             echo "❌ Missing required parameters"
-            echo ""
-            echo "Usage:"
-            echo "  task token:burn ADDRESS=0xTokenAddress FROM=0xFromAddress AMOUNT=1000000000000000000 SIG=0x... [NETWORK=sepolia]"
+            echo "Usage: task token burn ADDRESS=0xTokenAddress FROM=0xFromAddress AMOUNT=<amount> SIG=<signature> [NETWORK=sepolia]"
             exit 1
           fi
-      - task: _confirm
-        vars:
-          ACTION: "burn {{.AMOUNT}} tokens"
-          DETAILS: "from address {{.FROM}} on contract {{.ADDRESS}}"
-      - cmd: |
-          RPC_VAR="{{.NETWORK | upper}}_RPC"
-          echo "Using RPC: ${!RPC_VAR}"
-          cast send {{.ADDRESS}} "burn(address,uint256,bytes32,bytes)" {{.FROM}} {{.AMOUNT}} \
-            0xb77c35c892a1b24b10a2ce49b424e578472333ee8d2456234fff90626332c50f "{{.SIG}}" \
-            --rpc-url ${!RPC_VAR} \
-            --private-key $PRIVATE_KEY
 
-  # Role management
-  add-admin:
-    desc: Add an address to admin role
-    silent: true
-    cmds:
-      - cmd: |
-          if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ]; then
-            echo "❌ Missing required parameters"
-            echo ""
-            echo "Usage:"
-            echo "  task token:add-admin ADDRESS=0xTokenAddress ACCOUNT=0xAddressToAdd [NETWORK=sepolia]"
-            exit 1
+          # Get network-specific RPC URL
+          RPC_VAR="{{.NETWORK | upper}}_RPC"
+
+          # Confirmation for write operation
+          if [ "{{.SKIP_CONFIRM}}" != "true" ]; then
+            echo -e "\n⚠️  WARNING: You are about to burn {{.AMOUNT}} tokens from {{.FROM}} on contract {{.ADDRESS}} on {{.NETWORK}} network"
+            echo -e "\nContinue? (y/N): "
+            read -r response
+            if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
+              echo "Operation cancelled."
+              exit 1
+            fi
+            echo "Proceeding with burning..."
           fi
-      - task: _confirm
-        vars:
-          ACTION: "add {{.ACCOUNT}} as admin"
-          DETAILS: "to contract {{.ADDRESS}}"
-      - cmd: |
-          RPC_VAR="{{.NETWORK | upper}}_RPC"
-          echo "Using RPC: ${!RPC_VAR}"
-          cast send {{.ADDRESS}} "addAdminAccount(address)" {{.ACCOUNT}} \
-            --rpc-url ${!RPC_VAR} \
-            --private-key $PRIVATE_KEY
 
-  remove-admin:
-    desc: Remove an address from admin role
-    silent: true
-    cmds:
-      - cmd: |
-          if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ]; then
-            echo "❌ Missing required parameters"
-            echo ""
-            echo "Usage:"
-            echo "  task token:remove-admin ADDRESS=0xTokenAddress ACCOUNT=0xAddressToRemove [NETWORK=sepolia]"
-            exit 1
-          fi
-      - task: _confirm
-        vars:
-          ACTION: "remove {{.ACCOUNT}} from admin role"
-          DETAILS: "on contract {{.ADDRESS}}"
-      - cmd: |
-          RPC_VAR="{{.NETWORK | upper}}_RPC"
-          echo "Using RPC: ${!RPC_VAR}"
-          cast send {{.ADDRESS}} "removeAdminAccount(address)" {{.ACCOUNT}} \
+          forge script script/token/Money.s.sol:Burn \
+            --sig "run(address,address,uint256,bytes)" {{.ADDRESS}} {{.FROM}} {{.AMOUNT}} {{.SIG}} \
             --rpc-url ${!RPC_VAR} \
-            --private-key $PRIVATE_KEY
+            --private-key $PRIVATE_KEY \
+            --broadcast \
+            -{{.VERBOSITY}}
 
-  add-system:
-    desc: Add an address to system role
-    silent: true
-    cmds:
-      - cmd: |
-          if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ]; then
-            echo "❌ Missing required parameters"
-            echo ""
-            echo "Usage:"
-            echo "  task token:add-system ADDRESS=0xTokenAddress ACCOUNT=0xAddressToAdd [NETWORK=sepolia]"
-            exit 1
-          fi
-      - task: _confirm
-        vars:
-          ACTION: "add {{.ACCOUNT}} as system account"
-          DETAILS: "to contract {{.ADDRESS}}"
-      - cmd: |
-          RPC_VAR="{{.NETWORK | upper}}_RPC"
-          echo "Using RPC: ${!RPC_VAR}"
-          cast send {{.ADDRESS}} "addSystemAccount(address)" {{.ACCOUNT}} \
-            --rpc-url ${!RPC_VAR} \
-            --private-key $PRIVATE_KEY
-
-  remove-system:
-    desc: Remove an address from system role
-    silent: true
-    cmds:
-      - cmd: |
-          if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ]; then
-            echo "❌ Missing required parameters"
-            echo ""
-            echo "Usage:"
-            echo "  task token:remove-system ADDRESS=0xTokenAddress ACCOUNT=0xAddressToRemove [NETWORK=sepolia]"
-            exit 1
-          fi
-      - task: _confirm
-        vars:
-          ACTION: "remove {{.ACCOUNT}} from system role"
-          DETAILS: "on contract {{.ADDRESS}}"
-      - cmd: |
-          RPC_VAR="{{.NETWORK | upper}}_RPC"
-          echo "Using RPC: ${!RPC_VAR}"
-          cast send {{.ADDRESS}} "removeSystemAccount(address)" {{.ACCOUNT}} \
-            --rpc-url ${!RPC_VAR} \
-            --private-key $PRIVATE_KEY
-
-  # Allowance management
-  get-mint-allowance:
+  get-allowance:
     desc: Get mint allowance for an account
-    silent: true
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ]; then
             echo "❌ Missing required parameters"
-            echo ""
-            echo "Usage:"
-            echo "  task token:get-mint-allowance ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
+            echo "Usage: task token get-allowance ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
             exit 1
           fi
 
+          # Get network-specific RPC URL
           RPC_VAR="{{.NETWORK | upper}}_RPC"
-          echo "Using RPC: ${!RPC_VAR}"
 
-          # Get allowance and format it
-          allowance=$(cast call {{.ADDRESS}} "getMintAllowance(address)" {{.ACCOUNT}} --rpc-url ${!RPC_VAR})
-
-          # Get token decimals
-          decimals=$(cast call {{.ADDRESS}} "decimals()" --rpc-url ${!RPC_VAR})
-          decimals_value=$(printf "%d" $decimals)
-
-          # Format allowance in both raw and human-readable form
-          human_allowance=$(cast --from-wei "$allowance" --decimals "$decimals_value" 2>/dev/null || echo "N/A")
-
-          echo "Mint allowance for {{.ACCOUNT}} on contract {{.ADDRESS}}:"
-          echo "  Raw: $allowance"
-          echo "  Formatted: $human_allowance"
-
-  set-max-mint-allowance:
-    desc: Set the maximum mint allowance
-    silent: true
-    cmds:
-      - cmd: |
-          if [ -z "{{.ADDRESS}}" ] || [ -z "{{.AMOUNT}}" ]; then
-            echo "❌ Missing required parameters"
-            echo ""
-            echo "Usage:"
-            echo "  task token:set-max-mint-allowance ADDRESS=0xTokenAddress AMOUNT=1000000000000000000 [NETWORK=sepolia]"
-            exit 1
-          fi
-      - task: _confirm
-        vars:
-          ACTION: "set maximum mint allowance to {{.AMOUNT}}"
-          DETAILS: "on contract {{.ADDRESS}}"
-      - cmd: |
-          RPC_VAR="{{.NETWORK | upper}}_RPC"
-          echo "Using RPC: ${!RPC_VAR}"
-          cast send {{.ADDRESS}} "setMaxMintAllowance(uint256)" {{.AMOUNT}} \
+          forge script script/token/Money.s.sol:GetMintAllowance \
+            --sig "run(address,address)" {{.ADDRESS}} {{.ACCOUNT}} \
             --rpc-url ${!RPC_VAR} \
-            --private-key $PRIVATE_KEY
+            -{{.VERBOSITY}}
 
-  set-mint-allowance:
+  set-allowance:
     desc: Set mint allowance for an account
-    silent: true
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ] || [ -z "{{.AMOUNT}}" ]; then
             echo "❌ Missing required parameters"
-            echo ""
-            echo "Usage:"
-            echo "  task token:set-mint-allowance ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress AMOUNT=1000000000000000000 [NETWORK=sepolia]"
+            echo "Usage: task token set-allowance ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress AMOUNT=<amount> [NETWORK=sepolia]"
             exit 1
           fi
-      - task: _confirm
-        vars:
-          ACTION: "set mint allowance of {{.ACCOUNT}} to {{.AMOUNT}}"
-          DETAILS: "on contract {{.ADDRESS}}"
-      - cmd: |
-          RPC_VAR="{{.NETWORK | upper}}_RPC"
-          echo "Using RPC: ${!RPC_VAR}"
-          cast send {{.ADDRESS}} "setMintAllowance(address,uint256)" {{.ACCOUNT}} {{.AMOUNT}} \
-            --rpc-url ${!RPC_VAR} \
-            --private-key $PRIVATE_KEY
 
-  # Validator operations
-  set-validator:
-    desc: Set the validator address for a token
-    silent: true
+          # Get network-specific RPC URL
+          RPC_VAR="{{.NETWORK | upper}}_RPC"
+
+          # Confirmation for write operation
+          if [ "{{.SKIP_CONFIRM}}" != "true" ]; then
+            echo -e "\n⚠️  WARNING: You are about to set mint allowance for {{.ACCOUNT}} to {{.AMOUNT}} on contract {{.ADDRESS}} on {{.NETWORK}} network"
+            echo -e "\nContinue? (y/N): "
+            read -r response
+            if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
+              echo "Operation cancelled."
+              exit 1
+            fi
+            echo "Proceeding with setting allowance..."
+          fi
+
+          forge script script/token/Money.s.sol:SetMintAllowance \
+            --sig "run(address,address,uint256)" {{.ADDRESS}} {{.ACCOUNT}} {{.AMOUNT}} \
+            --rpc-url ${!RPC_VAR} \
+            --private-key $PRIVATE_KEY \
+            --broadcast \
+            -{{.VERBOSITY}}
+
+  set-max-allowance:
+    desc: Set maximum mint allowance
     cmds:
       - cmd: |
-          if [ -z "{{.ADDRESS}}" ] || [ -z "{{.VALIDATOR}}" ]; then
+          if [ -z "{{.ADDRESS}}" ] || [ -z "{{.AMOUNT}}" ]; then
             echo "❌ Missing required parameters"
-            echo ""
-            echo "Usage:"
-            echo "  task token:set-validator ADDRESS=0xTokenAddress VALIDATOR=0xValidatorAddress [NETWORK=sepolia]"
+            echo "Usage: task token set-max-allowance ADDRESS=0xTokenAddress AMOUNT=<amount> [NETWORK=sepolia]"
             exit 1
           fi
-      - task: _confirm
-        vars:
-          ACTION: "set validator to {{.VALIDATOR}}"
-          DETAILS: "on contract {{.ADDRESS}}"
-      - cmd: |
+
+          # Get network-specific RPC URL
           RPC_VAR="{{.NETWORK | upper}}_RPC"
-          echo "Using RPC: ${!RPC_VAR}"
-          cast send {{.ADDRESS}} "setValidator(address)" {{.VALIDATOR}} \
+
+          # Confirmation for write operation
+          if [ "{{.SKIP_CONFIRM}}" != "true" ]; then
+            echo -e "\n⚠️  WARNING: You are about to set maximum mint allowance to {{.AMOUNT}} on contract {{.ADDRESS}} on {{.NETWORK}} network"
+            echo -e "\nContinue? (y/N): "
+            read -r response
+            if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
+              echo "Operation cancelled."
+              exit 1
+            fi
+            echo "Proceeding with setting max allowance..."
+          fi
+
+          forge script script/token/Money.s.sol:SetMaxMintAllowance \
+            --sig "run(address,uint256)" {{.ADDRESS}} {{.AMOUNT}} \
             --rpc-url ${!RPC_VAR} \
-            --private-key $PRIVATE_KEY
+            --private-key $PRIVATE_KEY \
+            --broadcast \
+            -{{.VERBOSITY}}
+
+  # ROLE MANAGEMENT
+  check-admin:
+    desc: Check if account has admin role
+    cmds:
+      - cmd: |
+          if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ]; then
+            echo "❌ Missing required parameters"
+            echo "Usage: task token check-admin ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
+            exit 1
+          fi
+
+          # Get network-specific RPC URL
+          RPC_VAR="{{.NETWORK | upper}}_RPC"
+
+          forge script script/token/Role.s.sol:CheckAdmin \
+            --sig "run(address,address)" {{.ADDRESS}} {{.ACCOUNT}} \
+            --rpc-url ${!RPC_VAR} \
+            -{{.VERBOSITY}}
+
+  check-system:
+    desc: Check if account has system role
+    cmds:
+      - cmd: |
+          if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ]; then
+            echo "❌ Missing required parameters"
+            echo "Usage: task token check-system ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
+            exit 1
+          fi
+
+          # Get network-specific RPC URL
+          RPC_VAR="{{.NETWORK | upper}}_RPC"
+
+          forge script script/token/Role.s.sol:CheckSystem \
+            --sig "run(address,address)" {{.ADDRESS}} {{.ACCOUNT}} \
+            --rpc-url ${!RPC_VAR} \
+            -{{.VERBOSITY}}
+
+  add-admin:
+    desc: Add account to admin role
+    cmds:
+      - cmd: |
+          if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ]; then
+            echo "❌ Missing required parameters"
+            echo "Usage: task token add-admin ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
+            exit 1
+          fi
+
+          # Get network-specific RPC URL
+          RPC_VAR="{{.NETWORK | upper}}_RPC"
+
+          # Confirmation for write operation
+          if [ "{{.SKIP_CONFIRM}}" != "true" ]; then
+            echo -e "\n⚠️  WARNING: You are about to add {{.ACCOUNT}} as admin to contract {{.ADDRESS}} on {{.NETWORK}} network"
+            echo -e "\nContinue? (y/N): "
+            read -r response
+            if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
+              echo "Operation cancelled."
+              exit 1
+            fi
+            echo "Proceeding with adding admin..."
+          fi
+
+          forge script script/token/Role.s.sol:AddAdmin \
+            --sig "run(address,address)" {{.ADDRESS}} {{.ACCOUNT}} \
+            --rpc-url ${!RPC_VAR} \
+            --private-key $PRIVATE_KEY \
+            --broadcast \
+            -{{.VERBOSITY}}
+
+  remove-admin:
+    desc: Remove account from admin role
+    cmds:
+      - cmd: |
+          if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ]; then
+            echo "❌ Missing required parameters"
+            echo "Usage: task token remove-admin ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
+            exit 1
+          fi
+
+          # Get network-specific RPC URL
+          RPC_VAR="{{.NETWORK | upper}}_RPC"
+
+          # Confirmation for write operation
+          if [ "{{.SKIP_CONFIRM}}" != "true" ]; then
+            echo -e "\n⚠️  WARNING: You are about to remove {{.ACCOUNT}} from admin role on contract {{.

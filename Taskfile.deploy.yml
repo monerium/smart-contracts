@@ -12,67 +12,83 @@ vars:
   LEGACY: '{{.LEGACY | default "--legacy"}}'
 
 tasks:
-  # Internal task for confirmation
-  _confirm:
-    internal: true
-    silent: true
+  # Help command
+  help:
+    desc: Show deployment command usage
     cmds:
       - cmd: |
-          if [ "{{.SKIP_CONFIRM}}" != "true" ]; then
-            echo -e "\n⚠️  WARNING: You are about to {{.ACTION}} on {{.NETWORK}} network"
-            {{if .DETAILS}}echo -e "Details: {{.DETAILS}}"{{end}}
-            echo -e "\nContinue? (y/N): "
-            read -r response
-            if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
-              echo "Operation cancelled."
-              exit 1
-            fi
-            echo "Proceeding with operation..."
-          fi
+          echo "🔶 Deployment Commands"
+          echo ""
+          echo "Usage:"
+          echo "  task deploy [NETWORK=<network>] [CONTRACT=<contract>]"
+          echo ""
+          echo "Examples:"
+          echo "  task deploy NETWORK=sepolia                   # Deploy All tokens"
+          echo "  task deploy NETWORK=gnosis CONTRACT=EUR       # Deploy EUR only"
+          echo "  task deploy NETWORK=localhost CONTRACT=Dev    # Deploy dev tokens"
+          echo ""
+          echo "Available networks: (run 'task networks' for details)"
+          echo "  mainnet, sepolia, arbitrum, arbitrum-sepolia, polygon, etc."
+          echo ""
+          echo "Available contracts: (run 'task contracts' for details)"
+          echo "  All, EUR, GBP, USD, ISK, Dev, AllControllerGnosis, etc."
 
   # Main deployment task
-  deploy:
-    desc: Deploy stablecoin contracts
-    silent: true
+  default:
+    desc: Deploy contracts
     cmds:
-      - task: _confirm
-        vars:
-          ACTION: "deploy {{.CONTRACT}} contract"
-          DETAILS: "to {{.NETWORK}} network"
-      - echo "🚀 Deploying {{.CONTRACT}} to {{.NETWORK}}..."
-
-      # Simple auto-select for special networks
       - cmd: |
-          # For certain networks, use special controllers if we're deploying "All"
-          if [ "{{.CONTRACT}}" = "All" ]; then
+          if [ -z "{{.NETWORK}}" ]; then
+            echo "❌ Missing required NETWORK parameter"
+            echo "Usage: task deploy NETWORK=<network> [CONTRACT=<contract>]"
+            echo "Run 'task deploy help' for more details"
+            exit 1
+          fi
+
+          # Get network-specific RPC URL
+          RPC_VAR="{{.NETWORK | upper}}_RPC"
+
+          # Determine contract-network adjustments
+          if [ -z "{{.CONTRACT}}" ] || [ "{{.CONTRACT}}" = "All" ]; then
             if [ "{{.NETWORK}}" = "gnosis" ] || [ "{{.NETWORK}}" = "gnosis-chiado" ]; then
               export CONTRACT="AllControllerGnosis"
               echo "Using Gnosis controller for this network"
             elif [ "{{.NETWORK}}" = "polygon" ] || [ "{{.NETWORK}}" = "polygon-amoy" ]; then
               export CONTRACT="AllControllerPolygon"
               echo "Using Polygon controller for this network"
+            else
+              export CONTRACT="All"
             fi
+          else
+            export CONTRACT="{{.CONTRACT}}"
           fi
 
-          # Get RPC URL from environment
-          RPC_VAR="{{.NETWORK | upper}}_RPC"
+          # Confirmation
+          if [ "{{.SKIP_CONFIRM}}" != "true" ]; then
+            echo -e "\n⚠️  WARNING: You are about to deploy $CONTRACT to {{.NETWORK}} network"
+            echo -e "\nContinue? (y/N): "
+            read -r response
+            if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
+              echo "Operation cancelled."
+              exit 1
+            fi
+            echo "Proceeding with deployment..."
+          fi
 
-          # Execute the deployment
-          forge script script/deploy.s.sol:{{.CONTRACT}} \
+          # Execute deployment
+          forge script script/deploy.s.sol:$CONTRACT \
             --rpc-url ${!RPC_VAR} \
             --broadcast \
             {{if eq .VERIFY "true"}}--verify{{end}} \
             --gas-limit {{.GAS_LIMIT}} \
             -{{.VERBOSITY}} \
             {{.LEGACY}}
-      - echo "✅ Deployment complete!"
 
   # Convenience commands
   local:
     desc: Deploy to local development environment
-    silent: true
     cmds:
-      - task: deploy
+      - task: default
         vars:
           NETWORK: "localhost"
           CONTRACT: '{{.CONTRACT | default "Dev"}}'
@@ -80,14 +96,11 @@ tasks:
 
   testnet:
     desc: Deploy to a testnet with safety checks
-    silent: true
     cmds:
       - cmd: |
           if [ -z "{{.NETWORK}}" ]; then
             echo "❌ Missing required NETWORK parameter"
-            echo ""
-            echo "Usage:"
-            echo "  task deploy:testnet NETWORK=sepolia [CONTRACT=All]"
+            echo "Usage: task deploy:testnet NETWORK=<testnet> [CONTRACT=<contract>]"
             exit 1
           fi
 
@@ -100,21 +113,18 @@ tasks:
               exit 1
             fi
           fi
-      - task: deploy
+      - task: default
         vars:
           NETWORK: "{{.NETWORK}}"
           CONTRACT: '{{.CONTRACT | default "All"}}'
 
   mainnet:
     desc: Deploy to a mainnet with additional safety checks
-    silent: true
     cmds:
       - cmd: |
           if [ -z "{{.NETWORK}}" ]; then
             echo "❌ Missing required NETWORK parameter"
-            echo ""
-            echo "Usage:"
-            echo "  task deploy:mainnet NETWORK=mainnet [CONTRACT=All]"
+            echo "Usage: task deploy:mainnet NETWORK=<mainnet> [CONTRACT=<contract>]"
             exit 1
           fi
 
@@ -136,7 +146,7 @@ tasks:
           fi
 
           echo "✓ Confirmation received. Proceeding with deployment..."
-      - task: deploy
+      - task: default
         vars:
           NETWORK: "{{.NETWORK}}"
           CONTRACT: '{{.CONTRACT | default "All"}}'
@@ -144,18 +154,17 @@ tasks:
   # Helper tasks for deployment
   estimate-gas:
     desc: Estimate gas for deployment
-    silent: true
     cmds:
       - cmd: |
           if [ -z "{{.NETWORK}}" ]; then
             echo "❌ Missing required NETWORK parameter"
-            echo ""
-            echo "Usage:"
-            echo "  task deploy:estimate-gas NETWORK=sepolia [CONTRACT=All]"
+            echo "Usage: task deploy:estimate-gas NETWORK=<network> [CONTRACT=<contract>]"
             exit 1
           fi
 
+          # Get network-specific RPC URL
           RPC_VAR="{{.NETWORK | upper}}_RPC"
+
           echo "⛽ Estimating gas for deploying {{.CONTRACT}} to {{.NETWORK}}..."
           forge script script/deploy.s.sol:{{.CONTRACT}} \
             --rpc-url ${!RPC_VAR} \
@@ -165,8 +174,7 @@ tasks:
   # Specialized deployments
   validator:
     desc: Deploy only the BlacklistValidator
-    silent: true
     cmds:
-      - task: deploy
+      - task: default
         vars:
           CONTRACT: "BlacklistValidator"
