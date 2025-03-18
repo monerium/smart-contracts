@@ -16,32 +16,33 @@ tasks:
           echo "🔶 Token Operations"
           echo ""
           echo "Usage:"
-          echo "  task token <command> [parameters]"
+          echo "  task token:<command> [parameters]"
           echo ""
           echo "OWNERSHIP COMMANDS:"
           echo "  owner               - Get current owner"
-          echo "  pending-owner       - Get pending owner"
-          echo "  transfer-ownership  - Transfer ownership to new address"
-          echo "  accept-ownership    - Accept pending ownership"
+          echo "  owner:pending       - Get pending owner"
+          echo "  owner:transfer      - Transfer ownership to new address"
+          echo "  owner:accept        - Accept pending ownership"
           echo ""
           echo "MONEY COMMANDS:"
           echo "  balance             - Check token balance"
           echo "  supply              - Check total supply"
           echo "  mint                - Mint tokens to address"
+          echo "  mint:allowance      - Get mint allowance for an account"
+          echo "  mint:allowance:set  - Set mint allowance for an account"
+          echo "  mint:allowance:max  - Get maximum mint allowance"
+          echo "  mint:allowance:max:set - Set maximum mint allowance"
           echo "  burn                - Burn tokens (requires signature)"
-          echo "  get-allowance       - Get mint allowance"
-          echo "  set-allowance       - Set mint allowance for account"
-          echo "  set-max-allowance   - Set maximum mint allowance"
           echo ""
           echo "ROLE MANAGEMENT:"
-          echo "  check-admin         - Check if account has admin role"
-          echo "  check-system        - Check if account has system role"
-          echo "  add-admin           - Add account to admin role"
-          echo "  remove-admin        - Remove account from admin role"
-          echo "  add-system          - Add account to system role"
-          echo "  remove-system       - Remove account from system role"
-          echo "  get-validator       - Get current validator address"
-          echo "  set-validator       - Set validator address"
+          echo "  admin               - Check if account has admin role"
+          echo "  admin:add           - Add account to admin role"
+          echo "  admin:remove        - Remove account from admin role"
+          echo "  system              - Check if account has system role"
+          echo "  system:add          - Add account to system role"
+          echo "  system:remove       - Remove account from system role"
+          echo "  validator           - Get current validator address"
+          echo "  validator:set       - Set validator address"
           echo ""
           echo "Examples:"
           echo "  task token:owner ADDRESS=0x123... NETWORK=mainnet"
@@ -49,13 +50,15 @@ tasks:
           echo "  task token:mint ADDRESS=0x123... TO=0x456... AMOUNT=1000000000000000000 NETWORK=sepolia"
         silent: true
 
+  #---------------------------------------------------------------------------
   # OWNERSHIP COMMANDS
+  #---------------------------------------------------------------------------
   owner:
     desc: Get current owner of a contract
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ]; then
-            echo "Usage: task token owner ADDRESS=0xContractAddress [NETWORK=sepolia]"
+            echo "Usage: task token:owner ADDRESS=0xContractAddress [NETWORK=sepolia]"
             exit 0
           fi
 
@@ -68,12 +71,12 @@ tasks:
             -{{.VERBOSITY}}
         silent: true
 
-  pending-owner:
+  owner:pending:
     desc: Get pending owner of a contract
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ]; then
-            echo "Usage: task token pending-owner ADDRESS=0xContractAddress [NETWORK=sepolia]"
+            echo "Usage: task token:owner:pending ADDRESS=0xContractAddress [NETWORK=sepolia]"
             exit 0
           fi
 
@@ -86,12 +89,12 @@ tasks:
             -{{.VERBOSITY}}
         silent: true
 
-  transfer-ownership:
+  owner:transfer:
     desc: Transfer ownership of a contract
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ] || [ -z "{{.NEW_OWNER}}" ]; then
-            echo "Usage: task token transfer-ownership ADDRESS=0xContractAddress NEW_OWNER=0xNewOwnerAddress [NETWORK=sepolia]"
+            echo "Usage: task token:owner:transfer ADDRESS=0xContractAddress NEW_OWNER=0xNewOwnerAddress [NETWORK=sepolia]"
             exit 0
           fi
 
@@ -116,13 +119,14 @@ tasks:
             --private-key $PRIVATE_KEY \
             --broadcast \
             -{{.VERBOSITY}}
+        silent: true
 
-  accept-ownership:
+  owner:accept:
     desc: Accept ownership of a contract
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ]; then
-            echo "Usage: task token accept-ownership ADDRESS=0xContractAddress [NETWORK=sepolia]"
+            echo "Usage: task token:owner:accept ADDRESS=0xContractAddress [NETWORK=sepolia]"
             exit 0
           fi
 
@@ -147,14 +151,17 @@ tasks:
             --private-key $PRIVATE_KEY \
             --broadcast \
             -{{.VERBOSITY}}
+        silent: true
 
+  #---------------------------------------------------------------------------
   # MONEY OPERATIONS
+  #---------------------------------------------------------------------------
   balance:
     desc: Check token balance for an address
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ]; then
-            echo "Usage: task token balance ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
+            echo "Usage: task token:balance ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
             exit 0
           fi
 
@@ -165,13 +172,14 @@ tasks:
             --sig "run(address,address)" {{.ADDRESS}} {{.ACCOUNT}} \
             --rpc-url ${!RPC_VAR} \
             -{{.VERBOSITY}}
+        silent: true
 
   supply:
     desc: Check total supply of a token
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ]; then
-            echo "Usage: task token supply ADDRESS=0xTokenAddress [NETWORK=sepolia]"
+            echo "Usage: task token:supply ADDRESS=0xTokenAddress [NETWORK=sepolia]"
             exit 0
           fi
 
@@ -182,13 +190,14 @@ tasks:
             --sig "run(address)" {{.ADDRESS}} \
             --rpc-url ${!RPC_VAR} \
             -{{.VERBOSITY}}
+        silent: true
 
   mint:
     desc: Mint tokens to an address
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ] || [ -z "{{.TO}}" ] || [ -z "{{.AMOUNT}}" ]; then
-            echo "Usage: task token mint ADDRESS=0xTokenAddress TO=0xRecipientAddress AMOUNT=<amount> [NETWORK=sepolia]"
+            echo "Usage: task token:mint ADDRESS=0xTokenAddress TO=0xRecipientAddress AMOUNT=<amount> [NETWORK=sepolia]"
             exit 0
           fi
 
@@ -213,44 +222,14 @@ tasks:
             --private-key $PRIVATE_KEY \
             --broadcast \
             -{{.VERBOSITY}}
+        silent: true
 
-  burn:
-    desc: Burn tokens (requires signature)
-    cmds:
-      - cmd: |
-          if [ -z "{{.ADDRESS}}" ] || [ -z "{{.FROM}}" ] || [ -z "{{.AMOUNT}}" ] || [ -z "{{.SIG}}" ]; then
-            echo "Usage: task token burn ADDRESS=0xTokenAddress FROM=0xFromAddress AMOUNT=<amount> SIG=<signature> [NETWORK=sepolia]"
-            exit 0
-          fi
-
-          # Get network-specific RPC URL
-          RPC_VAR="{{.NETWORK | upper}}_RPC"
-
-          # Confirmation for write operation
-          if [ "{{.SKIP_CONFIRM}}" != "true" ]; then
-            echo -e "\n⚠️  WARNING: You are about to burn {{.AMOUNT}} tokens from {{.FROM}} on contract {{.ADDRESS}} on {{.NETWORK}} network"
-            echo -e "\nContinue? (y/N): "
-            read -r response
-            if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
-              echo "Operation cancelled."
-              exit 1
-            fi
-            echo "Proceeding with burning..."
-          fi
-
-          forge script script/token/Money.s.sol:Burn \
-            --sig "run(address,address,uint256,bytes)" {{.ADDRESS}} {{.FROM}} {{.AMOUNT}} {{.SIG}} \
-            --rpc-url ${!RPC_VAR} \
-            --private-key $PRIVATE_KEY \
-            --broadcast \
-            -{{.VERBOSITY}}
-
-  get-allowance:
+  mint:allowance:
     desc: Get mint allowance for an account
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ]; then
-            echo "Usage: task token get-allowance ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
+            echo "Usage: task token:mint:allowance ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
             exit 0
           fi
 
@@ -261,13 +240,14 @@ tasks:
             --sig "run(address,address)" {{.ADDRESS}} {{.ACCOUNT}} \
             --rpc-url ${!RPC_VAR} \
             -{{.VERBOSITY}}
+        silent: true
 
-  set-allowance:
+  mint:allowance:set:
     desc: Set mint allowance for an account
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ] || [ -z "{{.AMOUNT}}" ]; then
-            echo "Usage: task token set-allowance ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress AMOUNT=<amount> [NETWORK=sepolia]"
+            echo "Usage: task token:mint:allowance:set ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress AMOUNT=<amount> [NETWORK=sepolia]"
             exit 0
           fi
 
@@ -292,13 +272,32 @@ tasks:
             --private-key $PRIVATE_KEY \
             --broadcast \
             -{{.VERBOSITY}}
+        silent: true
 
-  set-max-allowance:
+  mint:allowance:max:
+    desc: Get maximum mint allowance
+    cmds:
+      - cmd: |
+          if [ -z "{{.ADDRESS}}" ]; then
+            echo "Usage: task token:mint:allowance:max ADDRESS=0xTokenAddress [NETWORK=sepolia]"
+            exit 0
+          fi
+
+          # Get network-specific RPC URL
+          RPC_VAR="{{.NETWORK | upper}}_RPC"
+
+          forge script script/token/Money.s.sol:GetMaxMintAllowance \
+            --sig "run(address)" {{.ADDRESS}} \
+            --rpc-url ${!RPC_VAR} \
+            -{{.VERBOSITY}}
+        silent: true
+
+  mint:allowance:max:set:
     desc: Set maximum mint allowance
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ] || [ -z "{{.AMOUNT}}" ]; then
-            echo "Usage: task token set-max-allowance ADDRESS=0xTokenAddress AMOUNT=<amount> [NETWORK=sepolia]"
+            echo "Usage: task token:mint:allowance:max:set ADDRESS=0xTokenAddress AMOUNT=<amount> [NETWORK=sepolia]"
             exit 0
           fi
 
@@ -323,14 +322,49 @@ tasks:
             --private-key $PRIVATE_KEY \
             --broadcast \
             -{{.VERBOSITY}}
+        silent: true
 
+  burn:
+    desc: Burn tokens (requires signature)
+    cmds:
+      - cmd: |
+          if [ -z "{{.ADDRESS}}" ] || [ -z "{{.FROM}}" ] || [ -z "{{.AMOUNT}}" ] || [ -z "{{.SIG}}" ]; then
+            echo "Usage: task token:burn ADDRESS=0xTokenAddress FROM=0xFromAddress AMOUNT=<amount> SIG=<signature> [NETWORK=sepolia]"
+            exit 0
+          fi
+
+          # Get network-specific RPC URL
+          RPC_VAR="{{.NETWORK | upper}}_RPC"
+
+          # Confirmation for write operation
+          if [ "{{.SKIP_CONFIRM}}" != "true" ]; then
+            echo -e "\n⚠️  WARNING: You are about to burn {{.AMOUNT}} tokens from {{.FROM}} on contract {{.ADDRESS}} on {{.NETWORK}} network"
+            echo -e "\nContinue? (y/N): "
+            read -r response
+            if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
+              echo "Operation cancelled."
+              exit 1
+            fi
+            echo "Proceeding with burning..."
+          fi
+
+          forge script script/token/Money.s.sol:Burn \
+            --sig "run(address,address,uint256,bytes)" {{.ADDRESS}} {{.FROM}} {{.AMOUNT}} {{.SIG}} \
+            --rpc-url ${!RPC_VAR} \
+            --private-key $PRIVATE_KEY \
+            --broadcast \
+            -{{.VERBOSITY}}
+        silent: true
+
+  #---------------------------------------------------------------------------
   # ROLE MANAGEMENT
-  check-admin:
+  #---------------------------------------------------------------------------
+  admin:
     desc: Check if account has admin role
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ]; then
-            echo "Usage: task token check-admin ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
+            echo "Usage: task token:admin ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
             exit 0
           fi
 
@@ -341,30 +375,14 @@ tasks:
             --sig "run(address,address)" {{.ADDRESS}} {{.ACCOUNT}} \
             --rpc-url ${!RPC_VAR} \
             -{{.VERBOSITY}}
+        silent: true
 
-  check-system:
-    desc: Check if account has system role
-    cmds:
-      - cmd: |
-          if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ]; then
-            echo "Usage: task token check-system ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
-            exit 0
-          fi
-
-          # Get network-specific RPC URL
-          RPC_VAR="{{.NETWORK | upper}}_RPC"
-
-          forge script script/token/Role.s.sol:CheckSystem \
-            --sig "run(address,address)" {{.ADDRESS}} {{.ACCOUNT}} \
-            --rpc-url ${!RPC_VAR} \
-            -{{.VERBOSITY}}
-
-  add-admin:
+  admin:add:
     desc: Add account to admin role
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ]; then
-            echo "Usage: task token add-admin ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
+            echo "Usage: task token:admin:add ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
             exit 0
           fi
 
@@ -389,13 +407,14 @@ tasks:
             --private-key $PRIVATE_KEY \
             --broadcast \
             -{{.VERBOSITY}}
+        silent: true
 
-  remove-admin:
+  admin:remove:
     desc: Remove account from admin role
     cmds:
       - cmd: |
           if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ]; then
-            echo "Usage: task token remove-admin ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
+            echo "Usage: task token:admin:remove ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
             exit 0
           fi
 
@@ -404,4 +423,328 @@ tasks:
 
           # Confirmation for write operation
           if [ "{{.SKIP_CONFIRM}}" != "true" ]; then
-            echo -e "\n⚠️  WARNING: You are about to remove {{.ACCOUNT}} from admin role on contract {{.
+            echo -e "\n⚠️  WARNING: You are about to remove {{.ACCOUNT}} from admin role on contract {{.ADDRESS}} on {{.NETWORK}} network"
+            echo -e "\nContinue? (y/N): "
+            read -r response
+            if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
+              echo "Operation cancelled."
+              exit 1
+            fi
+            echo "Proceeding with removing admin..."
+          fi
+
+          forge script script/token/Role.s.sol:RemoveAdmin \
+            --sig "run(address,address)" {{.ADDRESS}} {{.ACCOUNT}} \
+            --rpc-url ${!RPC_VAR} \
+            --private-key $PRIVATE_KEY \
+            --broadcast \
+            -{{.VERBOSITY}}
+        silent: true
+
+  system:
+    desc: Check if account has system role
+    cmds:
+      - cmd: |
+          if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ]; then
+            echo "Usage: task token:system ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
+            exit 0
+          fi
+
+          # Get network-specific RPC URL
+          RPC_VAR="{{.NETWORK | upper}}_RPC"
+
+          forge script script/token/Role.s.sol:CheckSystem \
+            --sig "run(address,address)" {{.ADDRESS}} {{.ACCOUNT}} \
+            --rpc-url ${!RPC_VAR} \
+            -{{.VERBOSITY}}
+        silent: true
+
+  system:add:
+    desc: Add account to system role
+    cmds:
+      - cmd: |
+          if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ]; then
+            echo "Usage: task token:system:add ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
+            exit 0
+          fi
+
+          # Get network-specific RPC URL
+          RPC_VAR="{{.NETWORK | upper}}_RPC"
+
+          # Confirmation for write operation
+          if [ "{{.SKIP_CONFIRM}}" != "true" ]; then
+            echo -e "\n⚠️  WARNING: You are about to add {{.ACCOUNT}} to system role on contract {{.ADDRESS}} on {{.NETWORK}} network"
+            echo -e "\nContinue? (y/N): "
+            read -r response
+            if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
+              echo "Operation cancelled."
+              exit 1
+            fi
+            echo "Proceeding with adding system role..."
+          fi
+
+          forge script script/token/Role.s.sol:AddSystem \
+            --sig "run(address,address)" {{.ADDRESS}} {{.ACCOUNT}} \
+            --rpc-url ${!RPC_VAR} \
+            --private-key $PRIVATE_KEY \
+            --broadcast \
+            -{{.VERBOSITY}}
+        silent: true
+
+  system:remove:
+    desc: Remove account from system role
+    cmds:
+      - cmd: |
+          if [ -z "{{.ADDRESS}}" ] || [ -z "{{.ACCOUNT}}" ]; then
+            echo "Usage: task token:system:remove ADDRESS=0xTokenAddress ACCOUNT=0xAccountAddress [NETWORK=sepolia]"
+            exit 0
+          fi
+
+          # Get network-specific RPC URL
+          RPC_VAR="{{.NETWORK | upper}}_RPC"
+
+          # Confirmation for write operation
+          if [ "{{.SKIP_CONFIRM}}" != "true" ]; then
+            echo -e "\n⚠️  WARNING: You are about to remove {{.ACCOUNT}} from system role on contract {{.ADDRESS}} on {{.NETWORK}} network"
+            echo -e "\nContinue? (y/N): "
+            read -r response
+            if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
+              echo "Operation cancelled."
+              exit 1
+            fi
+            echo "Proceeding with removing system role..."
+          fi
+
+          forge script script/token/Role.s.sol:RemoveSystem \
+            --sig "run(address,address)" {{.ADDRESS}} {{.ACCOUNT}} \
+            --rpc-url ${!RPC_VAR} \
+            --private-key $PRIVATE_KEY \
+            --broadcast \
+            -{{.VERBOSITY}}
+        silent: true
+
+  validator:
+    desc: Get current validator address
+    cmds:
+      - cmd: |
+          if [ -z "{{.ADDRESS}}" ]; then
+            echo "Usage: task token:validator ADDRESS=0xTokenAddress [NETWORK=sepolia]"
+            exit 0
+          fi
+
+          # Get network-specific RPC URL
+          RPC_VAR="{{.NETWORK | upper}}_RPC"
+
+          forge script script/token/Role.s.sol:GetValidator \
+            --sig "run(address)" {{.ADDRESS}} \
+            --rpc-url ${!RPC_VAR} \
+            -{{.VERBOSITY}}
+        silent: true
+
+  validator:set:
+    desc: Set validator address
+    cmds:
+      - cmd: |
+          if [ -z "{{.ADDRESS}}" ] || [ -z "{{.VALIDATOR}}" ]; then
+            echo "Usage: task token:validator:set ADDRESS=0xTokenAddress VALIDATOR=0xValidatorAddress [NETWORK=sepolia]"
+            exit 0
+          fi
+
+          # Get network-specific RPC URL
+          RPC_VAR="{{.NETWORK | upper}}_RPC"
+
+          # Confirmation for write operation
+          if [ "{{.SKIP_CONFIRM}}" != "true" ]; then
+            echo -e "\n⚠️  WARNING: You are about to set validator to {{.VALIDATOR}} on contract {{.ADDRESS}} on {{.NETWORK}} network"
+            echo -e "\nContinue? (y/N): "
+            read -r response
+            if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
+              echo "Operation cancelled."
+              exit 1
+            fi
+            echo "Proceeding with setting validator..."
+          fi
+
+          forge script script/token/Role.s.sol:SetValidator \
+            --sig "run(address,address)" {{.ADDRESS}} {{.VALIDATOR}} \
+            --rpc-url ${!RPC_VAR} \
+            --private-key $PRIVATE_KEY \
+            --broadcast \
+            -{{.VERBOSITY}}
+        silent: true
+
+  # Aliases for backwards compatibility
+  pending-owner:
+    desc: "[Deprecated] Use token:owner:pending instead"
+    cmds:
+      - task: owner:pending
+        vars:
+          {
+            ADDRESS: "{{.ADDRESS}}",
+            NETWORK: "{{.NETWORK}}",
+            VERBOSITY: "{{.VERBOSITY}}",
+          }
+
+  transfer-ownership:
+    desc: "[Deprecated] Use token:owner:transfer instead"
+    cmds:
+      - task: owner:transfer
+        vars:
+          {
+            ADDRESS: "{{.ADDRESS}}",
+            NEW_OWNER: "{{.NEW_OWNER}}",
+            NETWORK: "{{.NETWORK}}",
+            VERBOSITY: "{{.VERBOSITY}}",
+            SKIP_CONFIRM: "{{.SKIP_CONFIRM}}",
+          }
+
+  accept-ownership:
+    desc: "[Deprecated] Use token:owner:accept instead"
+    cmds:
+      - task: owner:accept
+        vars:
+          {
+            ADDRESS: "{{.ADDRESS}}",
+            NETWORK: "{{.NETWORK}}",
+            VERBOSITY: "{{.VERBOSITY}}",
+            SKIP_CONFIRM: "{{.SKIP_CONFIRM}}",
+          }
+
+  get-allowance:
+    desc: "[Deprecated] Use token:mint:allowance instead"
+    cmds:
+      - task: mint:allowance
+        vars:
+          {
+            ADDRESS: "{{.ADDRESS}}",
+            ACCOUNT: "{{.ACCOUNT}}",
+            NETWORK: "{{.NETWORK}}",
+            VERBOSITY: "{{.VERBOSITY}}",
+          }
+
+  set-allowance:
+    desc: "[Deprecated] Use token:mint:allowance:set instead"
+    cmds:
+      - task: mint:allowance:set
+        vars:
+          {
+            ADDRESS: "{{.ADDRESS}}",
+            ACCOUNT: "{{.ACCOUNT}}",
+            AMOUNT: "{{.AMOUNT}}",
+            NETWORK: "{{.NETWORK}}",
+            VERBOSITY: "{{.VERBOSITY}}",
+            SKIP_CONFIRM: "{{.SKIP_CONFIRM}}",
+          }
+
+  set-max-allowance:
+    desc: "[Deprecated] Use token:mint:allowance:max:set instead"
+    cmds:
+      - task: mint:allowance:max:set
+        vars:
+          {
+            ADDRESS: "{{.ADDRESS}}",
+            AMOUNT: "{{.AMOUNT}}",
+            NETWORK: "{{.NETWORK}}",
+            VERBOSITY: "{{.VERBOSITY}}",
+            SKIP_CONFIRM: "{{.SKIP_CONFIRM}}",
+          }
+
+  check-admin:
+    desc: "[Deprecated] Use token:admin instead"
+    cmds:
+      - task: admin
+        vars:
+          {
+            ADDRESS: "{{.ADDRESS}}",
+            ACCOUNT: "{{.ACCOUNT}}",
+            NETWORK: "{{.NETWORK}}",
+            VERBOSITY: "{{.VERBOSITY}}",
+          }
+
+  add-admin:
+    desc: "[Deprecated] Use token:admin:add instead"
+    cmds:
+      - task: admin:add
+        vars:
+          {
+            ADDRESS: "{{.ADDRESS}}",
+            ACCOUNT: "{{.ACCOUNT}}",
+            NETWORK: "{{.NETWORK}}",
+            VERBOSITY: "{{.VERBOSITY}}",
+            SKIP_CONFIRM: "{{.SKIP_CONFIRM}}",
+          }
+
+  remove-admin:
+    desc: "[Deprecated] Use token:admin:remove instead"
+    cmds:
+      - task: admin:remove
+        vars:
+          {
+            ADDRESS: "{{.ADDRESS}}",
+            ACCOUNT: "{{.ACCOUNT}}",
+            NETWORK: "{{.NETWORK}}",
+            VERBOSITY: "{{.VERBOSITY}}",
+            SKIP_CONFIRM: "{{.SKIP_CONFIRM}}",
+          }
+
+  check-system:
+    desc: "[Deprecated] Use token:system instead"
+    cmds:
+      - task: system
+        vars:
+          {
+            ADDRESS: "{{.ADDRESS}}",
+            ACCOUNT: "{{.ACCOUNT}}",
+            NETWORK: "{{.NETWORK}}",
+            VERBOSITY: "{{.VERBOSITY}}",
+          }
+
+  add-system:
+    desc: "[Deprecated] Use token:system:add instead"
+    cmds:
+      - task: system:add
+        vars:
+          {
+            ADDRESS: "{{.ADDRESS}}",
+            ACCOUNT: "{{.ACCOUNT}}",
+            NETWORK: "{{.NETWORK}}",
+            VERBOSITY: "{{.VERBOSITY}}",
+            SKIP_CONFIRM: "{{.SKIP_CONFIRM}}",
+          }
+
+  remove-system:
+    desc: "[Deprecated] Use token:system:remove instead"
+    cmds:
+      - task: system:remove
+        vars:
+          {
+            ADDRESS: "{{.ADDRESS}}",
+            ACCOUNT: "{{.ACCOUNT}}",
+            NETWORK: "{{.NETWORK}}",
+            VERBOSITY: "{{.VERBOSITY}}",
+            SKIP_CONFIRM: "{{.SKIP_CONFIRM}}",
+          }
+
+  get-validator:
+    desc: "[Deprecated] Use token:validator instead"
+    cmds:
+      - task: validator
+        vars:
+          {
+            ADDRESS: "{{.ADDRESS}}",
+            NETWORK: "{{.NETWORK}}",
+            VERBOSITY: "{{.VERBOSITY}}",
+          }
+
+  set-validator:
+    desc: "[Deprecated] Use token:validator:set instead"
+    cmds:
+      - task: validator:set
+        vars:
+          {
+            ADDRESS: "{{.ADDRESS}}",
+            VALIDATOR: "{{.VALIDATOR}}",
+            NETWORK: "{{.NETWORK}}",
+            VERBOSITY: "{{.VERBOSITY}}",
+            SKIP_CONFIRM: "{{.SKIP_CONFIRM}}",
+          }
