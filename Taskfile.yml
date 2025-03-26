@@ -3,8 +3,10 @@ version: "3"
 includes:
   deploy: ./Taskfile.deploy.yml
   token: ./Taskfile.token.yml
+
 # Load environment variables from .env file
-dotenv: [".env"]
+dotenv: [".env", ".env.local"]
+
 # Global variables and defaults
 vars:
   # Network defaults
@@ -12,6 +14,7 @@ vars:
   # Standard parameters
   VERBOSITY: '{{.VERBOSITY | default "vv"}}'
   SKIP_CONFIRM: '{{.SKIP_CONFIRM | default "false"}}'
+
 # Common tasks and utilities
 tasks:
   # Default task
@@ -19,7 +22,7 @@ tasks:
     desc: Show available task categories
     cmds:
       - cmd: |
-          printf "🚀 Monerium Token Management System\n\n"
+          printf "🚀 Monerium Smart-contract CLI\n\n"
           printf "Available categories:\n"
           printf "  deploy   - Deployment commands     (task deploy)\n"
           printf "  token    - Token operations        (task token)\n\n"
@@ -29,6 +32,7 @@ tasks:
           printf "  task token:balance ADDRESS=0x123... ACCOUNT=0x456... # Check balance\n\n"
           printf "Run 'task --list' to see all available tasks\n"
         silent: true
+
   # Informational tasks
   networks:
     desc: List available networks
@@ -51,8 +55,9 @@ tasks:
           printf "  linea-sepolia    - Linea Sepolia Testnet\n"
           printf "  scroll           - Scroll Mainnet\n"
           printf "  scroll-sepolia   - Scroll Sepolia Testnet\n"
-          printf "  localhost        - Local development network\n"
+          printf "  localhost        - Local development network (8545)\n"
         silent: true
+
   contracts:
     desc: List available contracts to deploy
     cmds:
@@ -69,6 +74,7 @@ tasks:
           printf "  AllControllerEthereum - Deploy all tokens with Ethereum controller\n"
           printf "  BlacklistValidator    - Deploy only the validator\n"
         silent: true
+
   # Helper task to explain parameter format
   help:
     desc: Show how to use task parameters
@@ -76,8 +82,8 @@ tasks:
       - cmd: |
           printf "🔍 How to use task parameters:\n\n"
           printf "Parameters are passed without dashes. For example:\n"
-          printf "  task token balance ADDRESS=0x123... ACCOUNT=0x456... NETWORK=sepolia\n\n"
+          printf "  task token:balance ADDRESS=0x123... ACCOUNT=0x456... NETWORK=sepolia\n\n"
           printf "To get help on a specific category:\n"
-          printf "  task deploy help\n"
-          printf "  task token help\n"
+          printf "  task deploy:help\n"
+          printf "  task token:help\n"
         silent: true

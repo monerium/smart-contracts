@@ -47,6 +47,7 @@ tasks:
 
           # Get network-specific RPC URL
           RPC_VAR="{{.NETWORK | upper}}_RPC"
+          VERIFY="{{.VERIFY}}"
 
           # Determine contract-network adjustments
           if [ -z "{{.CONTRACT}}" ] || [ "{{.CONTRACT}}" = "All" ]; then
@@ -56,6 +57,9 @@ tasks:
             elif [ "{{.NETWORK}}" = "polygon" ] || [ "{{.NETWORK}}" = "polygon-amoy" ]; then
               export CONTRACT="AllControllerPolygon"
               echo "Using Polygon controller for this network"
+            elif [ "{{.NETWORK}}" = "localhost" ]; then
+              VERIFY="false"
+              export CONTRACT="{{.CONTRACT}}"
             else
               export CONTRACT="All"
             fi
@@ -66,6 +70,7 @@ tasks:
           # Confirmation
           if [ "{{.SKIP_CONFIRM}}" != "true" ]; then
             echo -e "\n⚠️  WARNING: You are about to deploy $CONTRACT to {{.NETWORK}} network"
+            node script/ethers-log-address.js
             echo -e "\nContinue? (y/N): "
             read -r response
             if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
@@ -79,7 +84,7 @@ tasks:
           forge script script/deploy.s.sol:$CONTRACT \
             --rpc-url ${!RPC_VAR} \
             --broadcast \
-            {{if eq .VERIFY "true"}}--verify{{end}} \
+            $([ "$VERIFY" = "true" ] && echo "--verify") \
             --gas-limit {{.GAS_LIMIT}} \
             -{{.VERBOSITY}} \
             {{.LEGACY}}
