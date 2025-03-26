@@ -23,7 +23,7 @@ async function getAddressFromPrivateKey() {
     const address = await wallet.getAddress();
 
     // Print the address (without exposing the private key)
-    console.log("Public Ethereum address:", address);
+    console.log(address);
   } catch (error) {
     process.exit(1);
   }

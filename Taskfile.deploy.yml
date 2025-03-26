@@ -1,6 +1,6 @@
 version: "3"
 
-# Taskfile for deployment operations
+# Taskfile for deployment operations with logic separated into scripts
 
 vars:
   # Contract to deploy (default to All)
@@ -10,6 +10,7 @@ vars:
   GAS_LIMIT: '{{.GAS_LIMIT | default "8000000"}}'
   VERIFY: '{{.VERIFY | default "true"}}'
   LEGACY: '{{.LEGACY | default "--legacy"}}'
+  VERBOSITY: '{{.VERBOSITY | default "v"}}'
 
 tasks:
   # Help command
@@ -45,49 +46,8 @@ tasks:
             exit 0
           fi
 
-          # Get network-specific RPC URL
-          RPC_VAR="{{.NETWORK | upper}}_RPC"
-          VERIFY="{{.VERIFY}}"
-
-          # Determine contract-network adjustments
-          if [ -z "{{.CONTRACT}}" ] || [ "{{.CONTRACT}}" = "All" ]; then
-            if [ "{{.NETWORK}}" = "gnosis" ] || [ "{{.NETWORK}}" = "gnosis-chiado" ]; then
-              export CONTRACT="AllControllerGnosis"
-              echo "Using Gnosis controller for this network"
-            elif [ "{{.NETWORK}}" = "polygon" ] || [ "{{.NETWORK}}" = "polygon-amoy" ]; then
-              export CONTRACT="AllControllerPolygon"
-              echo "Using Polygon controller for this network"
-            elif [ "{{.NETWORK}}" = "localhost" ]; then
-              VERIFY="false"
-              export CONTRACT="{{.CONTRACT}}"
-            else
-              export CONTRACT="All"
-            fi
-          else
-            export CONTRACT="{{.CONTRACT}}"
-          fi
-
-          # Confirmation
-          if [ "{{.SKIP_CONFIRM}}" != "true" ]; then
-            echo -e "\n⚠️  WARNING: You are about to deploy $CONTRACT to {{.NETWORK}} network"
-            node script/ethers-log-address.js
-            echo -e "\nContinue? (y/N): "
-            read -r response
-            if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
-              echo "Operation cancelled."
-              exit 1
-            fi
-            echo "Proceeding with deployment..."
-          fi
-
-          # Execute deployment
-          forge script script/deploy.s.sol:$CONTRACT \
-            --rpc-url ${!RPC_VAR} \
-            --broadcast \
-            $([ "$VERIFY" = "true" ] && echo "--verify") \
-            --gas-limit {{.GAS_LIMIT}} \
-            -{{.VERBOSITY}} \
-            {{.LEGACY}}
+          # Call deploy function from external script
+          bash script/deploy.sh deploy "{{.NETWORK}}" "{{.CONTRACT}}" "{{.GAS_LIMIT}}" "{{.VERIFY}}" "{{.LEGACY}}" "{{.VERBOSITY}}" "{{.SKIP_CONFIRM}}"
         silent: true
 
   # Convenience commands
@@ -100,31 +60,6 @@ tasks:
           CONTRACT: '{{.CONTRACT | default "Dev"}}'
           VERIFY: "false"
 
-  testnet:
-    desc: Deploy to a testnet with safety checks
-    cmds:
-      - cmd: |
-          if [ -z "{{.NETWORK}}" ]; then
-            echo "❌ Missing required NETWORK parameter"
-            echo "Usage: task deploy:testnet NETWORK=<testnet> [CONTRACT=<contract>]"
-            exit 1
-          fi
-
-          # Validate that this is actually a testnet
-          if [[ "{{.NETWORK}}" != *"sepolia"* && "{{.NETWORK}}" != *"fuji"* && "{{.NETWORK}}" != *"chiado"* && "{{.NETWORK}}" != *"amoy"* && "{{.NETWORK}}" != "localhost" ]]; then
-            echo "⚠️ Warning: {{.NETWORK}} doesn't appear to be a testnet. Continue anyway? (y/N): "
-            read -r response
-            if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
-              echo "Operation cancelled."
-              exit 1
-            fi
-          fi
-        silent: true
-      - task: default
-        vars:
-          NETWORK: "{{.NETWORK}}"
-          CONTRACT: '{{.CONTRACT | default "All"}}'
-
   # Helper tasks for deployment
   estimate-gas:
     desc: Estimate gas for deployment
@@ -136,14 +71,8 @@ tasks:
             exit 1
           fi
 
-          # Get network-specific RPC URL
-          RPC_VAR="{{.NETWORK | upper}}_RPC"
-
-          echo "⛽ Estimating gas for deploying {{.CONTRACT}} to {{.NETWORK}}..."
-          forge script script/deploy.s.sol:{{.CONTRACT}} \
-            --rpc-url ${!RPC_VAR} \
-            -{{.VERBOSITY}} \
-            --gas-report
+          # Call estimate-gas function from external script
+          bash script/deploy.sh estimate-gas "{{.NETWORK}}" "{{.CONTRACT}}" "{{.VERBOSITY}}"
         silent: true
 
   # Specialized deployments
