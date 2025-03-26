@@ -49,15 +49,12 @@ determine_contract() {
     # Use default contract from network config if available
     if [ -n "$default_contract" ]; then
       contract="$default_contract"
-      echo "Using default controller $default_contract for this network"
     # Gnosis networks
     elif [ "$network" = "gnosis" ] || [ "$network" = "gnosis-chiado" ]; then
       contract="AllControllerGnosis"
-      echo "Using Gnosis controller for this network"
     # Polygon networks
     elif [ "$network" = "polygon" ] || [ "$network" = "polygon-amoy" ]; then
       contract="AllControllerPolygon"
-      echo "Using Polygon controller for this network"
     else
       contract="All"
     fi
