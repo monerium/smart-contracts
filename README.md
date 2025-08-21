@@ -50,7 +50,7 @@ The implementation contract of the token employs OpenZeppelin's [ERC20PermitUpgr
 
 The contracts support the [ERC-2612 Permit functionality](https://eips.ethereum.org/EIPS/eip-2612). Developers should use ERC-2612 Permit instead of [ERC-20 Approve](https://eips.ethereum.org/EIPS/eip-20) because it allows for gasless token approvals through off-chain signatures, eliminating the need for a separate on-chain approval transaction. Using Permit, developers can create more efficient and user-friendly applications, enhancing security and flexibility within the Ethereum ecosystem.
 
-For more information, [read our tutorial](./docs/docs/permit.md).
+For more information, [read our tutorial](./docs/permit.md).
 
 ### Access and Ownable
 
