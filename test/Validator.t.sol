@@ -66,15 +66,21 @@ contract ValidatorTest is Test {
 
         // Blocked by frontend
         vm.prank(frontend);
-        assertFalse(validator.validate(blocked, admin, 100));
-        vm.prank(frontend);
-        assertFalse(validator.validate(admin, blocked, 100));
+        vm.expectRevert("Transfer not supported:0x0000000000000000000000000000000000000004 is blocked in V1. Please use V2 instead. See https://monerium.dev/docs/tokens");
+        validator.validate(blocked, admin, 100);
 
-        // Blacklisted always fails
+        vm.prank(frontend);
+        vm.expectRevert("Transfer not supported:0x0000000000000000000000000000000000000004 is blocked in V1. Please use V2 instead. See https://monerium.dev/docs/tokens");
+        validator.validate(admin, blocked, 100);
+
+        // Blacklisted always reverts
         vm.prank(user);
-        assertFalse(validator.validate(blacklisted, admin, 100));
+        vm.expectRevert("Transfer not supported:0x0000000000000000000000000000000000000005 is blacklisted.");
+        validator.validate(blacklisted, admin, 100);
+
         vm.prank(user);
-        assertFalse(validator.validate(admin, blacklisted, 100));
+        vm.expectRevert("Transfer not supported:0x0000000000000000000000000000000000000005 is blacklisted.");
+        validator.validate(admin, blacklisted, 100);
     }
 
     function testContractId() public {

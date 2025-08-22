@@ -2,6 +2,7 @@
 pragma solidity ^0.8.20;
 
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
+import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 import "./IValidator.sol";
 
 /**
@@ -53,13 +54,50 @@ contract Validator is AccessControl, IValidator {
         uint256 /* amount */
     ) external view override returns (bool valid) {
         if (isV1Frontend(msg.sender)) {
-            valid = !(isV1Blocked(from) || isV1Blocked(to));
-            if (!valid) {
-                return false;
+            if (isV1Blocked(from)) {
+                revert(
+                    string(
+                        abi.encodePacked(
+                            "Transfer not supported:",
+                            Strings.toHexString(from),
+                            " is blocked in V1. Please use V2 instead. See https://monerium.dev/docs/tokens"
+                        )
+                    )
+                );
+            }
+            if (isV1Blocked(to)) {
+                revert(
+                    string(
+                        abi.encodePacked(
+                            "Transfer not supported:",
+                            Strings.toHexString(to),
+                            " is blocked in V1. Please use V2 instead. See https://monerium.dev/docs/tokens"
+                        )
+                    )
+                );
             }
         }
-        if (isBlacklisted(from) || isBlacklisted(to)) {
-            return false;
+        if (isBlacklisted(from)) {
+            revert(
+                string(
+                    abi.encodePacked(
+                        "Transfer not supported:",
+                        Strings.toHexString(from),
+                        " is blacklisted."
+                    )
+                )
+            );
+        }
+        if (isBlacklisted(to)) {
+            revert(
+                string(
+                    abi.encodePacked(
+                        "Transfer not supported:",
+                        Strings.toHexString(to),
+                        " is blacklisted."
+                    )
+                )
+            );
         }
         return true;
     }
