@@ -51,10 +51,11 @@ contract Validator is AccessControl, IValidator {
     function validate(
         address from,
         address to,
-        uint256 /* amount */
-    ) external view override returns (bool valid) {
+        uint256 amount
+    ) external override returns (bool valid) {
         if (isV1Frontend(msg.sender)) {
             if (isV1Blocked(from)) {
+                emit Decision(from, to, amount, false);
                 revert(
                     string(
                         abi.encodePacked(
@@ -66,6 +67,7 @@ contract Validator is AccessControl, IValidator {
                 );
             }
             if (isV1Blocked(to)) {
+                emit Decision(from, to, amount, false);
                 revert(
                     string(
                         abi.encodePacked(
@@ -78,6 +80,7 @@ contract Validator is AccessControl, IValidator {
             }
         }
         if (isBlacklisted(from)) {
+            emit Decision(from, to, amount, false);
             revert(
                 string(
                     abi.encodePacked(
@@ -89,6 +92,7 @@ contract Validator is AccessControl, IValidator {
             );
         }
         if (isBlacklisted(to)) {
+            emit Decision(from, to, amount, false);
             revert(
                 string(
                     abi.encodePacked(
