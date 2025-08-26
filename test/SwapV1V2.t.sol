@@ -71,15 +71,15 @@ contract SwapV1V2Test is Test {
         token.mint(user2, 1e18);
         vm.stopPrank();
 
-        // Deploy SwapV1V2 contract with token as V1 and frontend as V2
-        swap = new SwapV1V2(address(token), address(frontend), owner);
+        // Deploy SwapV1V2 contract with token as V2 and frontend as V1
+        swap = new SwapV1V2(address(frontend), address(token), owner);
     }
 
     function test_setup() public {
         assertEq(token.ticker(), bytes3("EUR"));
         assertEq(address(token.validator()), address(validator));
-        assertEq(swap.V1(), address(token));
-        assertEq(swap.V2(), address(frontend));
+        assertEq(swap.V1(), address(frontend));
+        assertEq(swap.V2(), address(token));
         assertEq(swap.owner(), owner);
     }
 
@@ -88,7 +88,7 @@ contract SwapV1V2Test is Test {
 
         // User1 approves swap contract
         vm.prank(user1);
-        token.approve(address(swap), amount);
+        frontend.approve(address(swap), amount);
 
         // Check initial balances
         uint256 user1TokenBefore = token.balanceOf(user1);
@@ -98,8 +98,8 @@ contract SwapV1V2Test is Test {
         // Perform swap
         vm.prank(user1);
         uint256 amountOut = swap.swapExactIn(
-            address(token),
             address(frontend),
+            address(token),
             amount,
             amount,
             user1
@@ -126,8 +126,8 @@ contract SwapV1V2Test is Test {
         // Perform swap
         vm.prank(user1);
         uint256 amountOut = swap.swapExactIn(
-            address(frontend),
             address(token),
+            address(frontend),
             amount,
             amount,
             user1
@@ -137,6 +137,64 @@ contract SwapV1V2Test is Test {
         assertEq(amountOut, amount);
         assertEq(token.balanceOf(user1), user1TokenBefore);
         assertEq(frontend.balanceOf(user1), user1FrontendBefore);
+    }
+
+    function test_swapExactIn_V1ToV2_DifferentToAddress() public {
+        uint256 amount = 1e17; // 0.1 tokens
+
+        // User1 approves swap contract
+        vm.prank(user1);
+        frontend.approve(address(swap), amount);
+
+        // Check initial balances
+        uint256 user1BalanceBefore = token.balanceOf(user1);
+        uint256 user2BalanceBefore = token.balanceOf(user2);
+
+        // Perform swap
+        vm.prank(user1);
+        uint256 amountOut = swap.swapExactIn(
+            address(frontend),
+            address(token),
+            amount,
+            amount,
+            user2
+        );
+
+        // Check results
+        assertEq(amountOut, amount);
+        assertEq(token.balanceOf(user1), user1BalanceBefore - amount);
+        assertEq(frontend.balanceOf(user1), user1BalanceBefore - amount);
+        assertEq(token.balanceOf(user2), user2BalanceBefore + amount);
+        assertEq(frontend.balanceOf(user2), user2BalanceBefore + amount);
+    }
+
+    function test_swapExactIn_V2ToV1_DifferentToAddress() public {
+        uint256 amount = 1e17; // 0.1 tokens
+
+        // User1 approves swap contract
+        vm.prank(user1);
+        token.approve(address(swap), amount);
+
+        // Check initial balances
+        uint256 user1BalanceBefore = token.balanceOf(user1);
+        uint256 user2BalanceBefore = token.balanceOf(user2);
+
+        // Perform swap
+        vm.prank(user1);
+        uint256 amountOut = swap.swapExactIn(
+            address(token),
+            address(frontend),
+            amount,
+            amount,
+            user2
+        );
+
+        // Check results
+        assertEq(amountOut, amount);
+        assertEq(token.balanceOf(user1), user1BalanceBefore - amount);
+        assertEq(frontend.balanceOf(user1), user1BalanceBefore - amount);
+        assertEq(token.balanceOf(user2), user2BalanceBefore + amount);
+        assertEq(frontend.balanceOf(user2), user2BalanceBefore + amount);
     }
 
     function test_swapExactIn_RevertBadPair() public {
@@ -187,6 +245,11 @@ contract SwapV1V2Test is Test {
     function test_swapWithPermitBestEffort_EmptyCalldata() public {
         uint256 amount = 1e17;
 
+        // Check initial balances
+        uint256 user1TokenBefore = token.balanceOf(user1);
+        uint256 user1FrontendBefore = frontend.balanceOf(user1);
+        assertEq(user1FrontendBefore, user1TokenBefore);
+
         vm.prank(user1);
         token.approve(address(swap), amount);
 
@@ -199,6 +262,11 @@ contract SwapV1V2Test is Test {
             user1,
             ""
         );
+
+        // Check results
+        assertEq(amountOut, amount);
+        assertEq(token.balanceOf(user1), user1TokenBefore);
+        assertEq(frontend.balanceOf(user1), user1FrontendBefore);
 
         assertEq(amountOut, amount);
     }
@@ -231,7 +299,7 @@ contract SwapV1V2Test is Test {
         bytes32 expectedSig = keccak256(
             "Swapped(address,address,address,uint256,address)"
         );
-        
+
         // Find the Swapped event
         bool foundSwappedEvent = false;
         for (uint i = 0; i < logs.length; i++) {
@@ -271,7 +339,7 @@ contract SwapV1V2Test is Test {
                     );
                     assertEq(loggedAmount, amount, "Amount mismatch");
                     assertEq(loggedTo, user1, "To address mismatch");
-                } 
+                }
                 break;
             }
         }
@@ -282,22 +350,28 @@ contract SwapV1V2Test is Test {
     function test_permit_functionality() public {
         uint256 amount = 1e17;
         uint256 deadline = block.timestamp + 3600;
-        
+
         // Check initial allowance is 0
         assertEq(token.allowance(user1, address(swap)), 0);
-        
+
         // Create permit signature
         uint256 nonce = token.nonces(user1);
-        bytes32 digest = token.getPermitDigest(user1, address(swap), amount, nonce, deadline);
+        bytes32 digest = token.getPermitDigest(
+            user1,
+            address(swap),
+            amount,
+            nonce,
+            deadline
+        );
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(1, digest);
-        
+
         // Call permit
         vm.prank(user1);
         token.permit(user1, address(swap), amount, deadline, v, r, s);
-        
+
         // Check allowance is now set
         assertEq(token.allowance(user1, address(swap)), amount);
-        
+
         // Check nonce was incremented
         assertEq(token.nonces(user1), nonce + 1);
     }
@@ -305,15 +379,21 @@ contract SwapV1V2Test is Test {
     function test_swapWithPermitStrict_V2ToV1() public {
         uint256 amount = 1e17;
         uint256 deadline = block.timestamp + 3600;
-        
+
         // Create permit signature
         uint256 nonce = token.nonces(user1);
-        bytes32 digest = token.getPermitDigest(user1, address(swap), amount, nonce, deadline);
+        bytes32 digest = token.getPermitDigest(
+            user1,
+            address(swap),
+            amount,
+            nonce,
+            deadline
+        );
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(1, digest); // user1's private key is 1
-        
+
         uint256 user1TokenBefore = token.balanceOf(user1);
         uint256 user1FrontendBefore = frontend.balanceOf(user1);
-        
+
         vm.prank(user1);
         uint256 amountOut = swap.swapWithPermitStrict(
             address(token),
@@ -326,26 +406,68 @@ contract SwapV1V2Test is Test {
             r,
             s
         );
-        
+
         assertEq(amountOut, amount);
         assertEq(token.balanceOf(user1), user1TokenBefore);
         assertEq(frontend.balanceOf(user1), user1FrontendBefore);
     }
-    
+
+    function test_swapWithPermitStrict_V2ToV1_DifferentToAddress() public {
+        uint256 amount = 1e17;
+        uint256 deadline = block.timestamp + 3600;
+
+        // Create permit signature
+        uint256 nonce = token.nonces(user1);
+        bytes32 digest = token.getPermitDigest(
+            user1,
+            address(swap),
+            amount,
+            nonce,
+            deadline
+        );
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(1, digest); // user1's private key is 1
+
+        uint256 user1BalanceBefore = token.balanceOf(user1);
+        uint256 user2BalanceBefore = token.balanceOf(user2);
+
+        vm.prank(user1);
+        uint256 amountOut = swap.swapWithPermitStrict(
+            address(token),
+            address(frontend),
+            amount,
+            amount,
+            user2,
+            deadline,
+            v,
+            r,
+            s
+        );
+
+        assertEq(amountOut, amount);
+        assertEq(token.balanceOf(user1), user1BalanceBefore - amount);
+        assertEq(token.balanceOf(user2), user2BalanceBefore + amount);
+    }
+
     function test_swapWithPermitStrict_V1ToV2() public {
         uint256 amount = 1e17;
         uint256 deadline = block.timestamp + 3600;
-        
+
         // Create permit signature
         // V1 does not support EIP-2612, so we use the token contract's permit function
         // this would have to be communicated to the user in a real-world scenario
         uint256 nonce = token.nonces(user1);
-        bytes32 digest = token.getPermitDigest(user1, address(swap), amount, nonce, deadline);
+        bytes32 digest = token.getPermitDigest(
+            user1,
+            address(swap),
+            amount,
+            nonce,
+            deadline
+        );
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(1, digest); // user1's private key is 1
-        
+
         uint256 user1TokenBefore = token.balanceOf(user1);
         uint256 user1FrontendBefore = frontend.balanceOf(user1);
-        
+
         vm.prank(user1);
         uint256 amountOut = swap.swapWithPermitStrict(
             address(frontend),
@@ -358,7 +480,7 @@ contract SwapV1V2Test is Test {
             r,
             s
         );
-        
+
         assertEq(amountOut, amount);
         assertEq(token.balanceOf(user1), user1TokenBefore);
         assertEq(frontend.balanceOf(user1), user1FrontendBefore);
@@ -367,7 +489,7 @@ contract SwapV1V2Test is Test {
     function test_swapWithPermitStrict_RevertBadPair() public {
         uint256 amount = 1e17;
         uint256 deadline = block.timestamp + 3600;
-        
+
         vm.prank(user1);
         vm.expectRevert(SwapV1V2.BadPair.selector);
         swap.swapWithPermitStrict(
@@ -377,13 +499,15 @@ contract SwapV1V2Test is Test {
             amount,
             user1,
             deadline,
-            0, 0, 0
+            0,
+            0,
+            0
         );
     }
 
     function test_swapWithPermitStrict_RevertZeroAmount() public {
         uint256 deadline = block.timestamp + 3600;
-        
+
         vm.prank(user1);
         vm.expectRevert(SwapV1V2.ZeroAmount.selector);
         swap.swapWithPermitStrict(
@@ -393,7 +517,9 @@ contract SwapV1V2Test is Test {
             0,
             user1,
             deadline,
-            0, 0, 0
+            0,
+            0,
+            0
         );
     }
 
@@ -401,7 +527,7 @@ contract SwapV1V2Test is Test {
         uint256 amount = 1e17;
         uint256 minOut = amount + 1;
         uint256 deadline = block.timestamp + 3600;
-        
+
         vm.prank(user1);
         vm.expectRevert(bytes("slip"));
         swap.swapWithPermitStrict(
@@ -411,25 +537,37 @@ contract SwapV1V2Test is Test {
             minOut,
             user1,
             deadline,
-            0, 0, 0
+            0,
+            0,
+            0
         );
     }
 
     function test_swapWithPermitBestEffort_WithValidPermitData() public {
         uint256 amount = 1e17;
         uint256 deadline = block.timestamp + 3600;
-        
+
         // Create permit signature
         uint256 nonce = token.nonces(user1);
-        bytes32 digest = token.getPermitDigest(address(user1), address(swap), amount, nonce, deadline);
+        bytes32 digest = token.getPermitDigest(
+            address(user1),
+            address(swap),
+            amount,
+            nonce,
+            deadline
+        );
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(1, digest);
-        
+
         bytes memory permitCalldata = abi.encodePacked(deadline, v, r, s);
-        assertEq(permitCalldata.length, 97, "Permit calldata should be 97 bytes");
-        
+        assertEq(
+            permitCalldata.length,
+            97,
+            "Permit calldata should be 97 bytes"
+        );
+
         uint256 user1TokenBefore = token.balanceOf(user1);
         uint256 user1FrontendBefore = frontend.balanceOf(user1);
-        
+
         vm.prank(user1);
         uint256 amountOut = swap.swapWithPermitBestEffort(
             address(token),
@@ -439,7 +577,7 @@ contract SwapV1V2Test is Test {
             user1,
             permitCalldata
         );
-        
+
         assertEq(amountOut, amount);
         assertEq(token.balanceOf(user1), user1TokenBefore);
         assertEq(frontend.balanceOf(user1), user1FrontendBefore);
@@ -447,11 +585,11 @@ contract SwapV1V2Test is Test {
 
     function test_swapWithPermitBestEffort_WithInvalidPermitData() public {
         uint256 amount = 1e17;
-        
+
         // First approve manually since permit will fail
         vm.prank(user1);
         token.approve(address(swap), amount);
-        
+
         // Invalid permit data (wrong length - should be 97 bytes but we'll use 96)
         bytes memory invalidPermitCalldata = abi.encode(
             block.timestamp + 3600,
@@ -463,10 +601,10 @@ contract SwapV1V2Test is Test {
         assembly {
             mstore(invalidPermitCalldata, 96)
         }
-        
+
         uint256 user1TokenBefore = token.balanceOf(user1);
         uint256 user1FrontendBefore = frontend.balanceOf(user1);
-        
+
         vm.prank(user1);
         uint256 amountOut = swap.swapWithPermitBestEffort(
             address(token),
@@ -476,7 +614,7 @@ contract SwapV1V2Test is Test {
             user1,
             invalidPermitCalldata
         );
-        
+
         // Should still work because permit is best effort and we have approval
         assertEq(amountOut, amount);
         assertEq(token.balanceOf(user1), user1TokenBefore);
@@ -512,7 +650,7 @@ contract SwapV1V2Test is Test {
     function test_swapWithPermitBestEffort_RevertSlippage() public {
         uint256 amount = 1e17;
         uint256 minOut = amount + 1;
-        
+
         vm.prank(user1);
         vm.expectRevert(bytes("slip"));
         swap.swapWithPermitBestEffort(
@@ -529,11 +667,11 @@ contract SwapV1V2Test is Test {
         // Test zero address for V1
         vm.expectRevert("bad address");
         new SwapV1V2(address(0), address(frontend), owner);
-        
+
         // Test zero address for V2
         vm.expectRevert("bad address");
         new SwapV1V2(address(token), address(0), owner);
-        
+
         // Test same address for V1 and V2
         vm.expectRevert("bad address");
         new SwapV1V2(address(token), address(token), owner);
@@ -542,13 +680,13 @@ contract SwapV1V2Test is Test {
     function test_swapExactIn_DifferentToAddress() public {
         uint256 amount = 1e17;
         address recipient = address(0x999);
-        
+
         vm.prank(user1);
         token.approve(address(swap), amount);
-        
+
         uint256 user1TokenBefore = token.balanceOf(user1);
         uint256 recipientFrontendBefore = frontend.balanceOf(recipient);
-        
+
         vm.prank(user1);
         uint256 amountOut = swap.swapExactIn(
             address(token),
@@ -557,24 +695,33 @@ contract SwapV1V2Test is Test {
             amount,
             recipient
         );
-        
+
         assertEq(amountOut, amount);
         assertEq(token.balanceOf(user1), user1TokenBefore - amount);
-        assertEq(frontend.balanceOf(recipient), recipientFrontendBefore + amount);
+        assertEq(
+            frontend.balanceOf(recipient),
+            recipientFrontendBefore + amount
+        );
     }
 
     function test_swapWithPermitStrict_DifferentToAddress() public {
         uint256 amount = 1e17;
         address recipient = address(0x999);
         uint256 deadline = block.timestamp + 3600;
-        
+
         uint256 nonce = token.nonces(user1);
-        bytes32 digest = token.getPermitDigest(user1, address(swap), amount, nonce, deadline);
+        bytes32 digest = token.getPermitDigest(
+            user1,
+            address(swap),
+            amount,
+            nonce,
+            deadline
+        );
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(1, digest);
-        
+
         uint256 user1TokenBefore = token.balanceOf(user1);
         uint256 recipientFrontendBefore = frontend.balanceOf(recipient);
-        
+
         vm.prank(user1);
         uint256 amountOut = swap.swapWithPermitStrict(
             address(token),
@@ -587,22 +734,25 @@ contract SwapV1V2Test is Test {
             r,
             s
         );
-        
+
         assertEq(amountOut, amount);
         assertEq(token.balanceOf(user1), user1TokenBefore - amount);
-        assertEq(frontend.balanceOf(recipient), recipientFrontendBefore + amount);
+        assertEq(
+            frontend.balanceOf(recipient),
+            recipientFrontendBefore + amount
+        );
     }
 
     function test_swapWithPermitBestEffort_DifferentToAddress() public {
         uint256 amount = 1e17;
         address recipient = address(0x999);
-        
+
         vm.prank(user1);
         token.approve(address(swap), amount);
-        
+
         uint256 user1TokenBefore = token.balanceOf(user1);
         uint256 recipientFrontendBefore = frontend.balanceOf(recipient);
-        
+
         vm.prank(user1);
         uint256 amountOut = swap.swapWithPermitBestEffort(
             address(token),
@@ -612,9 +762,168 @@ contract SwapV1V2Test is Test {
             recipient,
             ""
         );
-        
+
         assertEq(amountOut, amount);
         assertEq(token.balanceOf(user1), user1TokenBefore - amount);
-        assertEq(frontend.balanceOf(recipient), recipientFrontendBefore + amount);
+        assertEq(
+            frontend.balanceOf(recipient),
+            recipientFrontendBefore + amount
+        );
+    }
+
+    function test_swapWithPermitBestEffort_WithFailingPermitCall() public {
+        uint256 amount = 1e17;
+        uint256 deadline = block.timestamp + 3600;
+
+        // Create permit signature with wrong private key (will fail)
+        uint256 nonce = token.nonces(user1);
+        bytes32 digest = token.getPermitDigest(
+            user1,
+            address(swap),
+            amount,
+            nonce,
+            deadline
+        );
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(2, digest); // Wrong key
+
+        bytes memory permitCalldata = abi.encodePacked(deadline, v, r, s);
+        assertEq(
+            permitCalldata.length,
+            97,
+            "Permit calldata should be 97 bytes"
+        );
+
+        // Manually approve since permit will fail
+        vm.prank(user1);
+        token.approve(address(swap), amount);
+
+        uint256 user1TokenBefore = token.balanceOf(user1);
+        uint256 user1FrontendBefore = frontend.balanceOf(user1);
+
+        vm.prank(user1);
+        uint256 amountOut = swap.swapWithPermitBestEffort(
+            address(token),
+            address(frontend),
+            amount,
+            amount,
+            user2, // Different address
+            permitCalldata
+        );
+
+        // Should work because it's best effort and we have manual approval
+        assertEq(amountOut, amount);
+        assertEq(token.balanceOf(user1), user1TokenBefore - amount);
+        assertEq(frontend.balanceOf(user2), user1FrontendBefore + amount);
+    }
+
+    function test_swapWithPermitBestEffort_SameToAddress_WithInvalidPermitData()
+        public
+    {
+        uint256 amount = 1e17;
+
+        // Invalid permit data (wrong length - should be 97 bytes but we'll use 96)
+        bytes memory invalidPermitCalldata = abi.encode(
+            block.timestamp + 3600,
+            uint8(27),
+            bytes32("invalid"),
+            bytes32("signature")
+        );
+        // Truncate to make it invalid length
+        assembly {
+            mstore(invalidPermitCalldata, 96)
+        }
+
+        uint256 user1TokenBefore = token.balanceOf(user1);
+        uint256 user1FrontendBefore = frontend.balanceOf(user1);
+
+        vm.prank(user1);
+        uint256 amountOut = swap.swapWithPermitBestEffort(
+            address(token),
+            address(frontend),
+            amount,
+            amount,
+            user1, // Same address as sender
+            invalidPermitCalldata
+        );
+
+        // Should work without transfers since msg.sender == to, permit is skipped due to invalid length
+        assertEq(amountOut, amount);
+        assertEq(token.balanceOf(user1), user1TokenBefore);
+        assertEq(frontend.balanceOf(user1), user1FrontendBefore);
+    }
+
+    function test_reentrancy_attack() public {
+        // Create a malicious token that attempts reentrancy
+        ReentrantToken maliciousToken = new ReentrantToken(address(swap));
+
+        // Deploy new swap contract with malicious token
+        SwapV1V2 maliciousSwap = new SwapV1V2(
+            address(maliciousToken),
+            address(frontend),
+            owner
+        );
+
+        // This should revert due to ReentrancyGuard
+        vm.expectRevert();
+        maliciousToken.triggerReentrancy(
+            maliciousSwap,
+            address(frontend),
+            1e17,
+            user1
+        );
+    }
+}
+
+// Helper contract for reentrancy test
+contract ReentrantToken {
+    address public swapContract;
+    bool public attacking = false;
+
+    constructor(address _swap) {
+        swapContract = _swap;
+    }
+
+    function triggerReentrancy(
+        SwapV1V2 swap,
+        address tokenOut,
+        uint256 amount,
+        address to
+    ) external {
+        attacking = true;
+        swap.swapExactIn(address(this), tokenOut, amount, amount, to);
+    }
+
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 amount
+    ) external {
+        if (attacking) {
+            attacking = false;
+            // Attempt reentrancy
+            SwapV1V2(swapContract).swapExactIn(
+                address(this),
+                msg.sender,
+                amount,
+                amount,
+                from
+            );
+        }
+    }
+
+    function safeTransfer(address to, uint256 amount) external {
+        // Do nothing
+    }
+
+    function balanceOf(address) external pure returns (uint256) {
+        return 1e18;
+    }
+
+    function approve(address, uint256) external pure returns (bool) {
+        return true;
+    }
+
+    function allowance(address, address) external pure returns (uint256) {
+        return type(uint256).max;
     }
 }
