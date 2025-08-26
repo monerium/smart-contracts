@@ -4,16 +4,18 @@ pragma solidity ^0.8.20;
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IERC20Permit} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import {ReentrancyGuardUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 
 /// @title SwapV1V2 (on-chain 1:1 venue)
 /// @notice Pulls tokenIn, pushes tokenOut same amount; supports optional permit; no reserves.
-contract SwapV1V2 is ReentrancyGuard, Ownable {
+contract SwapV1V2 is Initializable, OwnableUpgradeable, UUPSUpgradeable, ReentrancyGuardUpgradeable {
     using SafeERC20 for IERC20;
 
-    address public immutable V1;
-    address public immutable V2;
+    address public V1;
+    address public V2;
 
     event Swapped(
         address indexed caller,
@@ -26,14 +28,29 @@ contract SwapV1V2 is ReentrancyGuard, Ownable {
     error BadPair();
     error ZeroAmount();
 
-    constructor(address v1, address v2, address owner_) Ownable(owner_) {
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
+
+    function initialize(address v1, address v2, address initialOwner) public initializer {
         require(
             v1 != address(0) && v2 != address(0) && v1 != v2,
             "bad address"
         );
         V1 = v1;
         V2 = v2;
+        
+        __Ownable_init(initialOwner);
+        __UUPSUpgradeable_init();
+        __ReentrancyGuard_init();
     }
+
+    function _authorizeUpgrade(address newImplementation)
+        internal
+        override
+        onlyOwner
+    {}
 
     /// @dev Exact-in, 1:1 out. Keep minOut for aggregators; always amountOut == amountIn.
     function swapExactIn(

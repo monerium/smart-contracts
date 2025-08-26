@@ -6,6 +6,8 @@ import "../src/ControllerToken.sol";
 import "../src/Validator.sol";
 import {TokenFrontend} from "../src/tests/tokenfrontend.sol";
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "forge-std/console.sol";
 import "../src/SwapV1V2.sol";
 
@@ -18,6 +20,7 @@ contract SwapV1V2Test is Test {
     ERC1967Proxy public proxy;
     TokenFrontend public frontend;
     SwapV1V2 public swap;
+    ERC1967Proxy public swapProxy;
     uint256 internal userPrivateKey;
 
     address user1 = vm.addr(1);
@@ -71,8 +74,20 @@ contract SwapV1V2Test is Test {
         token.mint(user2, 1e18);
         vm.stopPrank();
 
-        // Deploy SwapV1V2 contract with token as V2 and frontend as V1
-        swap = new SwapV1V2(address(frontend), address(token), owner);
+        // Deploy SwapV1V2 implementation contract
+        SwapV1V2 swapImplementation = new SwapV1V2();
+
+        // Deploy SwapV1V2 proxy with initialization
+        bytes memory swapInitData = abi.encodeWithSelector(
+            SwapV1V2.initialize.selector,
+            address(frontend), // V1
+            address(token),    // V2
+            owner
+        );
+        swapProxy = new ERC1967Proxy(address(swapImplementation), swapInitData);
+
+        // Cast the proxy address to SwapV1V2 interface
+        swap = SwapV1V2(address(swapProxy));
     }
 
     function test_setup() public {
@@ -663,18 +678,38 @@ contract SwapV1V2Test is Test {
         );
     }
 
-    function test_constructor_RevertInvalidAddresses() public {
+    function test_initialize_RevertInvalidAddresses() public {
+        SwapV1V2 swapImplementation = new SwapV1V2();
+        
         // Test zero address for V1
         vm.expectRevert("bad address");
-        new SwapV1V2(address(0), address(frontend), owner);
+        bytes memory initData1 = abi.encodeWithSelector(
+            SwapV1V2.initialize.selector,
+            address(0),
+            address(frontend),
+            owner
+        );
+        new ERC1967Proxy(address(swapImplementation), initData1);
 
         // Test zero address for V2
         vm.expectRevert("bad address");
-        new SwapV1V2(address(token), address(0), owner);
+        bytes memory initData2 = abi.encodeWithSelector(
+            SwapV1V2.initialize.selector,
+            address(token),
+            address(0),
+            owner
+        );
+        new ERC1967Proxy(address(swapImplementation), initData2);
 
         // Test same address for V1 and V2
         vm.expectRevert("bad address");
-        new SwapV1V2(address(token), address(token), owner);
+        bytes memory initData3 = abi.encodeWithSelector(
+            SwapV1V2.initialize.selector,
+            address(token),
+            address(token),
+            owner
+        );
+        new ERC1967Proxy(address(swapImplementation), initData3);
     }
 
     function test_swapExactIn_DifferentToAddress() public {
@@ -852,16 +887,69 @@ contract SwapV1V2Test is Test {
         assertEq(frontend.balanceOf(user1), user1FrontendBefore);
     }
 
+    function test_upgrade_functionality() public {
+        // Deploy new implementation
+        SwapV1V2 newImplementation = new SwapV1V2();
+        
+        // Verify current state before upgrade
+        assertEq(swap.V1(), address(frontend));
+        assertEq(swap.V2(), address(token));
+        assertEq(swap.owner(), owner);
+        
+        // Perform upgrade as owner
+        vm.prank(owner);
+        UUPSUpgradeable(address(swap)).upgradeToAndCall(
+            address(newImplementation),
+            ""
+        );
+        
+        // Verify state is preserved after upgrade
+        assertEq(swap.V1(), address(frontend));
+        assertEq(swap.V2(), address(token));
+        assertEq(swap.owner(), owner);
+        
+        // Verify functionality still works after upgrade
+        uint256 amount = 1e17;
+        vm.prank(user1);
+        token.approve(address(swap), amount);
+        
+        vm.prank(user1);
+        uint256 amountOut = swap.swapExactIn(
+            address(token),
+            address(frontend),
+            amount,
+            amount,
+            user1
+        );
+        assertEq(amountOut, amount);
+    }
+
+    function test_upgrade_onlyOwner() public {
+        SwapV1V2 newImplementation = new SwapV1V2();
+        
+        // Try to upgrade as non-owner, should fail
+        vm.prank(user1);
+        vm.expectRevert();
+        UUPSUpgradeable(address(swap)).upgradeToAndCall(
+            address(newImplementation),
+            ""
+        );
+    }
+
     function test_reentrancy_attack() public {
         // Create a malicious token that attempts reentrancy
         ReentrantToken maliciousToken = new ReentrantToken(address(swap));
 
         // Deploy new swap contract with malicious token
-        SwapV1V2 maliciousSwap = new SwapV1V2(
+        SwapV1V2 maliciousSwapImplementation = new SwapV1V2();
+        bytes memory maliciousInitData = abi.encodeWithSelector(
+            SwapV1V2.initialize.selector,
             address(maliciousToken),
             address(frontend),
             owner
         );
+        ERC1967Proxy maliciousSwapProxy = new ERC1967Proxy(address(maliciousSwapImplementation), maliciousInitData);
+        SwapV1V2 maliciousSwap = SwapV1V2(address(maliciousSwapProxy));
 
         // This should revert due to ReentrancyGuard
         vm.expectRevert();
@@ -895,7 +983,7 @@ contract ReentrantToken {
 
     function safeTransferFrom(
         address from,
-        address to,
+        address /* to */,
         uint256 amount
     ) external {
         if (attacking) {
