@@ -23,6 +23,14 @@ contract SwapV1V2Test is Test {
     ERC1967Proxy public swapProxy;
     uint256 internal userPrivateKey;
 
+    event Swapped(
+        address indexed caller,
+        address indexed tokenIn,
+        address indexed tokenOut,
+        uint256 amountIn,
+        address to
+    );
+
     address user1 = vm.addr(1);
     address user2 = vm.addr(2);
     address system = vm.addr(3);
@@ -935,6 +943,111 @@ contract SwapV1V2Test is Test {
             ""
         );
     }
+
+    function test_sellGem_V1_to_V2() public {
+        uint256 amount = 1e17;
+        
+        // User1 approves and sells V1 (frontend) for V2 (token)
+        vm.prank(user1);
+        frontend.approve(address(swap), amount);
+        
+        uint256 user1V1Before = frontend.balanceOf(user1);
+        uint256 user2V2Before = token.balanceOf(user2);
+        
+        vm.prank(user1);
+        uint256 outWad = swap.sellGem(user2, amount);
+        
+        // Both tokens use 18 decimals, so conversion factor is 1
+        assertEq(outWad, amount);
+        assertEq(frontend.balanceOf(user1), user1V1Before - amount);
+        assertEq(token.balanceOf(user2), user2V2Before + amount);
+    }
+
+    function test_buyGem_V2_to_V1() public {
+        uint256 amount = 1e17;
+        
+        // User1 approves and buys V1 (frontend) with V2 (token)  
+        vm.prank(user1);
+        token.approve(address(swap), amount);
+        
+        uint256 user1V2Before = token.balanceOf(user1);
+        uint256 user2V1Before = frontend.balanceOf(user2);
+        
+        vm.prank(user1);
+        uint256 inWad = swap.buyGem(user2, amount);
+        
+        // Both tokens use 18 decimals, so conversion factor is 1
+        assertEq(inWad, amount);
+        assertEq(token.balanceOf(user1), user1V2Before - amount);
+        assertEq(frontend.balanceOf(user2), user2V1Before + amount);
+    }
+
+    function test_sellGem_revert_ZeroAmount() public {
+        vm.prank(user1);
+        vm.expectRevert(SwapV1V2.ZeroAmount.selector);
+        swap.sellGem(user2, 0);
+    }
+
+    function test_buyGem_revert_ZeroAmount() public {
+        vm.prank(user1);
+        vm.expectRevert(SwapV1V2.ZeroAmount.selector);
+        swap.buyGem(user2, 0);
+    }
+
+    function test_sellGem_event_emission() public {
+        uint256 amount = 1e17;
+        
+        vm.prank(user1);
+        frontend.approve(address(swap), amount);
+        
+        vm.prank(user1);
+        vm.expectEmit(true, true, true, true, address(swap));
+        emit Swapped(user1, address(frontend), address(token), amount, user2);
+        swap.sellGem(user2, amount);
+    }
+
+    function test_buyGem_event_emission() public {
+        uint256 amount = 1e17;
+        
+        vm.prank(user1);
+        token.approve(address(swap), amount);
+        
+        vm.prank(user1);
+        vm.expectEmit(true, true, true, true, address(swap));
+        emit Swapped(user1, address(token), address(frontend), amount, user2);
+        swap.buyGem(user2, amount);
+    }
+
+    function test_sellGem_sameAddress_skipsTransfers() public {
+        uint256 amount = 1e17;
+        
+        uint256 user1V1Before = frontend.balanceOf(user1);
+        uint256 user1V2Before = token.balanceOf(user1);
+        
+        vm.prank(user1);
+        uint256 outWad = swap.sellGem(user1, amount); // Same address as sender
+        
+        // Should not transfer anything since msg.sender == usr
+        assertEq(outWad, amount);
+        assertEq(frontend.balanceOf(user1), user1V1Before);
+        assertEq(token.balanceOf(user1), user1V2Before);
+    }
+
+    function test_buyGem_sameAddress_skipsTransfers() public {
+        uint256 amount = 1e17;
+        
+        uint256 user1V1Before = frontend.balanceOf(user1);
+        uint256 user1V2Before = token.balanceOf(user1);
+        
+        vm.prank(user1);
+        uint256 inWad = swap.buyGem(user1, amount); // Same address as sender
+        
+        // Should not transfer anything since msg.sender == usr
+        assertEq(inWad, amount);
+        assertEq(frontend.balanceOf(user1), user1V1Before);
+        assertEq(token.balanceOf(user1), user1V2Before);
+    }
+
 
     function test_reentrancy_attack() public {
         // Create a malicious token that attempts reentrancy

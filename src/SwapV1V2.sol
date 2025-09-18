@@ -11,7 +11,12 @@ import {ReentrancyGuardUpgradeable} from "@openzeppelin/contracts-upgradeable/ut
 
 /// @title SwapV1V2 (on-chain 1:1 venue)
 /// @notice Pulls tokenIn, pushes tokenOut same amount; supports optional permit; no reserves.
-contract SwapV1V2 is Initializable, OwnableUpgradeable, UUPSUpgradeable, ReentrancyGuardUpgradeable {
+contract SwapV1V2 is
+    Initializable,
+    OwnableUpgradeable,
+    UUPSUpgradeable,
+    ReentrancyGuardUpgradeable
+{
     using SafeERC20 for IERC20;
 
     address public V1;
@@ -33,24 +38,26 @@ contract SwapV1V2 is Initializable, OwnableUpgradeable, UUPSUpgradeable, Reentra
         _disableInitializers();
     }
 
-    function initialize(address v1, address v2, address initialOwner) public initializer {
+    function initialize(
+        address v1,
+        address v2,
+        address initialOwner
+    ) public initializer {
         require(
             v1 != address(0) && v2 != address(0) && v1 != v2,
             "bad address"
         );
         V1 = v1;
         V2 = v2;
-        
+
         __Ownable_init(initialOwner);
         __UUPSUpgradeable_init();
         __ReentrancyGuard_init();
     }
 
-    function _authorizeUpgrade(address newImplementation)
-        internal
-        override
-        onlyOwner
-    {}
+    function _authorizeUpgrade(
+        address newImplementation
+    ) internal override onlyOwner {}
 
     /// @dev Exact-in, 1:1 out. Keep minOut for aggregators; always amountOut == amountIn.
     function swapExactIn(
@@ -163,7 +170,7 @@ contract SwapV1V2 is Initializable, OwnableUpgradeable, UUPSUpgradeable, Reentra
             );
             IERC20(tokenOut).safeTransfer(to, amountIn);
         }
-        
+
         emit Swapped(msg.sender, tokenIn, tokenOut, amountIn, to);
         return amountIn;
     }
@@ -175,6 +182,46 @@ contract SwapV1V2 is Initializable, OwnableUpgradeable, UUPSUpgradeable, Reentra
         uint256 amountIn
     ) external view returns (uint256) {
         return _isPair(tokenIn, tokenOut) ? amountIn : 0;
+    }
+
+    /// @notice LitePSM-compatible sellGem: Sell V1 token and receive V2 token (V1 -> V2)
+    /// @param usr Address of the V2 token recipient
+    /// @param gemAmt Amount of V1 token being sold
+    /// @return outWad Amount of V2 token received (always equals gemAmt since 1:1)
+    function sellGem(
+        address usr,
+        uint256 gemAmt
+    ) external nonReentrant returns (uint256 outWad) {
+        if (gemAmt == 0) revert ZeroAmount();
+
+        // if the caller is also the recipient, skip the transferFrom/transfer
+        if (msg.sender != usr) {
+            IERC20(V1).safeTransferFrom(msg.sender, address(this), gemAmt);
+            IERC20(V2).safeTransfer(usr, gemAmt);
+        }
+
+        emit Swapped(msg.sender, V1, V2, gemAmt, usr);
+        return gemAmt;
+    }
+
+    /// @notice LitePSM-compatible buyGem: Buy V1 token with V2 token (V2 -> V1)
+    /// @param usr Address of the V1 token recipient
+    /// @param gemAmt Amount of V1 token being bought
+    /// @return inWad Amount of V2 token required (always equals gemAmt since 1:1)
+    function buyGem(
+        address usr,
+        uint256 gemAmt
+    ) external nonReentrant returns (uint256 inWad) {
+        if (gemAmt == 0) revert ZeroAmount();
+
+        // if the caller is also the recipient, skip the transferFrom/transfer
+        if (msg.sender != usr) {
+            IERC20(V2).safeTransferFrom(msg.sender, address(this), gemAmt);
+            IERC20(V1).safeTransfer(usr, gemAmt);
+        }
+
+        emit Swapped(msg.sender, V2, V1, gemAmt, usr);
+        return gemAmt;
     }
 
     function _checkPair(address a, address b) internal view {

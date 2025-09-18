@@ -3,11 +3,13 @@ We have a problem with aggregators like CoW swap being unable to connect the V1 
 
 ## Solution
 
-The `SwapV1V2` contract that enables 1:1 token swapping between V1 and V2 tokens that share the same balance storage. The contract supports three swap methods:
+The `SwapV1V2` contract that enables 1:1 token swapping between V1 and V2 tokens that share the same balance storage. The contract supports five swap methods:
 
   - `swapExactIn`: Basic 1:1 swap with slippage protection
   - `swapWithPermitStrict`: Swap with ERC-2612 permit for gasless approvals (strict mode - fails if permit fails)
   - `swapWithPermitBestEffort`: Swap with optional permit that continues even if permit fails
+  - `sellGem`: LitePSM-compatible function to sell V1 for V2 
+  - `buyGem`: LitePSM-compatible function to buy V1 with V2
 
 ### Key features:
   - **OpenZeppelin Upgradeable Pattern**: Uses UUPS (Universal Upgradeable Proxy Standard) for future contract upgrades
@@ -16,6 +18,8 @@ The `SwapV1V2` contract that enables 1:1 token swapping between V1 and V2 tokens
   - Support for ERC-2612 permits
   - Slippage protection via minOut parameter
   - Owner-controlled upgrades via `OwnableUpgradeable`
+  - **LitePSM Compatibility**: Provides `sellGem` and `buyGem` functions for aggregator integration
+  - **Shared State Optimization**: Skips transfers when sender equals recipient (V1/V2 share same storage)
 
 ### Contract Implementation
 
@@ -23,6 +27,8 @@ The `SwapV1V2` contract that enables 1:1 token swapping between V1 and V2 tokens
   - **Upgradeable Architecture**: Inherits from `Initializable`, `OwnableUpgradeable`, `UUPSUpgradeable`, and `ReentrancyGuardUpgradeable`
   - **Proxy Pattern**: Deployed using ERC1967Proxy with proper initialization instead of constructor
   - **Storage Compatibility**: Maintains storage layout compatibility with V1/V2 shared storage principle
+  - **LitePSM Integration**: Added `sellGem` and `buyGem` functions with same 1:1 swap logic
+  - **Shared State Optimization**: All functions skip transfers when `msg.sender == recipient` since V1/V2 share storage
   - Implemented permit functionality with proper calldata decoding (97 bytes packed format)
   - Added comprehensive error handling (BadPair, ZeroAmount, slippage)
 
@@ -80,15 +86,50 @@ function quote(address tokenIn, address tokenOut, uint256 amountIn)
  
 This makes the contract suitable for pathfinders and aggregators that need predictable pricing.
 
+### LitePSM Compatibility Functions
+
+The contract includes two additional functions to provide compatibility with LitePSM-style interfaces expected by some aggregators and solvers:
+
+#### `sellGem(address usr, uint256 gemAmt)`
+- **Purpose**: Sell V1 token and receive V2 token (V1 → V2)
+- **Parameters**: 
+  - `usr`: Address of the V2 token recipient
+  - `gemAmt`: Amount of V1 token being sold
+- **Returns**: Amount of V2 token received (always equals `gemAmt` since 1:1)
+- **Gas Optimization**: Skips transfers when `msg.sender == usr` (shared storage optimization)
+
+#### `buyGem(address usr, uint256 gemAmt)`
+- **Purpose**: Buy V1 token with V2 token (V2 → V1)  
+- **Parameters**:
+  - `usr`: Address of the V1 token recipient
+  - `gemAmt`: Amount of V1 token being bought
+- **Returns**: Amount of V2 token required (always equals `gemAmt` since 1:1)
+- **Gas Optimization**: Skips transfers when `msg.sender == usr` (shared storage optimization)
+
+```solidity
+// Example usage
+uint256 amountOut = swap.sellGem(recipient, 1e18); // Sell 1 V1 for 1 V2
+uint256 amountIn = swap.buyGem(recipient, 1e18);   // Buy 1 V1 with 1 V2
+```
+
+**Key Benefits:**
+- **Aggregator Integration**: Compatible with solvers expecting LitePSM interface patterns
+- **Simplified Implementation**: No decimal conversions needed since V1/V2 share same storage and decimals  
+- **Gas Efficient**: Same shared-state optimization as other swap functions
+- **Consistent Events**: Emits same `Swapped` events for unified tracking
+
 ### Test Coverage
 
   - 100% test coverage for SwapV1V2 contract
-  - Tests for all three swap functions with both V1→V2 and V2→V1 directions
+  - Tests for all five swap functions with both V1→V2 and V2→V1 directions:
+    - `swapExactIn`, `swapWithPermitStrict`, `swapWithPermitBestEffort`
+    - **New**: `sellGem` and `buyGem` LitePSM-compatible functions
+  - **Shared State Optimization Tests**: Verifies transfers are skipped when `msg.sender == recipient`
   - **Upgrade functionality tests**: Verifies state preservation and owner-only upgrade authorization
   - Error condition testing (bad pairs, zero amounts, slippage protection)
   - Permit functionality testing (valid signatures, invalid calldata)
   - Initialization validation tests (replaces constructor tests for upgradeable pattern)
-  - Event emission verification
+  - Event emission verification for all functions
   - Edge cases with different recipient addresses
   - Reentrancy attack protection verification
 
@@ -104,18 +145,20 @@ Run with coverage:
  
 Key Test Cases:
 
-  - ✅ Basic V1 ↔ V2 swaps in both directions
+  - ✅ Basic V1 ↔ V2 swaps in both directions (`swapExactIn`)
   - ✅ Permit-based swaps (strict and best-effort modes)
+  - ✅ **LitePSM-compatible functions**: `sellGem` and `buyGem`
+  - ✅ **Shared State Optimization**: Same-address transfers skipped for all functions
   - ✅ **Upgrade functionality and owner-only authorization**
-  - ✅ **Proxy deployment and initialization**
+  - ✅ **Proxy deployment and initialization**  
   - ✅ Error handling (bad pairs, zero amounts, slippage)
   - ✅ Initialization validation (zero addresses, same addresses)
-  - ✅ Event emissions
+  - ✅ Event emissions for all swap functions
   - ✅ Different recipient addresses
   - ✅ Permit signature validation and allowance setting
   - ✅ Reentrancy protection
 
-All tests pass (33/33) and achieve 100% line and branch coverage for the SwapV1V2 contract.
+All tests pass (41/41) and achieve 100% line and branch coverage for the SwapV1V2 contract.
 
 ### Deployment Instructions
 
