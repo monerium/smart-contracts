@@ -71,15 +71,13 @@ contract SwapV1V2 is
         if (amountIn == 0) revert ZeroAmount();
         require(amountIn >= minOut, "slip");
 
-        // if the caller is also the recipient, skip the transferFrom/transfer
-        if (msg.sender != to) {
-            IERC20(tokenIn).safeTransferFrom(
-                msg.sender,
-                address(this),
-                amountIn
-            );
-            IERC20(tokenOut).safeTransfer(to, amountIn);
-        }
+        // Always execute transfers for consistent behavior
+        IERC20(tokenIn).safeTransferFrom(
+            msg.sender,
+            address(this),
+            amountIn
+        );
+        IERC20(tokenOut).safeTransfer(to, amountIn);
 
         emit Swapped(msg.sender, tokenIn, tokenOut, amountIn, to);
         return amountIn;
@@ -101,24 +99,22 @@ contract SwapV1V2 is
         if (amountIn == 0) revert ZeroAmount();
         require(amountIn >= minOut, "slip");
 
-        // if the caller is also the recipient, skip the transferFrom/transfer
-        if (msg.sender != to) {
-            IERC20Permit(tokenIn).permit(
-                msg.sender,
-                address(this),
-                amountIn,
-                deadline,
-                v,
-                r,
-                s
-            );
-            IERC20(tokenIn).safeTransferFrom(
-                msg.sender,
-                address(this),
-                amountIn
-            );
-            IERC20(tokenOut).safeTransfer(to, amountIn);
-        }
+        // Always execute transfers for consistent behavior
+        IERC20Permit(tokenIn).permit(
+            msg.sender,
+            address(this),
+            amountIn,
+            deadline,
+            v,
+            r,
+            s
+        );
+        IERC20(tokenIn).safeTransferFrom(
+            msg.sender,
+            address(this),
+            amountIn
+        );
+        IERC20(tokenOut).safeTransfer(to, amountIn);
 
         emit Swapped(msg.sender, tokenIn, tokenOut, amountIn, to);
         return amountIn;
@@ -131,45 +127,43 @@ contract SwapV1V2 is
         uint256 amountIn,
         uint256 minOut,
         address to,
-        bytes calldata permitCalldata // abi.encode(deadline, v, r, s) or empty
+        bytes calldata permitCalldata // abi.encodePacked(deadline, v, r, s) or empty
     ) external nonReentrant returns (uint256 amountOut) {
         _checkPair(tokenIn, tokenOut);
         if (amountIn == 0) revert ZeroAmount();
         require(amountIn >= minOut, "slip");
 
-        // if the caller is also the recipient, skip the transferFrom/transfer
-        if (msg.sender != to) {
-            if (permitCalldata.length == 97) {
-                // Manually decode packed data: 32 bytes deadline + 1 byte v + 32 bytes r + 32 bytes s
-                uint256 deadline = uint256(bytes32(permitCalldata[0:32]));
-                uint8 v = uint8(permitCalldata[32]);
-                bytes32 r = bytes32(permitCalldata[33:65]);
-                bytes32 s = bytes32(permitCalldata[65:97]);
-                // low-level call so non-2612 tokens don't revert the whole tx
-                // solhint-disable-next-line avoid-low-level-calls
-                (bool success, ) = tokenIn.call(
-                    abi.encodeWithSelector(
-                        IERC20Permit.permit.selector,
-                        msg.sender,
-                        address(this),
-                        amountIn,
-                        deadline,
-                        v,
-                        r,
-                        s
-                    )
-                );
-                // Intentionally ignore success - this is best effort
-                success; // Acknowledge the variable to avoid unused variable warning
-            }
-
-            IERC20(tokenIn).safeTransferFrom(
-                msg.sender,
-                address(this),
-                amountIn
+        // Always execute transfers for consistent behavior
+        if (permitCalldata.length == 97) {
+            // Manually decode packed data: 32 bytes deadline + 1 byte v + 32 bytes r + 32 bytes s
+            uint256 deadline = uint256(bytes32(permitCalldata[0:32]));
+            uint8 v = uint8(permitCalldata[32]);
+            bytes32 r = bytes32(permitCalldata[33:65]);
+            bytes32 s = bytes32(permitCalldata[65:97]);
+            // low-level call so non-2612 tokens don't revert the whole tx
+            // solhint-disable-next-line avoid-low-level-calls
+            (bool success, ) = tokenIn.call(
+                abi.encodeWithSelector(
+                    IERC20Permit.permit.selector,
+                    msg.sender,
+                    address(this),
+                    amountIn,
+                    deadline,
+                    v,
+                    r,
+                    s
+                )
             );
-            IERC20(tokenOut).safeTransfer(to, amountIn);
+            // Intentionally ignore success - this is best effort
+            success; // Acknowledge the variable to avoid unused variable warning
         }
+
+        IERC20(tokenIn).safeTransferFrom(
+            msg.sender,
+            address(this),
+            amountIn
+        );
+        IERC20(tokenOut).safeTransfer(to, amountIn);
 
         emit Swapped(msg.sender, tokenIn, tokenOut, amountIn, to);
         return amountIn;
@@ -194,11 +188,9 @@ contract SwapV1V2 is
     ) external nonReentrant returns (uint256 outWad) {
         if (gemAmt == 0) revert ZeroAmount();
 
-        // if the caller is also the recipient, skip the transferFrom/transfer
-        if (msg.sender != usr) {
-            IERC20(V1).safeTransferFrom(msg.sender, address(this), gemAmt);
-            IERC20(V2).safeTransfer(usr, gemAmt);
-        }
+        // Always execute transfers for clear LitePSM semantics
+        IERC20(V1).safeTransferFrom(msg.sender, address(this), gemAmt);
+        IERC20(V2).safeTransfer(usr, gemAmt);
 
         emit Swapped(msg.sender, V1, V2, gemAmt, usr);
         return gemAmt;
@@ -214,11 +206,9 @@ contract SwapV1V2 is
     ) external nonReentrant returns (uint256 inWad) {
         if (gemAmt == 0) revert ZeroAmount();
 
-        // if the caller is also the recipient, skip the transferFrom/transfer
-        if (msg.sender != usr) {
-            IERC20(V2).safeTransferFrom(msg.sender, address(this), gemAmt);
-            IERC20(V1).safeTransfer(usr, gemAmt);
-        }
+        // Always execute transfers for clear LitePSM semantics
+        IERC20(V2).safeTransferFrom(msg.sender, address(this), gemAmt);
+        IERC20(V1).safeTransfer(usr, gemAmt);
 
         emit Swapped(msg.sender, V2, V1, gemAmt, usr);
         return gemAmt;

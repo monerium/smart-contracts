@@ -475,9 +475,13 @@ contract SwapV1V2Test is Test {
         uint256 amount = 1e17;
         uint256 deadline = block.timestamp + 3600;
 
-        // Create permit signature
-        // V1 does not support EIP-2612, so we use the token contract's permit function
-        // this would have to be communicated to the user in a real-world scenario
+        // For V1->V2 swap, we need to approve the frontend tokens
+        // Since frontend doesn't support permit, we need to approve manually
+        vm.prank(user1);
+        frontend.approve(address(swap), amount);
+
+        // Create permit signature for token (but this won't be used since we're going V1->V2)
+        // We'll use dummy permit data since the function still expects permit parameters
         uint256 nonce = token.nonces(user1);
         bytes32 digest = token.getPermitDigest(
             user1,
@@ -864,6 +868,10 @@ contract SwapV1V2Test is Test {
     {
         uint256 amount = 1e17;
 
+        // Now requires approval even with invalid permit data since we always execute transfers
+        vm.prank(user1);
+        token.approve(address(swap), amount);
+
         // Invalid permit data (wrong length - should be 97 bytes but we'll use 96)
         bytes memory invalidPermitCalldata = abi.encode(
             block.timestamp + 3600,
@@ -889,7 +897,7 @@ contract SwapV1V2Test is Test {
             invalidPermitCalldata
         );
 
-        // Should work without transfers since msg.sender == to, permit is skipped due to invalid length
+        // Now transfers are always executed, but with shared storage the net effect is zero
         assertEq(amountOut, amount);
         assertEq(token.balanceOf(user1), user1TokenBefore);
         assertEq(frontend.balanceOf(user1), user1FrontendBefore);
@@ -1018,34 +1026,58 @@ contract SwapV1V2Test is Test {
         swap.buyGem(user2, amount);
     }
 
-    function test_sellGem_sameAddress_skipsTransfers() public {
+    function test_sellGem_sameAddress_requiresApproval() public {
         uint256 amount = 1e17;
+        
+        // Should revert without approval, even when msg.sender == usr
+        vm.prank(user1);
+        vm.expectRevert();
+        swap.sellGem(user1, amount);
+        
+        // Works correctly with approval
+        vm.prank(user1);
+        frontend.approve(address(swap), amount);
         
         uint256 user1V1Before = frontend.balanceOf(user1);
         uint256 user1V2Before = token.balanceOf(user1);
         
         vm.prank(user1);
-        uint256 outWad = swap.sellGem(user1, amount); // Same address as sender
+        uint256 outWad = swap.sellGem(user1, amount);
         
-        // Should not transfer anything since msg.sender == usr
-        assertEq(outWad, amount);
-        assertEq(frontend.balanceOf(user1), user1V1Before);
-        assertEq(token.balanceOf(user1), user1V2Before);
+        uint256 user1V1After = frontend.balanceOf(user1);
+        uint256 user1V2After = token.balanceOf(user1);
+        
+        // Transfers are executed, but with shared storage net effect is zero
+        assertEq(outWad, amount, "Function returns correct amount");
+        assertEq(user1V1After, user1V1Before, "Shared storage: V1 balance unchanged");
+        assertEq(user1V2After, user1V2Before, "Shared storage: V2 balance unchanged");
     }
 
-    function test_buyGem_sameAddress_skipsTransfers() public {
+    function test_buyGem_sameAddress_requiresApproval() public {
         uint256 amount = 1e17;
+        
+        // Should revert without approval, even when msg.sender == usr
+        vm.prank(user1);
+        vm.expectRevert();
+        swap.buyGem(user1, amount);
+        
+        // Works correctly with approval
+        vm.prank(user1);
+        token.approve(address(swap), amount);
         
         uint256 user1V1Before = frontend.balanceOf(user1);
         uint256 user1V2Before = token.balanceOf(user1);
         
         vm.prank(user1);
-        uint256 inWad = swap.buyGem(user1, amount); // Same address as sender
+        uint256 inWad = swap.buyGem(user1, amount);
         
-        // Should not transfer anything since msg.sender == usr
-        assertEq(inWad, amount);
-        assertEq(frontend.balanceOf(user1), user1V1Before);
-        assertEq(token.balanceOf(user1), user1V2Before);
+        uint256 user1V1After = frontend.balanceOf(user1);
+        uint256 user1V2After = token.balanceOf(user1);
+        
+        // Transfers are executed, but with shared storage net effect is zero
+        assertEq(inWad, amount, "Function returns correct amount");
+        assertEq(user1V1After, user1V1Before, "Shared storage: V1 balance unchanged");
+        assertEq(user1V2After, user1V2Before, "Shared storage: V2 balance unchanged");
     }
 
 
