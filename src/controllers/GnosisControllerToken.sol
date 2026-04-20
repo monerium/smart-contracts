@@ -4,6 +4,7 @@ pragma solidity 0.8.20;
 
 import "../Token.sol";
 import "../interfaces/IERC677Recipient.sol";
+import "../interfaces/IValidatorV1Block.sol";
 
 // The GnosisControllerToken contract acts as a bridge to ensure compatibility between the Smart-Contract v2 and the v1 TokenFrontend.
 // It allows the v2's proxy to function as the controller for the v1 TokenFrontend.
@@ -15,6 +16,8 @@ contract GnosisControllerToken is Token {
 
     bytes32 private constant ControllerStorageLocation =
         0xca4de6ad8795ef60887d43e50c5ce757428c24696bc0badb9e89cdef76bfe2c9;
+
+    error V1Blocked(address account);
 
     function _getControllerStorage()
         internal
@@ -77,11 +80,21 @@ contract GnosisControllerToken is Token {
         return _getControllerStorage().ticker;
     }
 
+    function _revertIfV1Blocked(address account) internal view {
+        IValidatorV1Block v1 = IValidatorV1Block(address(validator));
+        if (v1.isV1Blocked(account)) revert V1Blocked(account);
+    }
+
     function transfer_withCaller(
         address caller,
         address to,
         uint256 amount
     ) external onlyFrontend returns (bool) {
+        IValidatorV1Block v1 = IValidatorV1Block(address(validator));
+        if (v1.getV1BlockedCount() > 0) {
+            _revertIfV1Blocked(caller);
+            _revertIfV1Blocked(to);
+        }
         require(
             validator.validate(caller, to, amount),
             "Transfer not validated"
@@ -96,6 +109,11 @@ contract GnosisControllerToken is Token {
         address to,
         uint256 amount
     ) external onlyFrontend returns (bool) {
+        IValidatorV1Block v1 = IValidatorV1Block(address(validator));
+        if (v1.getV1BlockedCount() > 0) {
+            _revertIfV1Blocked(from);
+            _revertIfV1Blocked(to);
+        }
         require(validator.validate(from, to, amount), "Transfer not validated");
         _spendAllowance(from, caller, amount);
         _transfer(from, to, amount);
@@ -117,6 +135,11 @@ contract GnosisControllerToken is Token {
         uint256 amount,
         bytes calldata data
     ) external onlyFrontend returns (bool) {
+        IValidatorV1Block v1 = IValidatorV1Block(address(validator));
+        if (v1.getV1BlockedCount() > 0) {
+            _revertIfV1Blocked(caller);
+            _revertIfV1Blocked(to);
+        }
         require(
             validator.validate(caller, to, amount),
             "Transfer not validated"
@@ -169,4 +192,3 @@ contract GnosisControllerToken is Token {
         acceptOwnership();
     }
 }
-

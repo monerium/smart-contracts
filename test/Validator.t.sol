@@ -48,7 +48,6 @@ contract ValidatorTest is Test {
         vm.stopPrank();
 
         vm.startPrank(admin);
-        validator.setV1Frontend(frontend);
         validator.setV1Blocked(blocked);
         validator.setBlacklisted(blacklisted);
         vm.stopPrank();
@@ -83,13 +82,6 @@ contract ValidatorTest is Test {
         assertFalse(validator.isBlacklisted(blacklisted));
     }
 
-    function testFrontendRole() public {
-        assertTrue(validator.isV1Frontend(frontend));
-        vm.prank(admin);
-        validator.revokeV1Frontend(frontend);
-        assertFalse(validator.isV1Frontend(frontend));
-    }
-
     function testValidateTransfer() public {
         // Not blocked or blacklisted - should succeed
         vm.prank(user);
@@ -107,22 +99,19 @@ contract ValidatorTest is Test {
     }
 
     function testValidateTransferDirect() public {
-        // Direct validator calls (isolated testing, not realistic)
-        // Not blocked or blacklisted
+        // Direct validate() calls only check the blacklist — V1 block is enforced at the
+        // ControllerToken layer, not in validate() itself.
         vm.prank(user);
         assertTrue(validator.validate(user, admin, 100));
 
-        // These tests show validator WOULD work if called directly from frontend
-        // but this is NOT how it works in production
+        // V1-blocked addresses are not blocked by validate() directly
         vm.prank(frontend);
-        vm.expectRevert(abi.encodeWithSelector(Validator.V1Blocked.selector, blocked));
-        validator.validate(blocked, admin, 100);
+        assertTrue(validator.validate(blocked, admin, 100));
 
         vm.prank(frontend);
-        vm.expectRevert(abi.encodeWithSelector(Validator.V1Blocked.selector, blocked));
-        validator.validate(admin, blocked, 100);
+        assertTrue(validator.validate(admin, blocked, 100));
 
-        // Blacklisted always reverts
+        // Blacklisted always reverts regardless of caller
         vm.prank(user);
         vm.expectRevert(abi.encodeWithSelector(Validator.Blacklisted.selector, blacklisted));
         validator.validate(blacklisted, admin, 100);
@@ -150,75 +139,50 @@ contract ValidatorTest is Test {
         assertTrue(validator.isBlacklisted(blacklisted));
         assertFalse(validator.isBlacklisted(address(0xdead)));
     }
-    function testIsV1Frontend() public {
-        assertTrue(validator.isV1Frontend(frontend));
-        assertFalse(validator.isV1Frontend(address(0xdead)));
-    }
 
     /**
-     * @notice Tests that V1 frontend rejects transfers from V1_BLOCKED addresses
-     * @dev When V1 frontend calls transfer_withCaller() with a blocked address,
-     *      the validator should detect it's a V1 frontend call and revert.
+     * @notice Tests that V1 frontend rejects transfers from V1_BLOCKED addresses.
+     *         The check is enforced at the ControllerToken layer in transfer_withCaller,
+     *         which is the exclusive V1 entrypoint. validate() is not involved.
      *
-     *      Call chain: frontend -> ControllerToken.transfer_withCaller() -> validator.validate()
-     *
-     *      Expected behavior:
-     *      - validator.validate() receives msg.sender = frontend (marked as V1_FRONTEND_ROLE)
-     *      - validator checks isV1Frontend(msg.sender) = true
-     *      - validator checks isV1Blocked(from) = true
-     *      - validator reverts with "blocked in V1"
-     *
-     *      Current behavior:
-     *      - validator.validate() receives msg.sender = ControllerToken (NOT frontend)
-     *      - validator checks isV1Frontend(msg.sender) = false
-     *      - V1_BLOCKED check is skipped
-     *      - Transfer succeeds
+     *         Call chain: frontend -> ControllerToken.transfer_withCaller() -> V1Blocked revert
      */
     function testV1FrontendBlocksV1BlockedAddresses() public {
-        // V1 frontend attempts to transfer from a V1_BLOCKED address
         vm.prank(frontend);
-        vm.expectRevert(abi.encodeWithSelector(Validator.V1Blocked.selector, blocked));
+        vm.expectRevert(abi.encodeWithSelector(ControllerToken.V1Blocked.selector, blocked));
         token.transfer_withCaller(blocked, user, 100 ether);
     }
 
     /**
-     * @notice Tests that V1 frontend rejects transfers from blacklisted addresses
-     * @dev Blacklist check should work regardless of whether call comes from V1 frontend or V2 direct.
-     *      The blacklist check doesn't depend on msg.sender, it always checks both from and to addresses.
+     * @notice Tests that V1 frontend rejects transfers from blacklisted addresses.
      */
     function testV1FrontendBlocksBlacklistedFrom() public {
-        // V1 frontend attempts to transfer from a blacklisted address
         vm.prank(frontend);
         vm.expectRevert(abi.encodeWithSelector(Validator.Blacklisted.selector, blacklisted));
         token.transfer_withCaller(blacklisted, user, 100 ether);
     }
 
     /**
-     * @notice Tests that V1 frontend rejects transfers to blacklisted addresses
+     * @notice Tests that V1 frontend rejects transfers to blacklisted addresses.
      */
     function testV1FrontendBlocksBlacklistedTo() public {
-        // V1 frontend attempts to transfer to a blacklisted address
         vm.prank(frontend);
         vm.expectRevert(abi.encodeWithSelector(Validator.Blacklisted.selector, blacklisted));
         token.transfer_withCaller(user, blacklisted, 100 ether);
     }
 
     /**
-     * @notice Tests that V1 frontend allows transfers for non-blocked, non-blacklisted addresses
+     * @notice Tests that V1 frontend allows transfers for non-blocked, non-blacklisted addresses.
      */
     function testV1FrontendAllowsNormalTransfers() public {
-        // V1 frontend transfers from normal user should succeed
         vm.prank(frontend);
         token.transfer_withCaller(user, admin, 100 ether);
         assertEq(token.balanceOf(admin), 100 ether);
     }
 
     /**
-     * @notice A V1-blocked account should still be able to transfer directly on V2.
-     *         V1_BLOCKED_ROLE is only meant to restrict access via the V1 frontend.
-     *         This test FAILS with current code (validate() always applies V1 blocked check
-     *         because EURE_V2.getFrontend() returns EURE_V1 regardless of call origin)
-     *         and will PASS after the fix.
+     * @notice A V1-blocked account can still transfer directly on V2.
+     *         V1_BLOCKED_ROLE only restricts access via the V1 frontend (_withCaller path).
      */
     function test_v1BlockedAccount_canTransferOnV2Directly() public {
         vm.prank(blocked);
@@ -227,15 +191,13 @@ contract ValidatorTest is Test {
     }
 
     /**
-     * @notice Tests gas optimization: when no V1_BLOCKED addresses exist, validation is cheaper
-     * @dev This simulates Arbitrum and other chains without V1 frontends
+     * @notice Gas optimization: ControllerToken skips isV1Blocked calls when v1BlockedCount is zero.
+     *         This simulates Arbitrum and other chains without V1 frontends.
      */
     function testGasOptimizationNoBlockedAddresses() public {
-        // Deploy a new validator with no blocked addresses
         vm.startPrank(owner);
         Validator gasOptimizedValidator = new Validator();
 
-        // Deploy new token with the gas-optimized validator
         ControllerToken implementation = new ControllerToken();
         ERC1967Proxy proxy = new ERC1967Proxy(
             address(implementation),
@@ -255,17 +217,11 @@ contract ValidatorTest is Test {
         gasToken.setMaxMintAllowance(type(uint256).max);
         gasToken.setMintAllowance(owner, type(uint256).max);
         gasToken.mint(user, 1000 ether);
-
-        gasOptimizedValidator.setAdmin(admin);
         vm.stopPrank();
 
-        vm.prank(admin);
-        gasOptimizedValidator.setV1Frontend(frontend);
-
-        // Verify no blocked addresses
+        // Verify no blocked addresses — ControllerToken will skip isV1Blocked calls
         assertEq(gasOptimizedValidator.getV1BlockedCount(), 0);
 
-        // Transfer should succeed and be cheaper (skips getFrontend() call)
         vm.prank(frontend);
         gasToken.transfer_withCaller(user, admin, 100 ether);
         assertEq(gasToken.balanceOf(admin), 100 ether);
@@ -274,10 +230,7 @@ contract ValidatorTest is Test {
     // --- Ackee audit findings ---
 
     /**
-     * @notice A blacklisted user can call renounceRole to remove their own blacklist entry.
-     *         OZ AccessControl.renounceRole only checks callerConfirmation == msg.sender.
-     *         This test FAILS with current code (renounce succeeds) and PASSES after the fix
-     *         (renounce reverts).
+     * @notice A blacklisted user cannot call renounceRole to remove their own blacklist entry.
      */
     function test_blacklistedUser_cannotRenounceOwnBlacklistRole() public {
         assertTrue(validator.isBlacklisted(blacklisted));
@@ -291,9 +244,7 @@ contract ValidatorTest is Test {
     }
 
     /**
-     * @notice A V1-blocked user can call renounceRole to remove their own V1_BLOCKED_ROLE entry.
-     *         Same renounceRole bypass as above, but for the V1 block list.
-     *         This test FAILS with current code and PASSES after the fix.
+     * @notice A V1-blocked user cannot call renounceRole to remove their own V1_BLOCKED_ROLE entry.
      */
     function test_v1BlockedUser_cannotRenounceOwnV1BlockedRole() public {
         assertTrue(validator.isV1Blocked(blocked));
@@ -307,9 +258,7 @@ contract ValidatorTest is Test {
     }
 
     /**
-     * @notice Renouncing BLACKLISTED_ROLE lets the user bypass the blacklist and transfer tokens.
-     *         End-to-end proof that the renounceRole bypass has real impact.
-     *         This test FAILS with current code and PASSES after the fix.
+     * @notice End-to-end: renounce reverts, transfer still blocked.
      */
     function test_blacklistedUser_cannotBypassBlacklistViaRenounce() public {
         assertTrue(validator.isBlacklisted(blacklisted));
@@ -319,17 +268,13 @@ contract ValidatorTest is Test {
         vm.expectRevert(Validator.RenounceRoleNotAllowed.selector);
         validator.renounceRole(role, blacklisted);
 
-        // After the fix renounceRole reverts, so the user is still blacklisted and cannot transfer
         vm.prank(blacklisted);
         vm.expectRevert(abi.encodeWithSelector(Validator.Blacklisted.selector, blacklisted));
         token.transfer(user, 1 ether);
     }
 
     /**
-     * @notice An admin calling grantRole(V1_BLOCKED_ROLE) directly bypasses setV1Blocked,
-     *         leaving v1BlockedCount stale. The gas-optimization check then silently skips
-     *         V1 validation even though blocked addresses exist.
-     *         This test FAILS with current code and PASSES after the fix.
+     * @notice Direct grantRole(V1_BLOCKED_ROLE) reverts; v1BlockedCount stays correct.
      */
     function test_directGrantRole_V1Blocked_isBlocked() public {
         uint256 countBefore = validator.getV1BlockedCount();
@@ -339,14 +284,11 @@ contract ValidatorTest is Test {
         vm.expectRevert(Validator.UseValidatorRoleFunctions.selector);
         validator.grantRole(role, address(0x999));
 
-        // Counter must be unchanged after the (reverted) call
         assertEq(validator.getV1BlockedCount(), countBefore);
     }
 
     /**
-     * @notice An admin calling revokeRole(V1_BLOCKED_ROLE) directly bypasses revokeV1Blocked,
-     *         causing v1BlockedCount to drift above the real number of blocked addresses.
-     *         This test FAILS with current code and PASSES after the fix.
+     * @notice Direct revokeRole(V1_BLOCKED_ROLE) reverts; v1BlockedCount stays correct.
      */
     function test_directRevokeRole_V1Blocked_isBlocked() public {
         uint256 countBefore = validator.getV1BlockedCount();
@@ -356,36 +298,31 @@ contract ValidatorTest is Test {
         vm.expectRevert(Validator.UseValidatorRoleFunctions.selector);
         validator.revokeRole(role, blocked);
 
-        // Counter must be unchanged after the (reverted) call
         assertEq(validator.getV1BlockedCount(), countBefore);
     }
 
     /**
-     * @notice Tests that V1_BLOCKED counter increments and decrements correctly
+     * @notice V1_BLOCKED counter increments and decrements correctly.
      */
     function testV1BlockedCounter() public {
         assertEq(validator.getV1BlockedCount(), 1, "Should have 1 blocked address from setup");
 
-        // Add another blocked address
         vm.prank(admin);
         validator.setV1Blocked(address(0x999));
         assertEq(validator.getV1BlockedCount(), 2);
 
-        // Remove original blocked address
         vm.prank(admin);
         validator.revokeV1Blocked(blocked);
         assertEq(validator.getV1BlockedCount(), 1);
 
-        // Remove second blocked address
         vm.prank(admin);
         validator.revokeV1Blocked(address(0x999));
         assertEq(validator.getV1BlockedCount(), 0);
 
-        // Adding same address multiple times shouldn't increment counter
         vm.startPrank(admin);
         validator.setV1Blocked(blocked);
         assertEq(validator.getV1BlockedCount(), 1);
-        validator.setV1Blocked(blocked); // Same address again
+        validator.setV1Blocked(blocked);
         assertEq(validator.getV1BlockedCount(), 1, "Counter should not increment for duplicate");
         vm.stopPrank();
     }

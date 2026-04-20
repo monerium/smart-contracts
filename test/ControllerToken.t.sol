@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 import "forge-std/Test.sol";
 import "../src/ControllerToken.sol";
-import "../src/BlacklistValidatorUpgradeable.sol";
+import {Validator} from "../src/Validator.sol";
 import "../src/tests/tokenfrontend.sol";
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import "forge-std/console.sol";
@@ -18,7 +18,7 @@ contract ControllerTokenTest is Test {
     ControllerToken public token;
     ERC1967Proxy public proxy;
     TokenFrontend public frontend;
-    BlacklistValidatorUpgradeable public validator;
+    Validator public validator;
     uint256 internal userPrivateKey;
 
     address owner = address(this);
@@ -31,28 +31,19 @@ contract ControllerTokenTest is Test {
     function setUp() public {
         // Deploy the implementation contract
         ControllerToken implementation = new ControllerToken();
-        BlacklistValidatorUpgradeable blacklistValidator = new BlacklistValidatorUpgradeable();
+        validator = new Validator();
 
-        // Deploy the proxy contract
-        bytes memory initDataProxy = abi.encodeWithSelector(
-            BlacklistValidatorUpgradeable.initialize.selector
-        );
-        ERC1967Proxy validatorProxy = new ERC1967Proxy(
-            address(blacklistValidator),
-            initDataProxy
-        );
         bytes memory initData = abi.encodeWithSelector(
             ControllerToken.initialize.selector,
             "Monerium EUR emoney",
             "EURE",
             bytes3("EUR"),
-            address(validatorProxy)
+            address(validator)
         );
 
         proxy = new ERC1967Proxy(address(implementation), initData);
         // Cast the proxy address to the Token interface
         token = ControllerToken(address(proxy));
-        validator = BlacklistValidatorUpgradeable(address(validatorProxy));
 
         userPrivateKey = 0xabc123;
 
@@ -72,7 +63,7 @@ contract ControllerTokenTest is Test {
         assertEq(frontend.getController(), address(token));
 
         // Init the validator with an admin
-        validator.addAdminAccount(admin);
+        validator.setAdmin(admin);
 
         // Init the Token contract for minting and transfer test.
         token.addSystemAccount(system);
@@ -191,27 +182,25 @@ contract ControllerTokenTest is Test {
     }
 
     function test_shouldNotTransferIfBlacklisted() public {
-        // Add user2 to blacklist
         vm.prank(admin);
-        validator.ban(user1);
-        assertTrue(validator.isBan(user1));
+        validator.setBlacklisted(user1);
+        assertTrue(validator.isBlacklisted(user1));
 
         vm.prank(user1);
-        vm.expectRevert("Transfer not validated");
+        vm.expectRevert(abi.encodeWithSelector(Validator.Blacklisted.selector, user1));
         frontend.transfer(user2, 1);
     }
 
     function test_from_banned_user_should_not_transferFrom() public {
-        // Add user1 to blacklist
         vm.prank(admin);
-        validator.ban(user1);
-        assertTrue(validator.isBan(user1));
+        validator.setBlacklisted(user1);
+        assertTrue(validator.isBlacklisted(user1));
 
         vm.prank(user1);
         frontend.approve(user2, 1e18);
 
         vm.prank(user2);
-        vm.expectRevert("Transfer not validated");
+        vm.expectRevert(abi.encodeWithSelector(Validator.Blacklisted.selector, user1));
         frontend.transferFrom(user1, user2, 1);
     }
 
