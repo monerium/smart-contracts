@@ -35,6 +35,35 @@ contract Validator is AccessControl, IValidator {
 
     error V1Blocked(address account);
     error Blacklisted(address account);
+    error RenounceRoleNotAllowed();
+    error UseValidatorRoleFunctions();
+
+    /**
+     * @dev Disabled: renouncing a role would allow blacklisted/blocked accounts to remove
+     *      their own restrictions. Always reverts.
+     */
+    function renounceRole(bytes32, address) public pure override {
+        revert RenounceRoleNotAllowed();
+    }
+
+    /**
+     * @dev Disabled for V1_BLOCKED_ROLE: direct grantRole bypasses setV1Blocked and leaves
+     *      v1BlockedCount stale, breaking the gas-optimization check in validate().
+     *      Use setV1Blocked() instead.
+     */
+    function grantRole(bytes32 role, address account) public override {
+        if (role == V1_BLOCKED_ROLE) revert UseValidatorRoleFunctions();
+        super.grantRole(role, account);
+    }
+
+    /**
+     * @dev Disabled for V1_BLOCKED_ROLE: direct revokeRole bypasses revokeV1Blocked and leaves
+     *      v1BlockedCount stale. Use revokeV1Blocked() instead.
+     */
+    function revokeRole(bytes32 role, address account) public override {
+        if (role == V1_BLOCKED_ROLE) revert UseValidatorRoleFunctions();
+        super.revokeRole(role, account);
+    }
 
     /**
      * @dev Returns the contract identifier.
@@ -128,10 +157,11 @@ contract Validator is AccessControl, IValidator {
      *      Increments the blocked count for gas optimization.
      */
     function setV1Blocked(address account) external {
+        _checkRole(ADMIN_ROLE);
         if (!hasRole(V1_BLOCKED_ROLE, account)) {
             v1BlockedCount++;
         }
-        grantRole(V1_BLOCKED_ROLE, account);
+        _grantRole(V1_BLOCKED_ROLE, account);
     }
 
     /**
@@ -139,10 +169,11 @@ contract Validator is AccessControl, IValidator {
      *      Decrements the blocked count for gas optimization.
      */
     function revokeV1Blocked(address account) external {
+        _checkRole(ADMIN_ROLE);
         if (hasRole(V1_BLOCKED_ROLE, account)) {
             v1BlockedCount--;
         }
-        revokeRole(V1_BLOCKED_ROLE, account);
+        _revokeRole(V1_BLOCKED_ROLE, account);
     }
 
     /**

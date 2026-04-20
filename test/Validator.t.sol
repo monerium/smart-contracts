@@ -258,6 +258,95 @@ contract ValidatorTest is Test {
         assertEq(gasToken.balanceOf(admin), 100 ether);
     }
 
+    // --- Ackee audit findings ---
+
+    /**
+     * @notice A blacklisted user can call renounceRole to remove their own blacklist entry.
+     *         OZ AccessControl.renounceRole only checks callerConfirmation == msg.sender.
+     *         This test FAILS with current code (renounce succeeds) and PASSES after the fix
+     *         (renounce reverts).
+     */
+    function test_blacklistedUser_cannotRenounceOwnBlacklistRole() public {
+        assertTrue(validator.isBlacklisted(blacklisted));
+        bytes32 role = validator.BLACKLISTED_ROLE();
+
+        vm.prank(blacklisted);
+        vm.expectRevert(Validator.RenounceRoleNotAllowed.selector);
+        validator.renounceRole(role, blacklisted);
+
+        assertTrue(validator.isBlacklisted(blacklisted));
+    }
+
+    /**
+     * @notice A V1-blocked user can call renounceRole to remove their own V1_BLOCKED_ROLE entry.
+     *         Same renounceRole bypass as above, but for the V1 block list.
+     *         This test FAILS with current code and PASSES after the fix.
+     */
+    function test_v1BlockedUser_cannotRenounceOwnV1BlockedRole() public {
+        assertTrue(validator.isV1Blocked(blocked));
+        bytes32 role = validator.V1_BLOCKED_ROLE();
+
+        vm.prank(blocked);
+        vm.expectRevert(Validator.RenounceRoleNotAllowed.selector);
+        validator.renounceRole(role, blocked);
+
+        assertTrue(validator.isV1Blocked(blocked));
+    }
+
+    /**
+     * @notice Renouncing BLACKLISTED_ROLE lets the user bypass the blacklist and transfer tokens.
+     *         End-to-end proof that the renounceRole bypass has real impact.
+     *         This test FAILS with current code and PASSES after the fix.
+     */
+    function test_blacklistedUser_cannotBypassBlacklistViaRenounce() public {
+        assertTrue(validator.isBlacklisted(blacklisted));
+        bytes32 role = validator.BLACKLISTED_ROLE();
+
+        vm.prank(blacklisted);
+        vm.expectRevert(Validator.RenounceRoleNotAllowed.selector);
+        validator.renounceRole(role, blacklisted);
+
+        // After the fix renounceRole reverts, so the user is still blacklisted and cannot transfer
+        vm.prank(blacklisted);
+        vm.expectRevert(abi.encodeWithSelector(Validator.Blacklisted.selector, blacklisted));
+        token.transfer(user, 1 ether);
+    }
+
+    /**
+     * @notice An admin calling grantRole(V1_BLOCKED_ROLE) directly bypasses setV1Blocked,
+     *         leaving v1BlockedCount stale. The gas-optimization check then silently skips
+     *         V1 validation even though blocked addresses exist.
+     *         This test FAILS with current code and PASSES after the fix.
+     */
+    function test_directGrantRole_V1Blocked_isBlocked() public {
+        uint256 countBefore = validator.getV1BlockedCount();
+        bytes32 role = validator.V1_BLOCKED_ROLE();
+
+        vm.prank(admin);
+        vm.expectRevert(Validator.UseValidatorRoleFunctions.selector);
+        validator.grantRole(role, address(0x999));
+
+        // Counter must be unchanged after the (reverted) call
+        assertEq(validator.getV1BlockedCount(), countBefore);
+    }
+
+    /**
+     * @notice An admin calling revokeRole(V1_BLOCKED_ROLE) directly bypasses revokeV1Blocked,
+     *         causing v1BlockedCount to drift above the real number of blocked addresses.
+     *         This test FAILS with current code and PASSES after the fix.
+     */
+    function test_directRevokeRole_V1Blocked_isBlocked() public {
+        uint256 countBefore = validator.getV1BlockedCount();
+        bytes32 role = validator.V1_BLOCKED_ROLE();
+
+        vm.prank(admin);
+        vm.expectRevert(Validator.UseValidatorRoleFunctions.selector);
+        validator.revokeRole(role, blocked);
+
+        // Counter must be unchanged after the (reverted) call
+        assertEq(validator.getV1BlockedCount(), countBefore);
+    }
+
     /**
      * @notice Tests that V1_BLOCKED counter increments and decrements correctly
      */
