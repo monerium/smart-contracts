@@ -215,8 +215,9 @@ contract ControllerTokenTest is Test {
         frontend.transferFrom(user1, user2, 1);
     }
 
-    function testFail_shouldNotTransferIfNotFromFrontend() public {
+    function test_shouldNotTransferIfNotFromFrontend() public {
         vm.prank(user1);
+        vm.expectRevert();
         token.transfer_withCaller(user1, user2, 1e18);
     }
 
@@ -228,8 +229,9 @@ contract ControllerTokenTest is Test {
         assertEq(frontend.allowance(user1, user2), 1e18);
     }
 
-    function testFail_shouldNotApproveIfNotFromFrontend() public {
+    function test_shouldNotApproveIfNotFromFrontend() public {
         vm.prank(user1);
+        vm.expectRevert();
         token.approve_withCaller(user1, user2, 1e18);
     }
 
@@ -243,11 +245,12 @@ contract ControllerTokenTest is Test {
         assertEq(token.balanceOf(user2), 2e18);
     }
 
-    function testFail_shouldNotTransferFromIfNotFromFrontend() public {
+    function test_shouldNotTransferFromIfNotFromFrontend() public {
         vm.prank(user1);
         frontend.approve(user2, 1e18);
         assertEq(token.allowance(user1, user2), 1e18);
 
+        vm.expectRevert();
         token.transferFrom_withCaller(user2, user1, user2, 1e18);
     }
 
@@ -273,12 +276,13 @@ contract ControllerTokenTest is Test {
         assertEq(frontend.balanceOf(user1), 2e18);
     }
 
-    function testFail_shouldNotMintIfNotFromFrontend() public {
+    function test_shouldNotMintIfNotFromFrontend() public {
         vm.prank(system);
+        vm.expectRevert();
         token.mintTo_withCaller(system, user1, 1e18);
     }
 
-    function testFail_BurnShouldRevert() public {
+    function test_BurnShouldRevert() public {
         address user = vm.addr(userPrivateKey);
         bytes32 hash = keccak256("burn");
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPrivateKey, hash);
@@ -288,10 +292,11 @@ contract ControllerTokenTest is Test {
         assertEq(token.balanceOf(user), 1e18);
 
         vm.prank(system);
+        vm.expectRevert();
         frontend.burnFrom(user, 1e18, hash, v, r, s);
     }
 
-    function testFail_RecoverShouldRevert() public {
+    function test_RecoverShouldRevert() public {
         address user = vm.addr(userPrivateKey);
         bytes32 hash = keccak256("burn");
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPrivateKey, hash);
@@ -301,10 +306,11 @@ contract ControllerTokenTest is Test {
         assertEq(token.balanceOf(user), 1e18);
 
         vm.prank(system);
+        vm.expectRevert();
         frontend.recover(user, user1, hash, v, r, s);
     }
 
-    function testFail_ShouldNotRecoverNotFromFrontend() public {
+    function test_ShouldNotRecoverNotFromFrontend() public {
         address user = vm.addr(userPrivateKey);
         bytes32 hash = keccak256("burn");
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPrivateKey, hash);
@@ -314,10 +320,11 @@ contract ControllerTokenTest is Test {
         assertEq(token.balanceOf(user), 1e18);
 
         vm.prank(system);
+        vm.expectRevert();
         token.recover_withCaller(system, user, user1, hash, v, r, s);
     }
 
-    function testFail_ShouldNotBurnNotFromFrontend() public {
+    function test_ShouldNotBurnNotFromFrontend() public {
         address user = vm.addr(userPrivateKey);
         bytes32 hash = keccak256("burn");
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPrivateKey, hash);
@@ -327,6 +334,7 @@ contract ControllerTokenTest is Test {
         assertEq(token.balanceOf(user), 1e18);
 
         vm.prank(system);
+        vm.expectRevert();
         token.burnFrom_withCaller(system, user, 1e18, hash, v, r, s);
     }
 }
