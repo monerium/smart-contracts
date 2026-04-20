@@ -98,11 +98,11 @@ contract ValidatorTest is Test {
 
         // Blacklisted always reverts (works correctly)
         vm.prank(blacklisted);
-        vm.expectRevert("Transfer not supported:0x0000000000000000000000000000000000000005 is blacklisted.");
+        vm.expectRevert(abi.encodeWithSelector(Validator.Blacklisted.selector, blacklisted));
         token.transfer(admin, 100 ether);
 
         vm.prank(user);
-        vm.expectRevert("Transfer not supported:0x0000000000000000000000000000000000000005 is blacklisted.");
+        vm.expectRevert(abi.encodeWithSelector(Validator.Blacklisted.selector, blacklisted));
         token.transfer(blacklisted, 100 ether);
     }
 
@@ -115,20 +115,20 @@ contract ValidatorTest is Test {
         // These tests show validator WOULD work if called directly from frontend
         // but this is NOT how it works in production
         vm.prank(frontend);
-        vm.expectRevert("Transfer not supported:0x0000000000000000000000000000000000000004 is blocked in V1. Please use V2 instead. See https://monerium.dev/docs/tokens");
+        vm.expectRevert(abi.encodeWithSelector(Validator.V1Blocked.selector, blocked));
         validator.validate(blocked, admin, 100);
 
         vm.prank(frontend);
-        vm.expectRevert("Transfer not supported:0x0000000000000000000000000000000000000004 is blocked in V1. Please use V2 instead. See https://monerium.dev/docs/tokens");
+        vm.expectRevert(abi.encodeWithSelector(Validator.V1Blocked.selector, blocked));
         validator.validate(admin, blocked, 100);
 
         // Blacklisted always reverts
         vm.prank(user);
-        vm.expectRevert("Transfer not supported:0x0000000000000000000000000000000000000005 is blacklisted.");
+        vm.expectRevert(abi.encodeWithSelector(Validator.Blacklisted.selector, blacklisted));
         validator.validate(blacklisted, admin, 100);
 
         vm.prank(user);
-        vm.expectRevert("Transfer not supported:0x0000000000000000000000000000000000000005 is blacklisted.");
+        vm.expectRevert(abi.encodeWithSelector(Validator.Blacklisted.selector, blacklisted));
         validator.validate(admin, blacklisted, 100);
     }
 
@@ -177,7 +177,7 @@ contract ValidatorTest is Test {
     function testV1FrontendBlocksV1BlockedAddresses() public {
         // V1 frontend attempts to transfer from a V1_BLOCKED address
         vm.prank(frontend);
-        vm.expectRevert("Transfer not supported:0x0000000000000000000000000000000000000004 is blocked in V1. Please use V2 instead. See https://monerium.dev/docs/tokens");
+        vm.expectRevert(abi.encodeWithSelector(Validator.V1Blocked.selector, blocked));
         token.transfer_withCaller(blocked, user, 100 ether);
     }
 
@@ -189,7 +189,7 @@ contract ValidatorTest is Test {
     function testV1FrontendBlocksBlacklistedFrom() public {
         // V1 frontend attempts to transfer from a blacklisted address
         vm.prank(frontend);
-        vm.expectRevert("Transfer not supported:0x0000000000000000000000000000000000000005 is blacklisted.");
+        vm.expectRevert(abi.encodeWithSelector(Validator.Blacklisted.selector, blacklisted));
         token.transfer_withCaller(blacklisted, user, 100 ether);
     }
 
@@ -199,7 +199,7 @@ contract ValidatorTest is Test {
     function testV1FrontendBlocksBlacklistedTo() public {
         // V1 frontend attempts to transfer to a blacklisted address
         vm.prank(frontend);
-        vm.expectRevert("Transfer not supported:0x0000000000000000000000000000000000000005 is blacklisted.");
+        vm.expectRevert(abi.encodeWithSelector(Validator.Blacklisted.selector, blacklisted));
         token.transfer_withCaller(user, blacklisted, 100 ether);
     }
 

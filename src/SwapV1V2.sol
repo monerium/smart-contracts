@@ -32,6 +32,8 @@ contract SwapV1V2 is
 
     error BadPair();
     error ZeroAmount();
+    error BadAddress();
+    error Slippage();
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -43,10 +45,7 @@ contract SwapV1V2 is
         address v2,
         address initialOwner
     ) public initializer {
-        require(
-            v1 != address(0) && v2 != address(0) && v1 != v2,
-            "bad address"
-        );
+        if (v1 == address(0) || v2 == address(0) || v1 == v2) revert BadAddress();
         V1 = v1;
         V2 = v2;
 
@@ -69,7 +68,7 @@ contract SwapV1V2 is
     ) external nonReentrant returns (uint256 amountOut) {
         _checkPair(tokenIn, tokenOut);
         if (amountIn == 0) revert ZeroAmount();
-        require(amountIn >= minOut, "slip");
+        if (amountIn < minOut) revert Slippage();
 
         // Always execute transfers for consistent behavior
         IERC20(tokenIn).safeTransferFrom(
@@ -97,7 +96,7 @@ contract SwapV1V2 is
     ) external nonReentrant returns (uint256 amountOut) {
         _checkPair(tokenIn, tokenOut);
         if (amountIn == 0) revert ZeroAmount();
-        require(amountIn >= minOut, "slip");
+        if (amountIn < minOut) revert Slippage();
 
         // Try permit; if nonce was already consumed by a front-runner the allowance
         // is already set, so we proceed — safeTransferFrom will catch any real failure.
@@ -132,7 +131,7 @@ contract SwapV1V2 is
     ) external nonReentrant returns (uint256 amountOut) {
         _checkPair(tokenIn, tokenOut);
         if (amountIn == 0) revert ZeroAmount();
-        require(amountIn >= minOut, "slip");
+        if (amountIn < minOut) revert Slippage();
 
         // Always execute transfers for consistent behavior
         if (permitCalldata.length == 97) {
@@ -141,22 +140,15 @@ contract SwapV1V2 is
             uint8 v = uint8(permitCalldata[32]);
             bytes32 r = bytes32(permitCalldata[33:65]);
             bytes32 s = bytes32(permitCalldata[65:97]);
-            // low-level call so non-2612 tokens don't revert the whole tx
-            // solhint-disable-next-line avoid-low-level-calls
-            (bool success, ) = tokenIn.call(
-                abi.encodeWithSelector(
-                    IERC20Permit.permit.selector,
-                    msg.sender,
-                    address(this),
-                    amountIn,
-                    deadline,
-                    v,
-                    r,
-                    s
-                )
-            );
-            // Intentionally ignore success - this is best effort
-            success; // Acknowledge the variable to avoid unused variable warning
+            try IERC20Permit(tokenIn).permit(
+                msg.sender,
+                address(this),
+                amountIn,
+                deadline,
+                v,
+                r,
+                s
+            ) {} catch {}
         }
 
         IERC20(tokenIn).safeTransferFrom(

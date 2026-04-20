@@ -2,7 +2,6 @@
 pragma solidity ^0.8.20;
 
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
-import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 import "./IValidator.sol";
 
 // Interface to query ControllerToken for its frontend
@@ -34,10 +33,13 @@ contract Validator is AccessControl, IValidator {
     // If zero, we can skip the expensive getFrontend() call
     uint256 private v1BlockedCount;
 
+    error V1Blocked(address account);
+    error Blacklisted(address account);
+
     /**
      * @dev Returns the contract identifier.
      */
-    function CONTRACT_ID() public pure returns (bytes32) {
+    function CONTRACT_ID() external pure returns (bytes32) {
         return ID;
     }
 
@@ -69,71 +71,31 @@ contract Validator is AccessControl, IValidator {
         // Gas optimization: only check V1 frontend if there are any blocked addresses
         // On chains without V1 (Arbitrum, etc.), this saves gas by skipping getFrontend() call
         if (v1BlockedCount > 0) {
-            // Try to query msg.sender to see if it's a ControllerToken with a frontend
             address frontend = address(0);
             try IControllerToken(msg.sender).getFrontend() returns (address _frontend) {
                 frontend = _frontend;
             } catch {
-                // Not a ControllerToken or getFrontend() failed
-                // Treat as direct call (check msg.sender directly for backwards compatibility)
                 frontend = msg.sender;
             }
 
-            // If the call is from a V1 frontend, apply V1_BLOCKED checks
             if (isV1Frontend(frontend)) {
-                if (isV1Blocked(from)) {
-                    emit Decision(from, to, amount, false);
-                    revert(
-                        string(
-                            abi.encodePacked(
-                                "Transfer not supported:",
-                                Strings.toHexString(from),
-                                " is blocked in V1. Please use V2 instead. See https://monerium.dev/docs/tokens"
-                            )
-                        )
-                    );
-                }
-                if (isV1Blocked(to)) {
-                    emit Decision(from, to, amount, false);
-                    revert(
-                        string(
-                            abi.encodePacked(
-                                "Transfer not supported:",
-                                Strings.toHexString(to),
-                                " is blocked in V1. Please use V2 instead. See https://monerium.dev/docs/tokens"
-                            )
-                        )
-                    );
-                }
+                _revertIfV1Blocked(from);
+                _revertIfV1Blocked(to);
             }
         }
 
         // Always check blacklist regardless of call source
-        if (isBlacklisted(from)) {
-            emit Decision(from, to, amount, false);
-            revert(
-                string(
-                    abi.encodePacked(
-                        "Transfer not supported:",
-                        Strings.toHexString(from),
-                        " is blacklisted."
-                    )
-                )
-            );
-        }
-        if (isBlacklisted(to)) {
-            emit Decision(from, to, amount, false);
-            revert(
-                string(
-                    abi.encodePacked(
-                        "Transfer not supported:",
-                        Strings.toHexString(to),
-                        " is blacklisted."
-                    )
-                )
-            );
-        }
+        _revertIfBlacklisted(from);
+        _revertIfBlacklisted(to);
         return true;
+    }
+
+    function _revertIfV1Blocked(address account) internal view {
+        if (hasRole(V1_BLOCKED_ROLE, account)) revert V1Blocked(account);
+    }
+
+    function _revertIfBlacklisted(address account) internal view {
+        if (hasRole(BLACKLISTED_ROLE, account)) revert Blacklisted(account);
     }
 
     // --- Admin role management ---
@@ -155,7 +117,7 @@ contract Validator is AccessControl, IValidator {
     /**
      * @dev Checks if an account has ADMIN_ROLE.
      */
-    function isAdminAccount(address account) public view returns (bool) {
+    function isAdminAccount(address account) external view returns (bool) {
         return hasRole(ADMIN_ROLE, account);
     }
 

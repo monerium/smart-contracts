@@ -241,7 +241,7 @@ contract SwapV1V2Test is Test {
         token.approve(address(swap), amount);
 
         vm.prank(user1);
-        vm.expectRevert(bytes("slip"));
+        vm.expectRevert(SwapV1V2.Slippage.selector);
         swap.swapExactIn(
             address(token),
             address(frontend),
@@ -557,7 +557,7 @@ contract SwapV1V2Test is Test {
         uint256 deadline = block.timestamp + 3600;
 
         vm.prank(user1);
-        vm.expectRevert(bytes("slip"));
+        vm.expectRevert(SwapV1V2.Slippage.selector);
         swap.swapWithPermitStrict(
             address(token),
             address(frontend),
@@ -680,7 +680,7 @@ contract SwapV1V2Test is Test {
         uint256 minOut = amount + 1;
 
         vm.prank(user1);
-        vm.expectRevert(bytes("slip"));
+        vm.expectRevert(SwapV1V2.Slippage.selector);
         swap.swapWithPermitBestEffort(
             address(token),
             address(frontend),
@@ -695,7 +695,7 @@ contract SwapV1V2Test is Test {
         SwapV1V2 swapImplementation = new SwapV1V2();
         
         // Test zero address for V1
-        vm.expectRevert("bad address");
+        vm.expectRevert(SwapV1V2.BadAddress.selector);
         bytes memory initData1 = abi.encodeWithSelector(
             SwapV1V2.initialize.selector,
             address(0),
@@ -705,7 +705,7 @@ contract SwapV1V2Test is Test {
         new ERC1967Proxy(address(swapImplementation), initData1);
 
         // Test zero address for V2
-        vm.expectRevert("bad address");
+        vm.expectRevert(SwapV1V2.BadAddress.selector);
         bytes memory initData2 = abi.encodeWithSelector(
             SwapV1V2.initialize.selector,
             address(token),
@@ -715,7 +715,7 @@ contract SwapV1V2Test is Test {
         new ERC1967Proxy(address(swapImplementation), initData2);
 
         // Test same address for V1 and V2
-        vm.expectRevert("bad address");
+        vm.expectRevert(SwapV1V2.BadAddress.selector);
         bytes memory initData3 = abi.encodeWithSelector(
             SwapV1V2.initialize.selector,
             address(token),
