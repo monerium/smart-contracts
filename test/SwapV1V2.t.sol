@@ -8,6 +8,7 @@ import {TokenFrontend} from "../src/tests/tokenfrontend.sol";
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20PermitUpgradeable.sol";
 import "forge-std/console.sol";
 import "../src/SwapV1V2.sol";
 
@@ -1080,6 +1081,47 @@ contract SwapV1V2Test is Test {
         assertEq(user1V2After, user1V2Before, "Shared storage: V2 balance unchanged");
     }
 
+
+    // PoC for L2: Unwrapped permit enables front-run griefing
+    // Alice consumes Bob's permit nonce before his tx is mined.
+    // Bob's swapWithPermitStrict then reverts at the permit() call even
+    // though the allowance is already set — the swap is blocked.
+    function test_L2_permitFrontRunGriefing_POC() public {
+        uint256 amount = 1e17;
+        uint256 deadline = type(uint256).max;
+
+        // Bob creates a valid ERC-2612 permit signature (private key = 1)
+        uint256 nonce = token.nonces(user1);
+        bytes32 digest = token.getPermitDigest(user1, address(swap), amount, nonce, deadline);
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(1, digest);
+
+        // Alice front-runs: submits Bob's permit signature before his tx lands
+        vm.prank(user2);
+        token.permit(user1, address(swap), amount, deadline, v, r, s);
+
+        // Alice's tx consumed the nonce — allowance IS set for Bob
+        assertEq(token.allowance(user1, address(swap)), amount, "allowance set by front-runner");
+
+        // Bob's tx now hits swapWithPermitStrict with a spent nonce → reverts
+        // Despite the allowance being present, the swap is griefed
+        // Bob's swap should succeed — the allowance is already set by Alice's front-run.
+        // BUG: swapWithPermitStrict calls permit() unconditionally, so it reverts with
+        // ERC2612InvalidSigner because the nonce was already consumed. This test fails
+        // until permit() is wrapped in try/catch.
+        vm.prank(user1);
+        uint256 amountOut = swap.swapWithPermitStrict(
+            address(token),
+            address(frontend),
+            amount,
+            amount,
+            user1,
+            deadline,
+            v,
+            r,
+            s
+        );
+        assertEq(amountOut, amount);
+    }
 
     function test_reentrancy_attack() public {
         // Create a malicious token that attempts reentrancy

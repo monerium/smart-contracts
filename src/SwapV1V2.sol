@@ -99,8 +99,9 @@ contract SwapV1V2 is
         if (amountIn == 0) revert ZeroAmount();
         require(amountIn >= minOut, "slip");
 
-        // Always execute transfers for consistent behavior
-        IERC20Permit(tokenIn).permit(
+        // Try permit; if nonce was already consumed by a front-runner the allowance
+        // is already set, so we proceed — safeTransferFrom will catch any real failure.
+        try IERC20Permit(tokenIn).permit(
             msg.sender,
             address(this),
             amountIn,
@@ -108,7 +109,7 @@ contract SwapV1V2 is
             v,
             r,
             s
-        );
+        ) {} catch {}
         IERC20(tokenIn).safeTransferFrom(
             msg.sender,
             address(this),
