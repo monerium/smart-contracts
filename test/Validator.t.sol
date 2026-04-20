@@ -214,6 +214,19 @@ contract ValidatorTest is Test {
     }
 
     /**
+     * @notice A V1-blocked account should still be able to transfer directly on V2.
+     *         V1_BLOCKED_ROLE is only meant to restrict access via the V1 frontend.
+     *         This test FAILS with current code (validate() always applies V1 blocked check
+     *         because EURE_V2.getFrontend() returns EURE_V1 regardless of call origin)
+     *         and will PASS after the fix.
+     */
+    function test_v1BlockedAccount_canTransferOnV2Directly() public {
+        vm.prank(blocked);
+        token.transfer(user, 100 ether);
+        assertEq(token.balanceOf(user), 1100 ether);
+    }
+
+    /**
      * @notice Tests gas optimization: when no V1_BLOCKED addresses exist, validation is cheaper
      * @dev This simulates Arbitrum and other chains without V1 frontends
      */
