@@ -6,7 +6,7 @@ We have a problem with aggregators like CoW swap being unable to connect the V1 
 The `SwapV1V2` contract that enables 1:1 token swapping between V1 and V2 tokens that share the same balance storage. The contract supports five swap methods:
 
   - `swapExactIn`: Basic 1:1 swap with slippage protection
-  - `swapWithPermitStrict`: Swap with ERC-2612 permit for gasless approvals (strict mode - fails if permit fails)
+  - `swapWithPermitStrict`: Swap with ERC-2612 permit for gasless approvals; permit is attempted but a failed permit (e.g. front-run nonce consumption) does not block the swap if the allowance is already set
   - `swapWithPermitBestEffort`: Swap with optional permit that continues even if permit fails
   - `sellGem`: LitePSM-compatible function to sell V1 for V2 
   - `buyGem`: LitePSM-compatible function to buy V1 with V2
@@ -65,7 +65,7 @@ contract SwapV1V2 is Initializable, OwnableUpgradeable, UUPSUpgradeable, Reentra
 
   - Uses abi.encodePacked for 97-byte permit calldata format: deadline(32) + v(1) + r(32) + s(32)
   - Manual decoding of packed permit data in swapWithPermitBestEffort
-  - Best-effort permit calls use low-level calls to avoid reverting the entire transaction
+  - Both `swapWithPermitStrict` and `swapWithPermitBestEffort` wrap permit calls in try/catch; a failed permit (e.g. nonce already consumed by a front-runner) does not revert the swap as long as the allowance is already set
   - Proper event emissions for all swap operations
   - **Proxy deployment**: Uses ERC1967Proxy for transparent upgrades
 
@@ -156,9 +156,10 @@ Key Test Cases:
   - ✅ Event emissions for all swap functions
   - ✅ Different recipient addresses
   - ✅ Permit signature validation and allowance setting
+  - ✅ **Front-run griefing protection**: `swapWithPermitStrict` succeeds when permit nonce is consumed by a third party before the swap lands
   - ✅ Reentrancy protection
 
-All tests pass (41/41) and achieve 100% line and branch coverage for the SwapV1V2 contract.
+All tests pass (42/42) and achieve 100% line and branch coverage for the SwapV1V2 contract.
 
 ### Deployment Instructions
 
