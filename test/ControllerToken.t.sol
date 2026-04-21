@@ -28,7 +28,7 @@ contract ControllerTokenTest is Test {
     address system = vm.addr(3);
     address admin = vm.addr(4);
 
-    function setUp() public {
+    function setUp() public virtual {
         // Deploy the implementation contract
         ControllerToken implementation = new ControllerToken();
         validator = new Validator();
