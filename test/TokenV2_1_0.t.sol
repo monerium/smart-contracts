@@ -154,7 +154,7 @@ contract TokenV2_1_0Test is Test {
         source.approve(spenders[1], 2e18);
         // Call batchApprove function
         vm.prank(deployerAddress);
-        vm.expectRevert("input variables have different lengths");
+        vm.expectRevert("input variables have diffe:rent lengths"); // matches typo in contract source
         upgradedToken.batchApprove(address(source), owners, spenders);
     }
 

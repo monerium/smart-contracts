@@ -111,15 +111,16 @@ contract ERC20TokenTest is Test {
         assertEq(token.balanceOf(user2), 1e18);
     }
 
-    function testFail_transfer_insufficient_balance() public {
+    function test_transfer_insufficient_balance() public {
         vm.prank(system);
         token.mint(user1, 0.9e18);
 
         vm.prank(user1);
+        vm.expectRevert();
         token.transfer(user2, 1e18);
     }
 
-    function testFail_transferFrom_insufficient_allowance() public {
+    function test_transferFrom_insufficient_allowance() public {
         vm.prank(system);
         token.mint(user1, 1e18);
 
@@ -127,10 +128,11 @@ contract ERC20TokenTest is Test {
         token.approve(user2, 0.9e18);
 
         vm.prank(user2);
+        vm.expectRevert();
         token.transferFrom(user1, user2, 1e18);
     }
 
-    function testFail_transferFrom_insufficient_balance() public {
+    function test_transferFrom_insufficient_balance() public {
         vm.prank(system);
         token.mint(user1, 0.9e18);
 
@@ -138,6 +140,7 @@ contract ERC20TokenTest is Test {
         token.approve(user2, 1e18);
 
         vm.prank(user2);
+        vm.expectRevert();
         token.transferFrom(user1, user2, 1e18);
     }
 
@@ -192,7 +195,7 @@ contract ERC20TokenTest is Test {
         assertEq(token.nonces(signer), 1);
     }
 
-    function testFail_permit_bad_nonce() public {
+    function test_permit_bad_nonce() public {
         uint256 privateKey = 0xabc123;
         address signer = vm.addr(privateKey);
 
@@ -216,10 +219,11 @@ contract ERC20TokenTest is Test {
             )
         );
 
+        vm.expectRevert();
         token.permit(signer, user2, 1e18, block.timestamp, v, r, s);
     }
 
-    function testFail_permit_bad_deadline() public {
+    function test_permit_bad_deadline() public {
         uint256 privateKey = 0xabc123;
         address signer = vm.addr(privateKey);
 
@@ -243,10 +247,11 @@ contract ERC20TokenTest is Test {
             )
         );
 
+        vm.expectRevert();
         token.permit(signer, user2, 1e18, block.timestamp + 1, v, r, s); // Bad deadline
     }
 
-    function testFail_permit_past_deadline() public {
+    function test_permit_past_deadline() public {
         uint256 oldTimestamp = block.timestamp;
         uint256 privateKey = 0xabc123;
         address signer = vm.addr(privateKey);
@@ -272,6 +277,7 @@ contract ERC20TokenTest is Test {
         );
 
         vm.warp(block.timestamp + 1);
+        vm.expectRevert();
         token.permit(signer, user2, 1e18, oldTimestamp, v, r, s); // Past deadline
     }
 
